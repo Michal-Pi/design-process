@@ -319,17 +319,202 @@ Explicit exclusions. Documented to prevent scope creep.
 
 ## Traceability
 
-Empty initially; populated by `gsd-roadmapper` during roadmap creation.
+Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
+
+**Phase legend:**
+- **Phase 1** = v1.5 — Infrastructure & Determinism Foundation (weeks 1-4)
+- **Phase 2** = v2.0a — Skeleton (weeks 5-9)
+- **Phase 3** = v2.0b — Full 5 Stages + Lovable Refugee Path (weeks 10-12)
+- **Phase 4** = v2.0 RC + GA (weeks 13-14)
+- **v2.1** = deferred (tracked under v2 Requirements above)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (all) | (pending roadmap) | Pending |
+| DIST-01 | Phase 1 | Pending |
+| DIST-02 | Phase 1 | Pending |
+| DIST-03 | Phase 1 | Pending |
+| DIST-04 | Phase 2 | Pending |
+| DIST-05 | Phase 4 | Pending |
+| DIST-06 | Phase 4 | Pending |
+| DIST-07 | Phase 4 | Pending |
+| SPINE-01 | Phase 1 | Pending |
+| SPINE-02 | Phase 1 | Pending |
+| SPINE-03 | Phase 1 | Pending |
+| SPINE-04 | Phase 1 | Pending |
+| ART-01 | Phase 1 | Pending |
+| ART-02 | Phase 1 | Pending |
+| ART-03 | Phase 1 | Pending |
+| ART-04 | Phase 1 | Pending |
+| ART-05 | Phase 1 | Pending |
+| ART-06 | Phase 1 | Pending |
+| ART-07 | Phase 1 | Pending |
+| GATE-01 | Phase 1 | Pending |
+| GATE-02 | Phase 1 | Pending |
+| GATE-03 | Phase 1 | Pending |
+| GATE-04 | Phase 1 | Pending |
+| GATE-05 | Phase 1 | Pending |
+| GATE-06 | Phase 1 | Pending |
+| GATE-07 | Phase 1 | Pending |
+| GATE-08 | Phase 2 | Pending |
+| FID-01 | Phase 2 | Pending |
+| FID-02 | Phase 2 | Pending |
+| FID-03 | Phase 3 | Pending |
+| FID-04 | Phase 3 | Pending |
+| FID-05 | Phase 2 | Pending |
+| FID-06 | Phase 3 | Pending |
+| RED-01 | Phase 2 | Pending |
+| RED-02 | Phase 2 | Pending |
+| RED-03 | Phase 2 | Pending |
+| RED-04 | Phase 2 | Pending |
+| RED-05 | Phase 2 | Pending |
+| RED-06 | Phase 2 | Pending |
+| WF-01 | Phase 2 | Pending |
+| WF-02 | Phase 2 | Pending |
+| WF-03 | Phase 2 | Pending |
+| WF-04 | Phase 3 | Pending |
+| WF-05 | Phase 3 | Pending |
+| WF-06 | Phase 2 | Pending |
+| WF-07 | Phase 2 | Pending |
+| WF-08 | Phase 2 | Pending |
+| WF-09 | Phase 2 | Pending |
+| ATOM-01 | Phase 2 | Pending |
+| ATOM-02 | Phase 2 | Pending |
+| ATOM-03 | Phase 2 | Pending |
+| ATOM-04 | Phase 2 | Pending |
+| ATOM-05 | Phase 2 | Pending |
+| ATOM-06 | Phase 2 | Pending |
+| ATOM-07 | v2.1 (deferred) | Deferred |
+| ATOM-08 | Phase 3 | Pending |
+| ATOM-09 | Phase 3 | Pending |
+| ATOM-10 | Phase 3 | Pending |
+| ATOM-11 | Phase 3 | Pending |
+| ATOM-12 | Phase 3 | Pending |
+| ATOM-13 | Phase 2 | Pending |
+| ATOM-14 | Phase 2 | Pending |
+| ATOM-15 | Phase 3 | Pending |
+| ROUTE-01 | Phase 3 | Pending |
+| ROUTE-02 | Phase 2 | Pending |
+| ROUTE-03 | Phase 3 | Pending |
+| ROUTE-04 | Phase 2 | Pending |
+| ROUTE-05 | Phase 2 | Pending |
+| ROUTE-06 | Phase 3 | Pending |
+| ROUTE-07 | Phase 2 | Pending |
+| ROUTE-08 | Phase 1 | Pending |
+| ROUTE-09 | Phase 2 | Pending |
+| HAND-01 | Phase 1 | Pending |
+| HAND-02 | Phase 1 | Pending |
+| HAND-03 | Phase 1 | Pending |
+| HAND-04 | Phase 1 | Pending |
+| FORMAT-01 | Phase 1 | Pending |
+| FORMAT-02 | Phase 1 | Pending |
+| FORMAT-03 | Phase 1 | Pending |
+| FORMAT-04 | Phase 1 | Pending |
+| FORMAT-05 | Phase 1 | Pending |
+| FORMAT-06 | Phase 1 | Pending |
+| FORMAT-07 | Phase 1 | Pending |
+| REF-01 | Phase 1 | Pending |
+| REF-02 | Phase 1 | Pending |
+| REF-03 | Phase 3 | Pending |
+| REF-04 | Phase 1 | Pending |
+| PREV-01 | Phase 1 | Pending |
+| PREV-02 | Phase 1 | Pending |
+| PREV-03 | Phase 1 | Pending |
+| PREV-04 | Phase 1 | Pending |
+| PREV-05 | Phase 1 | Pending |
+| TRUST-01 | Phase 1 | Pending |
+| TRUST-02 | Phase 1 | Pending |
+| TRUST-03 | Phase 1 | Pending |
+| TRUST-04 | Phase 1 | Pending |
+| TRUST-05 | Phase 1 | Pending |
+| TRIG-01 | Phase 1 | Pending |
+| TRIG-02 | Phase 1 | Pending |
+| TRIG-03 | Phase 4 | Pending |
+| TRIG-04 | Phase 1 | Pending |
+| AUDIT-01 | Phase 2 | Pending |
+| AUDIT-02 | Phase 3 | Pending |
+| AUDIT-03 | Phase 2 | Pending |
+| AUDIT-04 | Phase 3 | Pending |
+| AUDIT-05 | Phase 2 | Pending |
+| AUDIT-06 | Phase 3 | Pending |
+| AUDIT-07 | Phase 3 | Pending |
+| AUDIT-08 | Phase 2 | Pending |
+| PERSIST-01 | Phase 1 | Pending |
+| PERSIST-02 | Phase 1 | Pending |
+| PERSIST-03 | Phase 1 | Pending |
+| PERSIST-04 | Phase 1 | Pending |
+| ADAPT-01 | Phase 2 | Pending |
+| ADAPT-02 | v2.1 (deferred) | Deferred |
+| ADAPT-03 | Phase 2 | Pending |
+| ADAPT-04 | v2.1 (deferred) | Deferred |
+| ADAPT-05 | v2.1 (deferred) | Deferred |
+| MVPA-01 | Phase 2 | Pending |
+| MVPA-02 | Phase 2 | Pending |
+| MVPA-03 | Phase 2 | Pending |
+| MVPA-04 | Phase 2 | Pending |
+| MVPA-05 | Phase 2 | Pending |
+| MVPA-06 | Phase 2 | Pending |
+| MVPA-07 | Phase 2 | Pending |
+| MVPA-08 | Phase 2 | Pending |
+| MVPB-01 | Phase 3 | Pending |
+| MVPB-02 | Phase 3 | Pending |
+| MVPB-03 | Phase 3 | Pending |
+| MVPB-04 | Phase 3 | Pending |
+| MVPB-05 | Phase 3 | Pending |
+| MVPB-06 | Phase 3 | Pending |
+| MVPB-07 | Phase 3 | Pending |
+| MVPB-08 | Phase 3 | Pending |
+| MVPB-09 | Phase 3 | Pending |
+| MVPB-10 | Phase 3 | Pending |
+| ACCEPT-01 | Phase 4 | Pending |
+| ACCEPT-02 | Phase 4 | Pending |
+| ACCEPT-03 | Phase 4 | Pending |
+| ACCEPT-04 | Phase 4 | Pending |
+| ACCEPT-05 | Phase 4 | Pending |
+| ACCEPT-06 | Phase 4 | Pending |
+| ACCEPT-07 | Phase 4 | Pending |
+| ACCEPT-08 | Phase 4 | Pending |
+| ACCEPT-09 | Phase 4 | Pending |
+| COST-01 | Phase 2 | Pending |
+| COST-02 | Phase 2 | Pending |
+| COST-03 | Phase 3 | Pending |
+| COST-04 | Phase 3 | Pending |
+| COST-05 | Phase 2 | Pending |
+| COST-06 | Phase 2 | Pending |
+| COST-07 | Phase 4 | Pending |
+| COST-08 | Phase 2 | Pending |
+| COST-09 | Phase 2 | Pending |
+| COST-10 | Phase 4 | Pending |
+| SCHEMA-01 | Phase 1 | Pending |
+| SCHEMA-02 | Phase 1 | Pending |
+| SCHEMA-03 | Phase 1 | Pending |
+| SCHEMA-04 | Phase 1 | Pending |
+| SCHEMA-05 | Phase 1 | Pending |
+| SCHEMA-06 | Phase 1 | Pending |
+| SCHEMA-07 | Phase 1 | Pending |
+| RECOV-01 | Phase 1 | Pending |
+| RECOV-02 | Phase 1 | Pending |
+| RECOV-03 | Phase 1 | Pending |
+| GTM-01 | Phase 4 | Pending |
+| GTM-02 | Phase 4 | Pending |
+| GTM-03 | Phase 4 | Pending |
+| GTM-04 | Phase 4 | Pending |
+| GTM-05 | Phase 4 | Pending |
+| GTM-06 | Phase 1 | Pending |
+| GTM-07 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: TBD after roadmap
-- Mapped to phases: 0 (pending)
-- Unmapped: TBD ⚠️
+- v1 active requirements: **142** (146 total v1 IDs minus 4 v2.1-deferred: ATOM-07, ADAPT-02, ADAPT-04, ADAPT-05)
+- Mapped to phases: **142 / 142** ✓
+- Orphaned: **0** ✓
+- Duplicated (mapped to >1 phase): **0** ✓
+- v2.1-deferred (tracked but not in v2.0 GA roadmap): **4** (ATOM-07, ADAPT-02, ADAPT-04, ADAPT-05)
+
+**Phase distribution:**
+- Phase 1 (v1.5): 56 requirements
+- Phase 2 (v2.0a): 47 requirements
+- Phase 3 (v2.0b): 25 requirements
+- Phase 4 (RC + GA): 22 requirements (some Phase-2 IDs also have Phase-4 verification touchpoints noted in ROADMAP.md success criteria; the table records primary delivery phase only)
 
 ---
 *Requirements defined: 2026-05-24*
-*Last updated: 2026-05-24 after initial definition*
+*Traceability populated: 2026-05-24 after roadmap creation*
