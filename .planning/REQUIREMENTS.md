@@ -51,7 +51,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **FID-02**: Stage 2 — sitemaps emit text + Mermaid boxes only; no colors, no typography
 - [ ] **FID-03**: Stage 3 — Excalidraw validator rejects color/typography/styling drift; LLM emissions of styling regenerate up to repair-loop limit, then fail
 - [ ] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
-- [ ] **FID-05**: Stage 5a — refuses to render hi-fi when `design/interactions/` is empty or incomplete
+- [x] **FID-05**: Stage 5a — refuses to render hi-fi when `design/interactions/` is empty or incomplete
 - [ ] **FID-06**: Stage 5b — promotes a component to system only when it appears ≥3× in upstream wireframes/interactions (Frost rule)
 
 ### Synthetic-Persona Red Line (NN/g)
@@ -70,8 +70,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
 - [ ] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
-- [ ] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
-- [ ] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.design-os`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
+- [x] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
+- [x] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.design-os`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
 - [x] **WF-08**: `audit` (cross-stage) — modes: `--stage N`, `--all-stages`, `--pr`, `--slop-tells`, `--new-feature`, `--reverse-engineer-stages`
 - [x] **WF-09**: Every workflow supports `--depth lightweight|standard|full`
 
@@ -89,8 +89,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **ATOM-10**: `ixd/state-machine` (Stage 4, XState v5 emit, conditional)
 - [ ] **ATOM-11**: `ixd/pattern-variants` (Stage 4, 3 interaction-pattern variants with tradeoffs)
 - [ ] **ATOM-12**: `ixd/state-catalog` (Stage 4, enumerate all states per component)
-- [ ] **ATOM-13**: `hifi/variants-preview` (Stage 5a, generate + preview + screenshot in one atom)
-- [ ] **ATOM-14**: `tokens/emit` (Stage 5b, DTCG → Tailwind v4 / shadcn / plain CSS / Style Dictionary projections)
+- [x] **ATOM-13**: `hifi/variants-preview` (Stage 5a, generate + preview + screenshot in one atom)
+- [x] **ATOM-14**: `tokens/emit` (Stage 5b, DTCG → Tailwind v4 / shadcn / plain CSS / Style Dictionary projections)
 - [ ] **ATOM-15**: `system/scaffold-component` (Stage 5b, full state set, consumes Stage 4 machine — v2.1 per MRD §3.8; pulled into v2.0b)
 
 ### Job-Routing Matrix (7 routes)
@@ -172,9 +172,9 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Polyglot Adapters
 
-- [ ] **ADAPT-01**: Output adapters: Tailwind v4 / shadcn / plain CSS / Style Dictionary in core
+- [x] **ADAPT-01**: Output adapters: Tailwind v4 / shadcn / plain CSS / Style Dictionary in core
 - [ ] **ADAPT-02**: Material Web / Vue / Svelte output adapters via `design-os-bridges` (v2.1+)
-- [ ] **ADAPT-03**: Input adapters: Markdown PRD, paste-text, interview mode in core
+- [x] **ADAPT-03**: Input adapters: Markdown PRD, paste-text, interview mode in core
 - [ ] **ADAPT-04**: Tokens Studio Figma export ingestion (v2.1)
 - [ ] **ADAPT-05**: Optimal Workshop tree-test CSV ingestion (v2.1)
 
@@ -183,11 +183,11 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **MVPA-01**: 5 workflows shipped: `ingest`, `discover`, `structure`, `style` (lite), `systematize` (lite) + basic `audit`
 - [x] **MVPA-02**: 9 atoms shipped (per MRD §9.1)
 - [x] **MVPA-03**: 4 gates implemented (stage-1, stage-2, stage-5a-lite, stage-5b-lite)
-- [ ] **MVPA-04**: `style-lite` / `systematize-lite` output labeled `stage: 5a-lite, evidence: INFERRED`; never claim `gate/stage-5a-complete: PASS` (codex BLOCKER fix)
+- [x] **MVPA-04**: `style-lite` / `systematize-lite` output labeled `stage: 5a-lite, evidence: INFERRED`; never claim `gate/stage-5a-complete: PASS` (codex BLOCKER fix)
 - [x] **MVPA-05**: 4 of 7 routes shipped: `design-bug`, `new-feature` (partial), `brand-refresh`, `PR-audit` — the on-ramps
 - [x] **MVPA-06**: 12 mandatory references encoded (`design-md`, `dtcg-v2025-10`, `wcag-2-2`, `radix-step-roles`, `shadcn-tailwind-v4`, `garrett-elements`, `cooper-goodwin`, `torres-ost`, `klement-jtbd`, `indi-young-thinking-styles`, `rosenfeld-ia`, `prd/lenny-one-pager`)
 - [x] **MVPA-07**: 3 stack adapters (`tailwind-v4`, `shadcn`, `plain-css`)
-- [ ] **MVPA-08**: Claude Code host-first; Codex CLI + Cursor sequential-fallback scaffolded
+- [x] **MVPA-08**: Claude Code host-first; Codex CLI + Cursor sequential-fallback scaffolded
 
 ### v2.0b Full 5-Stage Scope
 
@@ -360,7 +360,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | FID-02 | Phase 2 | Complete |
 | FID-03 | Phase 3 | Pending |
 | FID-04 | Phase 3 | Pending |
-| FID-05 | Phase 2 | Pending |
+| FID-05 | Phase 2 | Complete |
 | FID-06 | Phase 3 | Pending |
 | RED-01 | Phase 2 | Complete |
 | RED-02 | Phase 2 | Complete |
@@ -373,8 +373,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | WF-03 | Phase 2 | Complete |
 | WF-04 | Phase 3 | Pending |
 | WF-05 | Phase 3 | Pending |
-| WF-06 | Phase 2 | Pending |
-| WF-07 | Phase 2 | Pending |
+| WF-06 | Phase 2 | Complete |
+| WF-07 | Phase 2 | Complete |
 | WF-08 | Phase 2 | Complete |
 | WF-09 | Phase 2 | Complete |
 | ATOM-01 | Phase 2 | Complete |
@@ -389,8 +389,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ATOM-10 | Phase 3 | Pending |
 | ATOM-11 | Phase 3 | Pending |
 | ATOM-12 | Phase 3 | Pending |
-| ATOM-13 | Phase 2 | Pending |
-| ATOM-14 | Phase 2 | Pending |
+| ATOM-13 | Phase 2 | Complete |
+| ATOM-14 | Phase 2 | Complete |
 | ATOM-15 | Phase 3 | Pending |
 | ROUTE-01 | Phase 3 | Pending |
 | ROUTE-02 | Phase 2 | Complete |
@@ -442,19 +442,19 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | PERSIST-02 | Phase 1 | Complete |
 | PERSIST-03 | Phase 1 | Complete |
 | PERSIST-04 | Phase 1 | Complete |
-| ADAPT-01 | Phase 2 | Pending |
+| ADAPT-01 | Phase 2 | Complete |
 | ADAPT-02 | v2.1 (deferred) | Deferred |
-| ADAPT-03 | Phase 2 | Pending |
+| ADAPT-03 | Phase 2 | Complete |
 | ADAPT-04 | v2.1 (deferred) | Deferred |
 | ADAPT-05 | v2.1 (deferred) | Deferred |
 | MVPA-01 | Phase 2 | Complete |
 | MVPA-02 | Phase 2 | Complete |
 | MVPA-03 | Phase 2 | Complete |
-| MVPA-04 | Phase 2 | Pending |
+| MVPA-04 | Phase 2 | Complete |
 | MVPA-05 | Phase 2 | Complete |
 | MVPA-06 | Phase 2 | Complete |
 | MVPA-07 | Phase 2 | Complete |
-| MVPA-08 | Phase 2 | Pending |
+| MVPA-08 | Phase 2 | Complete |
 | MVPB-01 | Phase 3 | Pending |
 | MVPB-02 | Phase 3 | Pending |
 | MVPB-03 | Phase 3 | Pending |
