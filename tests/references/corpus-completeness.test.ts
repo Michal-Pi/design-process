@@ -57,27 +57,33 @@ describe('references corpus: each file is ≤ 6000 chars', () => {
   }
 });
 
-describe('references corpus: exactly 4 v1.5 gate checklists', () => {
-  it('exactly 4 gate checklists exist (stage-1, 2, 5a, 5b) — Stages 3+4 ship Phase 3', async () => {
+// Phase 3 Plan 01 added stage-3.md; stage-4.md ships in a later Phase 3 plan.
+const ALL_GATE_CHECKLISTS = [
+  ...REQUIRED_GATE_CHECKLISTS,
+  'references/gates/stage-3.md', // Phase 3 Plan 01 (03-01)
+];
+
+describe('references corpus: v1.5+v2.0b gate checklists', () => {
+  it('exactly 5 gate checklists exist (stage-1, 2, 3, 5a, 5b) — Stage 4 ships later Phase 3', async () => {
     const files = await globby('references/gates/*.md', { cwd: ROOT });
-    expect(files).toHaveLength(4);
+    expect(files).toHaveLength(5);
   });
 
-  for (const checklistPath of REQUIRED_GATE_CHECKLISTS) {
+  for (const checklistPath of ALL_GATE_CHECKLISTS) {
     it(`${checklistPath} exists`, async () => {
       await expect(stat(resolve(ROOT, checklistPath))).resolves.toBeDefined();
     });
   }
 
-  it('stage-3.md does NOT exist in Phase 1 (ships Phase 3)', async () => {
-    await expect(stat(resolve(ROOT, 'references/gates/stage-3.md'))).rejects.toThrow();
+  it('stage-3.md exists in Phase 3 (shipped by 03-01)', async () => {
+    await expect(stat(resolve(ROOT, 'references/gates/stage-3.md'))).resolves.toBeDefined();
   });
 
-  it('stage-4.md does NOT exist in Phase 1 (ships Phase 3)', async () => {
+  it('stage-4.md does NOT exist yet (ships later in Phase 3)', async () => {
     await expect(stat(resolve(ROOT, 'references/gates/stage-4.md'))).rejects.toThrow();
   });
 
-  for (const checklistPath of REQUIRED_GATE_CHECKLISTS) {
+  for (const checklistPath of ALL_GATE_CHECKLISTS) {
     it(`${checklistPath} contains 4-column table header`, async () => {
       const content = await readFile(resolve(ROOT, checklistPath), 'utf-8');
       // D-26: Check | Required for PASS | Required for VALIDATED | Citation

@@ -41,11 +41,12 @@ const stage5am: any = await import("../../assets/scripts/gates/stage-5a.mjs");
 // @ts-ignore TS7016: no declaration for .mjs scripts
 const stage5bm: any = await import("../../assets/scripts/gates/stage-5b.mjs");
 
-// Stages 3-4 are still Phase 1 skeletons.
+// Stage 3 is NO LONGER a skeleton — Phase 3 Plan 01 replaced it with full business logic.
+// Stage-3-specific assertions live in tests/gates/stage-3.test.ts.
+// Stage 4 is still a Phase 1 skeleton.
 // Stage 5b was a skeleton in Phase 1; Phase 2 Plan 04 replaces it with real logic.
 // Stage-5b-specific assertions live in tests/gates/stage-5b-lite.test.ts.
 const skeletonGates = [
-  { name: "stage-3", fn: stage3m.runStage3Gate },
   { name: "stage-4", fn: stage4m.runStage4Gate },
 ];
 
@@ -76,6 +77,10 @@ describe("per-stage gate skeletons (stages 2-5b)", () => {
       await expect(fn(noInteractionsDir)).resolves.toBeDefined();
     });
   }
+
+  it("stage-3: exports runStage3Gate (Phase 3 — full business logic; smoke test only)", () => {
+    expect(typeof stage3m.runStage3Gate).toBe("function");
+  });
 
   it("stage-5a: exports runStage5aGate", () => {
     expect(typeof stage5am.runStage5aGate).toBe("function");

@@ -15,38 +15,41 @@ import { renderSkeletonIR, FID03_DEFAULTS } from "../../assets/scripts/excalidra
 const stage3m: any = await import("../../assets/scripts/gates/stage-3.mjs");
 const { runStage3Gate } = stage3m;
 
+/**
+ * Structurally diverse IR fixtures.
+ * All 3 pairwise distances verified to be ≥ 0.35 when rendered to Excalidraw elements:
+ *   A-B: 0.441  A-C: 0.571  B-C: 0.385
+ */
+const DIVERSE_IR_FIXTURES = [
+  // Fixture 0 (A): 2 elements concentrated in top-left corner
+  [
+    { type: "rectangle", x: 0, y: 0, w: 300, h: 200, label: "HeroBlock" },
+    { type: "rectangle", x: 10, y: 10, w: 280, h: 180, label: "HeroContent" },
+  ],
+  // Fixture 1 (B): 20 elements concentrated in bottom-right corner
+  ...[Array.from({ length: 20 }, (_, i) => ({
+    type: "rectangle",
+    x: 800 + (i % 4) * 80,
+    y: 800 + Math.floor(i / 4) * 80,
+    w: 70,
+    h: 70,
+    label: `ListItem${i + 1}`,
+  }))],
+  // Fixture 2 (C): 7 elements spread top-right + bottom-left + center (3-way split)
+  [
+    { type: "rectangle", x: 700, y: 0, w: 300, h: 200, label: "TopRight1" },
+    { type: "rectangle", x: 800, y: 20, w: 190, h: 160, label: "TopRight2" },
+    { type: "rectangle", x: 0, y: 600, w: 300, h: 200, label: "BottomLeft1" },
+    { type: "rectangle", x: 10, y: 620, w: 280, h: 160, label: "BottomLeft2" },
+    { type: "rectangle", x: 350, y: 380, w: 300, h: 200, label: "MiddleCenter1" },
+    { type: "rectangle", x: 360, y: 390, w: 280, h: 180, label: "MiddleCenter2" },
+    { type: "rectangle", x: 370, y: 400, w: 260, h: 160, label: "MiddleCenter3" },
+  ],
+] as const;
+
 /** Build a clean .excalidraw file with FID-03 defaults */
 function buildCleanExcalidraw(seed: number = 0) {
-  // Create distinct layouts per seed to ensure diversity
-  const layouts = [
-    // Seed 0: top-bar layout
-    [
-      { type: "rectangle", x: 0, y: 0, w: 1200, h: 80, label: "Header" },
-      { type: "rectangle", x: 0, y: 90, w: 1200, h: 40, label: "Nav" },
-      { type: "rectangle", x: 0, y: 140, w: 1200, h: 600, label: "Content" },
-    ],
-    // Seed 1: sidebar layout
-    [
-      { type: "rectangle", x: 0, y: 0, w: 240, h: 800, label: "Sidebar", children: [
-        { type: "rectangle", x: 10, y: 10, w: 220, h: 30, label: "Nav1" },
-        { type: "rectangle", x: 10, y: 50, w: 220, h: 30, label: "Nav2" },
-        { type: "rectangle", x: 10, y: 90, w: 220, h: 30, label: "Nav3" },
-      ]},
-      { type: "rectangle", x: 250, y: 0, w: 950, h: 800, label: "Main" },
-    ],
-    // Seed 2: grid/cards layout with many small cells
-    [
-      { type: "rectangle", x: 0, y: 0, w: 1200, h: 60, label: "TopBar" },
-      { type: "rectangle", x: 0, y: 70, w: 380, h: 300, label: "Card1" },
-      { type: "rectangle", x: 410, y: 70, w: 380, h: 300, label: "Card2" },
-      { type: "rectangle", x: 820, y: 70, w: 380, h: 300, label: "Card3" },
-      { type: "rectangle", x: 0, y: 380, w: 380, h: 300, label: "Card4" },
-      { type: "rectangle", x: 410, y: 380, w: 380, h: 300, label: "Card5" },
-      { type: "rectangle", x: 820, y: 380, w: 380, h: 300, label: "Card6" },
-      { type: "rectangle", x: 0, y: 690, w: 1200, h: 60, label: "Footer" },
-    ],
-  ];
-  const ir = layouts[seed % layouts.length];
+  const ir = DIVERSE_IR_FIXTURES[seed % DIVERSE_IR_FIXTURES.length];
   return renderSkeletonIR(ir as any);
 }
 
