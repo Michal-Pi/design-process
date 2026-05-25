@@ -1,0 +1,20 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+---
+{
+  "name": "The Overloaded IC",
+  "jobsToBeDone": ["Surface context when starting a task"],
+  "thinkingStyle": {
+    "cognitiveSpace": "Maintains a mental map of who knows what across the org",
+    "emotionalReactions": ["Frustrated when searches return noise"],
+    "guidingPrinciples": ["Speed of retrieval matters more than perfect organization"]
+  }
+}

@@ -1,0 +1,20 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: validated
+worstProvenance: validated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+---
+{
+  "name": "Validated Persona",
+  "jobsToBeDone": ["Test worst provenance validation path"],
+  "thinkingStyle": {
+    "cognitiveSpace": "Validated cognitive space",
+    "emotionalReactions": ["Validated reaction"],
+    "guidingPrinciples": ["Validated principle"]
+  }
+}

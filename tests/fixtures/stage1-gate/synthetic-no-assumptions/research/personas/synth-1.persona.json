@@ -1,0 +1,20 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+---
+{
+  "name": "Synthetic User",
+  "jobsToBeDone": ["Complete tasks efficiently"],
+  "thinkingStyle": {
+    "cognitiveSpace": "Goal-oriented thinking",
+    "emotionalReactions": ["Motivated by completion"],
+    "guidingPrinciples": ["Get it done"]
+  }
+}
