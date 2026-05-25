@@ -8,8 +8,8 @@ progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 10
-  completed_plans: 7
-  percent: 70
+  completed_plans: 8
+  percent: 80
 ---
 
 # State: design-os
@@ -20,7 +20,7 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 2 (v2.0a Skeleton) — Plan 01 COMPLETE. Stage 1 gate + adversarial CI + discover workflow shipped. Plans 02-05 remain.
+- **Current focus:** Phase 2 (v2.0a Skeleton) — Plans 01-03 COMPLETE. Stage 1/2 gates + discover/structure/style workflows + DTCG tokens-project.mjs shipped. Plans 04-05 remain.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -29,18 +29,18 @@ progress:
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 02 IN PROGRESS — v2.0a Skeleton (Plan 01 of 5 complete)
 - **Next plan:** Phase 02 Plan 02
-- **Plan:** 01 complete (Phase 2 Plan 1 delivered)
-- **Status:** Phase 02 Plan 01 complete; ready for Phase 02 Plan 02
+- **Plan:** 03 complete (Phase 2 Plan 3 delivered)
+- **Status:** Phase 02 Plan 03 complete; ready for Phase 02 Plan 04
 
 **Progress:**
 
 [███████░░░] 70%
 Phase 1: [██████████] 100% (5/5 plans complete)
-Phase 2: [██░░░░░░░░] 20%  (1/5 plans complete)
+Phase 2: [██████░░░░] 60%  (3/5 plans complete)
 Phase 3: [          ] 0%   Not started
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1 complete; Phase 2 in progress (1/5).
+**Overall:** Phase 1 complete; Phase 2 in progress (3/5).
 
 ## Performance Metrics
 
@@ -66,7 +66,8 @@ Phase 4: [          ] 0%   Not started
 | Phase 01 P04 | 19m | 3 tasks | 39 files |
 | Phase 01 P05 | 16m | 3 tasks | 50 files | 155 tests |
 | Phase 02 P01 | 60m | 3 tasks | 44 files | 139 tests added (605 total) |
-| Phase 02 P01 | 60m | 3 tasks | 44 files |
+| Phase 02 P02 | 45m | 2 tasks | 13 files | 27 tests added (639 total) |
+| Phase 02 P03 | 25m | 2 tasks | 13 files | 37 tests added (676 total) |
 
 ## Accumulated Context
 
@@ -109,6 +110,10 @@ Phase 4: [          ] 0%   Not started
 - [Phase 02 Plan 01]: RED-05/06 adversarial tests are pure script tests with no LLM calls; 100 seed-based fixtures + 10 documented injection attack vectors; all 115 adversarial tests pass
 - [Phase 02 Plan 01]: per-stage-skeletons.test.ts updated to reflect Phase 2 stage-1 behavioral change; stages 2-5b skeleton assertions preserved intact
 - [Phase 02 Plan 01]: YAML frontmatter added to upstream/personas.json bundle fixture (gray-matter hybrid format) so sufficiency-structural eval can read provenance
+- [Phase 02 Plan 03]: tokens-project.mjs stagingDir uses deterministic run-<generatedAt> ID for golden-test compatibility; random ID otherwise (D-52)
+- [Phase 02 Plan 03]: DTCG semantic tier emits resolved OKLCH values not DTCG alias syntax — avoids consumer-side alias resolution complexity
+- [Phase 02 Plan 03]: Tailwind v4 @theme merge injects inside existing block (regex injection) — never creates duplicate @theme blocks (T-02-03-02)
+- [Phase 02 Plan 03]: budget-check.mjs supports tokensUsed/token_count/tokens field names for run-log flexibility across different log producers
 
 ### Todos (next session)
 
@@ -148,10 +153,10 @@ None yet.
 
 ### Next Session
 
-- **Likely activity:** Phase 02 Plan 01 — v2.0a Skeleton (first Stage workflow).
+- **Likely activity:** Phase 02 Plan 04 — systematize-lite workflow + stage-5b gate.
 - **Required reading at session start:**
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-05-SUMMARY.md`
-  - Phase 02 PLAN.md (to be created by `/gsd-plan-phase 2`)
+  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-03-SUMMARY.md`
+  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-04-PLAN.md`
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
