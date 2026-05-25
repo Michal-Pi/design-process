@@ -10,10 +10,12 @@ __pycache__/
 .env.local
 .design-os/private/
 # Runtime-generated .design-os/ directories inside test fixtures
-# Exception: recovery fixtures have committed manifest.lock files
+# Exceptions: recovery + governance fixtures have committed manifest.lock files
 tests/fixtures/**/.design-os/
 !tests/fixtures/recovery/**/.design-os/
 !tests/fixtures/recovery/**/.design-os/manifest.lock
+!tests/fixtures/governance/**/.design-os/
+!tests/fixtures/governance/**/.design-os/manifest.lock
 evals/bundles/**/.design-os/
 evals/bundles/last-run.json
 # Runtime-generated .handoff/ directories inside golden fixtures
