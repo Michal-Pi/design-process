@@ -1,15 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: length — 4 weeks
-status: completed
-last_updated: "2026-05-25T16:42:40.950Z"
+milestone: v2.0b
+milestone_name: v2.0b full 5-stage pipeline
+status: in_progress
+stopped_at: Phase 03 Plan 01 — all 3 tasks complete
+last_updated: "2026-05-25T21:10:00.000Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_plans: 15
+  completed_plans: 12
+  percent: 80
 ---
 
 # State: design-os
@@ -27,20 +28,20 @@ progress:
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 02 COMPLETE — v2.0a Skeleton (all 5/5 plans delivered)
-- **Next plan:** Phase 03 Plan 01 (v2.0b — full 5-stage pipeline)
-- **Plan:** 05 complete (Phase 2 Plan 5 delivered — FINAL)
-- **Status:** Phase 02 COMPLETE. v2.0a Skeleton shipped. Ready for Phase 03.
+- **Phase:** 03 IN PROGRESS — v2.0b full 5-stage pipeline
+- **Plan:** 01 complete (Phase 3 Plan 1 delivered — Stage 3 Sketch)
+- **Next plan:** Phase 03 Plan 02
+- **Status:** Phase 03 Plan 01 COMPLETE. Stage 3 (Sketch/Excalidraw/Diversity gate) shipped.
 
 **Progress:**
 
-[██████████] 100%
+[████████░░] 80%
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
-Phase 3: [          ] 0%   Not started
+Phase 3: [█░░░░░░░░░] 20%  1/5 plans — Stage 3 gate + sketch workflow delivered
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1 complete; Phase 2 COMPLETE. v2.0a Skeleton delivered.
+**Overall:** Phase 1+2 complete; Phase 3 in progress (1/5 plans). 868 tests passing.
 
 ## Performance Metrics
 
@@ -70,6 +71,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 02 P03 | 25m | 2 tasks | 13 files | 37 tests added (676 total) |
 | Phase 02 P04 | 35m | 2 tasks | 5 files | 41 tests added (719 total) |
 | Phase 02 P05 | 90m | 3 tasks | 52 files | 91 tests added (810 total) |
+| Phase 03 P01 | 75m | 3 tasks | 22 files | 53 tests added (868 total) |
 
 ## Accumulated Context
 
@@ -129,7 +131,7 @@ Phase 4: [          ] 0%   Not started
 ### Todos (next session)
 
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Begin Phase 03 — v2.0b full 5-stage pipeline (audit --reverse-engineer, Stage 3+4 gates, coexistence eval)
+- [ ] Continue Phase 03 Plan 02 — next Stage 3/4 deliverables
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
 
 ### Blockers
@@ -149,30 +151,25 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-25
-- **Activity:** Phase 02 Plan 05 — audit workflow, apply.mjs, dispatch real wiring, 6 SKILL.md files, trigger corpus, 15 budget fixtures, INVARIANTS.md. Phase 2 COMPLETE.
-- **Stopped at:** Phase 02 Plan 05 (FINAL) — all 3 tasks complete
+- **Activity:** Phase 03 Plan 01 — Stage 3 Sketch: excalidraw-render.mjs, wireframe-diversity.mjs, gate-stage-3.mjs (full), sketch/crazy-eights/converge SKILL.md files, FID-03 adversarial suite (40 fixtures).
+- **Stopped at:** Phase 03 Plan 01 — all 3 tasks complete
 - **Artifacts produced:**
-  - `assets/scripts/audit/` slop-tells.mjs, stage-5a-pr.mjs, stage-5b-pr.mjs
-  - `assets/scripts/cli/` apply.mjs, audit.mjs
-  - `skills/workflows/` ingest.md, audit.md, INVARIANTS.md
-  - `skills/atoms/prd/` parse-or-interview.md
-  - `evals/fixtures/e2e/next15-tailwind4-shadcn/` (5 files)
-  - `evals/fixtures/budget/fixture-01..15/` (15 files)
-  - `evals/triggers/` 6 trigger YAML files
-  - `references/slop-tells/heuristics.md`
-  - `tests/audit/` slop-tells.test.ts, stage-5a-pr.test.ts, stage-5b-pr.test.ts, audit-report-emit.test.ts
-  - `tests/budget/budget-p50-measurement.test.ts`
-  - `tests/e2e/new-feature-route.test.ts`
-  - `tests/routing/dispatch-real-stages.test.ts`
-  - `tests/eval/phase2-skillgrade.test.ts`
-- **Final state:** 810 tests passing | 63 test files | tsc clean | lint-determinism CLEAN
+  - `assets/scripts/excalidraw-render.mjs` (sole .excalidraw emitter)
+  - `assets/scripts/wireframe-diversity.mjs` (3-factor diversity metric)
+  - `assets/scripts/cli/excalidraw-render.mjs` (Commander CLI)
+  - `assets/scripts/gates/stage-3.mjs` (full gate replacing Phase 1 skeleton)
+  - `skills/workflows/sketch.md`, `skills/atoms/lowfi/crazy-eights.md`, `skills/atoms/lowfi/converge.md`
+  - `evals/adversarial/fid-03-styled-wireframe/` (40-fixture suite)
+  - `evals/golden/excalidraw-render.golden.json`
+  - `references/gates/stage-3.md`, `references/buxton-sketching.md`, `references/sprint-crazy-eights.md`, `references/shape-up-pitches.md`
+- **Final state:** 868 tests passing | 66 test files | tsc clean | lint-determinism CLEAN
 
 ### Next Session
 
-- **Likely activity:** Phase 03 Plan 01 — v2.0b full 5-stage pipeline.
+- **Likely activity:** Phase 03 Plan 02
 - **Required reading at session start:**
-  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-05-SUMMARY.md`
-  - Phase 03 PLAN.md (to be created)
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-01-SUMMARY.md`
+  - Phase 03 Plan 02 PLAN.md
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
