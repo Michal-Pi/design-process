@@ -121,6 +121,11 @@ The synthesis body should include:
 
 If `assets/scripts/frontmatter-validate.mjs` is available:
 ```bash
-node assets/scripts/frontmatter-validate.mjs --check-worst-provenance design/research/synthesis.md design/research/
+node assets/scripts/frontmatter-validate.mjs --check-worst-provenance design/research/synthesis.md design/
 ```
 Fix any validation errors before proceeding.
+
+Note: the base dir argument must be `design/` (not `design/research/`). The `cites:` paths
+in synthesis.md frontmatter are relative to `design/` (e.g., `research/personas/slug.persona.json`).
+Passing `design/research/` as base would cause the validator to look for
+`design/research/research/personas/...` which does not exist.

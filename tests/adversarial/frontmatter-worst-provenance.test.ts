@@ -68,4 +68,30 @@ describe("frontmatter-validate --check-worst-provenance", () => {
     const { computeWorstProvenance } = stage1m;
     expect(computeWorstProvenance(["validated", "validated"])).toBe("validated");
   });
+
+  it("correct base dir (design/) resolves personas correctly and validates worstProvenance", async () => {
+    // Simulate synthesize.md correct invocation: base = design/ (FIXTURES here)
+    // artifact cites personas/synth-1.persona.json relative to FIXTURES
+    const artifactPath = resolve(FIXTURES, "artifact-with-worst-provenance.md");
+    const result = await checkWorstProvenance(artifactPath, FIXTURES);
+    expect(result.valid).toBe(true);
+  });
+
+  it("incorrect base dir (design/research/) causes persona lookup to fail — validates Finding 3 regression guard", async () => {
+    // Simulate the pre-fix bug: passing a sub-directory as base dir so that
+    // "personas/synth-1.persona.json" resolves to "FIXTURES/personas/personas/synth-1.persona.json"
+    // which does not exist. The validator reads provenance as 'missing' and the computed
+    // worstProvenance is 'missing', which is MORE conservative than the declared 'generated'.
+    // checkWorstProvenance returns valid:false because declared < computed.
+    //
+    // This test guards the regression: if the base dir is wrong (too deep), the validator
+    // either fails to find the persona files (returns valid:false) or computes wrong provenance.
+    const artifactPath = resolve(FIXTURES, "artifact-with-worst-provenance.md");
+    // Pass FIXTURES/personas as base — creates the design/research/ → design/research/research/ bug
+    const wrongBase = resolve(FIXTURES, "personas");
+    const result = await checkWorstProvenance(artifactPath, wrongBase);
+    // With wrong base, persona files are not found; provenance defaults to 'missing'
+    // Computed worst = 'missing'; declared = 'generated' → declared is LESS conservative → invalid
+    expect(result.valid).toBe(false);
+  });
 });
