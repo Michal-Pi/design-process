@@ -1,10 +1,10 @@
 // assets/scripts/routing/dispatch.mjs
 // Route dispatcher + ROUTE-08 default-not-all-5-stages suggester.
-// Implements ROUTE-08: orchestrator suggests route based on repo signals or asks.
+// Phase 2: real runSubagent wiring for 4 implemented routes (OF-01 resolved).
 //
 // dispatchRoute({ routeName, designDir, opts }):
-//   → { kind: 'route_stub_dispatched', ... } for implemented-stub routes
-//   → { kind: 'route_not_yet_implemented', ... } for not-yet-implemented routes
+//   → { kind: 'route_dispatched', ... } for 4 implemented routes (Phase 2)
+//   → { kind: 'route_not_yet_implemented', ... } for 3 v2.0b routes
 //   → { kind: 'unknown_route', ... } for unrecognized route names
 //
 // suggestRoute(repoSignals):
@@ -12,12 +12,44 @@
 //   When confidence < 0.6, the CLI prints a suggestion prompt and exits 0
 //   (never silently runs all 5 stages — ROUTE-08).
 //
-// Sources: CONTEXT.md D-21, PLAN.md Task 2 behavior block, REQUIREMENTS.md ROUTE-08.
+// Phase 2 stage workflow map (OF-01):
+//   discover     → skills/workflows/discover.md
+//   structure    → skills/workflows/structure.md
+//   style-5a     → skills/workflows/style.md
+//   systematize-5b → skills/workflows/systematize.md
+//   audit-pr     → skills/workflows/audit.md
+//
+// Sources: CONTEXT.md D-21, OF-01, PLAN.md T-02-05-B behavior block, REQUIREMENTS.md ROUTE-02/04/05/07/09.
 
 import { ROUTES } from './registry.mjs';
+import { dispatchSubagent } from '../run-subagent.mjs';
+
+/**
+ * Map from internal stage key → SKILL.md workflow path.
+ * @type {Record<string, string>}
+ */
+const STAGE_WORKFLOW_MAP = {
+  discover: 'skills/workflows/discover.md',
+  structure: 'skills/workflows/structure.md',
+  'style-5a': 'skills/workflows/style.md',
+  'systematize-5b': 'skills/workflows/systematize.md',
+  'audit-pr': 'skills/workflows/audit.md',
+};
+
+/**
+ * Required stages per Phase 2 implemented route.
+ * @type {Record<string, string[]>}
+ */
+const ROUTE_STAGES = {
+  'new-feature': ['discover', 'structure', 'style-5a', 'systematize-5b'],
+  'design-bug': ['style-5a'],
+  'brand-refresh': ['style-5a', 'systematize-5b'],
+  'PR-audit': ['audit-pr'],
+};
 
 /**
  * Dispatch a named route.
+ * Phase 2: implemented routes call runSubagent for each required stage.
  *
  * @param options.routeName   Route name to dispatch
  * @param options.designDir   Absolute path to the design directory
@@ -44,16 +76,40 @@ export async function dispatchRoute({ routeName, designDir, opts = {} }) {
     };
   }
 
-  // implemented-stub: Phase 1 ships the dispatcher shape only.
-  // Phase 2 plugs in the real stage workflows.
+  // Phase 2: real runSubagent wiring for 4 implemented routes (OF-01).
+  const stages = ROUTE_STAGES[routeName];
+  if (!stages) {
+    // Should never happen — all implemented routes have stage definitions
+    return {
+      kind: 'unknown_route',
+      name: routeName,
+      available: Object.keys(ROUTES),
+    };
+  }
+
+  /** @type {Array<{stage: string, workflowPath: string, result: unknown}>} */
+  const results = [];
+
+  for (const stage of stages) {
+    const workflowPath = STAGE_WORKFLOW_MAP[stage];
+    const context = { designDir, route: routeName };
+
+    // Call runSubagent for each stage in sequence (D-34: one-per-stage sequential dispatch).
+    // The sequential-fallback shim in run-subagent.mjs handles Codex/Cursor (D-53).
+    const result = await dispatchSubagent({
+      prompt: workflowPath ?? stage,
+      context,
+    });
+
+    results.push({ stage, workflowPath: workflowPath ?? '', result });
+  }
+
   return {
-    kind: 'route_stub_dispatched',
+    kind: 'route_dispatched',
     name: routeName,
-    requiredStages: route.requiredStages,
-    skipWithWarning: route.skipWithWarning,
-    optionalStages: route.optionalStages,
+    stages,
     budgetTokensP50: route.budgetTokensP50,
-    status: 'implemented-stub',
+    results,
     designDir,
   };
 }

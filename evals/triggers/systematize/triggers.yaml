@@ -1,0 +1,37 @@
+# evals/triggers/systematize/triggers.yaml
+# Per-skill trigger eval corpus for the 'design-os/systematize' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design-os/systematize
+description: >
+  Systematize Stage 5b: promote recurring components to design system,
+  emit DESIGN.md contract.
+
+shouldFire:
+  - prompt: "Promote components to a design system"
+  - prompt: "Run Stage 5b to systematize my design"
+  - prompt: "Emit the DESIGN.md file for my project"
+  - prompt: "Create a design system from my component library"
+  - prompt: "Run the systematize workflow on my design tokens"
+  - prompt: "Generate DESIGN.md from my tokens and components"
+  - prompt: "Build a component tier for my DTCG token file"
+  - prompt: "Systematize my design: promote recurring patterns"
+  - prompt: "Run systematize-lite to create a design system"
+  - prompt: "Extract design system components from my codebase"
+  - prompt: "Emit the Stage 5b design system contract"
+  - prompt: "Create DESIGN.md with component-tier tokens"
+
+shouldNotFire:
+  - prompt: "Deploy my application to AWS"
+  - prompt: "Write unit tests for my components"
+  - prompt: "Fix the CSS hover state bug"
+  - prompt: "Generate user personas for my product"
+  - prompt: "Create a sitemap for my website"
+  - prompt: "Audit my PR for regressions"
+  - prompt: "Set up a CI/CD pipeline"
+  - prompt: "Write a product requirements document"
+  - prompt: "Optimize my database queries"
+  - prompt: "Review my code for security issues"
+  - prompt: "Write API documentation"
+  - prompt: "Run the ingest workflow to parse my PRD"

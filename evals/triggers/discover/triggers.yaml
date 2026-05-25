@@ -1,0 +1,37 @@
+# evals/triggers/discover/triggers.yaml
+# Per-skill trigger eval corpus for the 'design-os/discover' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design-os/discover
+description: >
+  Design research: generate proto-personas, synthesize job stories and OST
+  from PRD, run Stage 1 provenance gate.
+
+shouldFire:
+  - prompt: "Generate user personas for my app"
+  - prompt: "Run design research for this product"
+  - prompt: "Create proto-personas based on this PRD"
+  - prompt: "Build an opportunity solution tree for my product"
+  - prompt: "Synthesize job-to-be-done stories from my research"
+  - prompt: "Run Stage 1 research workflow on this PRD"
+  - prompt: "Who are the users for this new feature?"
+  - prompt: "Run the discover workflow to understand my users"
+  - prompt: "Create user research artifacts for my product"
+  - prompt: "Generate JTBD statements from my PRD"
+  - prompt: "Help me understand my target users through research"
+  - prompt: "Run personas-proto for my e-commerce app"
+
+shouldNotFire:
+  - prompt: "Deploy my application to AWS"
+  - prompt: "Write a SQL migration script"
+  - prompt: "Fix this TypeScript compilation error"
+  - prompt: "Generate a DTCG token file for my design system"
+  - prompt: "Audit my PR for design regressions"
+  - prompt: "Create a sitemap for my website"
+  - prompt: "Set up shadcn/ui in my Next.js project"
+  - prompt: "Write unit tests for my authentication module"
+  - prompt: "Review my code for security vulnerabilities"
+  - prompt: "Refactor this React component"
+  - prompt: "Optimize my database queries"
+  - prompt: "Write documentation for my REST API"

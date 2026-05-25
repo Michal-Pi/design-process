@@ -1,0 +1,37 @@
+# evals/triggers/structure/triggers.yaml
+# Per-skill trigger eval corpus for the 'design-os/structure' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design-os/structure
+description: >
+  Structure IA: create sitemap variants, generate user flows from JTBD,
+  validate Stage 2 structural gate.
+
+shouldFire:
+  - prompt: "Create an information architecture for my product"
+  - prompt: "Generate a sitemap for my SaaS application"
+  - prompt: "Build user flows from my job-to-be-done stories"
+  - prompt: "Run the Stage 2 structure workflow"
+  - prompt: "Map out the navigation structure for my app"
+  - prompt: "Create sitemap variants for my design"
+  - prompt: "Generate Mermaid flow diagrams from my user research"
+  - prompt: "Structure the IA for my e-commerce platform"
+  - prompt: "Run structure workflow on my design artifacts"
+  - prompt: "Create page hierarchy and user flows for my product"
+  - prompt: "Build the information architecture from JTBD stories"
+  - prompt: "Generate sitemap.json from my design research"
+
+shouldNotFire:
+  - prompt: "Deploy my application to Kubernetes"
+  - prompt: "Write unit tests for my React components"
+  - prompt: "Fix the authentication bug in my API"
+  - prompt: "Generate user personas from interview notes"
+  - prompt: "Audit my CSS for design token violations"
+  - prompt: "Create a DTCG token file for my design system"
+  - prompt: "Set up CI/CD for my repository"
+  - prompt: "Write a product requirements document"
+  - prompt: "Review my pull request for code quality"
+  - prompt: "Optimize my database schema"
+  - prompt: "Write documentation for my npm package"
+  - prompt: "Debug this JavaScript error in production"

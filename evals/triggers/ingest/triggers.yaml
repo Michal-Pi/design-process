@@ -1,0 +1,37 @@
+# evals/triggers/ingest/triggers.yaml
+# Per-skill trigger eval corpus for the 'design-os/ingest' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design-os/ingest
+description: >
+  Ingest PRD or launch Lenny 1-pager interview; emit design/PRD.md
+  with frontmatter and stage-0 handoff bundle.
+
+shouldFire:
+  - prompt: "Ingest my PRD into the design workflow"
+  - prompt: "I don't have a PRD yet, can you interview me about my product?"
+  - prompt: "Start the design process by capturing product requirements"
+  - prompt: "Run the PRD ingest step for my new app"
+  - prompt: "I want to begin the design workflow — no PRD file exists"
+  - prompt: "Parse my existing PRD.md and start the design process"
+  - prompt: "Launch the Lenny one-pager interview for my product"
+  - prompt: "Initialize design from my product requirements document"
+  - prompt: "Create a design/PRD.md from my requirements"
+  - prompt: "Ingest and validate my product spec before designing"
+  - prompt: "I have a PRD I'd like to use for the design workflow"
+  - prompt: "Start design-os ingest on this project"
+
+shouldNotFire:
+  - prompt: "Generate user personas for my app"
+  - prompt: "Fix this CSS bug in my button component"
+  - prompt: "Deploy my Next.js application to Vercel"
+  - prompt: "Write unit tests for my API endpoints"
+  - prompt: "Audit my design tokens for slop patterns"
+  - prompt: "Create a sitemap for my product"
+  - prompt: "Run the design workflow stage 2 structure phase"
+  - prompt: "Review my pull request for design regressions"
+  - prompt: "Refactor my React component to use TypeScript"
+  - prompt: "Set up a CI/CD pipeline for my project"
+  - prompt: "Generate a design system from scratch"
+  - prompt: "Write documentation for my API"

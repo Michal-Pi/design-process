@@ -17,7 +17,8 @@ allowed-tools:
 
 ## Status
 
-**v1.5 skeleton** — Stage workflows ship in v2.0a. This skill registers the entry point and route dispatcher for the full 5-stage design process.
+**v2.0a** — 4 routes fully wired with real stage dispatch. The `ingest` and `audit` workflows
+are available as standalone skills. Stages 3 (sketch) and 4 (interact) ship in v2.0b.
 
 ## Default behavior
 
@@ -37,15 +38,15 @@ design-os design --design-dir ./design
 
 The design skill dispatches to 7 named routes via `--route <name>`:
 
-| Route | v1.5 Status | Budget (p50) | Description |
-|-------|-------------|--------------|-------------|
-| `new-feature` | implemented-stub | 60k tokens | Feature-scoped design (Stages 2, 4, 5a) |
-| `design-bug` | implemented-stub | 20k tokens | Single-stage interaction/visual regression fix |
-| `brand-refresh` | implemented-stub | 55k tokens | Token + surface refresh (Stages 5a, 5b) |
-| `PR-audit` | implemented-stub | 15k tokens | Audit a PR for design regression |
-| `new-product` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | 150k tokens | Full 5-stage workflow for a greenfield product |
-| `mature-app-refactor` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | 45k tokens | Design-system extraction + refactor |
-| `DS-extraction` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | 120k tokens | Reverse-engineer stages from Lovable/v0 prototype |
+| Route | v2.0a Status | Stages | Budget (p50) | Description |
+|-------|-------------|--------|--------------|-------------|
+| `new-feature` | **implemented** | discover → structure → style-5a → systematize-5b | 60k tokens | Feature-scoped design starting from Stage 1 research |
+| `design-bug` | **implemented** | style-5a | 20k tokens | Stage 5a touch-up for a visual or token regression |
+| `brand-refresh` | **implemented** | style-5a → systematize-5b | 55k tokens | Token + surface refresh (Stages 5a + 5b lite) |
+| `PR-audit` | **implemented** | audit --pr | 15k tokens | Audit a PR for Stage 5a/5b design regressions |
+| `new-product` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | all 5 stages | 150k tokens | Full 5-stage workflow for a greenfield product |
+| `mature-app-refactor` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | 2, 4, 5b | 45k tokens | Design-system extraction + refactor |
+| `DS-extraction` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | audit + 1-5 | 120k tokens | Reverse-engineer stages from Lovable/v0 prototype |
 
 ## Gates
 
@@ -82,6 +83,11 @@ Canon references available under `references/` (each ≤2k tokens, citations not
 Gate checklists (v1.5 set — Stages 3+4 ship Phase 3):
 - `references/gates/stage-1.md`, `stage-2.md`, `stage-5a.md`, `stage-5b.md`
 
-## v2.0a placeholder
+## Related skills
 
-The full workflow body (route implementations, stage orchestration, subagent dispatch) ships in v2.0a. This skeleton registers the skill with a valid agentskills.io v1 frontmatter block and declares the route registry so trigger evaluation and coexistence testing can run against real frontmatter in v1.5.
+- `design-os/ingest` — Stage 0: PRD ingestion and Lenny 1-pager interview
+- `design-os/discover` — Stage 1: Research, personas, JTBD
+- `design-os/structure` — Stage 2: Sitemap, flows
+- `design-os/style` — Stage 5a: DTCG tokens, palette, preview variants
+- `design-os/systematize` — Stage 5b: Component promotion, DESIGN.md emit
+- `design-os/audit` — Cross-stage: slop-tells + PR diff audit

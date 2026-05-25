@@ -22,9 +22,10 @@ describe('ROUTE-08: default behavior (no --route given)', () => {
     expect(result.alternatives).not.toContain(result.suggestion);
   });
 
-  it('CLI: design --route design-bug prints route_stub_dispatched', async () => {
+  it('CLI: design --route design-bug prints route_dispatched (Phase 2)', async () => {
     const result = await execFileAsync('node', [BIN, 'design', '--route', 'design-bug', '--design-dir', '/tmp']);
-    expect(result.stdout).toContain('route_stub_dispatched');
+    // Phase 2: real runSubagent wiring — kind changes from route_stub_dispatched to route_dispatched
+    expect(result.stdout).toContain('route_dispatched');
   });
 
   it('CLI: design --route new-product prints route_not_yet_implemented', async () => {

@@ -144,17 +144,35 @@ export async function runSkillgrade({ skill, triggersPath, skillsDir }) {
 /**
  * Get a skill-appropriate description for stub SKILL.md generation.
  * Used when no skillsDir is provided to runSkillgrade.
+ *
+ * Phase 2 descriptions added (Plan 02-05 SC-5): each description is trigger-phrase
+ * front-loaded per D-32 to achieve ≥0.85 recall in the static-analysis fallback.
+ *
  * @param {string} skill
  * @returns {string}
  */
 function getSkillDescription(skill) {
   const descriptions = {
+    // Phase 1 skills
     design:
       "Scaffold the 5-stage design process: research, IA, wireframes, interactions, hi-fi. Creates design/ artifacts with stage-gated workflows.",
     audit:
       "Audit existing design artifacts or UI for design slop, fidelity violations, accessibility issues, and missing design system compliance.",
     handoff:
       "Build a handoff bundle compressing stage output into a context-efficient format for downstream stage consumption.",
+    // Phase 2 skills (Plan 02-05 SC-5 — trigger-phrase front-loaded per D-32)
+    "design-os/ingest":
+      "Ingest PRD or launch Lenny 1-pager interview; emit design/PRD.md with frontmatter and stage-0 handoff bundle.",
+    "design-os/discover":
+      "Design research: generate user personas, synthesize job stories, build OST from PRD, understand target users for Stage 1.",
+    "design-os/structure":
+      "Structure IA: create sitemap variants, generate user flows from JTBD, validate Stage 2 structural gate.",
+    "design-os/style":
+      "Style Stage 5a: DTCG token generation, palette selection, shadcn/Tailwind v4 adapter projection, variant preview.",
+    "design-os/systematize":
+      "Systematize Stage 5b: promote recurring components to design system, emit DESIGN.md contract.",
+    "design-os/audit":
+      "Audit review design artifacts: slop-tells linter, PR diff check, rainbow gradient detection, design token review; emits AUDIT-REPORT.md.",
   };
   return descriptions[skill] ?? `${skill} skill`;
 }

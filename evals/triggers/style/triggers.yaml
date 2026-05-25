@@ -1,0 +1,37 @@
+# evals/triggers/style/triggers.yaml
+# Per-skill trigger eval corpus for the 'design-os/style' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design-os/style
+description: >
+  Style Stage 5a: DTCG token generation, palette selection, shadcn/Tailwind v4
+  adapter projection, variant preview.
+
+shouldFire:
+  - prompt: "Generate a DTCG token file for my design system"
+  - prompt: "Create design tokens for my Next.js app with Tailwind v4"
+  - prompt: "Run the style workflow to pick a color palette"
+  - prompt: "Generate tokens.json from my brand colors"
+  - prompt: "Create shadcn tokens for my design system"
+  - prompt: "Run Stage 5a style workflow on my project"
+  - prompt: "Generate a provisional design token file"
+  - prompt: "Create @theme CSS variables from my brand palette"
+  - prompt: "Pick colors and emit DTCG tokens for my app"
+  - prompt: "Run the style-lite workflow on this project"
+  - prompt: "Generate 3 palette variants for my design"
+  - prompt: "Emit design tokens in DTCG format for my product"
+
+shouldNotFire:
+  - prompt: "Deploy my application to production"
+  - prompt: "Write SQL migrations for my database"
+  - prompt: "Fix the authentication bug in my Express server"
+  - prompt: "Generate user personas for my product"
+  - prompt: "Create a sitemap for my website"
+  - prompt: "Audit my PR for design regressions"
+  - prompt: "Write unit tests for my API"
+  - prompt: "Set up a GitHub Actions workflow"
+  - prompt: "Refactor my TypeScript to use strict mode"
+  - prompt: "Optimize my page load time"
+  - prompt: "Write documentation for my library"
+  - prompt: "Review my code for security vulnerabilities"
