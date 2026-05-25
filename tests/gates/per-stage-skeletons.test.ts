@@ -41,11 +41,12 @@ const stage5am: any = await import("../../assets/scripts/gates/stage-5a.mjs");
 // @ts-ignore TS7016: no declaration for .mjs scripts
 const stage5bm: any = await import("../../assets/scripts/gates/stage-5b.mjs");
 
-// Stages 3-5b are still Phase 1 skeletons; stages 1 and 2 have real logic (Phase 2).
+// Stages 3-4 are still Phase 1 skeletons.
+// Stage 5b was a skeleton in Phase 1; Phase 2 Plan 04 replaces it with real logic.
+// Stage-5b-specific assertions live in tests/gates/stage-5b-lite.test.ts.
 const skeletonGates = [
   { name: "stage-3", fn: stage3m.runStage3Gate },
   { name: "stage-4", fn: stage4m.runStage4Gate },
-  { name: "stage-5b", fn: stage5bm.runStage5bGate },
 ];
 
 const withInteractions = resolve(FIXTURES, "with-interactions");
@@ -78,6 +79,10 @@ describe("per-stage gate skeletons (stages 2-5b)", () => {
 
   it("stage-5a: exports runStage5aGate", () => {
     expect(typeof stage5am.runStage5aGate).toBe("function");
+  });
+
+  it("stage-5b: exports runStage5bGate (Phase 2 — real logic; smoke test only)", () => {
+    expect(typeof stage5bm.runStage5bGate).toBe("function");
   });
 });
 
