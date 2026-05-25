@@ -130,8 +130,11 @@ export async function runInit({ target = process.cwd(), apply = false } = {}) {
   // Create design/ directory
   await mkdir(join(targetDir, "design"), { recursive: true });
 
-  // Create .design-os/ directory
+  // Create .design-os/ directory and the private/ subdir that apply.mjs writes run-log.jsonl into.
+  // apply.mjs guards itself with a mkdir({ recursive: true }) call, but creating the expected
+  // tree here makes the filesystem contract explicit and avoids ENOENT in the common path.
   await mkdir(join(targetDir, ".design-os"), { recursive: true });
+  await mkdir(join(targetDir, ".design-os", "private"), { recursive: true });
 
   // Write minimal design/MANIFEST.md if it doesn't exist
   const manifestPath = join(targetDir, "design", "MANIFEST.md");
@@ -148,5 +151,6 @@ export async function runInit({ target = process.cwd(), apply = false } = {}) {
   console.log("  - .gitattributes updated with design-os defaults");
   console.log("  - design/ directory created");
   console.log("  - .design-os/ directory created");
+  console.log("  - .design-os/private/ directory created");
   console.log("  - design/MANIFEST.md created");
 }

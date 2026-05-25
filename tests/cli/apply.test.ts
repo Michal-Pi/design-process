@@ -3,6 +3,7 @@
 // TDD RED phase: verify behavior contract from PLAN.md T-02-05-A
 //
 // Implements: D-52, OF-04
+// codex-review Finding 3: apply succeeds even when .design-os/private/ does not exist
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, writeFile, mkdir, readFile, rm } from 'node:fs/promises';
@@ -106,5 +107,41 @@ describe('apply', () => {
 
     expect(result.applied).toHaveLength(0);
     expect(result.warnings).toHaveLength(0);
+  });
+
+  it('codex-review Finding 3: succeeds (no ENOENT) when .design-os/private/ does not exist', async () => {
+    // Simulates a freshly-cloned repo where `design-os init` ran but only created
+    // .design-os/ — not .design-os/private/. The overwrite-warning path must not
+    // throw ENOENT when appending to run-log.jsonl.
+    const logPath = join(tmpDir, '.design-os', 'private', 'run-log.jsonl');
+
+    // Deliberately do NOT create .design-os/private/ — mimic a pre-fix repo state
+    // (the .design-os/ parent is also absent to maximally stress the guard)
+    await writeFile(join(stagingDir, 'tokens.json'), '{"v":1}', 'utf8');
+    // Create a pre-existing target so the overwrite path is triggered
+    await writeFile(join(designDir, 'tokens.json'), '{"v":0}', 'utf8');
+
+    const { applyStaging } = await import('../../assets/scripts/cli/apply.mjs');
+
+    // Must resolve without throwing ENOENT
+    await expect(
+      applyStaging({
+        stagingPath: stagingDir,
+        designDir,
+        noOverwrite: false,
+        logPath,
+      })
+    ).resolves.toMatchObject({ applied: expect.arrayContaining(['tokens.json']) });
+
+    // Run-log must have been written despite the parent dir not existing beforehand
+    const { existsSync } = await import('node:fs');
+    expect(existsSync(logPath)).toBe(true);
+
+    // Overwrite event must be in the log
+    const { readFile: rf } = await import('node:fs/promises');
+    const logContent = await rf(logPath, 'utf8');
+    const entry = JSON.parse(logContent.trim().split('\n').at(-1) ?? '{}');
+    expect(entry.event).toBe('apply-conflict-overwrite');
+    expect(entry.file).toBe('tokens.json');
   });
 });

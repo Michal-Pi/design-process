@@ -64,11 +64,14 @@ export async function applyStaging({ stagingPath, designDir, noOverwrite, logPat
 
     if (existsSync(destPath)) {
       // File exists: overwrite with WARNING (--no-overwrite already handled above)
-      const warning = `apply-conflict-overwrite: ${relPath}`;
       warnings.push(relPath);
 
-      // Log to run-log.jsonl if a log path is provided
+      // Log to run-log.jsonl if a log path is provided.
+      // Ensure the parent directory exists first — `design-os init` only creates
+      // `.design-os/`, not `.design-os/private/`, so the appendFile would throw
+      // ENOENT in a freshly-initialized repo (Finding 3 fix).
       if (logPath) {
+        await mkdir(dirname(logPath), { recursive: true });
         const logEntry = JSON.stringify({
           event: 'apply-conflict-overwrite',
           file: relPath,
