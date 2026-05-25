@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: executing
-last_updated: "2026-05-25T09:49:11.730Z"
+last_updated: "2026-05-25T10:18:17.804Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
   completed_plans: 4
-  percent: 80
+  percent: 0
 ---
 
 # State: design-os
@@ -20,7 +20,7 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — Plan 03 complete, Plans 04-05 remaining.
+- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — Plan 04 complete, Plan 05 remaining.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -28,8 +28,8 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 01 — v1.5 Infrastructure & Determinism Foundation
-- **Next plan:** Phase 01 Plan 04 (Governance + PII scanner + regen-golden gate)
-- **Plan:** 03 complete
+- **Next plan:** Phase 01 Plan 05 (final Phase 1 plan)
+- **Plan:** 04 complete
 - **Status:** Executing Phase 01
 
 **Progress:**
@@ -65,6 +65,7 @@ Phase 4: [          ] 0%  Not started
 | Phase 01 P01 | 90m | 3 tasks | 47 files |
 | Phase 01 P02 | 180m | 3 tasks | 47 files |
 | Phase 01 P03 | 81m | 3 tasks | 67 files | 241 tests |
+| Phase 01 P04 | 19m | 3 tasks | 39 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,11 @@ Phase 4: [          ] 0%  Not started
 - [Phase 01 Plan 03]: YAML-quoted descriptions in SKILL.md stubs — colons in frontmatter values must be wrapped in double-quotes for gray-matter
 - [Phase 01 Plan 03]: handoff-bundle generatedAt optional param — golden tests use fixed 2026-05-25T00:00:00.000Z timestamp for byte-identical determinism
 - [Phase 01 Plan 03]: schema-migration-guard uses --diff-filter=M (MODIFIED only) — fresh-v1 schemas (ADDED) exempt from migration requirement
+- [Phase ?]: Phase 01 Plan 04 decisions captured
+- [Phase ?]: [Phase 01 Plan 04]: PHONE_E164 regex removed leading backslash-b anchor; backslash-b before + non-word char never matches. Fixed to slash+[1-9]d{6,14}b
+- [Phase ?]: [Phase 01 Plan 04]: SPINE linter resolves dependsOn paths from design dir root, not artifact dir (SPINE-04 correctness fix)
+- [Phase ?]: [Phase 01 Plan 04]: MANIFEST.md reconciler uses fixed timestamp for byte-identical determinism (same pattern as Plan 03 golden tests)
+- [Phase ?]: [Phase 01 Plan 04]: CLI scan positional path read from process.argv — Commander handler only exposes named flags not positional args
 
 ### Todos (next session)
 
@@ -116,26 +122,25 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-25
-- **Activity:** Phase 01 Plan 03 (Determinism CI + skillgrade + coexistence eval + recovery). verify-golden 5× byte-identical gate, lint-determinism LLM-import rejection, headless Mermaid renderer, skillgrade per-skill harness (TRIALS=3), 6-package coexistence eval with A2 fallback, recovery semantics (RECOV-01..03), 5 CI workflows, ESLint exhaustiveness, schema-migration-guard. 241 tests across 24 files.
+- **Activity:** Phase 01 Plan 04 (Governance + PII). Gitignore/gitattributes templates + design-os init (idempotent guarded-block injection), PII scanner (Luhn CC, allowlist drift), SPINE-04 linearity checker, MANIFEST.md reconciler (deterministic sorted GFM table), pre-commit PII hook installation, override-banner propagation (D-11), interactive resume prompt, 3 SKILL.md skeletons (design/audit/handoff), TRUST-01..05 binding documentation. 71 new governance tests. 312/312 total passing.
 - **Artifacts produced:**
-  - `assets/scripts/` verify-golden.mjs, lint-determinism.mjs, mermaid-render.mjs, recover.mjs
-  - `assets/scripts/cli/` verify.mjs, eval-skillgrade.mjs, eval-coexistence.mjs, recover.mjs
-  - `evals/runners/` dispatch-host.mjs, skillgrade.mjs
-  - `evals/coexistence/` aggregate-eval.mjs, install-corpus.mjs, 6 trigger YAMLs
-  - `evals/triggers/` design/, audit/, handoff/ trigger YAMLs
-  - `evals/fixtures/golden/` schemas-emit, handoff-bundle, gate-stage-5a, mermaid-render
-  - 5 GitHub Actions workflows (verify-golden, lint-determinism, host-matrix, aggregate-coexistence, schema-migration-guard)
-  - `docs/CONTINGENCY-TRIG-04.md`, `.eslintrc.cjs`
-  - `tests/fixtures/recovery/` 3 recovery fixtures with valid hash-chain manifest.lock
-  - 15 new test files, 159 new assertions (241 total passing)
-- **Decisions captured:** A2 assumption, Open Q3, YAML-quoted descriptions, generatedAt param, --diff-filter=M carve-out.
+  - `assets/scripts/` init.mjs, pii-scan.mjs, manifest-md-reconcile.mjs, recover-prompt.mjs, override-banner-propagate.mjs, install-hooks.mjs, lint-spine-linearity.mjs
+  - `assets/scripts/cli/` init.mjs, scan.mjs, manifest-md.mjs, resume.mjs, override-banner.mjs, install-hooks.mjs, lint-spine-linearity.mjs
+  - `schemas/src/spine.ts` (STAGE_ORDER, canDependOn)
+  - `assets/templates/` gitignore-design-os.txt, gitattributes-design-os.txt
+  - `skills/` design/SKILL.md, audit/SKILL.md, handoff/SKILL.md
+  - `docs/` TRUST-POSTURE.md, COPY-REVIEW-CHECKLIST.md
+  - `tools/install-hooks.sh`
+  - `.design-os/pii-allowlist.json`
+  - 8 governance test files, governance fixtures
+- **Decisions captured:** PHONE_E164 regex fix, SPINE dependsOn path resolution, MANIFEST.md determinism via fixed timestamp, CLI scan positional arg via process.argv.
 
 ### Next Session
 
-- **Likely activity:** `/gsd-execute-phase 01` Plan 04 — Governance + PII scanner + interactive regen-golden gate.
+- **Likely activity:** `/gsd-execute-phase 01` Plan 05 — final Phase 1 plan.
 - **Required reading at session start:**
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-03-SUMMARY.md` (outstanding items for Plan 04)
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-PLAN.md`
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-SUMMARY.md` (outstanding items for Plan 05)
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-05-PLAN.md`
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

@@ -19,20 +19,20 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Spine & Architecture
 
-- [ ] **SPINE-01**: Architecture maps 1:1 to Garrett's 5 planes (Strategy / Scope / Structure / Skeleton / Surface)
-- [ ] **SPINE-02**: Every workflow and atom declares `stage:` frontmatter (0 / 1 / 2 / 3 / 4 / 5a / 5b / cross-stage)
-- [ ] **SPINE-03**: Six core architectural patterns implemented: (a) LLM picks / scripts emit, (b) stage-typed artifact substrate as IR, (c) compact handoff bundles, (d) evidence-graded validation gates, (e) stitched-context subagent dispatch with cross-host parity, (f) per-file commit policy + frontmatter-tagged artifacts
-- [ ] **SPINE-04**: Data flow is strictly linear forward (PRD → S0 → S1 → … → S5b); upstream-mutation by downstream stages is an anti-pattern enforced in code
+- [x] **SPINE-01**: Architecture maps 1:1 to Garrett's 5 planes (Strategy / Scope / Structure / Skeleton / Surface)
+- [x] **SPINE-02**: Every workflow and atom declares `stage:` frontmatter (0 / 1 / 2 / 3 / 4 / 5a / 5b / cross-stage)
+- [x] **SPINE-03**: Six core architectural patterns implemented: (a) LLM picks / scripts emit, (b) stage-typed artifact substrate as IR, (c) compact handoff bundles, (d) evidence-graded validation gates, (e) stitched-context subagent dispatch with cross-host parity, (f) per-file commit policy + frontmatter-tagged artifacts
+- [x] **SPINE-04**: Data flow is strictly linear forward (PRD → S0 → S1 → … → S5b); upstream-mutation by downstream stages is an anti-pattern enforced in code
 
 ### `design/` Directory & Artifacts
 
-- [ ] **ART-01**: `design/` directory is the user-facing cross-stage artifact substrate, committed to git
-- [ ] **ART-02**: Per-file commit policy implemented (canonical summaries committed; rejected wireframes, raw transcripts, `.design-os/private/` gitignored)
+- [x] **ART-01**: `design/` directory is the user-facing cross-stage artifact substrate, committed to git
+- [x] **ART-02**: Per-file commit policy implemented (canonical summaries committed; rejected wireframes, raw transcripts, `.design-os/private/` gitignored)
 - [x] **ART-03**: Per-artifact YAML frontmatter (`artifact`, `stage`, `generated`, `schemaVersion`, `sourceHash`, `provenance`, `owner`, `lastReviewedAt`)
-- [ ] **ART-04**: `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
-- [ ] **ART-05**: PII scanner (`design-os scan --pii`) runs pre-commit and rejects transcripts/PII in committed paths
-- [ ] **ART-06**: `.design-os/` package-internal state (manifest.lock hash chain, manual-overrides.json, preview run state, gitignored private logs/screenshots) per v1.0.1 commit policy
-- [ ] **ART-07**: MANIFEST.md auto-maintained: links every artifact to its stage + downstream dependents
+- [x] **ART-04**: `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
+- [x] **ART-05**: PII scanner (`design-os scan --pii`) runs pre-commit and rejects transcripts/PII in committed paths
+- [x] **ART-06**: `.design-os/` package-internal state (manifest.lock hash chain, manual-overrides.json, preview run state, gitignored private logs/screenshots) per v1.0.1 commit policy
+- [x] **ART-07**: MANIFEST.md auto-maintained: links every artifact to its stage + downstream dependents
 
 ### Stage Validation Gates
 
@@ -139,11 +139,11 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Trust Posture
 
-- [ ] **TRUST-01**: Package never claims WCAG conformance; output reports measured numbers (e.g., "WCAG 2.2 AA contrast 4.7 (pass)")
-- [ ] **TRUST-02**: Diff-by-default; `--apply` flag required to write into the user's working tree
-- [ ] **TRUST-03**: Every rule cites canon (Garrett §X, NN/g article, WCAG SC, Radix step role) or is labeled `house heuristic`
-- [ ] **TRUST-04**: Package name, taglines, top-level skill names, README, and marketplace copy avoid "AI design" framing
-- [ ] **TRUST-05**: Every stage workflow starts with a 3-5 question intake; no defaults silently picked
+- [x] **TRUST-01**: Package never claims WCAG conformance; output reports measured numbers (e.g., "WCAG 2.2 AA contrast 4.7 (pass)")
+- [x] **TRUST-02**: Diff-by-default; `--apply` flag required to write into the user's working tree
+- [x] **TRUST-03**: Every rule cites canon (Garrett §X, NN/g article, WCAG SC, Radix step role) or is labeled `house heuristic`
+- [x] **TRUST-04**: Package name, taglines, top-level skill names, README, and marketplace copy avoid "AI design" framing
+- [x] **TRUST-05**: Every stage workflow starts with a 3-5 question intake; no defaults silently picked
 
 ### Trigger Discipline (Codex 2% Cap)
 
@@ -165,10 +165,10 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Persistence Split
 
-- [ ] **PERSIST-01**: `design/` for artifacts (committed, designer-readable, AI-readable) vs `.design-os/` (package state, selectively committed)
-- [ ] **PERSIST-02**: Decision log + hash chain + manual-override capture preserved from v1.0.1
+- [x] **PERSIST-01**: `design/` for artifacts (committed, designer-readable, AI-readable) vs `.design-os/` (package state, selectively committed)
+- [x] **PERSIST-02**: Decision log + hash chain + manual-override capture preserved from v1.0.1
 - [x] **PERSIST-03**: Schema-migration tooling (`design-os migrate`) accompanies every schema bump from v1.5
-- [ ] **PERSIST-04**: Recovery semantics — deleting `design/research/` triggers a confirm-before-regenerate prompt
+- [x] **PERSIST-04**: Recovery semantics — deleting `design/research/` triggers a confirm-before-regenerate prompt
 
 ### Polyglot Adapters
 
@@ -337,17 +337,17 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | DIST-05 | Phase 4 | Pending |
 | DIST-06 | Phase 4 | Pending |
 | DIST-07 | Phase 4 | Pending |
-| SPINE-01 | Phase 1 | Pending |
-| SPINE-02 | Phase 1 | Pending |
-| SPINE-03 | Phase 1 | Pending |
-| SPINE-04 | Phase 1 | Pending |
-| ART-01 | Phase 1 | Pending |
-| ART-02 | Phase 1 | Pending |
+| SPINE-01 | Phase 1 | Complete |
+| SPINE-02 | Phase 1 | Complete |
+| SPINE-03 | Phase 1 | Complete |
+| SPINE-04 | Phase 1 | Complete |
+| ART-01 | Phase 1 | Complete |
+| ART-02 | Phase 1 | Complete |
 | ART-03 | Phase 1 | Complete |
-| ART-04 | Phase 1 | Pending |
-| ART-05 | Phase 1 | Pending |
-| ART-06 | Phase 1 | Pending |
-| ART-07 | Phase 1 | Pending |
+| ART-04 | Phase 1 | Complete |
+| ART-05 | Phase 1 | Complete |
+| ART-06 | Phase 1 | Complete |
+| ART-07 | Phase 1 | Complete |
 | GATE-01 | Phase 1 | Done |
 | GATE-02 | Phase 1 | Done |
 | GATE-03 | Phase 1 | Done |
@@ -421,11 +421,11 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | PREV-03 | Phase 1 | Complete (Plan 03) |
 | PREV-04 | Phase 1 | Complete (Plan 03) |
 | PREV-05 | Phase 1 | Pending |
-| TRUST-01 | Phase 1 | Pending |
-| TRUST-02 | Phase 1 | Pending |
-| TRUST-03 | Phase 1 | Pending |
-| TRUST-04 | Phase 1 | Pending |
-| TRUST-05 | Phase 1 | Pending |
+| TRUST-01 | Phase 1 | Complete |
+| TRUST-02 | Phase 1 | Complete |
+| TRUST-03 | Phase 1 | Complete |
+| TRUST-04 | Phase 1 | Complete |
+| TRUST-05 | Phase 1 | Complete |
 | TRIG-01 | Phase 1 | Complete (Plan 03) |
 | TRIG-02 | Phase 1 | Complete (Plan 03) |
 | TRIG-03 | Phase 4 | Pending |
@@ -438,10 +438,10 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | AUDIT-06 | Phase 3 | Pending |
 | AUDIT-07 | Phase 3 | Pending |
 | AUDIT-08 | Phase 2 | Pending |
-| PERSIST-01 | Phase 1 | Pending |
-| PERSIST-02 | Phase 1 | Pending |
+| PERSIST-01 | Phase 1 | Complete |
+| PERSIST-02 | Phase 1 | Complete |
 | PERSIST-03 | Phase 1 | Complete |
-| PERSIST-04 | Phase 1 | Pending |
+| PERSIST-04 | Phase 1 | Complete |
 | ADAPT-01 | Phase 2 | Pending |
 | ADAPT-02 | v2.1 (deferred) | Deferred |
 | ADAPT-03 | Phase 2 | Pending |
