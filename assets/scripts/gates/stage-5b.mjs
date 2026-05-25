@@ -288,24 +288,38 @@ export async function runStage5bGate(designDir) {
       hasBlocker = true;
     }
 
-    // Check $extensions.design-os.evidence — must be 'INFERRED' if present (D-51)
+    // Check $extensions.design-os.evidence — must be 'INFERRED' on every Stage 5b DESIGN.md (D-51)
+    // D-51 requires evidence:INFERRED unconditionally. Missing block or missing field is also a BLOCKER.
     const designOsExt = designMdFrontmatter?.["$extensions"]?.["design-os"];
     if (
-      designOsExt !== undefined &&
-      typeof designOsExt === "object" &&
-      designOsExt !== null
+      designOsExt === undefined ||
+      designOsExt === null ||
+      typeof designOsExt !== "object"
     ) {
+      // BLOCKER: $extensions.design-os block entirely absent — required by D-51
+      findings.push({
+        checkId: "5b-evidence-002",
+        status: "fail",
+        evidence:
+          `DESIGN.md is missing the $extensions.design-os block required by D-51. ` +
+          `The systematize workflow must emit $extensions.design-os.evidence:'INFERRED'.`,
+        citation: "D-51",
+      });
+      hasBlocker = true;
+    } else {
       const designMdEvidence = designOsExt["evidence"];
-      if (
-        designMdEvidence !== undefined &&
-        designMdEvidence !== "INFERRED"
-      ) {
+      if (designMdEvidence !== "INFERRED") {
+        // BLOCKER: evidence field absent or has wrong value
+        const foundDesc =
+          designMdEvidence === undefined
+            ? "field absent"
+            : `'${designMdEvidence}'`;
         findings.push({
           checkId: "5b-evidence-002",
           status: "fail",
           evidence:
             `DESIGN.md $extensions.design-os.evidence must be 'INFERRED' in v2.0a (D-51). ` +
-            `Found: '${designMdEvidence}'. ` +
+            `Found: ${foundDesc}. ` +
             `The systematize workflow emits evidence:INFERRED per D-51.`,
           citation: "D-51",
         });

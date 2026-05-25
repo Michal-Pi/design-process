@@ -118,6 +118,58 @@ version: "2026.04"
 Some text.
 `;
 
+/** DESIGN.md with NO $extensions block at all — codex finding F-01 */
+const DESIGN_MD_NO_EXTENSIONS_BLOCK = `---
+name: "Test Design"
+tokens: 5000
+version: "2026.04"
+---
+
+## Typography rationale
+
+Some text.
+
+## Color system rationale
+
+OKLCH primary.
+
+## Spacing rationale
+
+8px base.
+
+## Component decisions
+
+- **button**: Promoted.
+`;
+
+/** DESIGN.md with $extensions.design-os present but evidence field absent — codex finding F-01 */
+const DESIGN_MD_EXTENSIONS_NO_EVIDENCE = `---
+name: "Test Design"
+tokens: 5000
+version: "2026.04"
+$extensions:
+  design-os:
+    stage: "5b-lite"
+    generatedBy: "design-os/systematize"
+---
+
+## Typography rationale
+
+Some text.
+
+## Color system rationale
+
+OKLCH primary.
+
+## Spacing rationale
+
+8px base.
+
+## Component decisions
+
+- **button**: Promoted.
+`;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Test suite
 // ─────────────────────────────────────────────────────────────────────────────
@@ -200,6 +252,46 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     );
     expect(finding).toBeDefined();
     expect(finding.status).toBe("fail");
+  });
+
+  // ── Case 4b: DESIGN.md has no $extensions.design-os block at all → BLOCKER (codex F-01) ──
+
+  it("returns failed_after_repair when DESIGN.md has no $extensions.design-os block (D-51 requires evidence:INFERRED)", async () => {
+    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+    await writeFile(join(tmpDir, "DESIGN.md"), DESIGN_MD_NO_EXTENSIONS_BLOCK);
+
+    const result = await runStage5bGate(tmpDir);
+
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("schema-violation");
+
+    // Must emit 5b-evidence-002 — same checkId as wrong-value case (missing block is also a D-51 violation)
+    const finding = result.findings?.find(
+      (f: any) => f.checkId === "5b-evidence-002"
+    );
+    expect(finding).toBeDefined();
+    expect(finding.status).toBe("fail");
+    expect(finding.citation).toBe("D-51");
+  });
+
+  // ── Case 4c: $extensions.design-os present but evidence field absent → BLOCKER (codex F-01) ──
+
+  it("returns failed_after_repair when $extensions.design-os block exists but evidence field is absent (D-51)", async () => {
+    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+    await writeFile(join(tmpDir, "DESIGN.md"), DESIGN_MD_EXTENSIONS_NO_EVIDENCE);
+
+    const result = await runStage5bGate(tmpDir);
+
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("schema-violation");
+
+    const finding = result.findings?.find(
+      (f: any) => f.checkId === "5b-evidence-002"
+    );
+    expect(finding).toBeDefined();
+    expect(finding.status).toBe("fail");
+    expect(finding.evidence).toMatch(/field absent/i);
+    expect(finding.citation).toBe("D-51");
   });
 
   // ── Case 5: tokens.json with ≥1 component → pass_with_warnings (5b-frost-001 INFO) ──
