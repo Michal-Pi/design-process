@@ -120,6 +120,84 @@ describe("runStage2Gate — Mermaid validity", () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Finding 2: Empty/malformed sitemap rejected (schema validation)
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("runStage2Gate — empty/schema-invalid sitemap rejection", () => {
+  it("returns failed_after_repair when sitemap has zero variants (violates minItems:1)", async () => {
+    const dir = resolve(STAGE2_FIXTURES, "empty-sitemap");
+    const result = await runStage2Gate(dir, {});
+    expect(result.kind).toBe("failed_after_repair");
+  });
+
+  it("includes a schema-related finding when sitemap has zero variants", async () => {
+    const dir = resolve(STAGE2_FIXTURES, "empty-sitemap");
+    const result = await runStage2Gate(dir, {});
+    // Either schema-001 (caught by ajv) or schema-002 (explicit guard) — both are correct
+    const schemafinding = result.findings?.find(
+      (f: any) => f.checkId === "2-schema-001" || f.checkId === "2-schema-002"
+    );
+    expect(schemafinding).toBeDefined();
+    expect(schemafinding?.status).toBe("fail");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Finding 3: JTBD-to-flow 1:1 mapping enforcement
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("runStage2Gate — JTBD-to-flow 1:1 mapping", () => {
+  it("returns failed_after_repair when JTBDs are declared but flows are missing", async () => {
+    // missing-jtbd-flows: bundle declares alpha, beta, gamma — only alpha.flow.mmd present
+    const dir = resolve(STAGE2_FIXTURES, "missing-jtbd-flows");
+    const result = await runStage2Gate(dir, {});
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("missing-jtbd-flows");
+  });
+
+  it("includes finding 2-flow-001 identifying the missing JTBD slugs", async () => {
+    const dir = resolve(STAGE2_FIXTURES, "missing-jtbd-flows");
+    const result = await runStage2Gate(dir, {});
+    const flowFinding = result.findings?.find((f: any) => f.checkId === "2-flow-001");
+    expect(flowFinding).toBeDefined();
+    expect(flowFinding?.status).toBe("fail");
+    // Should identify both beta and gamma as missing
+    expect(flowFinding?.evidence).toMatch(/beta/i);
+    expect(flowFinding?.evidence).toMatch(/gamma/i);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Finding 4: FID-02 Mermaid styling directives rejected
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("runStage2Gate — FID-02 Mermaid styling rejection", () => {
+  it("returns failed_after_repair when a flow contains a style directive", async () => {
+    // styled-mermaid-flow: checkout.flow.mmd has 'style A fill:#ff0000'
+    const dir = resolve(STAGE2_FIXTURES, "styled-mermaid-flow");
+    const result = await runStage2Gate(dir, {});
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("mermaid-styling-violation");
+  });
+
+  it("includes finding 2-fidelity-003 citing FID-02 for styled flows", async () => {
+    const dir = resolve(STAGE2_FIXTURES, "styled-mermaid-flow");
+    const result = await runStage2Gate(dir, {});
+    const fid = result.findings?.find((f: any) => f.checkId === "2-fidelity-003");
+    expect(fid).toBeDefined();
+    expect(fid?.status).toBe("fail");
+    expect(fid?.citation).toBe("FID-02");
+  });
+
+  it("mentions the offending line in the finding evidence", async () => {
+    const dir = resolve(STAGE2_FIXTURES, "styled-mermaid-flow");
+    const result = await runStage2Gate(dir, {});
+    const fid = result.findings?.find((f: any) => f.checkId === "2-fidelity-003");
+    expect(fid?.evidence).toMatch(/style\s+A/i);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Happy path: valid sitemap, valid Mermaid, all JTBDs covered
 // ─────────────────────────────────────────────────────────────────────────────
 

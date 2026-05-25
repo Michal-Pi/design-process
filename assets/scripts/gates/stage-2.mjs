@@ -8,12 +8,48 @@
 
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { join, basename } from "node:path";
+import { join, basename, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import matter from "gray-matter";
 import { globby } from "globby";
+import { Ajv2020 } from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
 import { renderMermaidFile } from "../mermaid-render.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const SCHEMA_ROOT = resolve(__dirname, "../../..");
+
+/** Lazy-initialised Ajv instance for schema validation. */
+let _ajv = null;
+function getAjv() {
+  if (_ajv) return _ajv;
+  _ajv = new Ajv2020({ strict: false, allErrors: true });
+  addFormats(_ajv);
+  return _ajv;
+}
+
+/**
+ * Validate `data` against `schemas/dist/sitemap.v1.json`.
+ * Returns { valid: boolean, errors: object[] }.
+ */
+async function validateSitemapSchema(data) {
+  const schemaPath = join(SCHEMA_ROOT, "schemas/dist/sitemap.v1.json");
+  const rawSchema = await readFile(schemaPath, "utf8");
+  const schema = JSON.parse(rawSchema);
+  const ajv = getAjv();
+  const schemaId = schema.$id;
+  if (schemaId && ajv.getSchema(schemaId)) {
+    ajv.removeSchema(schemaId);
+  }
+  const validateFn = ajv.compile(schema);
+  const valid = validateFn(data);
+  return {
+    valid,
+    errors: valid ? [] : (validateFn.errors ?? []),
+  };
+}
 
 /**
  * Styling fields that are forbidden in sitemap nodes (FID-02).
@@ -173,6 +209,59 @@ function findOrphanNodes(nodes) {
 }
 
 /**
+ * Scan a Mermaid .mmd file for FID-02 styling directives.
+ *
+ * Forbidden patterns (FID-02 — Stage 2 structure-only fidelity):
+ *   - Lines starting with `style ` (e.g. `style A fill:#ff0000`)
+ *   - Lines starting with `classDef ` (e.g. `classDef foo fill:red`)
+ *   - Node references using `:::className` syntax
+ *
+ * Returns a finding object if violations are found, or null if clean.
+ *
+ * @param {string} mmdPath - Absolute path to the .flow.mmd file
+ * @returns {Promise<{checkId: string, status: string, evidence: string, citation: string} | null>}
+ */
+async function checkMermaidStyling(mmdPath) {
+  let content;
+  try {
+    content = await readFile(mmdPath, "utf8");
+  } catch {
+    // If the file can't be read, let validateMermaidFile surface the error.
+    return null;
+  }
+
+  const lines = content.split("\n");
+  const violations = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trimStart();
+    const lineNum = i + 1;
+
+    if (/^style\s+\S/i.test(trimmed)) {
+      violations.push(`line ${lineNum}: ${line.trim()}`);
+    } else if (/^classDef\s+\S/i.test(trimmed)) {
+      violations.push(`line ${lineNum}: ${line.trim()}`);
+    } else if (/:::[A-Za-z]/.test(line)) {
+      violations.push(`line ${lineNum}: ${line.trim()}`);
+    }
+  }
+
+  if (violations.length === 0) return null;
+
+  return {
+    checkId: "2-fidelity-003",
+    status: "fail",
+    evidence:
+      `FID-02 violation: Mermaid flow ${basename(mmdPath)} contains styling directives. ` +
+      `Stage 2 flows must use text nodes only — no style, classDef, or ::: class syntax. ` +
+      `Offending lines: ${violations.slice(0, 3).join(" | ")}` +
+      (violations.length > 3 ? ` (+${violations.length - 3} more)` : "") + `.`,
+    citation: "FID-02",
+  };
+}
+
+/**
  * Validate a Mermaid .mmd file by attempting to render it.
  * Uses a temp output path; treats any render error as invalid.
  *
@@ -200,15 +289,23 @@ async function validateMermaidFile(mmdPath) {
  *
  * Gate checks (D-40):
  * 1. design/ia/sitemap.json must exist → not_runnable if absent
- * 2. FID-02: no styling fields (color, font, etc.) on any sitemap node
- *    → failed_after_repair (BLOCKER) if any found
+ * 2b. FID-02: no styling fields (color, font, etc.) on any sitemap node
+ *    → failed_after_repair (BLOCKER) if any found (runs before schema to give actionable errors)
+ * 2c. Schema validation: sitemap must conform to sitemap.v1.json
+ *    → failed_after_repair with finding '2-schema-001' if invalid
+ * 2d. Empty variants guard: sitemap must have ≥1 variant
+ *    → failed_after_repair with finding '2-schema-002' if empty
  * 3. JTBD coverage: every JTBD from stage-1 bundle appears in sitemap node labels
  *    → pass_with_warnings with finding '2-coverage-001' if missing
  * 4. Orphan node: no nodes that are not root, have no parent, and have no children
  *    → pass_with_warnings with finding '2-orphan-001' if found
- * 5. Mermaid validity: all design/ia/flows/*.flow.mmd files render without errors
+ * 5b. JTBD-to-flow mapping: every JTBD must have a corresponding *.flow.mmd
+ *    → failed_after_repair with finding '2-flow-001' if missing
+ * 6. Mermaid FID-02 styling check: flows must not contain style/classDef/::: directives
+ *    → failed_after_repair with finding '2-fidelity-003' if any found
+ * 6b. Mermaid validity: all design/ia/flows/*.flow.mmd files render without errors
  *    → failed_after_repair with finding '2-mermaid-001' if any fail
- * 6. Evidence: always evidence:'proto' in v2.0a (no tree-test data)
+ * 7. Evidence: always evidence:'proto' in v2.0a (no tree-test data)
  *
  * @param {string} designDir - Path to the design directory (containing ia/sitemap.json)
  * @param {object} [config] - Optional configuration (currently unused)
@@ -238,14 +335,67 @@ export async function runStage2Gate(designDir, config = {}) {
 
   const variants = sitemap.variants ?? [];
 
-  // ── Step 3: FID-02 check ───────────────────────────────────────────────────
-  // This is a BLOCKER — any styling field immediately returns failed_after_repair
+  // ── Step 2b: FID-02 check (runs before schema validation) ─────────────────
+  // FID-02 is checked first so that styling violations produce a descriptive,
+  // actionable error message. The JSON schema also prohibits extra fields on
+  // nodes, so running FID-02 first avoids confusing schema errors like
+  // "additional property 'color' not allowed" which are less actionable.
+  // This is a BLOCKER — any styling field immediately returns failed_after_repair.
   const fidelityFindings = checkFidelityCap(variants);
   if (fidelityFindings.length > 0) {
     return {
       kind: "failed_after_repair",
       reason: "fidelity-cap-violation",
       findings: fidelityFindings,
+    };
+  }
+
+  // ── Step 2c: Schema validation ────────────────────────────────────────────
+  // Validates the full sitemap object against schemas/dist/sitemap.v1.json.
+  // An invalid or empty-variants sitemap must not proceed — failing here returns
+  // failed_after_repair so the workflow repair loop can attempt a fix.
+  // Runs after FID-02 to avoid confusing schema errors about forbidden style fields.
+  const schemaResult = await validateSitemapSchema(sitemap);
+  if (!schemaResult.valid) {
+    const summary = (schemaResult.errors ?? [])
+      .slice(0, 3)
+      .map((e) => `${e.instancePath || "/"}: ${e.message}`)
+      .join("; ");
+    return {
+      kind: "failed_after_repair",
+      reason: "sitemap-schema-invalid",
+      findings: [
+        {
+          checkId: "2-schema-001",
+          status: "fail",
+          evidence:
+            `Sitemap does not conform to sitemap.v1.json schema. ` +
+            `Errors: ${summary}. ` +
+            `Regenerate the sitemap and ensure it matches the required schema.`,
+          citation: "D-39",
+        },
+      ],
+    };
+  }
+
+  // ── Step 2d: Empty variants guard ─────────────────────────────────────────
+  // The schema requires variants.minItems:1 but guard explicitly so the error
+  // message is maximally actionable even if schema check is bypassed in tests.
+  if (variants.length === 0) {
+    return {
+      kind: "failed_after_repair",
+      reason: "sitemap-empty-variants",
+      findings: [
+        {
+          checkId: "2-schema-002",
+          status: "fail",
+          evidence:
+            `Sitemap contains zero variants. ` +
+            `At least one LATCH-diverse variant is required. ` +
+            `Regenerate the sitemap with 2-5 variants before re-running the gate.`,
+          citation: "D-39",
+        },
+      ],
     };
   }
 
@@ -286,13 +436,58 @@ export async function runStage2Gate(designDir, config = {}) {
     }
   }
 
-  // ── Step 6: Mermaid validity check ────────────────────────────────────────
+  // ── Step 5b: JTBD-to-flow 1:1 mapping check ──────────────────────────────
+  // Every JTBD from the Stage 1 bundle must have a corresponding *.flow.mmd
+  // in ia/flows/. Missing flows are a BLOCKER — the structure workflow
+  // is responsible for generating one flow per JTBD.
+  if (jtbdSlugs.length > 0) {
+    const allFlowFiles = await globby("ia/flows/*.flow.mmd", {
+      cwd: designDir,
+      absolute: false,
+    });
+    // Normalise: "ia/flows/checkout.flow.mmd" → "checkout"
+    const flowSlugs = new Set(
+      allFlowFiles.map((f) => basename(f, ".flow.mmd"))
+    );
+    const missingFlows = jtbdSlugs.filter((slug) => !flowSlugs.has(slug));
+    if (missingFlows.length > 0) {
+      return {
+        kind: "failed_after_repair",
+        reason: "missing-jtbd-flows",
+        findings: [
+          ...findings,
+          {
+            checkId: "2-flow-001",
+            status: "fail",
+            evidence:
+              `JTBD-to-flow mapping incomplete: ${missingFlows.length} JTBD(s) lack a ` +
+              `corresponding flow file in ia/flows/. ` +
+              `Missing: ${missingFlows.join(", ")}. ` +
+              `Stage 2 requires one Mermaid flowchart per JTBD.`,
+            citation: "D-40",
+          },
+        ],
+      };
+    }
+  }
+
+  // ── Step 6: Mermaid validity + FID-02 styling check ───────────────────────
   const flowFiles = await globby("ia/flows/*.flow.mmd", {
     cwd: designDir,
     absolute: true,
   });
 
   for (const flowFile of flowFiles) {
+    // FID-02 styling directives check (must run before render to give precise errors).
+    const stylingFinding = await checkMermaidStyling(flowFile);
+    if (stylingFinding) {
+      return {
+        kind: "failed_after_repair",
+        reason: "mermaid-styling-violation",
+        findings: [...findings, stylingFinding],
+      };
+    }
+
     const { valid, error } = await validateMermaidFile(flowFile);
     if (!valid) {
       // Any invalid Mermaid → failed_after_repair
