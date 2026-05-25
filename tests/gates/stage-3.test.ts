@@ -17,33 +17,35 @@ const { runStage3Gate } = stage3m;
 
 /**
  * Structurally diverse IR fixtures.
- * All 3 pairwise distances verified to be ≥ 0.35 when rendered to Excalidraw elements:
- *   A-B: 0.441  A-C: 0.571  B-C: 0.385
+ * All 3 pairwise distances verified to be ≥ 0.35 when rendered to Excalidraw elements
+ * (using the corrected width/height dimension keys per Finding 4 fix):
+ *   A-B: 0.357  A-C: 0.404  B-C: 0.389
+ *
+ * Fixture 0 (A): 4-element top-heavy full-width layout (header + subbar + content + footer)
+ * Fixture 1 (B): 16-element bottom-heavy card grid
+ * Fixture 2 (C): 2-element left-rail + content split
  */
 const DIVERSE_IR_FIXTURES = [
-  // Fixture 0 (A): 2 elements concentrated in top-left corner
+  // Fixture 0 (A): top-heavy layout concentrated at the top
   [
-    { type: "rectangle", x: 0, y: 0, w: 300, h: 200, label: "HeroBlock" },
-    { type: "rectangle", x: 10, y: 10, w: 280, h: 180, label: "HeroContent" },
+    { type: "rectangle", x: 0, y: 0, w: 1200, h: 80, label: "TopBar" },
+    { type: "rectangle", x: 0, y: 90, w: 1200, h: 40, label: "SubBar" },
+    { type: "rectangle", x: 0, y: 140, w: 1200, h: 600, label: "Main" },
+    { type: "rectangle", x: 0, y: 750, w: 1200, h: 50, label: "Footer" },
   ],
-  // Fixture 1 (B): 20 elements concentrated in bottom-right corner
-  ...[Array.from({ length: 20 }, (_, i) => ({
+  // Fixture 1 (B): 16-element card grid concentrated in the lower portion
+  Array.from({ length: 16 }, (_, i) => ({
     type: "rectangle",
-    x: 800 + (i % 4) * 80,
-    y: 800 + Math.floor(i / 4) * 80,
-    w: 70,
-    h: 70,
-    label: `ListItem${i + 1}`,
-  }))],
-  // Fixture 2 (C): 7 elements spread top-right + bottom-left + center (3-way split)
+    x: (i % 4) * 300,
+    y: 400 + Math.floor(i / 4) * 100,
+    w: 280,
+    h: 80,
+    label: `Card${i}`,
+  })),
+  // Fixture 2 (C): narrow left rail + full-height content panel
   [
-    { type: "rectangle", x: 700, y: 0, w: 300, h: 200, label: "TopRight1" },
-    { type: "rectangle", x: 800, y: 20, w: 190, h: 160, label: "TopRight2" },
-    { type: "rectangle", x: 0, y: 600, w: 300, h: 200, label: "BottomLeft1" },
-    { type: "rectangle", x: 10, y: 620, w: 280, h: 160, label: "BottomLeft2" },
-    { type: "rectangle", x: 350, y: 380, w: 300, h: 200, label: "MiddleCenter1" },
-    { type: "rectangle", x: 360, y: 390, w: 280, h: 180, label: "MiddleCenter2" },
-    { type: "rectangle", x: 370, y: 400, w: 260, h: 160, label: "MiddleCenter3" },
+    { type: "rectangle", x: 0, y: 0, w: 60, h: 800, label: "NavRail" },
+    { type: "rectangle", x: 70, y: 0, w: 1130, h: 800, label: "Content" },
   ],
 ] as const;
 
@@ -92,8 +94,7 @@ describe("gate-stage-3.mjs: FID-03 fidelity violations", () => {
     const result = await runStage3Gate(stagedDir);
     expect(result.kind).toBe("not_runnable");
     expect(result.reason).toBe("fidelity-cap-violation-FID-03");
-    expect(Array.isArray(result.evidence)).toBe(true);
-    expect(result.evidence.length).toBeGreaterThan(0);
+    // not_runnable has no findings/evidence per schema — only kind + reason
   });
 
   it("Test 2: returns not_runnable with FID-03 reason when backgroundColor is non-default", async () => {
@@ -148,8 +149,9 @@ describe("gate-stage-3.mjs: count and diversity checks", () => {
 
     const result = await runStage3Gate(stagedDir);
     expect(result.kind).toBe("failed_after_repair");
-    const finding = result.findings?.find((f: any) => f.findingId === "3-count-001");
+    const finding = result.findings?.find((f: any) => f.checkId === "3-count-001");
     expect(finding).toBeDefined();
+    expect(finding?.status).toBe("fail");
   });
 
   it("Test 5: returns failed_after_repair with finding 3-diversity-001 when variants are near-identical", async () => {
@@ -166,8 +168,9 @@ describe("gate-stage-3.mjs: count and diversity checks", () => {
 
     const result = await runStage3Gate(stagedDir);
     expect(result.kind).toBe("failed_after_repair");
-    const finding = result.findings?.find((f: any) => f.findingId === "3-diversity-001");
+    const finding = result.findings?.find((f: any) => f.checkId === "3-diversity-001");
     expect(finding).toBeDefined();
+    expect(finding?.status).toBe("fail");
   });
 
   it("Test 6: returns failed_after_repair with finding 3-choice-001 when CHOICE.md absent", async () => {
@@ -183,8 +186,9 @@ describe("gate-stage-3.mjs: count and diversity checks", () => {
 
     const result = await runStage3Gate(stagedDir);
     expect(result.kind).toBe("failed_after_repair");
-    const finding = result.findings?.find((f: any) => f.findingId === "3-choice-001");
+    const finding = result.findings?.find((f: any) => f.checkId === "3-choice-001");
     expect(finding).toBeDefined();
+    expect(finding?.status).toBe("fail");
   });
 
   it("Test 7: returns pass when 3+ diverse clean variants AND CHOICE.md present", async () => {

@@ -90,12 +90,8 @@ export async function runStage3Gate(designDir) {
       findings: [
         {
           checkId: "3-count-001",
-          evidence: `Found ${excalidrawFiles.length} .excalidraw file(s); need ≥3.`,
-          findingId: "3-count-001",
-          fixRecipe: "Need ≥3 wireframe variants. Re-run crazy-eights atom to produce additional variants.",
-          severity: "BLOCKER",
-          stage: 3,
-          status: "open",
+          status: "fail",
+          evidence: `Found ${excalidrawFiles.length} .excalidraw file(s); need ≥3. Re-run crazy-eights atom to produce additional variants.`,
         },
       ],
       kind: "failed_after_repair",
@@ -127,7 +123,6 @@ export async function runStage3Gate(designDir) {
 
   if (fidelityViolations.length > 0) {
     return {
-      evidence: fidelityViolations,
       kind: "not_runnable",
       reason: "fidelity-cap-violation-FID-03",
     };
@@ -137,28 +132,38 @@ export async function runStage3Gate(designDir) {
   const elementsArrays = [];
 
   for (const file of excalidrawFiles.sort()) {
-    const raw = await readFile(file, "utf8");
-    const doc = JSON.parse(raw);
+    let doc;
+    try {
+      const raw = await readFile(file, "utf8");
+      doc = JSON.parse(raw);
+    } catch (err) {
+      // Malformed JSON in the diversity pass — return a gate failure identifying the file.
+      return {
+        findings: [
+          {
+            checkId: "3-diversity-parse-001",
+            status: "fail",
+            evidence: `Failed to parse .excalidraw file for diversity check: ${file}. Error: ${err.message}`,
+          },
+        ],
+        kind: "failed_after_repair",
+        reason: "malformed-excalidraw-json",
+      };
+    }
     elementsArrays.push(collectElements(doc));
   }
 
   const diversityResult = checkDiversityThreshold(elementsArrays, 0.35);
   if (!diversityResult.passes) {
+    const violationSummary = diversityResult.violations
+      .map((v) => `pair(${v.i},${v.j}) distance=${v.distance.toFixed(3)}`)
+      .join("; ");
     return {
       findings: [
         {
           checkId: "3-diversity-001",
-          evidence: diversityResult.violations.map((v) => ({
-            distance: v.distance,
-            i: v.i,
-            j: v.j,
-          })),
-          findingId: "3-diversity-001",
-          fixRecipe:
-            "Variants too similar (pairwise structural distance < 0.35). Re-run crazy-eights with more layout diversity: card-list, hero+CTA, table, sidebar+content, bottom-nav.",
-          severity: "BLOCKER",
-          stage: 3,
-          status: "open",
+          status: "fail",
+          evidence: `Variants too similar (pairwise structural distance < 0.35). Violations: ${violationSummary}. Re-run crazy-eights with more layout diversity: card-list, hero+CTA, table, sidebar+content, bottom-nav.`,
         },
       ],
       kind: "failed_after_repair",
@@ -177,12 +182,8 @@ export async function runStage3Gate(designDir) {
       findings: [
         {
           checkId: "3-choice-001",
-          evidence: "No CHOICE.md found under wireframes/",
-          findingId: "3-choice-001",
-          fixRecipe: "Run converge atom to produce CHOICE.md selecting one variant.",
-          severity: "BLOCKER",
-          stage: 3,
-          status: "open",
+          status: "fail",
+          evidence: "No CHOICE.md found under wireframes/. Run converge atom to produce CHOICE.md selecting one variant.",
         },
       ],
       kind: "failed_after_repair",

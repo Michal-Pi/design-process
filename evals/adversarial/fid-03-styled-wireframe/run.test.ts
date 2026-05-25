@@ -52,9 +52,8 @@ describe("FID-03 adversarial: styled wireframes (20/20 must be rejected)", () =>
       expect(result.kind).toBe("not_runnable");
       expect(result.reason).toBe("fidelity-cap-violation-FID-03");
 
-      // Evidence must be present and non-empty
-      expect(Array.isArray(result.evidence)).toBe(true);
-      expect(result.evidence.length).toBeGreaterThan(0);
+      // Schema: not_runnable has only { kind, reason } — no evidence field (Finding 1 fix).
+      // The fidelity violation is communicated via kind/reason; details are logged by the CLI.
 
       // RED LINE: styled fixture must NEVER return pass
       if (result.kind !== "not_runnable" || result.reason !== "fidelity-cap-violation-FID-03") {
