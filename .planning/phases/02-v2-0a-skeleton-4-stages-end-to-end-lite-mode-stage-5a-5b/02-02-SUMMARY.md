@@ -173,6 +173,39 @@ None. All files implement the threat mitigations from the plan's STRIDE register
 - T-02-02-02 (Mermaid DoS): mitigated by mermaid-render.mjs AbortSignal.timeout (Phase 1) + error capture in `validateMermaidFile()`
 - T-02-02-03 (JTBD spoofing): accepted risk, documented in plan
 
+## Codex-Review Fixes (2026-05-25)
+
+Applied after Codex review session 019e5faa-b2ea-7161-9949-84e5c09767c9.
+
+**Finding 1 (P1 BLOCKING): Structure workflow bypasses Stage 2 gate**
+- **Issue:** Step 9 ran the gate against `design/` which is empty before `--apply`, so `not_runnable` was returned and execution continued unchecked.
+- **Fix:** Step 9 now runs against `.design-os/preview/run-<timestamp>/` — the actual staged path. Clarified `not_runnable` means something went wrong in steps 6-8, not expected behavior.
+- **Files modified:** `skills/workflows/structure.md`
+- **Commit:** `17e9cc7`
+
+**Finding 2 (P2 HIGH): Empty/malformed sitemap passes gate**
+- **Issue:** `sitemap.variants ?? []` defaulted to `[]` and the gate passed without enforcing `minItems:1` or the full schema.
+- **Fix:** Added `validateSitemapSchema()` using `Ajv2020` + `schemas/dist/sitemap.v1.json`. FID-02 runs first (before schema) so styling fields get actionable errors rather than "additional property not allowed". Schema check (2-schema-001) rejects schema violations; empty-variants guard (2-schema-002) is belt-and-suspenders.
+- **New test fixtures:** `tests/fixtures/stage2-gate/empty-sitemap/`
+- **Files modified:** `assets/scripts/gates/stage-2.mjs`, `tests/gates/stage-2-latch.test.ts`
+- **Commits:** `e1be783`
+
+**Finding 3 (P2 HIGH): JTBD-to-flow mapping not enforced**
+- **Issue:** `globby` only found existing files; if flows were missing, no error was raised. Step 2 promised one flow per JTBD but never checked.
+- **Fix:** Step 5b extracts JTBD slugs, lists `ia/flows/*.flow.mmd` filenames, compares. Any JTBD without a flow returns `failed_after_repair` with finding `2-flow-001` naming the missing slugs. Added flow files to existing fixtures (`missing-jtbd`, `orphan-node`, `valid-sitemap`) that need to pass this check.
+- **New test fixtures:** `tests/fixtures/stage2-gate/missing-jtbd-flows/`
+- **Files modified:** `assets/scripts/gates/stage-2.mjs`, `tests/gates/stage-2-latch.test.ts`, multiple existing fixtures
+- **Commit:** `47a6bf7`
+
+**Finding 4 (P2 HIGH): FID-02 styling on Mermaid flows not rejected**
+- **Issue:** `mermaid-render.mjs` only validated syntax; flows with `style A fill:#ff0000`, `classDef`, or `:::className` passed the gate.
+- **Fix:** Added `checkMermaidStyling()` scanning each `.flow.mmd` for `^style `, `^classDef `, and `:::[A-Za-z]` patterns. Runs before syntax validation to give precise line-level errors. Returns finding `2-fidelity-003` citing FID-02 with offending lines.
+- **New test fixtures:** `tests/fixtures/stage2-gate/styled-mermaid-flow/`
+- **Files modified:** `assets/scripts/gates/stage-2.mjs`, `tests/gates/stage-2-latch.test.ts`
+- **Commit:** `b267faf`
+
+**Post-fix metrics:** 639 tests passing (+7 from 632), 0 TypeScript errors, all 4 findings closed.
+
 ## Self-Check: PASSED
 
 All key files exist:
@@ -189,3 +222,7 @@ All commits exist:
 - FOUND: c2b40b5 (test: RED phase)
 - FOUND: ab1b9db (feat: GREEN phase)
 - FOUND: 066f104 (feat: T-02-02-B)
+- FOUND: 17e9cc7 (fix: Finding 1 — structure.md gate bypass)
+- FOUND: e1be783 (fix: Finding 2 — empty/schema-invalid sitemap)
+- FOUND: 47a6bf7 (fix: Finding 3 — JTBD-to-flow mapping)
+- FOUND: b267faf (fix: Finding 4 — FID-02 Mermaid styling)
