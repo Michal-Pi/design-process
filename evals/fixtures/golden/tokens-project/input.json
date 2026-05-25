@@ -1,0 +1,10 @@
+{
+  "adapter": "shadcn",
+  "colorPrimary": "oklch(60% 0.2 270)",
+  "colorBackground": "oklch(98% 0.0 0)",
+  "colorForeground": "oklch(15% 0.0 0)",
+  "borderRadius": "0.5rem",
+  "fontFamilyBase": "Inter, system-ui",
+  "spacingBase": 4,
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

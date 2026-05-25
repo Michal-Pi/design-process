@@ -113,7 +113,7 @@ describe("tokens-project: shadcn adapter", () => {
     const content = await readFile(result.tokensPath, "utf8");
     // Strip YAML frontmatter (between --- markers)
     const bodyMatch = content.match(/^---[\s\S]*?---\n([\s\S]*)$/m);
-    const jsonBody = bodyMatch ? bodyMatch[1].trim() : content.trim();
+    const jsonBody = (bodyMatch?.[1] ?? content).trim();
     const parsed = JSON.parse(jsonBody);
     const tokens = collectTokens(parsed);
     expect(tokens.length).toBeGreaterThan(0);
@@ -126,7 +126,7 @@ describe("tokens-project: shadcn adapter", () => {
   it("all token $type values are valid DTCG v2025.10 types", async () => {
     const content = await readFile(result.tokensPath, "utf8");
     const bodyMatch = content.match(/^---[\s\S]*?---\n([\s\S]*)$/m);
-    const jsonBody = bodyMatch ? bodyMatch[1].trim() : content.trim();
+    const jsonBody = (bodyMatch?.[1] ?? content).trim();
     const parsed = JSON.parse(jsonBody);
     const tokens = collectTokens(parsed);
     for (const { path: tokenPath, token } of tokens) {
@@ -462,7 +462,7 @@ describe("tokens-project: DTCG three-tier structure", () => {
 
     const content = await readFile(res.tokensPath, "utf8");
     const bodyMatch = content.match(/^---[\s\S]*?---\n([\s\S]*)$/m);
-    const jsonBody = bodyMatch ? bodyMatch[1].trim() : content.trim();
+    const jsonBody = (bodyMatch?.[1] ?? content).trim();
     dtcgBody = JSON.parse(jsonBody);
   });
 

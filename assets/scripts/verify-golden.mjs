@@ -29,6 +29,7 @@ const FIXTURE_RUNNERS = {
   "handoff-bundle": runHandoffBundleFixture,
   "gate-stage-5a": runGateStage5aFixtures,
   "mermaid-render": runMermaidRenderFixture,
+  "tokens-project": runTokensProjectFixtures,
 };
 
 /**
@@ -294,6 +295,186 @@ async function runMermaidRenderFixture() {
   }
 
   return [{ name: "mermaid-render", pass: true }];
+}
+
+/**
+ * Run the tokens-project golden fixtures (shadcn, tailwind-v4, plain-css adapters).
+ * Verifies 5× byte-identical output matches expected-*.json files.
+ * @returns {Promise<{ name: string; pass: boolean; mismatch?: string }[]>}
+ */
+async function runTokensProjectFixtures() {
+  const fixtureDir = join(ROOT, "evals/fixtures/golden/tokens-project");
+  const inputPath = join(fixtureDir, "input.json");
+
+  if (!existsSync(inputPath)) {
+    return [
+      {
+        name: "tokens-project / input missing",
+        pass: false,
+        mismatch: `input.json not found at ${inputPath}`,
+      },
+    ];
+  }
+
+  const { emitTokens } = await import("./tokens-project.mjs");
+  const { tmpdir } = await import("node:os");
+  const { mkdir: mkdirAsync, rm } = await import("node:fs/promises");
+  const { join: pathJoin } = await import("node:path");
+
+  const input = JSON.parse(await readFile(inputPath, "utf8"));
+  const results = [];
+
+  // ── shadcn adapter (tokens.json) ─────────────────────────────────────────
+  {
+    const expectedPath = join(fixtureDir, "expected-shadcn.json");
+    if (!existsSync(expectedPath)) {
+      results.push({
+        name: "tokens-project / expected-shadcn.json missing",
+        pass: false,
+        mismatch: `expected-shadcn.json not found. Run npm run regen-golden -- --script tokens-project --reason "<text>" to update.`,
+      });
+    } else {
+      const expected = await readFile(expectedPath, "utf8");
+      const expectedHash = sha256(expected);
+      const hashes = [];
+
+      for (let i = 0; i < BYTE_IDENTICAL_RUNS; i++) {
+        const tmpDir = pathJoin(tmpdir(), `vg-tokens-shadcn-${Date.now()}-${i}`);
+        await mkdirAsync(tmpDir, { recursive: true });
+        try {
+          const res = await emitTokens({
+            ...input,
+            adapter: "shadcn",
+            designDir: tmpDir,
+            projectRoot: tmpDir,
+          });
+          const content = await readFile(res.tokensPath, "utf8");
+          hashes.push(sha256(content));
+        } finally {
+          await rm(tmpDir, { recursive: true, force: true });
+        }
+      }
+
+      const allSame = hashes.every((h) => h === hashes[0]);
+      if (!allSame) {
+        results.push({
+          name: "tokens-project / shadcn adapter tokens.json",
+          pass: false,
+          mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+        });
+      } else if (hashes[0] !== expectedHash) {
+        results.push({
+          name: "tokens-project / shadcn adapter tokens.json",
+          pass: false,
+          mismatch: `Output hash ${hashes[0]} != expected ${expectedHash}. Run npm run regen-golden to update.`,
+        });
+      } else {
+        results.push({ name: "tokens-project / shadcn adapter tokens.json", pass: true });
+      }
+    }
+  }
+
+  // ── tailwind-v4 adapter (globals.css) ────────────────────────────────────
+  {
+    const expectedPath = join(fixtureDir, "expected-tailwind-v4.json");
+    if (!existsSync(expectedPath)) {
+      results.push({
+        name: "tokens-project / expected-tailwind-v4.json missing",
+        pass: false,
+        mismatch: `expected-tailwind-v4.json not found.`,
+      });
+    } else {
+      const expected = await readFile(expectedPath, "utf8");
+      const expectedHash = sha256(expected);
+      const hashes = [];
+
+      for (let i = 0; i < BYTE_IDENTICAL_RUNS; i++) {
+        const tmpDir = pathJoin(tmpdir(), `vg-tokens-tw4-${Date.now()}-${i}`);
+        await mkdirAsync(tmpDir, { recursive: true });
+        try {
+          const res = await emitTokens({
+            ...input,
+            adapter: "tailwind-v4",
+            designDir: tmpDir,
+            projectRoot: tmpDir,
+          });
+          const content = await readFile(res.projectionPath, "utf8");
+          hashes.push(sha256(content));
+        } finally {
+          await rm(tmpDir, { recursive: true, force: true });
+        }
+      }
+
+      const allSame = hashes.every((h) => h === hashes[0]);
+      if (!allSame) {
+        results.push({
+          name: "tokens-project / tailwind-v4 adapter globals.css",
+          pass: false,
+          mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+        });
+      } else if (hashes[0] !== expectedHash) {
+        results.push({
+          name: "tokens-project / tailwind-v4 adapter globals.css",
+          pass: false,
+          mismatch: `Output hash ${hashes[0]} != expected ${expectedHash}. Run npm run regen-golden to update.`,
+        });
+      } else {
+        results.push({ name: "tokens-project / tailwind-v4 adapter globals.css", pass: true });
+      }
+    }
+  }
+
+  // ── plain-css adapter (design-os-tokens.css) ─────────────────────────────
+  {
+    const expectedPath = join(fixtureDir, "expected-plain-css.json");
+    if (!existsSync(expectedPath)) {
+      results.push({
+        name: "tokens-project / expected-plain-css.json missing",
+        pass: false,
+        mismatch: `expected-plain-css.json not found.`,
+      });
+    } else {
+      const expected = await readFile(expectedPath, "utf8");
+      const expectedHash = sha256(expected);
+      const hashes = [];
+
+      for (let i = 0; i < BYTE_IDENTICAL_RUNS; i++) {
+        const tmpDir = pathJoin(tmpdir(), `vg-tokens-plain-${Date.now()}-${i}`);
+        await mkdirAsync(tmpDir, { recursive: true });
+        try {
+          const res = await emitTokens({
+            ...input,
+            adapter: "plain-css",
+            designDir: tmpDir,
+            projectRoot: tmpDir,
+          });
+          const content = await readFile(res.projectionPath, "utf8");
+          hashes.push(sha256(content));
+        } finally {
+          await rm(tmpDir, { recursive: true, force: true });
+        }
+      }
+
+      const allSame = hashes.every((h) => h === hashes[0]);
+      if (!allSame) {
+        results.push({
+          name: "tokens-project / plain-css adapter design-os-tokens.css",
+          pass: false,
+          mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+        });
+      } else if (hashes[0] !== expectedHash) {
+        results.push({
+          name: "tokens-project / plain-css adapter design-os-tokens.css",
+          pass: false,
+          mismatch: `Output hash ${hashes[0]} != expected ${expectedHash}. Run npm run regen-golden to update.`,
+        });
+      } else {
+        results.push({ name: "tokens-project / plain-css adapter design-os-tokens.css", pass: true });
+      }
+    }
+  }
+
+  return results;
 }
 
 /**

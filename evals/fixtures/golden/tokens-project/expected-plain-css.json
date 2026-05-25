@@ -1,0 +1,18 @@
+/* design-os generated — stage:5a-lite evidence:INFERRED */
+/* Adapter: plain-css — CSS custom properties in :root */
+/* DO NOT EDIT: regenerate via node assets/scripts/tokens-project.mjs */
+
+:root {
+  /* Colors — CSS Color 4 OKLCH */
+  --color-primary: oklch(60% 0.2 270);
+  --color-background: oklch(98% 0.0 0);
+  --color-foreground: oklch(15% 0.0 0);
+  --color-primary-foreground: oklch(10% 0.0 0);
+  --color-border: oklch(85.5% 0.02 0);
+  --color-muted: oklch(93.0% 0.01 0);
+  --color-muted-foreground: oklch(25.5% 0.01 0);
+
+  /* Dimensions */
+  --radius: 0.5rem;
+  --font-family-base: Inter, system-ui;
+}
