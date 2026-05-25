@@ -1,0 +1,8 @@
+# >>> design-os defaults
+.design-os/private/
+design/sketch/rejected/
+design/research/interviews/raw/
+design/research/transcripts/*.raw.md
+**/.handoff/*.tmp.md
+node_modules/
+# <<< design-os defaults
