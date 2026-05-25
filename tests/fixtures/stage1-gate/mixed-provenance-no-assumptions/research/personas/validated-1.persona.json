@@ -1,0 +1,20 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: validated
+worstProvenance: validated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+---
+{
+  "name": "The Validated User",
+  "jobsToBeDone": ["Get real work done"],
+  "thinkingStyle": {
+    "cognitiveSpace": "Pragmatic, goal-oriented problem-solving",
+    "emotionalReactions": ["Satisfied when outcomes match expectations"],
+    "guidingPrinciples": ["Trust but verify", "Results matter more than process"]
+  }
+}

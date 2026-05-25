@@ -1,0 +1,20 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+---
+{
+  "name": "The Synthetic User",
+  "jobsToBeDone": ["Accomplish tasks efficiently"],
+  "thinkingStyle": {
+    "cognitiveSpace": "Focused on getting things done with minimal friction",
+    "emotionalReactions": ["Frustrated by unnecessary steps"],
+    "guidingPrinciples": ["Speed and efficiency above all"]
+  }
+}
