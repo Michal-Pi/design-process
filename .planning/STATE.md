@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: executing
-last_updated: "2026-05-25T10:18:17.804Z"
+last_updated: "2026-05-25T10:38:31.604Z"
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
-  percent: 0
+  completed_plans: 5
+  percent: 100
 ---
 
 # State: design-os
@@ -20,29 +20,27 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — Plan 04 complete, Plan 05 remaining.
+- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — ALL 5 PLANS COMPLETE. Phase 2 (v2.0a Skeleton) is next.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 01 — v1.5 Infrastructure & Determinism Foundation
-- **Next plan:** Phase 01 Plan 05 (final Phase 1 plan)
-- **Plan:** 04 complete
-- **Status:** Executing Phase 01
+- **Phase:** 01 COMPLETE — v1.5 Infrastructure & Determinism Foundation
+- **Next plan:** Phase 02 Plan 01 (v2.0a Skeleton — first Stage workflow)
+- **Plan:** 05 complete (all 5 Phase 1 plans delivered)
+- **Status:** Phase 01 complete; ready for Phase 02
 
 **Progress:**
 
-[████████░░] 80%
-Phase 1: [████████  ] 80% (4/5 plans complete)
-Phase 2: [          ] 0%  Not started
-Phase 3: [          ] 0%  Not started
-Phase 4: [          ] 0%  Not started
+[██████████] 100% (Phase 1)
+Phase 1: [██████████] 100% (5/5 plans complete)
+Phase 2: [          ] 0%   Not started
+Phase 3: [          ] 0%   Not started
+Phase 4: [          ] 0%   Not started
 
-```
-
-**Overall:** 0 / 4 phases complete.
+**Overall:** 1 / 4 phases complete.
 
 ## Performance Metrics
 
@@ -66,6 +64,7 @@ Phase 4: [          ] 0%  Not started
 | Phase 01 P02 | 180m | 3 tasks | 47 files |
 | Phase 01 P03 | 81m | 3 tasks | 67 files | 241 tests |
 | Phase 01 P04 | 19m | 3 tasks | 39 files |
+| Phase 01 P05 | 16m | 3 tasks | 50 files | 155 tests |
 
 ## Accumulated Context
 
@@ -98,16 +97,21 @@ Phase 4: [          ] 0%  Not started
 - [Phase ?]: [Phase 01 Plan 04]: SPINE linter resolves dependsOn paths from design dir root, not artifact dir (SPINE-04 correctness fix)
 - [Phase ?]: [Phase 01 Plan 04]: MANIFEST.md reconciler uses fixed timestamp for byte-identical determinism (same pattern as Plan 03 golden tests)
 - [Phase ?]: [Phase 01 Plan 04]: CLI scan positional path read from process.argv — Commander handler only exposes named flags not positional args
+- [Phase 01 Plan 05]: Stage 3 + Stage 4 gate checklists NOT shipped Phase 1 per checker Warning 1 — D-25 locks only 4 v1.5 checklists (stage-1,2,5a,5b shipped Plan 02); Stage 3+4 ship Phase 3
+- [Phase 01 Plan 05]: Security sandbox = permission boundary only (isPathAllowed + scrubEnvForPreview); vm2 explicitly NOT used (CVE-2026-22709)
+- [Phase 01 Plan 05]: keyword-filter design-stem regex covers designers (design+ers) — /\bdesign(?:ers?|ed|ing|s)?\b/i
+- [Phase 01 Plan 05]: ROUTE-08 enforced — no --route → suggestRoute() + formatRoute08Prompt() + exit 0; never silently runs all 5 stages
+- [Phase 01 Plan 05]: run-subagent Claude Code path is best-effort with CLAUDE_CODE_BIN; adapter pattern keeps shim swappable per D-23
 
 ### Todos (next session)
 
-- [ ] Run `/gsd-plan-phase 1` to derive Phase 1 plans (likely candidates: versioned-schemas, gate-runner + handoff-bundle, determinism-CI + coexistence-eval, design/-governance + PII scanner)
-- [ ] Consider `/gsd-research-phase 1` first to design the handoff-bundle sufficiency eval and the aggregate coexistence eval methodology (flagged in roadmap as needing deeper research)
-- [ ] Stand up the Anthropic-Labs watcher process (named owner; weekly monitoring of `anthropics/skills` + Anthropic blog + Claude Design release notes) — this is GTM-06 and a Phase 1 success criterion
+- [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
+- [ ] Begin Phase 02 — v2.0a Skeleton (first Stage workflow, style-lite + systematize-lite)
+- [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
 
 ### Blockers
 
-None. Roadmap complete; ready for `/gsd-plan-phase 1`.
+None. Phase 1 complete; ready for Phase 2.
 
 ### Recently Validated
 
@@ -122,25 +126,25 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-25
-- **Activity:** Phase 01 Plan 04 (Governance + PII). Gitignore/gitattributes templates + design-os init (idempotent guarded-block injection), PII scanner (Luhn CC, allowlist drift), SPINE-04 linearity checker, MANIFEST.md reconciler (deterministic sorted GFM table), pre-commit PII hook installation, override-banner propagation (D-11), interactive resume prompt, 3 SKILL.md skeletons (design/audit/handoff), TRUST-01..05 binding documentation. 71 new governance tests. 312/312 total passing.
+- **Activity:** Phase 01 Plan 05 (Preview + Routing + Watcher). Port manager, Playwright runner, security sandbox (permission boundary, no vm2), Vite/Next/Astro adapters, variant-distance 6-axis metric, run-subagent shim, routing registry (7 routes), ROUTE-08 dispatcher, 12 mandatory MVPA-06 references, design SKILL.md body update, 3 host-profile vitest workspaces, Anthropic-Labs watcher (daily cron + heartbeat), MAINTAINERS.md + RAPID-RESPONSE.md, keyword-filter ESM module. 155 new tests. 467/467 total passing. Phase 1 COMPLETE.
 - **Artifacts produced:**
-  - `assets/scripts/` init.mjs, pii-scan.mjs, manifest-md-reconcile.mjs, recover-prompt.mjs, override-banner-propagate.mjs, install-hooks.mjs, lint-spine-linearity.mjs
-  - `assets/scripts/cli/` init.mjs, scan.mjs, manifest-md.mjs, resume.mjs, override-banner.mjs, install-hooks.mjs, lint-spine-linearity.mjs
-  - `schemas/src/spine.ts` (STAGE_ORDER, canDependOn)
-  - `assets/templates/` gitignore-design-os.txt, gitattributes-design-os.txt
-  - `skills/` design/SKILL.md, audit/SKILL.md, handoff/SKILL.md
-  - `docs/` TRUST-POSTURE.md, COPY-REVIEW-CHECKLIST.md
-  - `tools/install-hooks.sh`
-  - `.design-os/pii-allowlist.json`
-  - 8 governance test files, governance fixtures
-- **Decisions captured:** PHONE_E164 regex fix, SPINE dependsOn path resolution, MANIFEST.md determinism via fixed timestamp, CLI scan positional arg via process.argv.
+  - `assets/scripts/` port-manager.mjs, playwright-runner.mjs, security-sandbox.mjs, run-subagent.mjs
+  - `assets/scripts/preview/` vite-adapter.mjs, next-adapter.mjs, astro-adapter.mjs, variant-distance.mjs
+  - `assets/scripts/routing/` registry.mjs, dispatch.mjs
+  - `assets/scripts/cli/` preview.mjs, design.mjs
+  - `references/` 12 MVPA-06 reference files (garrett, cooper-goodwin, torres-ost, klement-jtbd, indi-young, rosenfeld-ia, dtcg, design-md, wcag-2-2, radix-step-roles, shadcn-tailwind-v4, prd/lenny-one-pager)
+  - `evals/hosts/` claude-code/, codex-cli/, cursor/ (package.json, vitest.config.ts, host-profile.test.ts each)
+  - `evals/watcher/keyword-filter.mjs`
+  - `.github/workflows/` anthropic-watcher.yml, anthropic-watcher-heartbeat.yml
+  - `docs/` MAINTAINERS.md, RAPID-RESPONSE.md
+- **Decisions captured:** Stage 3+4 checklist deferral, no-vm2 sandbox, keyword-filter regex fix, ROUTE-08 prompt-and-exit pattern, run-subagent adapter pattern.
 
 ### Next Session
 
-- **Likely activity:** `/gsd-execute-phase 01` Plan 05 — final Phase 1 plan.
+- **Likely activity:** Phase 02 Plan 01 — v2.0a Skeleton (first Stage workflow).
 - **Required reading at session start:**
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-SUMMARY.md` (outstanding items for Plan 05)
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-05-PLAN.md`
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-05-SUMMARY.md`
+  - Phase 02 PLAN.md (to be created by `/gsd-plan-phase 2`)
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

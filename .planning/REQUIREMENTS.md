@@ -10,8 +10,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 ### Distribution & Compatibility
 
 - [x] **DIST-01**: Package conforms to agentskills.io v1 SKILL.md spec (frontmatter: `name`, `description` ≤200 chars, `version`, `license: Apache-2.0`, `compatibility:`, `allowed-tools:`)
-- [ ] **DIST-02**: 22 triggerable skills (7 workflows + 15 atoms) — total trigger metadata ≤5k chars
-- [ ] **DIST-03**: Per-skill description ≤200 chars with 5+ trigger phrases, fire-condition keywords front-loaded in first 100 chars
+- [x] **DIST-02**: 22 triggerable skills (7 workflows + 15 atoms) — total trigger metadata ≤5k chars
+- [x] **DIST-03**: Per-skill description ≤200 chars with 5+ trigger phrases, fire-condition keywords front-loaded in first 100 chars
 - [ ] **DIST-04**: Claude Code is the host-first target (full subagent dispatch supported)
 - [ ] **DIST-05**: Codex CLI runs sequential-fallback path with within-0.10 pass-rate of host-first
 - [ ] **DIST-06**: Cursor runs sequential-fallback path with within-0.10 pass-rate of host-first
@@ -102,7 +102,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **ROUTE-05**: `brand-refresh` route — required 5a,5b; skip 1,2,3,4; budget ≤55k
 - [ ] **ROUTE-06**: `DS-extraction` route (Lovable refugee) — `audit --reverse-engineer-stages` then backfill 1,2,4,5b; skip 0; budget ≤120k
 - [ ] **ROUTE-07**: `PR-audit` route — `audit --pr` cross-stage diff; budget ≤15k
-- [ ] **ROUTE-08**: Default ≠ all 5 stages; orchestrator suggests route from repo signals or asks for confirmation
+- [x] **ROUTE-08**: Default ≠ all 5 stages; orchestrator suggests route from repo signals or asks for confirmation
 - [ ] **ROUTE-09**: User can pick route via `design --route <name>` or invoke `design --full` for opt-in full path
 
 ### Compact Stage Handoff Bundles
@@ -124,18 +124,18 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### References Corpus
 
-- [ ] **REF-01**: `references/` organized hybrid file-based (no vector DB, no knowledge graph) — by stage and canon body
-- [ ] **REF-02**: Stage 0+1+2+5 reference corpus complete by end of v1.5 infra
+- [x] **REF-01**: `references/` organized hybrid file-based (no vector DB, no knowledge graph) — by stage and canon body
+- [x] **REF-02**: Stage 0+1+2+5 reference corpus complete by end of v1.5 infra
 - [ ] **REF-03**: Stage 3+4 reference corpus added in v2.0b (Buxton, Sprint Crazy 8s, Saffer microinteractions, Tidwell, head motion, HAX-18, XState v5, APG, Material 3)
-- [ ] **REF-04**: Six stage-gate operational checklists (`references/gates/stage-N.md`) shipped before the corresponding stage workflow
+- [x] **REF-04**: Six stage-gate operational checklists (`references/gates/stage-N.md`) shipped before the corresponding stage workflow
 
 ### Preview & Determinism
 
-- [ ] **PREV-01**: Preview harness preserved from v1.0.1 — port manager, security sandbox, Playwright 1.60 readiness probe, headless screenshot capture
-- [ ] **PREV-02**: Adapter scaffolds for Vite 6 / Next 15 (App Router only) / Astro 5 user repos
+- [x] **PREV-01**: Preview harness preserved from v1.0.1 — port manager, security sandbox, Playwright 1.60 readiness probe, headless screenshot capture
+- [x] **PREV-02**: Adapter scaffolds for Vite 6 / Next 15 (App Router only) / Astro 5 user repos
 - [x] **PREV-03**: Determinism CI gate (`design-os verify --golden`) — 5× byte-identical script output on a fixed input set *(Plan 03)*
 - [x] **PREV-04**: CI linter rejects LLM-client imports inside `assets/scripts/` (operationalizing "LLM picks, scripts emit") *(Plan 03)*
-- [ ] **PREV-05**: Variant-distance metric — visual-style 6-axis for Stage 5a (preserved from v1.0.1); separate structural-diversity metric for Stage 3 wireframes
+- [x] **PREV-05**: Variant-distance metric — visual-style 6-axis for Stage 5a (preserved from v1.0.1); separate structural-diversity metric for Stage 3 wireframes
 
 ### Trust Posture
 
@@ -250,7 +250,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **GTM-03**: Cross-post to 8 marketplaces (skills.sh, claudemarketplaces.com, mcpmarket.com, smithery.ai, lobehub, fastmcp.me, playbooks.com, Tessl Registry)
 - [ ] **GTM-04**: Named outreach: Brad Frost (design-systems-as-AI-context heritage); Marty Cagan (build-to-learn intellectual heritage, not endorsement claim)
 - [ ] **GTM-05**: PR submitted to `anthropics/skills#1008` for DESIGN.md consume/produce support
-- [ ] **GTM-06**: Anthropic-Labs watcher process active from v1.5 (weekly monitoring of `anthropics/skills` + Anthropic blog + Claude Design release notes)
+- [x] **GTM-06**: Anthropic-Labs watcher process active from v1.5 (weekly monitoring of `anthropics/skills` + Anthropic blog + Claude Design release notes)
 - [ ] **GTM-07**: Rapid-response GTM pivot plan documented (interoperability with Claude Design if Anthropic ships a 5-stage equivalent first)
 
 ## v2 Requirements
@@ -331,8 +331,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | DIST-01 | Phase 1 | Complete |
-| DIST-02 | Phase 1 | Pending |
-| DIST-03 | Phase 1 | Pending |
+| DIST-02 | Phase 1 | Done |
+| DIST-03 | Phase 1 | Done |
 | DIST-04 | Phase 2 | Pending |
 | DIST-05 | Phase 4 | Pending |
 | DIST-06 | Phase 4 | Pending |
@@ -399,7 +399,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ROUTE-05 | Phase 2 | Pending |
 | ROUTE-06 | Phase 3 | Pending |
 | ROUTE-07 | Phase 2 | Pending |
-| ROUTE-08 | Phase 1 | Pending |
+| ROUTE-08 | Phase 1 | Done |
 | ROUTE-09 | Phase 2 | Pending |
 | HAND-01 | Phase 1 | Done |
 | HAND-02 | Phase 1 | Done |
@@ -412,15 +412,15 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | FORMAT-05 | Phase 1 | Complete |
 | FORMAT-06 | Phase 1 | Complete |
 | FORMAT-07 | Phase 1 | Complete |
-| REF-01 | Phase 1 | Pending |
-| REF-02 | Phase 1 | Pending |
+| REF-01 | Phase 1 | Done |
+| REF-02 | Phase 1 | Done |
 | REF-03 | Phase 3 | Pending |
-| REF-04 | Phase 1 | Pending |
-| PREV-01 | Phase 1 | Pending |
-| PREV-02 | Phase 1 | Pending |
+| REF-04 | Phase 1 | Done |
+| PREV-01 | Phase 1 | Done |
+| PREV-02 | Phase 1 | Done |
 | PREV-03 | Phase 1 | Complete (Plan 03) |
 | PREV-04 | Phase 1 | Complete (Plan 03) |
-| PREV-05 | Phase 1 | Pending |
+| PREV-05 | Phase 1 | Done |
 | TRUST-01 | Phase 1 | Complete |
 | TRUST-02 | Phase 1 | Complete |
 | TRUST-03 | Phase 1 | Complete |
@@ -499,7 +499,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | GTM-03 | Phase 4 | Pending |
 | GTM-04 | Phase 4 | Pending |
 | GTM-05 | Phase 4 | Pending |
-| GTM-06 | Phase 1 | Pending |
+| GTM-06 | Phase 1 | Done |
 | GTM-07 | Phase 4 | Pending |
 
 **Coverage:**
