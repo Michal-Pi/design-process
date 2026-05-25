@@ -35,9 +35,27 @@ const SCHEMA_PATH = resolve(__dirname, '../../../schemas/dist/audit-report.v1.js
  */
 
 /**
- * Severity ordering: BLOCKER > ERROR > WARNING > INFO
+ * Severity ordering: BLOCKER > WARN > INFO
+ * ERROR is a legacy alias for BLOCKER (slop-tells heuristics may emit it).
+ * Normalize ERROR → BLOCKER at input boundaries so all downstream code and
+ * the audit-report.v1.json schema (which only allows BLOCKER | WARN | INFO)
+ * see consistent values.
  */
-const SEVERITY_ORDER = { BLOCKER: 0, ERROR: 1, WARNING: 2, INFO: 3 };
+const SEVERITY_ORDER = { BLOCKER: 0, WARN: 1, WARNING: 1, INFO: 2 };
+
+/**
+ * Normalize a severity string to the canonical set accepted by audit-report.v1.json:
+ *   ERROR → BLOCKER (semantically identical: must fix)
+ *   WARNING → WARN  (schema uses WARN, not WARNING)
+ *
+ * @param {string} severity
+ * @returns {string}
+ */
+function normalizeSeverity(severity) {
+  if (severity === 'ERROR') return 'BLOCKER';
+  if (severity === 'WARNING') return 'WARN';
+  return severity;
+}
 
 function severityCmp(a, b) {
   const aOrder = SEVERITY_ORDER[a.severity] ?? 99;
@@ -99,8 +117,13 @@ function validateAuditReportFrontmatter(frontmatter) {
 function buildAuditReport(findings, opts) {
   const { auditType, generated } = opts;
 
+  // Normalize severities before hashing / building schema-compliant output.
+  // All findings must use BLOCKER | WARN | INFO — ERROR and WARNING are aliases
+  // emitted by slop-tells heuristics that must be canonicalized here.
+  const normalizedFindings = findings.map(f => ({ ...f, severity: normalizeSeverity(f.severity) }));
+
   // Compute source hash from serialized findings
-  const hash = createHash('sha256').update(JSON.stringify(findings)).digest('hex');
+  const hash = createHash('sha256').update(JSON.stringify(normalizedFindings)).digest('hex');
 
   const frontmatterData = {
     artifact: 'audit-report',
@@ -112,9 +135,9 @@ function buildAuditReport(findings, opts) {
     provenance: 'generated',
     owner: 'design-os/audit',
     lastReviewedAt: generated,
-    findings: findings.map(f => ({
+    findings: normalizedFindings.map(f => ({
       findingId: f.id,
-      severity: f.severity === 'WARNING' ? 'WARN' : (f.severity === 'BLOCKER' || f.severity === 'ERROR' || f.severity === 'INFO' ? f.severity : 'WARN'),
+      severity: f.severity,
       evidence: { path: f.filePath ?? 'unknown' },
       fixRecipe: f.fixRecipe ?? f.message,
       ...(f.suppressWith ? { suppression: f.suppressWith } : {}),
@@ -132,7 +155,20 @@ function buildAuditReport(findings, opts) {
     ? `## Findings (${findings.length} total)\n\n${tableHeader}\n${tableSep}\n${tableRows.join('\n')}`
     : `## Findings\n\nNo issues found.`;
 
-  // Serialize frontmatter as YAML (manual for schema compliance)
+  // Serialize frontmatter as YAML (manual for schema compliance).
+  // IMPORTANT: when findings is empty we must emit `findings: []` — NOT bare
+  // `findings:` which YAML parsers interpret as null (fails schema validation).
+  const findingsYaml = frontmatterData.findings.length === 0
+    ? 'findings: []'
+    : ['findings:', ...frontmatterData.findings.map(f => [
+        `  - findingId: ${f.findingId}`,
+        `    severity: ${f.severity}`,
+        `    evidence:`,
+        `      path: "${f.evidence.path}"`,
+        `    fixRecipe: "${f.fixRecipe.replace(/"/g, '\\"')}"`,
+        ...(f.suppression ? [`    suppression: "${f.suppression}"`] : []),
+      ].join('\n'))].join('\n');
+
   const yamlLines = [
     `artifact: ${frontmatterData.artifact}`,
     `stage: ${frontmatterData.stage}`,
@@ -143,15 +179,7 @@ function buildAuditReport(findings, opts) {
     `provenance: ${frontmatterData.provenance}`,
     `owner: "${frontmatterData.owner}"`,
     `lastReviewedAt: "${frontmatterData.lastReviewedAt}"`,
-    `findings:`,
-    ...frontmatterData.findings.map(f => [
-      `  - findingId: ${f.findingId}`,
-      `    severity: ${f.severity}`,
-      `    evidence:`,
-      `      path: "${f.evidence.path}"`,
-      `    fixRecipe: "${f.fixRecipe.replace(/"/g, '\\"')}"`,
-      ...(f.suppression ? [`    suppression: "${f.suppression}"`] : []),
-    ].join('\n')),
+    findingsYaml,
   ];
 
   const markdown = `---\n${yamlLines.join('\n')}\n---\n\n# AUDIT-REPORT\n\n**Generated:** ${generated}  \n**Type:** ${auditType}  \n**Findings:** ${findings.length}\n\n${body}\n`;
@@ -171,9 +199,11 @@ function buildAuditReport(findings, opts) {
  * @param {string} opts.blockOnSeverity - Severity level to block on (default: BLOCKER)
  * @param {boolean} opts.continueAnyway - Don't exit 1 on BLOCKER
  * @param {string} opts.projectRoot - Project root (for suppressions)
+ * @param {string} [opts.base] - Explicit base ref for --pr mode (overrides GITHUB_BASE_REF and auto-detection)
  * @returns {Promise<{ findings: Finding[], blocked: boolean, outputPath: string }>}
  */
-export async function runAudit({ slopTells, pr, scanDir, designDir, output, blockOnSeverity = 'BLOCKER', continueAnyway = false, projectRoot }) {
+export async function runAudit({ slopTells, pr, scanDir, designDir, output, blockOnSeverity = 'BLOCKER', continueAnyway = false, projectRoot, base }) {
+  const opts = { slopTells, pr, scanDir, designDir, output, blockOnSeverity, continueAnyway, projectRoot, base };
   if (!slopTells && !pr) {
     throw new Error('audit: specify --slop-tells or --pr (or both)');
   }
@@ -206,14 +236,67 @@ export async function runAudit({ slopTells, pr, scanDir, designDir, output, bloc
   // === PR MODE ===
   if (pr) {
     let changedFiles = [];
+
+    // Determine the PR base ref. Precedence:
+    //   1. Explicit --base <ref> CLI flag (passed as opts.base)
+    //   2. GITHUB_BASE_REF env var (set by GitHub Actions)
+    //   3. Merge-base against origin/HEAD default branch (full PR range, not HEAD~1)
+    //
+    // Using `git diff <base>...HEAD` (three-dot) gives the symmetric diff from the
+    // merge-base so all commits in the PR are covered — not just the last one.
+    let baseRef = opts.base ?? null;
+    if (!baseRef && process.env.GITHUB_BASE_REF) {
+      baseRef = `origin/${process.env.GITHUB_BASE_REF}`;
+    }
+
+    if (!baseRef) {
+      // Detect default branch via symbolic-ref; fall back to origin/main
+      try {
+        const defaultBranch = execSync(
+          "git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'",
+          { cwd: projectRoot, stdio: 'pipe', shell: '/bin/sh' }
+        ).toString().trim();
+        baseRef = defaultBranch ? `origin/${defaultBranch}` : 'origin/main';
+      } catch {
+        baseRef = 'origin/main';
+      }
+
+      // Use merge-base so we diff the full PR range (all commits, not just HEAD~1)
+      try {
+        const mergeBase = execSync(`git merge-base HEAD ${baseRef}`, {
+          cwd: projectRoot,
+          stdio: 'pipe',
+        }).toString().trim();
+        if (mergeBase) {
+          baseRef = mergeBase;
+        }
+      } catch {
+        // merge-base failed (shallow clone, no common ancestor) — keep baseRef as-is
+      }
+    }
+
+    // Attempt the diff. On failure, surface the error and exit non-zero rather than
+    // emitting a silent clean report (Finding 5 fix).
+    let diffFailed = false;
+    let diffError = '';
+    const diffCmd = `git diff --name-only ${baseRef}...HEAD`;
     try {
-      const baseRef = process.env.GITHUB_BASE_REF
-        ? `origin/${process.env.GITHUB_BASE_REF}`
-        : 'HEAD~1';
-      const output = execSync(`git diff --name-only ${baseRef}`, { cwd: projectRoot, stdio: 'pipe' }).toString().trim();
-      changedFiles = output.split('\n').filter(Boolean);
-    } catch {
-      // git not available or no commits — continue with empty list
+      const diffOutput = execSync(diffCmd, { cwd: projectRoot, stdio: 'pipe' }).toString().trim();
+      changedFiles = diffOutput.split('\n').filter(Boolean);
+    } catch (err) {
+      diffFailed = true;
+      diffError = err instanceof Error ? err.message : String(err);
+    }
+
+    if (diffFailed) {
+      // Do NOT silently emit a clean report — that would give CI a false pass.
+      process.stderr.write(
+        `audit --pr: git diff failed.\n` +
+        `  Command: ${diffCmd}\n` +
+        `  Error: ${diffError}\n` +
+        `  Hint: ensure the base ref is fetched (e.g. git fetch origin) or pass --base <ref>.\n`
+      );
+      process.exit(1);
     }
 
     for (const filePath of changedFiles) {
@@ -246,6 +329,11 @@ export async function runAudit({ slopTells, pr, scanDir, designDir, output, bloc
   // Apply suppressions
   allFindings = allFindings.filter(f => !suppressedIds.has(f.id));
 
+  // Normalize severities to canonical set (ERROR→BLOCKER, WARNING→WARN) so
+  // all downstream code — blocking check, returned findings, schema — sees
+  // consistent values without ERROR or WARNING leaking through.
+  allFindings = allFindings.map(f => ({ ...f, severity: normalizeSeverity(f.severity) }));
+
   // Sort by severity (BLOCKER first)
   allFindings.sort(severityCmp);
 
@@ -275,6 +363,7 @@ export const command = {
     cmd
       .option('--slop-tells', 'Run regex slop-tell linters on CSS/TSX files')
       .option('--pr', 'Run Stage 5a/5b detectors on PR diff')
+      .option('--base <ref>', 'Explicit base ref for --pr mode (e.g. origin/main). Overrides GITHUB_BASE_REF and auto-detection.')
       .option('--scan-dir <path>', 'Directory to scan (slop-tells mode)', '.')
       .option('--design-dir <path>', 'Design directory', 'design/')
       .option('--output <path>', 'Output path for AUDIT-REPORT.md', 'design/AUDIT-REPORT.md')
@@ -297,6 +386,7 @@ export const command = {
     const output = resolve(projectRoot, args.output ?? 'design/AUDIT-REPORT.md');
     const blockOnSeverity = args.blockOnSeverity ?? args['block-on-severity'] ?? 'BLOCKER';
     const continueAnyway = Boolean(args.continueAnyway ?? args['continue-anyway']);
+    const base = args.base ?? undefined;
 
     try {
       const { findings, blocked, outputPath } = await runAudit({
@@ -308,6 +398,7 @@ export const command = {
         blockOnSeverity,
         continueAnyway,
         projectRoot,
+        base,
       });
 
       console.log(`audit: ${findings.length} finding(s) → ${outputPath}`);
