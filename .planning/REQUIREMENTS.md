@@ -12,7 +12,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **DIST-01**: Package conforms to agentskills.io v1 SKILL.md spec (frontmatter: `name`, `description` ≤200 chars, `version`, `license: Apache-2.0`, `compatibility:`, `allowed-tools:`)
 - [x] **DIST-02**: 22 triggerable skills (7 workflows + 15 atoms) — total trigger metadata ≤5k chars
 - [x] **DIST-03**: Per-skill description ≤200 chars with 5+ trigger phrases, fire-condition keywords front-loaded in first 100 chars
-- [ ] **DIST-04**: Claude Code is the host-first target (full subagent dispatch supported)
+- [x] **DIST-04**: Claude Code is the host-first target (full subagent dispatch supported)
 - [ ] **DIST-05**: Codex CLI runs sequential-fallback path with within-0.10 pass-rate of host-first
 - [ ] **DIST-06**: Cursor runs sequential-fallback path with within-0.10 pass-rate of host-first
 - [ ] **DIST-07**: Package distributes via the 8 named marketplaces (skills.sh, claudemarketplaces.com, mcpmarket.com, smithery.ai, lobehub, fastmcp.me, playbooks.com, Tessl Registry)
@@ -65,19 +65,19 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Workflows (7 + audit)
 
-- [ ] **WF-01**: `ingest` (Stage 0) — Markdown PRD parse + frontmatter validation; paste-text path; interview fallback for empty PRDs (Lenny 1-pager)
+- [x] **WF-01**: `ingest` (Stage 0) — Markdown PRD parse + frontmatter validation; paste-text path; interview fallback for empty PRDs (Lenny 1-pager)
 - [x] **WF-02**: `discover` (Stage 1) — generates personas, JTBDs, OST, assumptions, competitive landscape, interview guide; `gate/stage-1-complete` enforced
 - [x] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
 - [ ] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
 - [ ] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
 - [ ] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.design-os`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
-- [ ] **WF-08**: `audit` (cross-stage) — modes: `--stage N`, `--all-stages`, `--pr`, `--slop-tells`, `--new-feature`, `--reverse-engineer-stages`
-- [ ] **WF-09**: Every workflow supports `--depth lightweight|standard|full`
+- [x] **WF-08**: `audit` (cross-stage) — modes: `--stage N`, `--all-stages`, `--pr`, `--slop-tells`, `--new-feature`, `--reverse-engineer-stages`
+- [x] **WF-09**: Every workflow supports `--depth lightweight|standard|full`
 
 ### Atomic Skills (15)
 
-- [ ] **ATOM-01**: `prd/parse-or-interview` (Stage 0)
+- [x] **ATOM-01**: `prd/parse-or-interview` (Stage 0)
 - [x] **ATOM-02**: `research/synthesize` (Stage 1)
 - [x] **ATOM-03**: `research/personas-proto` (Stage 1, Indi Young thinking-style format with provenance)
 - [x] **ATOM-04**: `research/build-ost` (Stage 1, Torres OST)
@@ -96,14 +96,14 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 ### Job-Routing Matrix (7 routes)
 
 - [ ] **ROUTE-01**: `new-product` route — required stages 0,1,2,5a,5b; optional 3,4; budget ≤150k tokens
-- [ ] **ROUTE-02**: `new-feature` route — required 2(delta),4,5a; skip-with-warning 1; budget ≤60k
+- [x] **ROUTE-02**: `new-feature` route — required 2(delta),4,5a; skip-with-warning 1; budget ≤60k
 - [ ] **ROUTE-03**: `mature-app-refactor` route — required 2(audit),4(audit),5b; skip 1,3,5a; budget ≤45k
-- [ ] **ROUTE-04**: `design-bug` route — required 4(component catalog),5a(lite); skip 1,2,3,5b; budget ≤20k
-- [ ] **ROUTE-05**: `brand-refresh` route — required 5a,5b; skip 1,2,3,4; budget ≤55k
+- [x] **ROUTE-04**: `design-bug` route — required 4(component catalog),5a(lite); skip 1,2,3,5b; budget ≤20k
+- [x] **ROUTE-05**: `brand-refresh` route — required 5a,5b; skip 1,2,3,4; budget ≤55k
 - [ ] **ROUTE-06**: `DS-extraction` route (Lovable refugee) — `audit --reverse-engineer-stages` then backfill 1,2,4,5b; skip 0; budget ≤120k
-- [ ] **ROUTE-07**: `PR-audit` route — `audit --pr` cross-stage diff; budget ≤15k
+- [x] **ROUTE-07**: `PR-audit` route — `audit --pr` cross-stage diff; budget ≤15k
 - [x] **ROUTE-08**: Default ≠ all 5 stages; orchestrator suggests route from repo signals or asks for confirmation
-- [ ] **ROUTE-09**: User can pick route via `design --route <name>` or invoke `design --full` for opt-in full path
+- [x] **ROUTE-09**: User can pick route via `design --route <name>` or invoke `design --full` for opt-in full path
 
 ### Compact Stage Handoff Bundles
 
@@ -154,14 +154,14 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Audit Verb (Cross-Stage)
 
-- [ ] **AUDIT-01**: Per-stage detector logic (`audit --stage N --pr`) for stages 1-5b
+- [x] **AUDIT-01**: Per-stage detector logic (`audit --stage N --pr`) for stages 1-5b
 - [ ] **AUDIT-02**: `audit --all-stages` runs every detector and surfaces gaps as a single ranked report
-- [ ] **AUDIT-03**: `audit --slop-tells` library preserved from v1.0.1 (rainbow gradients, Inter-default, glass-stack, three-column-grid, etc.)
+- [x] **AUDIT-03**: `audit --slop-tells` library preserved from v1.0.1 (rainbow gradients, Inter-default, glass-stack, three-column-grid, etc.)
 - [ ] **AUDIT-04**: `audit --new-feature` verifies a new feature passes through all 5 stages
-- [ ] **AUDIT-05**: `audit --pr` diffs a PR against the design contract with structured findings (`findingId`, severity, evidence pointer, fix recipe, suppression option)
+- [x] **AUDIT-05**: `audit --pr` diffs a PR against the design contract with structured findings (`findingId`, severity, evidence pointer, fix recipe, suppression option)
 - [ ] **AUDIT-06**: `audit --reverse-engineer-stages` infers stages 1-4 from an existing Lovable/v0/Bolt prototype (Lovable refugee path) — shipped in v2.0b
 - [ ] **AUDIT-07**: All reverse-engineered artifacts carry `provenance: inferred` and propagate `INFERRED` grade downstream
-- [ ] **AUDIT-08**: AUDIT-REPORT.md output schema versioned and validated
+- [x] **AUDIT-08**: AUDIT-REPORT.md output schema versioned and validated
 
 ### Persistence Split
 
@@ -180,13 +180,13 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### v2.0a MVP Scope
 
-- [ ] **MVPA-01**: 5 workflows shipped: `ingest`, `discover`, `structure`, `style` (lite), `systematize` (lite) + basic `audit`
-- [ ] **MVPA-02**: 9 atoms shipped (per MRD §9.1)
-- [ ] **MVPA-03**: 4 gates implemented (stage-1, stage-2, stage-5a-lite, stage-5b-lite)
+- [x] **MVPA-01**: 5 workflows shipped: `ingest`, `discover`, `structure`, `style` (lite), `systematize` (lite) + basic `audit`
+- [x] **MVPA-02**: 9 atoms shipped (per MRD §9.1)
+- [x] **MVPA-03**: 4 gates implemented (stage-1, stage-2, stage-5a-lite, stage-5b-lite)
 - [ ] **MVPA-04**: `style-lite` / `systematize-lite` output labeled `stage: 5a-lite, evidence: INFERRED`; never claim `gate/stage-5a-complete: PASS` (codex BLOCKER fix)
-- [ ] **MVPA-05**: 4 of 7 routes shipped: `design-bug`, `new-feature` (partial), `brand-refresh`, `PR-audit` — the on-ramps
-- [ ] **MVPA-06**: 12 mandatory references encoded (`design-md`, `dtcg-v2025-10`, `wcag-2-2`, `radix-step-roles`, `shadcn-tailwind-v4`, `garrett-elements`, `cooper-goodwin`, `torres-ost`, `klement-jtbd`, `indi-young-thinking-styles`, `rosenfeld-ia`, `prd/lenny-one-pager`)
-- [ ] **MVPA-07**: 3 stack adapters (`tailwind-v4`, `shadcn`, `plain-css`)
+- [x] **MVPA-05**: 4 of 7 routes shipped: `design-bug`, `new-feature` (partial), `brand-refresh`, `PR-audit` — the on-ramps
+- [x] **MVPA-06**: 12 mandatory references encoded (`design-md`, `dtcg-v2025-10`, `wcag-2-2`, `radix-step-roles`, `shadcn-tailwind-v4`, `garrett-elements`, `cooper-goodwin`, `torres-ost`, `klement-jtbd`, `indi-young-thinking-styles`, `rosenfeld-ia`, `prd/lenny-one-pager`)
+- [x] **MVPA-07**: 3 stack adapters (`tailwind-v4`, `shadcn`, `plain-css`)
 - [ ] **MVPA-08**: Claude Code host-first; Codex CLI + Cursor sequential-fallback scaffolded
 
 ### v2.0b Full 5-Stage Scope
@@ -223,8 +223,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **COST-05**: `style` p50 ≤55k tokens (preserves v1.0.1 budget)
 - [ ] **COST-06**: `systematize` p50 ≤40k tokens
 - [ ] **COST-07**: Full `design` workflow p50 ≤150k tokens; p95 ≤220k tokens
-- [ ] **COST-08**: `new-feature` route p50 ≤60k tokens
-- [ ] **COST-09**: `design-bug` route p50 ≤20k tokens
+- [x] **COST-08**: `new-feature` route p50 ≤60k tokens
+- [x] **COST-09**: `design-bug` route p50 ≤20k tokens
 - [ ] **COST-10**: Wall-clock p50 ≤8 min for full 5 stages
 
 ### Versioned Schemas (v1.5 Prerequisite)
@@ -333,7 +333,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | DIST-01 | Phase 1 | Complete |
 | DIST-02 | Phase 1 | Done |
 | DIST-03 | Phase 1 | Done |
-| DIST-04 | Phase 2 | Pending |
+| DIST-04 | Phase 2 | Complete |
 | DIST-05 | Phase 4 | Pending |
 | DIST-06 | Phase 4 | Pending |
 | DIST-07 | Phase 4 | Pending |
@@ -368,16 +368,16 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | RED-04 | Phase 2 | Complete |
 | RED-05 | Phase 2 | Complete |
 | RED-06 | Phase 2 | Complete |
-| WF-01 | Phase 2 | Pending |
+| WF-01 | Phase 2 | Complete |
 | WF-02 | Phase 2 | Complete |
 | WF-03 | Phase 2 | Complete |
 | WF-04 | Phase 3 | Pending |
 | WF-05 | Phase 3 | Pending |
 | WF-06 | Phase 2 | Pending |
 | WF-07 | Phase 2 | Pending |
-| WF-08 | Phase 2 | Pending |
-| WF-09 | Phase 2 | Pending |
-| ATOM-01 | Phase 2 | Pending |
+| WF-08 | Phase 2 | Complete |
+| WF-09 | Phase 2 | Complete |
+| ATOM-01 | Phase 2 | Complete |
 | ATOM-02 | Phase 2 | Complete |
 | ATOM-03 | Phase 2 | Complete |
 | ATOM-04 | Phase 2 | Complete |
@@ -393,14 +393,14 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ATOM-14 | Phase 2 | Pending |
 | ATOM-15 | Phase 3 | Pending |
 | ROUTE-01 | Phase 3 | Pending |
-| ROUTE-02 | Phase 2 | Pending |
+| ROUTE-02 | Phase 2 | Complete |
 | ROUTE-03 | Phase 3 | Pending |
-| ROUTE-04 | Phase 2 | Pending |
-| ROUTE-05 | Phase 2 | Pending |
+| ROUTE-04 | Phase 2 | Complete |
+| ROUTE-05 | Phase 2 | Complete |
 | ROUTE-06 | Phase 3 | Pending |
-| ROUTE-07 | Phase 2 | Pending |
+| ROUTE-07 | Phase 2 | Complete |
 | ROUTE-08 | Phase 1 | Done |
-| ROUTE-09 | Phase 2 | Pending |
+| ROUTE-09 | Phase 2 | Complete |
 | HAND-01 | Phase 1 | Done |
 | HAND-02 | Phase 1 | Done |
 | HAND-03 | Phase 1 | Pending |
@@ -430,14 +430,14 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | TRIG-02 | Phase 1 | Complete (Plan 03) |
 | TRIG-03 | Phase 4 | Pending |
 | TRIG-04 | Phase 1 | Complete (Plan 03) |
-| AUDIT-01 | Phase 2 | Pending |
+| AUDIT-01 | Phase 2 | Complete |
 | AUDIT-02 | Phase 3 | Pending |
-| AUDIT-03 | Phase 2 | Pending |
+| AUDIT-03 | Phase 2 | Complete |
 | AUDIT-04 | Phase 3 | Pending |
-| AUDIT-05 | Phase 2 | Pending |
+| AUDIT-05 | Phase 2 | Complete |
 | AUDIT-06 | Phase 3 | Pending |
 | AUDIT-07 | Phase 3 | Pending |
-| AUDIT-08 | Phase 2 | Pending |
+| AUDIT-08 | Phase 2 | Complete |
 | PERSIST-01 | Phase 1 | Complete |
 | PERSIST-02 | Phase 1 | Complete |
 | PERSIST-03 | Phase 1 | Complete |
@@ -447,13 +447,13 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ADAPT-03 | Phase 2 | Pending |
 | ADAPT-04 | v2.1 (deferred) | Deferred |
 | ADAPT-05 | v2.1 (deferred) | Deferred |
-| MVPA-01 | Phase 2 | Pending |
-| MVPA-02 | Phase 2 | Pending |
-| MVPA-03 | Phase 2 | Pending |
+| MVPA-01 | Phase 2 | Complete |
+| MVPA-02 | Phase 2 | Complete |
+| MVPA-03 | Phase 2 | Complete |
 | MVPA-04 | Phase 2 | Pending |
-| MVPA-05 | Phase 2 | Pending |
-| MVPA-06 | Phase 2 | Pending |
-| MVPA-07 | Phase 2 | Pending |
+| MVPA-05 | Phase 2 | Complete |
+| MVPA-06 | Phase 2 | Complete |
+| MVPA-07 | Phase 2 | Complete |
 | MVPA-08 | Phase 2 | Pending |
 | MVPB-01 | Phase 3 | Pending |
 | MVPB-02 | Phase 3 | Pending |
@@ -481,8 +481,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | COST-05 | Phase 2 | Pending |
 | COST-06 | Phase 2 | Pending |
 | COST-07 | Phase 4 | Pending |
-| COST-08 | Phase 2 | Pending |
-| COST-09 | Phase 2 | Pending |
+| COST-08 | Phase 2 | Complete |
+| COST-09 | Phase 2 | Complete |
 | COST-10 | Phase 4 | Pending |
 | SCHEMA-01 | Phase 1 | Complete |
 | SCHEMA-02 | Phase 1 | Complete |

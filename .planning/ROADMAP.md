@@ -26,7 +26,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 ## Phases
 
 - [x] **Phase 1: v1.5 — Infrastructure & Determinism Foundation** — Versioned schemas, gate-runner machinery, handoff bundles, determinism CI, coexistence eval, PII scanner, host-matrix CI, routing scaffolding, Anthropic watcher. Foundation for everything downstream. (4 weeks) — COMPLETE 2026-05-25, 5/5 plans, 467 tests passing
-- [ ] **Phase 2: v2.0a — Skeleton (4 stages end-to-end, lite-mode Stage 5a/5b)** — 5 workflows + 9 atoms + 4 gates + 3 adapters + 4 routes. Shippable standalone. Synthetic-persona red line + lite-mode honesty enforced in code. (5 weeks)
+- [x] **Phase 2: v2.0a — Skeleton (4 stages end-to-end, lite-mode Stage 5a/5b)** — 5 workflows + 9 atoms + 4 gates + 3 adapters + 4 routes. Shippable standalone. Synthetic-persona red line + lite-mode honesty enforced in code. (5 weeks) (completed 2026-05-25)
 - [ ] **Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path** — Adds `sketch` + `interact` workflows, 6 atoms, Excalidraw/Mermaid/XState renderers, stage-3 + stage-4 gates, full Stage 5a/5b gates (lite→full promotion), `audit --reverse-engineer-stages`, schema migration v2.0a → v2.0b. (3 weeks)
 - [ ] **Phase 4: v2.0 RC + GA — Acceptance, Cross-Host, Launch** — 15-fixture acceptance suite on Claude Code + Codex CLI + Cursor; aggregate coexistence ≥0.80 release gate; designer + PM blind reviews; cost budget enforcement; 100/100 adversarial runs; launch artifact + 8 marketplaces + Brad Frost / Cagan outreach + PR to anthropics/skills#1008. (2 weeks)
 
@@ -96,13 +96,13 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user running `audit --pr` against a PR that renames a route or breaks a sitemap link receives a severity-ranked `AUDIT-REPORT.md` (validated against `audit-report.v1.json`) with `findingId`, evidence pointer, fix recipe, and suppression option; `audit --slop-tells` flags rainbow gradients / Inter-default / glass-stack / three-column-grid on a fixture seeded with slop.
   5. A user installing v2.0a on Claude Code sees `design-os` triggers fire with recall ≥0.85 against the in-tree should-fire suite; on Codex CLI and Cursor (sequential-fallback scaffolded) the pass rate is within 0.10 of host-first — even though full Codex/Cursor parity is a Phase 4 release gate, v2.0a ships the scaffold.
 
-**Plans:** 5 plans created (Phase 2 in progress)
+**Plans:** 5/5 plans complete
 
 - [x] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
 - [x] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
-- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3)
-- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 4, after 02-03 — depends on budget-check.mjs + tokens-project.mjs)
-- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + 6 triggers.yaml + skillgrade eval + 15-fixture budget suite + Next15/Tailwind4/shadcn e2e fixture (Wave 5)
+- [x] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3)
+- [x] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 4, after 02-03 — depends on budget-check.mjs + tokens-project.mjs)
+- [x] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + 6 triggers.yaml + skillgrade eval + 15-fixture budget suite + Next15/Tailwind4/shadcn e2e fixture (Wave 5)
 
 ### Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path
 
@@ -158,7 +158,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. v1.5 — Infrastructure & Determinism Foundation | 5/5 | Complete | 2026-05-25 |
-| 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 0/5 | Planned | - |
+| 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 5/5 | Complete   | 2026-05-25 |
 | 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 0/0 | Not started | - |
 | 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 0/0 | Not started | - |
 

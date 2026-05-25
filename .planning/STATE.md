@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: completed
-last_updated: "2026-05-25T17:00:00.000Z"
+last_updated: "2026-05-25T16:42:40.950Z"
 progress:
   total_phases: 2
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
-  completed_plans: 9
-  percent: 90
+  completed_plans: 10
+  percent: 100
 ---
 
 # State: design-os
@@ -20,27 +20,27 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 2 (v2.0a Skeleton) — Plans 01-04 COMPLETE. Stage 1/2/5b gates + discover/structure/style/systematize workflows + DTCG tokens-project.mjs + DESIGN.md emit contract shipped. Plan 05 remains.
+- **Current focus:** Phase 2 (v2.0a Skeleton) — ALL 5 PLANS COMPLETE. Audit workflow, apply.mjs, real dispatch wiring for 4 routes, 6 SKILL.md files, trigger corpus (recall ≥0.85), 15 budget fixtures, INVARIANTS.md shipped. 810 tests passing. Phase 2 COMPLETE — ready for Phase 3 (v2.0b).
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 02 IN PROGRESS — v2.0a Skeleton (Plan 01 of 5 complete)
-- **Next plan:** Phase 02 Plan 02
-- **Plan:** 04 complete (Phase 2 Plan 4 delivered)
-- **Status:** Phase 02 Plan 04 complete; ready for Phase 02 Plan 05
+- **Phase:** 02 COMPLETE — v2.0a Skeleton (all 5/5 plans delivered)
+- **Next plan:** Phase 03 Plan 01 (v2.0b — full 5-stage pipeline)
+- **Plan:** 05 complete (Phase 2 Plan 5 delivered — FINAL)
+- **Status:** Phase 02 COMPLETE. v2.0a Skeleton shipped. Ready for Phase 03.
 
 **Progress:**
 
-[█████████░] 80%
+[██████████] 100%
 Phase 1: [██████████] 100% (5/5 plans complete)
-Phase 2: [████████░░] 80%  (4/5 plans complete)
+Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [          ] 0%   Not started
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1 complete; Phase 2 in progress (4/5).
+**Overall:** Phase 1 complete; Phase 2 COMPLETE. v2.0a Skeleton delivered.
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 02 P02 | 45m | 2 tasks | 13 files | 27 tests added (639 total) |
 | Phase 02 P03 | 25m | 2 tasks | 13 files | 37 tests added (676 total) |
 | Phase 02 P04 | 35m | 2 tasks | 5 files | 41 tests added (719 total) |
+| Phase 02 P05 | 90m | 3 tasks | 52 files | 91 tests added (810 total) |
 
 ## Accumulated Context
 
@@ -119,16 +120,21 @@ Phase 4: [          ] 0%   Not started
 - [Phase 02 Plan 04]: 5b-frost-001 finding uses status:na (informational) for D-44 compliance — Frost ≥3× NOT a gate blocker in v2.0a; status:fail would incorrectly block the gate
 - [Phase 02 Plan 04]: Stage 5b-lite has empty composition.atoms — workflow body implements steps directly per RESEARCH.md §3 (no per-atom sub-agents for Stage 5b-lite)
 - [Phase 02 Plan 04]: F-04 deferred: DESIGN.md emit test deferred to T-02-05-B e2e fixture — emit logic is in SKILL.md procedure body (not a standalone export)
+- [Phase 02 Plan 05]: heuristics.md format = YAML-in-fenced-code-block (avoids pipe collision with regex alternation in Markdown tables)
+- [Phase 02 Plan 05]: findingId pattern relaxed from ^[A-Z]+-\d+$ to ^[A-Za-z0-9][A-Za-z0-9-]*-\d+$ to allow 5a-slop-001 style IDs
+- [Phase 02 Plan 05]: audit-report schema extended with optional auditType field; severity WARNING maps to WARN in schema enum
+- [Phase 02 Plan 05]: A2 static-analysis fallback for skillgrade recall; LLM-based gate deferred to Phase 4 GA release gate
+- [Phase 02 Plan 05]: dispatch.mjs unimplemented routes (new-product, mature-app-refactor, DS-extraction) return route_not_yet_implemented — v2.0b scope
 
 ### Todos (next session)
 
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Begin Phase 02 — v2.0a Skeleton (first Stage workflow, style-lite + systematize-lite)
+- [ ] Begin Phase 03 — v2.0b full 5-stage pipeline (audit --reverse-engineer, Stage 3+4 gates, coexistence eval)
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
 
 ### Blockers
 
-None. Phase 1 complete; ready for Phase 2.
+None. Phase 2 complete; ready for Phase 3.
 
 ### Recently Validated
 
@@ -143,25 +149,30 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-25
-- **Activity:** Phase 01 Plan 05 (Preview + Routing + Watcher). Port manager, Playwright runner, security sandbox (permission boundary, no vm2), Vite/Next/Astro adapters, variant-distance 6-axis metric, run-subagent shim, routing registry (7 routes), ROUTE-08 dispatcher, 12 mandatory MVPA-06 references, design SKILL.md body update, 3 host-profile vitest workspaces, Anthropic-Labs watcher (daily cron + heartbeat), MAINTAINERS.md + RAPID-RESPONSE.md, keyword-filter ESM module. 155 new tests. 467/467 total passing. Phase 1 COMPLETE.
+- **Activity:** Phase 02 Plan 05 — audit workflow, apply.mjs, dispatch real wiring, 6 SKILL.md files, trigger corpus, 15 budget fixtures, INVARIANTS.md. Phase 2 COMPLETE.
+- **Stopped at:** Phase 02 Plan 05 (FINAL) — all 3 tasks complete
 - **Artifacts produced:**
-  - `assets/scripts/` port-manager.mjs, playwright-runner.mjs, security-sandbox.mjs, run-subagent.mjs
-  - `assets/scripts/preview/` vite-adapter.mjs, next-adapter.mjs, astro-adapter.mjs, variant-distance.mjs
-  - `assets/scripts/routing/` registry.mjs, dispatch.mjs
-  - `assets/scripts/cli/` preview.mjs, design.mjs
-  - `references/` 12 MVPA-06 reference files (garrett, cooper-goodwin, torres-ost, klement-jtbd, indi-young, rosenfeld-ia, dtcg, design-md, wcag-2-2, radix-step-roles, shadcn-tailwind-v4, prd/lenny-one-pager)
-  - `evals/hosts/` claude-code/, codex-cli/, cursor/ (package.json, vitest.config.ts, host-profile.test.ts each)
-  - `evals/watcher/keyword-filter.mjs`
-  - `.github/workflows/` anthropic-watcher.yml, anthropic-watcher-heartbeat.yml
-  - `docs/` MAINTAINERS.md, RAPID-RESPONSE.md
-- **Decisions captured:** Stage 3+4 checklist deferral, no-vm2 sandbox, keyword-filter regex fix, ROUTE-08 prompt-and-exit pattern, run-subagent adapter pattern.
+  - `assets/scripts/audit/` slop-tells.mjs, stage-5a-pr.mjs, stage-5b-pr.mjs
+  - `assets/scripts/cli/` apply.mjs, audit.mjs
+  - `skills/workflows/` ingest.md, audit.md, INVARIANTS.md
+  - `skills/atoms/prd/` parse-or-interview.md
+  - `evals/fixtures/e2e/next15-tailwind4-shadcn/` (5 files)
+  - `evals/fixtures/budget/fixture-01..15/` (15 files)
+  - `evals/triggers/` 6 trigger YAML files
+  - `references/slop-tells/heuristics.md`
+  - `tests/audit/` slop-tells.test.ts, stage-5a-pr.test.ts, stage-5b-pr.test.ts, audit-report-emit.test.ts
+  - `tests/budget/budget-p50-measurement.test.ts`
+  - `tests/e2e/new-feature-route.test.ts`
+  - `tests/routing/dispatch-real-stages.test.ts`
+  - `tests/eval/phase2-skillgrade.test.ts`
+- **Final state:** 810 tests passing | 63 test files | tsc clean | lint-determinism CLEAN
 
 ### Next Session
 
-- **Likely activity:** Phase 02 Plan 05 — e2e fixture suite, audit workflow, apply.mjs.
+- **Likely activity:** Phase 03 Plan 01 — v2.0b full 5-stage pipeline.
 - **Required reading at session start:**
-  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-04-SUMMARY.md`
-  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-05-PLAN.md`
+  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-05-SUMMARY.md`
+  - Phase 03 PLAN.md (to be created)
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
