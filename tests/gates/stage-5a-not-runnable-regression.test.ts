@@ -49,18 +49,46 @@ describe("D-43 regression guard: gate-stage-5a always returns not_runnable", () 
     }
   });
 
-  it("returns not_runnable even when interactions/ HAS files (v2.0a hard-code)", async () => {
-    // In v2.0a, stage-5a.mjs returns not_runnable for empty interactions/.
-    // This test documents that the hard-coded behavior returns not_runnable for
-    // the empty/no-interactions case (the primary D-43 requirement).
-    // NOTE: When interactions/ has files, Phase 1 skeleton returns 'pass' as a
-    // placeholder — the D-43 contract requires not_runnable specifically when
-    // Stage 4 artifacts are absent (interactions/ empty or missing).
-    // This test validates the empty-interactions case which is the D-43 guard.
+  it("returns not_runnable even when interactions/ HAS real files (v2.0a hard-code)", async () => {
+    // D-43: gate is hard-coded not_runnable in v2.0a regardless of interactions content.
+    // The FULL gate that promotes to PASS based on Stage 4 artifacts ships in Phase 3.
+    //
+    // This test writes a REAL interaction artifact file so that if gate-stage-5a.mjs is
+    // ever modified to check file content and return 'pass', this test will FAIL —
+    // catching the regression before it lands in production.
+    //
+    // A mere empty-directory test (as the previous version had) would not catch a
+    // regression where runStage5aGate returns 'pass' when real interaction files exist.
     const tmpDir = await mkdtemp(join(tmpdir(), "d43-with-interactions-"));
     try {
       await mkdir(join(tmpDir, "interactions"), { recursive: true });
-      // With no real interactions files, should return not_runnable
+      // Write a real interaction spec file (valid Markdown with Stage 4 content)
+      await writeFile(
+        join(tmpDir, "interactions", "some-interaction.spec.md"),
+        [
+          "---",
+          "artifact: interaction-spec",
+          "stage: 4",
+          "generated: 2026-05-25T00:00:00.000Z",
+          "schemaVersion: 1",
+          "---",
+          "",
+          "# Interaction Spec: Some Flow",
+          "",
+          "## States",
+          "- idle",
+          "- loading",
+          "- success",
+          "",
+          "## Transitions",
+          "- idle → loading: on SUBMIT",
+          "- loading → success: on DONE",
+        ].join("\n"),
+        "utf8"
+      );
+
+      // D-43 v2.0a: gate MUST still return not_runnable even with real interaction files.
+      // The gate is hard-coded until Phase 3 ships full Stage 4 validation logic.
       const result = await runStage5aGate(tmpDir);
       expect(result.kind).toBe("not_runnable");
       expect(result.reason).toBe("stage-4-artifacts-absent");

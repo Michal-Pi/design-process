@@ -49,19 +49,14 @@ export async function runStage5aGate(designDir) {
   // Filter out hidden files like .gitkeep — real artifacts only
   const realFiles = entries.filter((f) => !f.startsWith("."));
 
-  if (realFiles.length === 0) {
-    return {
-      kind: "not_runnable",
-      reason: "stage-4-artifacts-absent",
-    };
-  }
-
-  // Stage 4 artifacts present — parse checklist (phase 1 skeleton)
-  await parseChecklist(CHECKLIST_PATH);
-
+  // D-43 v2.0a hard-coded terminal state: always not_runnable regardless of
+  // interactions content. The FULL gate that promotes to PASS based on interactions
+  // ships in Phase 3 when Stage 4 interaction specs (Mermaid stateDiagram-v2 +
+  // XState machines) are fully scaffolded. In v2.0a, interactions/ content is
+  // present at most as stubs — the gate must not award PASS on stubs.
+  // This hard-code is intentional and is the CI guard that prevents premature promotion.
   return {
-    kind: "pass",
-    evidence: "inferred",
-    findings: [],
+    kind: "not_runnable",
+    reason: "stage-4-artifacts-absent",
   };
 }

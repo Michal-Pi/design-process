@@ -34,23 +34,30 @@ describe("stage-5a gate: not_runnable when interactions absent", () => {
     expect(result.reason).toBe("stage-4-artifacts-absent");
   });
 
-  it("returns non-not_runnable result when interactions/ contains ≥1 file", async () => {
+  it("returns not_runnable even when interactions/ contains ≥1 file (D-43 v2.0a hard-code)", async () => {
+    // D-43: gate is hard-coded not_runnable in v2.0a regardless of interactions content.
+    // The FULL gate that promotes to PASS based on real Stage 4 artifacts ships in Phase 3.
+    // This asserts the hard-code is in place.
     const withInteractions = resolve(FIXTURES, "with-interactions");
     const result = await runStage5aGate(withInteractions);
-    expect(result.kind).not.toBe("not_runnable");
+    expect(result.kind).toBe("not_runnable");
+    expect(result.reason).toBe("stage-4-artifacts-absent");
   });
 
-  it("returns pass with evidence inferred when interactions/ has files", async () => {
+  it("not_runnable result has no evidence field (discriminated union shape)", async () => {
+    // not_runnable shape: { kind: 'not_runnable', reason: string }
+    // pass shape: { kind: 'pass', evidence: string, findings: [] }
+    // In v2.0a gate always returns not_runnable — verify shape is correct.
     const withInteractions = resolve(FIXTURES, "with-interactions");
     const result = await runStage5aGate(withInteractions);
-    expect(result.kind).toBe("pass");
-    expect(result.evidence).toBe("inferred");
+    expect(result.kind).toBe("not_runnable");
+    expect(result.evidence).toBeUndefined();
   });
 
-  it("returns empty findings array when pass", async () => {
+  it("not_runnable result has no findings field (discriminated union shape)", async () => {
     const withInteractions = resolve(FIXTURES, "with-interactions");
     const result = await runStage5aGate(withInteractions);
-    expect(Array.isArray(result.findings)).toBe(true);
-    expect(result.findings).toHaveLength(0);
+    expect(result.kind).toBe("not_runnable");
+    expect(result.findings).toBeUndefined();
   });
 });
