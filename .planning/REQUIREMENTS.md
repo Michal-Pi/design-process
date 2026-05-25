@@ -43,12 +43,12 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **GATE-05**: `USER_OVERRIDDEN` requires `--override-reason` flag and propagates a visible banner to every downstream artifact
 - [x] **GATE-06**: CI mode (`audit --ci`) blocks merges on configured severities (default: only BLOCKER)
 - [x] **GATE-07**: Gate-runner base class supports `not-runnable` terminal state from day one (codex BLOCKER fix from §16)
-- [ ] **GATE-08**: `gate/stage-5a-complete` returns `not-runnable, reason: stage-4-artifacts-absent` when `design/interactions/` is empty (CI-asserted on every v2.0a release)
+- [x] **GATE-08**: `gate/stage-5a-complete` returns `not-runnable, reason: stage-4-artifacts-absent` when `design/interactions/` is empty (CI-asserted on every v2.0a release)
 
 ### Per-Stage Fidelity Caps (Buxton Discipline)
 
 - [x] **FID-01**: Stage 1 — refuses solution-language output; output describes user needs, not features
-- [ ] **FID-02**: Stage 2 — sitemaps emit text + Mermaid boxes only; no colors, no typography
+- [x] **FID-02**: Stage 2 — sitemaps emit text + Mermaid boxes only; no colors, no typography
 - [ ] **FID-03**: Stage 3 — Excalidraw validator rejects color/typography/styling drift; LLM emissions of styling regenerate up to repair-loop limit, then fail
 - [ ] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
 - [ ] **FID-05**: Stage 5a — refuses to render hi-fi when `design/interactions/` is empty or incomplete
@@ -67,7 +67,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [ ] **WF-01**: `ingest` (Stage 0) — Markdown PRD parse + frontmatter validation; paste-text path; interview fallback for empty PRDs (Lenny 1-pager)
 - [x] **WF-02**: `discover` (Stage 1) — generates personas, JTBDs, OST, assumptions, competitive landscape, interview guide; `gate/stage-1-complete` enforced
-- [ ] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
+- [x] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
 - [ ] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
 - [ ] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
@@ -81,8 +81,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **ATOM-02**: `research/synthesize` (Stage 1)
 - [x] **ATOM-03**: `research/personas-proto` (Stage 1, Indi Young thinking-style format with provenance)
 - [x] **ATOM-04**: `research/build-ost` (Stage 1, Torres OST)
-- [ ] **ATOM-05**: `ia/sitemap-variants` (Stage 2, LATCH-diverse)
-- [ ] **ATOM-06**: `ia/flows-from-jobs` (Stage 2, Mermaid flowcharts per JTBD)
+- [x] **ATOM-05**: `ia/sitemap-variants` (Stage 2, LATCH-diverse)
+- [x] **ATOM-06**: `ia/flows-from-jobs` (Stage 2, Mermaid flowcharts per JTBD)
 - [ ] **ATOM-07**: `ia/tree-test-design` (Stage 2, Optimal Workshop format — v2.1)
 - [ ] **ATOM-08**: `lowfi/crazy-eights` (Stage 3, 8 Excalidraw JSON variants per screen)
 - [ ] **ATOM-09**: `lowfi/converge` (Stage 3, Decider pick with rationale)
@@ -355,9 +355,9 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | GATE-05 | Phase 1 | Done |
 | GATE-06 | Phase 1 | Done |
 | GATE-07 | Phase 1 | Done |
-| GATE-08 | Phase 2 | Pending |
+| GATE-08 | Phase 2 | Complete |
 | FID-01 | Phase 2 | Complete |
-| FID-02 | Phase 2 | Pending |
+| FID-02 | Phase 2 | Complete |
 | FID-03 | Phase 3 | Pending |
 | FID-04 | Phase 3 | Pending |
 | FID-05 | Phase 2 | Pending |
@@ -370,7 +370,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | RED-06 | Phase 2 | Complete |
 | WF-01 | Phase 2 | Pending |
 | WF-02 | Phase 2 | Complete |
-| WF-03 | Phase 2 | Pending |
+| WF-03 | Phase 2 | Complete |
 | WF-04 | Phase 3 | Pending |
 | WF-05 | Phase 3 | Pending |
 | WF-06 | Phase 2 | Pending |
@@ -381,8 +381,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ATOM-02 | Phase 2 | Complete |
 | ATOM-03 | Phase 2 | Complete |
 | ATOM-04 | Phase 2 | Complete |
-| ATOM-05 | Phase 2 | Pending |
-| ATOM-06 | Phase 2 | Pending |
+| ATOM-05 | Phase 2 | Complete |
+| ATOM-06 | Phase 2 | Complete |
 | ATOM-07 | v2.1 (deferred) | Deferred |
 | ATOM-08 | Phase 3 | Pending |
 | ATOM-09 | Phase 3 | Pending |
