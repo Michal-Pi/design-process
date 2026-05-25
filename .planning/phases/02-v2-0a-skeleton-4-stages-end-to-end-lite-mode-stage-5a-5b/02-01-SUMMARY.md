@@ -238,3 +238,46 @@ All commits verified:
 - 604e0d5: feat(02-01) gate + frontmatter-validate ✓
 - 1148b01: feat(02-01) adversarial CI ✓
 - 037b961: feat(02-01) SKILL.md files + bundle fix ✓
+
+## Post-Review Fixes (Codex Review 02-01)
+
+Four P2 (HIGH-severity) bugs identified by Codex review were addressed with atomic commits after plan completion.
+
+### Finding 1: stage-1.mjs pass_with_warnings result schema violation
+- **Commit:** cc8974c `fix(02-01): correct stage-1 gate pass_with_warnings result shape per GateResult schema`
+- **Root cause:** `pass_with_warnings` findings used `{id, severity, message}` — old shape not matching `GateResult` schema which requires `{checkId, status, evidence?, citation?}`. Also missing required `warnings: string[]` array.
+- **Fix:** Rewrote all finding objects to use `checkId`/`status`; added `warnings` array to all `pass_with_warnings` return paths. Updated existing tests to use `f.checkId`/`f.status`. Added schema compliance tests validating `GateResult.parse()` round-trip.
+- **Tests affected:** stage-1-provenance.test.ts (updated 2 tests, added 2 schema compliance tests)
+
+### Finding 2: ASSUMPTIONS.md check misses mixed-provenance case (RED-03 bypass)
+- **Commit:** 8a7d4aa `fix(02-01): enforce ASSUMPTIONS.md for any generated persona (RED-03)`
+- **Root cause:** RED-03 check was inside the `allSynthetic` branch only. A dir with 1 generated + 1 validated persona + populated `interviews/` + no `ASSUMPTIONS.md` returned `pass/validated`, bypassing the synthetic-claim disclosure requirement.
+- **Fix:** Hoisted `assumptionsMissing` check before any branch — fires whenever `hasGenerated === true`. Mixed dirs without ASSUMPTIONS.md now return `pass_with_warnings/proto` with RED-03 finding.
+- **Fixture added:** `tests/fixtures/stage1-gate/mixed-provenance-no-assumptions/` (1 generated + 1 validated + interview)
+- **Tests added:** `tests/gates/stage-1-mixed-provenance.test.ts` (4 tests)
+
+### Finding 3: synthesize.md atom uses wrong base path for checkWorstProvenance
+- **Commit:** 62eb30a `fix(02-01): resolve cited personas from design root in synthesize atom`
+- **Root cause:** `synthesize.md` invoked `--check-worst-provenance design/research/synthesis.md design/research/`. The `cites:` paths in synthesis.md frontmatter are relative to `design/` (e.g., `research/personas/slug.persona.json`). Passing `design/research/` as base resolves to `design/research/research/personas/...` — file not found, provenance defaults to `missing`, gate rejects valid syntheses.
+- **Fix:** Changed invocation to pass `design/` as base dir. Added explanatory note in synthesize.md.
+- **Tests added:** 2 adversarial tests in `frontmatter-worst-provenance.test.ts` (correct base dir validates, wrong base dir fails — regression guard)
+
+### Finding 4: discover.md invokes cli modules directly instead of via dispatcher
+- **Commit:** 08a9e50 `fix(02-01): invoke design-os CLI dispatcher instead of cli/*.mjs directly in discover workflow`
+- **Root cause:** `gate.mjs` exports a `command` object for Commander registration — running `node assets/scripts/cli/gate.mjs` directly exits without invoking the handler. The workflow step 8 and host-fallback section both used the direct invocation, silently skipping the gate.
+- **Fix:** Replaced both occurrences with `node bin/design-os.mjs gate --stage 1 --design-dir design/`. Verified `node bin/design-os.mjs gate --stage 1 --design-dir <path>` returns a real `GateResult` JSON object.
+- **Retained:** `budget-check.mjs` and `apply.mjs` direct references — these scripts don't exist yet (ship in future plans) and have no dispatcher registration to replace.
+
+## Cross-cutting follow-up
+
+No other Phase 2 workflow files had the same direct `cli/*.mjs` invocation pattern — `discover.md` is the only workflow file in Phase 2. The `budget-check.mjs` and `apply.mjs` patterns in `discover.md` steps 7 and 11 reference scripts that will be registered as dispatcher commands when they ship (future plans). Those lines were not changed.
+
+## Post-Review Test Results
+
+| Suite | Tests | Result |
+|-------|-------|--------|
+| tests/gates/stage-1-provenance.test.ts | 20 (+2 from schema compliance) | PASS |
+| tests/gates/stage-1-mixed-provenance.test.ts | 4 (new) | PASS |
+| tests/adversarial/frontmatter-worst-provenance.test.ts | 8 (+2 base-dir regression) | PASS |
+| Full suite (all files) | 613 (+8) | PASS (48 files) |
+| tsc --noEmit | — | PASS (exit 0) |
