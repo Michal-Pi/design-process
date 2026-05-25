@@ -26,7 +26,7 @@ const Finding = z.object({
    * Format: UPPERCASE-LETTERS followed by a hyphen and one or more digits.
    * Examples: WCAG-01, A11Y-003, PROV-1
    */
-  findingId: z.string().regex(/^[A-Z]+-\d+$/),
+  findingId: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]*-\d+$/),
 
   /**
    * Severity level.
@@ -60,6 +60,11 @@ const Finding = z.object({
 export const AuditReportV1 = FrontmatterCommon.extend({
   artifact: z.literal("audit-report"),
   stage: z.literal("cross-stage"),
+
+  /**
+   * Type of audit run (e.g., "slop-tells", "pr-review", "slop-tells+pr-review").
+   */
+  auditType: z.string().min(1).optional(),
 
   /** All findings identified in this audit run. */
   findings: z.array(Finding),

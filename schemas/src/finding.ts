@@ -14,7 +14,7 @@ export const Finding = z.object({
    * Unique finding identifier in the form CATEGORY-NUMBER.
    * Examples: GATE-01, RED-03, HAND-02
    */
-  findingId: z.string().regex(/^[A-Z]+-\d+$/),
+  findingId: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9-]*-\d+$/),
 
   /**
    * Severity level of this finding.
