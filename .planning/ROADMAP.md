@@ -151,13 +151,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. The launch artifact ships: long-form post "The 5 design stages every AI tool skips — and why your prototype struggles past month 3" (softened hook per codex feedback, GTM-01), 90-second video showing 3 variants per stage (GTM-02), cross-post manifest executed on 8 marketplaces (GTM-03, DIST-07), named outreach to Brad Frost and Marty Cagan delivered (GTM-04, Cagan framed as intellectual heritage not endorsement claim), PR submitted to anthropics/skills#1008 for DESIGN.md consume/produce support (GTM-05), and the rapid-response GTM pivot plan to "interoperability with Claude Design" is documented and ready if Anthropic ships overlap during the launch window (GTM-07).
   5. Cost discipline holds at GA: full `design` workflow p50 ≤150k tokens / p95 ≤220k tokens on the 15-fixture suite (COST-07), wall-clock p50 ≤8 minutes for full 5 stages (COST-10) — both verified on the cross-host matrix with per-stage budgets continuing to hold from Phases 2-3.
 
-**Plans:** 5 plans created (Phase 2 in progress)
-
-- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
-- [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
-- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
-- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
-- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
+**Plans:** TBD — planned after Phase 3 completes
 
 ## Progress
 
