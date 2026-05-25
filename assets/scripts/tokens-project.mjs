@@ -388,7 +388,7 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
     "// NOTE: This is in the STAGING area (.design-os/preview/) — NOT in components/ui/",
     "// Apply with --apply to copy to your project's components/ directory.",
     "",
-    'import "./design-os-tokens.css";',
+    'import "../design-os-tokens.css";',
     "",
     "interface DesignOsThemeProviderProps {",
     "  children: React.ReactNode;",
@@ -628,11 +628,18 @@ export async function emitTokens(options) {
   await writeDtcgTokensJson(tokenTree, tokensPath, resolvedAt);
 
   // Build staging dir path (.design-os/preview/run-<id>/)
-  // Use a deterministic run-id when generatedAt is provided (golden test compatibility)
+  // IMPORTANT: staging dir is always anchored to the repo root (process.cwd() / projectRoot),
+  // NOT to designDir. This ensures apply.mjs, preview adapters, and other consumers that
+  // read from <repoRoot>/.design-os/preview/ can always find staged artifacts regardless of
+  // where --design-dir points (e.g., --design-dir nested/path/design/ must not produce
+  // nested/path/design/.design-os/preview/).
+  //
+  // Fix for codex review finding: "Finding 1 (P2): tokens-project.mjs stages preview
+  // in wrong location" — staging dir was incorrectly relative to designDir.
   const runId = generatedAt
     ? `run-${generatedAt.replace(/[:.]/g, "-")}`
     : `run-${Date.now()}-${randomBytes(4).toString("hex")}`;
-  const stagingDir = join(designDir, ".design-os", "preview", runId);
+  const stagingDir = resolve(projectRoot, ".design-os", "preview", runId);
 
   // Dispatch to adapter (exhaustive switch with assertNever — D-48)
   let projectionPath;

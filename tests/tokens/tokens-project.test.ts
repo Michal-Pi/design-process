@@ -150,6 +150,22 @@ describe("tokens-project: shadcn adapter", () => {
     const content = await readFile(result.projectionPath, "utf8");
     expect(content).toContain("--primary");
   });
+
+  it("shadcn wrapper import uses '../design-os-tokens.css' (correct relative path from components/)", async () => {
+    // Codex review Finding 2 (P2): wrapper in components/ must import ../design-os-tokens.css
+    // not ./design-os-tokens.css (which resolves from components/ to components/design-os-tokens.css
+    // — a path that does not exist).
+    const stagingDir = resolve(result.projectionPath, "..");
+    const wrapperPath = join(stagingDir, "components", "design-os-theme-provider.tsx");
+    expect(existsSync(wrapperPath), `wrapper file not found at ${wrapperPath}`).toBe(true);
+    const wrapperContent = await readFile(wrapperPath, "utf8");
+    // Must use ../  (parent-relative) not ./  (sibling — wrong path)
+    expect(wrapperContent).toContain('import "../design-os-tokens.css"');
+    expect(wrapperContent).not.toContain('import "./design-os-tokens.css"');
+    // The resolved CSS file must actually exist at that path
+    const cssPath = resolve(wrapperPath, "../..", "design-os-tokens.css");
+    expect(existsSync(cssPath), `CSS file must exist at resolved path ${cssPath}`).toBe(true);
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -507,5 +523,56 @@ describe("tokens-project: DTCG three-tier structure", () => {
   it("component tier contains button tokens", () => {
     const component = dtcgBody.component as Record<string, unknown>;
     expect(component).toHaveProperty("button");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Staging-dir anchored to projectRoot, NOT designDir (Finding 1 fix regression)
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("tokens-project: staging dir is anchored to projectRoot (not designDir)", () => {
+  // Codex review Finding 1 (P2): when --design-dir is a nested path such as
+  // /tmp/root/nested/design/, the staging dir MUST be /tmp/root/.design-os/preview/run-*/
+  // NOT /tmp/root/nested/design/.design-os/preview/run-*/
+  // This test asserts that contract: if it ever regresses, the test fails.
+
+  it("stagingDir under projectionPath resolves inside projectRoot, not under designDir", async () => {
+    const { mkdtemp } = await import("node:fs/promises");
+
+    // Create an isolated root + a nested design dir
+    const repoRoot = await mkdtemp(join(tmpdir(), "design-os-staging-anchor-root-"));
+    const designDir = join(repoRoot, "src", "design");
+    await mkdir(designDir, { recursive: true });
+
+    try {
+      const res = await emitTokens({
+        adapter: "plain-css",
+        colorPrimary: "oklch(60% 0.2 270)",
+        colorBackground: "oklch(98% 0.0 0)",
+        colorForeground: "oklch(15% 0.0 0)",
+        borderRadius: "0.5rem",
+        fontFamilyBase: "Inter, system-ui",
+        spacingBase: 4,
+        designDir,
+        projectRoot: repoRoot,
+        generatedAt: "2026-05-25T00:00:00.000Z",
+      });
+
+      // projectionPath must be inside repoRoot/.design-os/preview/
+      const expectedPrefix = join(repoRoot, ".design-os", "preview");
+      expect(
+        res.projectionPath.startsWith(expectedPrefix),
+        `projectionPath '${res.projectionPath}' must start with '${expectedPrefix}'`
+      ).toBe(true);
+
+      // projectionPath must NOT be under designDir/.design-os/
+      const badPrefix = join(designDir, ".design-os");
+      expect(
+        res.projectionPath.startsWith(badPrefix),
+        `projectionPath '${res.projectionPath}' must NOT be nested under designDir '${badPrefix}'`
+      ).toBe(false);
+    } finally {
+      await rm(repoRoot, { recursive: true, force: true });
+    }
   });
 });
