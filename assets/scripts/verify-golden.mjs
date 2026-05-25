@@ -30,6 +30,7 @@ const FIXTURE_RUNNERS = {
   "gate-stage-5a": runGateStage5aFixtures,
   "mermaid-render": runMermaidRenderFixture,
   "tokens-project": runTokensProjectFixtures,
+  "excalidraw-render": runExcalidrawRenderFixture,
 };
 
 /**
@@ -475,6 +476,68 @@ async function runTokensProjectFixtures() {
   }
 
   return results;
+}
+
+/**
+ * Run the excalidraw-render golden fixture 5× and compare with expected JSON.
+ * Input: 3-element IR array (Header, Content, Title)
+ * Golden: evals/golden/excalidraw-render.golden.json
+ * @returns {Promise<{ name: string; pass: boolean; mismatch?: string }[]>}
+ */
+async function runExcalidrawRenderFixture() {
+  const goldenPath = join(ROOT, "evals/golden/excalidraw-render.golden.json");
+
+  if (!existsSync(goldenPath)) {
+    return [
+      {
+        name: "excalidraw-render",
+        pass: false,
+        mismatch: `Golden file not found: ${goldenPath}. Run: node assets/scripts/excalidraw-render.mjs --regen to regenerate.`,
+      },
+    ];
+  }
+
+  const { renderSkeletonIR } = await import("./excalidraw-render.mjs");
+
+  const IR = [
+    { type: "rectangle", x: 0, y: 0, w: 200, h: 60, label: "Header" },
+    { type: "rectangle", x: 0, y: 80, w: 200, h: 300, label: "Content" },
+    { type: "text", x: 10, y: 10, w: 180, h: 30, label: "Title" },
+  ];
+
+  const expected = await readFile(goldenPath, "utf8");
+  const expectedHash = sha256(expected);
+
+  const hashes = [];
+
+  for (let i = 0; i < BYTE_IDENTICAL_RUNS; i++) {
+    const result = renderSkeletonIR(IR);
+    const output = JSON.stringify({ excalidrawElements: result }, null, 2) + "\n";
+    hashes.push(sha256(output));
+  }
+
+  const allSame = hashes.every((h) => h === hashes[0]);
+  if (!allSame) {
+    return [
+      {
+        name: "excalidraw-render",
+        pass: false,
+        mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+      },
+    ];
+  }
+
+  if (hashes[0] !== expectedHash) {
+    return [
+      {
+        name: "excalidraw-render",
+        pass: false,
+        mismatch: `Output hash ${hashes[0]} != expected ${expectedHash}. Run npm run regen-golden -- --script excalidraw-render --reason "<text>" to update.`,
+      },
+    ];
+  }
+
+  return [{ name: "excalidraw-render", pass: true }];
 }
 
 /**
