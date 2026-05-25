@@ -166,19 +166,24 @@ If still invalid after 2 repair cycles, halt with:
 "Mermaid flow for <jtbd-slug> could not be repaired after 2 cycles.
 Error: <render error>. Please manually fix or simplify the flow and re-run."
 
-**9. Run Stage 2 gate**
+**9. Run Stage 2 gate against the staged preview path**
 
 ```bash
-node bin/design-os.mjs gate --stage 2 --design-dir design/
+node bin/design-os.mjs gate --stage 2 --design-dir .design-os/preview/run-<timestamp>/
 ```
 
+**Important:** Run the gate against the staged preview path (`.design-os/preview/run-<timestamp>/`),
+NOT against `design/` — the files are not there yet. The gate accepts any directory containing
+`ia/sitemap.json` via the `--design-dir` parameter.
+
 Gate outcomes:
-- `not_runnable`: sitemap or flow files not yet in `design/ia/` (expected before --apply).
-  Proceed — this is normal at the preview stage.
+- `not_runnable`: sitemap or flow files not yet written to the preview area (unexpected —
+  steps 6-8 should have produced them). Re-run steps 6-8 before retrying.
 - `pass_with_warnings`: expected outcome; surface all findings to the user for review.
   The proto evidence grade warning is always present (no tree-test in v2.0a).
 - `failed_after_repair`: halt immediately. Surface all BLOCKER findings.
-  Do NOT copy files to `design/ia/` until the gate passes.
+  Do NOT proceed to steps 10-12 until the gate passes. Attempt LLM repair if findings
+  indicate a fixable issue (FID-02, Mermaid syntax, missing flows); otherwise escalate to user.
 
 **10. Build stage-2 handoff bundle**
 
