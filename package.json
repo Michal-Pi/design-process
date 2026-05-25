@@ -14,9 +14,15 @@
     "test": "vitest run",
     "validate": "tsx bin/design-os.mjs validate",
     "test:schemas": "vitest run tests/schemas/",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "verify:golden": "tsx assets/scripts/verify-golden.mjs",
+    "lint:determinism": "tsx assets/scripts/lint-determinism.mjs",
+    "eval:skillgrade": "tsx evals/runners/skillgrade.mjs",
+    "eval:coexistence": "tsx evals/coexistence/aggregate-eval.mjs",
+    "regen-golden": "tsx assets/scripts/regen-golden.mjs"
   },
   "dependencies": {
+    "@mermaid-js/mermaid-cli": "^11.15.0",
     "ajv": "^8",
     "ajv-formats": "^3",
     "apca-w3": "latest",
@@ -35,6 +41,9 @@
   "devDependencies": {
     "@types/node": "^25.9.1",
     "@types/semver": "^7",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
+    "eslint": "^10.4.0",
     "tsx": "^4",
     "typescript": "^5.7",
     "vitest": "^2"

@@ -199,13 +199,15 @@ async function getWorstProvenance(designDir) {
 /**
  * Build a stage handoff bundle.
  *
- * @param {{ stageFrom: string, stageTo: string, designDir: string, llmSummaryBody: string }} params
+ * @param {{ stageFrom: string, stageTo: string, designDir: string, llmSummaryBody: string, generatedAt?: string }} params
+ *   generatedAt: optional ISO-8601 timestamp override (for deterministic golden tests).
+ *   When omitted, defaults to new Date().toISOString() (wall-clock time).
  * @returns {Promise<
  *   { ok: true, tokens: number, truncationWarning: string|null, path: string } |
  *   { error: 'insufficient-content', tokens: number, floor: number }
  * >}
  */
-export async function buildHandoffBundle({ stageFrom, stageTo, designDir, llmSummaryBody }) {
+export async function buildHandoffBundle({ stageFrom, stageTo, designDir, llmSummaryBody, generatedAt }) {
   // Initialize tiktoken encoder (D-06: cl100k_base)
   const enc = get_encoding("cl100k_base");
 
@@ -317,7 +319,7 @@ export async function buildHandoffBundle({ stageFrom, stageTo, designDir, llmSum
       artifact: "handoff-bundle",
       schemaVersion: 1,
       stage: `${stageFrom} → ${stageTo}`,
-      generated: new Date().toISOString(),
+      generated: generatedAt ?? new Date().toISOString(),
       sourceHash,
       tokenCount: tokens,
       truncationWarning,
@@ -336,7 +338,7 @@ export async function buildHandoffBundle({ stageFrom, stageTo, designDir, llmSum
       // Required by FrontmatterCommon
       provenance: "generated",
       owner: "design-os",
-      lastReviewedAt: new Date().toISOString(),
+      lastReviewedAt: generatedAt ?? new Date().toISOString(),
     };
 
     // --- Validate frontmatter against handoff-bundle.v1.json via ajv ---

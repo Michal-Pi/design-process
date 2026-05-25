@@ -1,0 +1,48 @@
+# .github/workflows/lint-determinism.yml
+# CI workflow: Reject LLM-client imports inside assets/scripts/.
+# Implements: PREV-04 (D-13 architecture lint), hard-fail on violations.
+#
+# WHAT IT CHECKS: every *.mjs and *.ts file under assets/scripts/ must not
+# import from anthropic, openai, langchain, llamaindex, @anthropic-ai, @openai.
+# Violation = CI hard-fail. Zero tolerance.
+#
+# HEARTBEAT: Final step always prints lint-determinism status per Pitfall E.
+
+name: lint-determinism
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  lint-determinism:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint-determinism
+        run: npm run lint:determinism
+
+      # Heartbeat — Pitfall E mitigation
+      - name: Heartbeat — lint-determinism summary
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "lint-determinism: PASS — no LLM-client imports found in assets/scripts/"
+          else
+            echo "lint-determinism: FAIL — LLM-client imports detected in assets/scripts/"
+          fi

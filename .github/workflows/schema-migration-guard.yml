@@ -1,0 +1,102 @@
+# .github/workflows/schema-migration-guard.yml
+# CI workflow: Enforce that modified schema sources have a sibling migration.
+# Implements: Pitfall G mitigation (schema-migration-guard CI rule).
+#
+# CARVE-OUT FOR FRESH SCHEMAS: This rule fires only when a PR MODIFIES an
+# existing schemas/src/<name>.ts (--diff-filter=M). Adding a brand-new
+# schemas/src/<name>.ts (--diff-filter=A) does NOT require a migration
+# because there is no v0 predecessor.
+#
+# Example: finding.ts and manifest-lock-entry.ts in Plan 02 are fresh-v1
+# schemas (net-new additions). They do NOT require a migration. Only
+# subsequent modifications to these files will require a migration.
+#
+# Reference: PLAN.md notes block, checker Blocker 3.
+#
+# BYPASS LABEL: PRs with the label "schema-no-migrate" skip this check.
+# Use sparingly — record the reason in the PR body.
+#
+# HEARTBEAT: Final step always reports status per Pitfall E.
+
+name: schema-migration-guard
+
+on:
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  schema-migration-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for git diff
+
+      - name: Check schema-migration-guard
+        id: guard
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          set -e
+
+          # Check if the PR has the bypass label
+          if echo "$PR_LABELS" | grep -q "schema-no-migrate"; then
+            echo "schema-migration-guard: BYPASSED via [schema-no-migrate] label"
+            exit 0
+          fi
+
+          # --- Fresh-v1 carve-out (PLAN.md notes block) ---
+          # Only MODIFIED schema sources (--diff-filter=M) require a migration.
+          # ADDED schema sources (--diff-filter=A) are fresh-v1 schemas with no
+          # v0 predecessor — they do NOT require a migration.
+          # See: Plan 03 notes block for the full rationale.
+
+          # Find MODIFIED (not added) schema source files in this PR
+          MODIFIED_SCHEMAS=$(git diff --name-only --diff-filter=M "origin/${BASE_REF}...HEAD" -- 'schemas/src/**' 2>/dev/null || true)
+
+          if [ -z "$MODIFIED_SCHEMAS" ]; then
+            echo "schema-migration-guard: PASS — no existing schema sources were modified"
+            exit 0
+          fi
+
+          echo "Modified schema sources detected:"
+          echo "$MODIFIED_SCHEMAS"
+
+          # Check if any migration file was added or modified in this PR
+          MIGRATION_CHANGES=$(git diff --name-only "origin/${BASE_REF}...HEAD" -- 'schemas/migrations/**' 2>/dev/null || true)
+
+          if [ -z "$MIGRATION_CHANGES" ]; then
+            echo ""
+            echo "::error::Schema migration required!"
+            echo "The following schema source files were MODIFIED without an accompanying migration:"
+            for f in $MODIFIED_SCHEMAS; do
+              echo "  $f"
+              echo "::error::Modified schema source '$f' requires a migration in schemas/migrations/"
+            done
+            echo ""
+            echo "To fix:"
+            echo "  1. Create schemas/migrations/<artifact>-v<from>-to-v<to>.mjs"
+            echo "  2. Follow the template in schemas/migrations/v0-to-v1.template.mjs"
+            echo "  3. Test the migration with: design-os migrate"
+            echo ""
+            echo "To bypass (use sparingly):"
+            echo "  Add the 'schema-no-migrate' label to this PR and document the reason."
+            exit 1
+          fi
+
+          echo "schema-migration-guard: PASS — migration files found for modified schemas"
+          echo "Migration changes: $MIGRATION_CHANGES"
+
+      # Heartbeat — Pitfall E mitigation
+      - name: Heartbeat — schema-migration-guard summary
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "schema-migration-guard: PASS"
+          else
+            echo "schema-migration-guard: FAIL — modified schema source missing migration"
+          fi

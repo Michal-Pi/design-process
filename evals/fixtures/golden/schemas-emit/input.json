@@ -1,0 +1,5 @@
+{
+  "schemaName": "persona",
+  "version": 1,
+  "description": "Input descriptor for the schemas-emit golden fixture. The emit script uses Zod sources (not this JSON), so this file serves as the fixture manifest indicating which schema to emit."
+}
