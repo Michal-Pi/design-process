@@ -12,7 +12,7 @@
 // Implements: WF-04 CLI surface
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { resolve, dirname, join, extname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { renderSkeletonIR } from "../excalidraw-render.mjs";
@@ -43,9 +43,14 @@ export const command = {
       process.exit(1);
     }
 
-    // T-03-01-01: path traversal guard — reject paths with '..'
-    if (input.includes("..") || output.includes("..")) {
+    // T-03-01-01: path traversal guard — reject paths with '..' or absolute paths
+    if (input.includes("..") || output.includes("..") || screen.includes("..")) {
       console.error("excalidraw-render: paths containing '..' are not allowed (path traversal guard)");
+      process.exit(1);
+    }
+    // Reject absolute paths in --screen (e.g. --screen /etc or --screen /outside)
+    if (screen.startsWith("/") || (screen.length >= 2 && screen[1] === ":")) {
+      console.error("excalidraw-render: --screen must be a relative path, not an absolute path");
       process.exit(1);
     }
 
@@ -77,7 +82,16 @@ export const command = {
     }
 
     // Create output directory for this screen
-    const screenDir = resolve(ROOT, output, screen);
+    const outputAbs = resolve(ROOT, output);
+    const screenDir = resolve(outputAbs, screen);
+
+    // T-03-01-01 (screen containment): verify screenDir resolves inside outputAbs
+    // after normalization (catches foo/../../../outside traversal patterns).
+    if (!screenDir.startsWith(outputAbs + "/") && screenDir !== outputAbs) {
+      console.error("excalidraw-render: --screen resolves outside --output directory (path traversal guard)");
+      process.exit(1);
+    }
+
     await mkdir(screenDir, { recursive: true });
 
     // Emit one .excalidraw file per IR object in the array
