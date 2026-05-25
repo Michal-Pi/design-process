@@ -1,0 +1,61 @@
+---
+artifact: sitemap
+stage: "2"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:8f9968e6c08763d9204fff32b524fc25033eb375ae7042d425f26f05387750d8"
+---
+{
+  "artifact": "sitemap",
+  "stage": "2",
+  "schemaVersion": 1,
+  "generated": "2026-05-25T00:00:00.000Z",
+  "provenance": "generated",
+  "worstProvenance": "generated",
+  "owner": "design-os",
+  "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+  "sourceHash": "sha256:8f9968e6c08763d9204fff32b524fc25033eb375ae7042d425f26f05387750d8",
+  "variants": [
+    {
+      "id": "v1-category",
+      "scheme": "category",
+      "nodes": [
+        { "id": "home", "label": "Home" },
+        { "id": "skills", "label": "Skills", "parent": "home" },
+        { "id": "browse-skills", "label": "Browse Skills", "parent": "skills" },
+        { "id": "skill-detail", "label": "Skill Detail", "parent": "skills" },
+        { "id": "learning", "label": "Learning", "parent": "home" },
+        { "id": "track-progress", "label": "Track Progress", "parent": "learning" },
+        { "id": "checkout", "label": "Checkout", "parent": "home" },
+        { "id": "cart", "label": "Cart", "parent": "checkout" },
+        { "id": "payment", "label": "Payment", "parent": "checkout" },
+        { "id": "profile", "label": "Profile", "parent": "home" },
+        { "id": "settings", "label": "Settings", "parent": "profile" },
+        { "id": "history", "label": "History", "parent": "profile" }
+      ],
+      "mermaidFlow": "flowchart TD\n  A[Start: Search for skill] --> B{Found skill?}\n  B -->|Yes| C[View Skill Detail]\n  B -->|No| D[Browse Categories]\n  D --> C\n  C --> E{Ready to enroll?}\n  E -->|Yes| F[Add to Cart]\n  E -->|No| G[Save to Wishlist]\n  F --> H[End: Checkout]\n  G --> H"
+    },
+    {
+      "id": "v2-hierarchy",
+      "scheme": "hierarchy",
+      "nodes": [
+        { "id": "root", "label": "SkillsOS" },
+        { "id": "discovery", "label": "Discovery", "parent": "root" },
+        { "id": "acquisition", "label": "Acquisition", "parent": "root" },
+        { "id": "practice", "label": "Practice", "parent": "root" },
+        { "id": "checkout", "label": "Checkout", "parent": "acquisition" },
+        { "id": "courses", "label": "Courses", "parent": "discovery" },
+        { "id": "instructors", "label": "Instructors", "parent": "discovery" },
+        { "id": "exercises", "label": "Exercises", "parent": "practice" },
+        { "id": "progress", "label": "Progress", "parent": "practice" },
+        { "id": "cart", "label": "Cart", "parent": "checkout" },
+        { "id": "payment", "label": "Payment", "parent": "checkout" },
+        { "id": "account", "label": "Account", "parent": "root" }
+      ]
+    }
+  ]
+}

@@ -20,7 +20,7 @@ const LAST_RUN_PATH = resolve(EVALS_DIR, "last-run.json");
 const evalModule: any = await import("../../evals/bundles/sufficiency-structural.mjs");
 const { runStructuralSufficiencyEval } = evalModule;
 
-describe("sufficiency-structural: 5-fixture structural-equivalence eval", () => {
+describe("sufficiency-structural: 6-fixture structural-equivalence eval", () => {
   let report: any;
 
   beforeAll(async () => {
@@ -38,8 +38,10 @@ describe("sufficiency-structural: 5-fixture structural-equivalence eval", () => 
     expect(typeof report.pass).toBe("boolean");
   });
 
-  it("report has exactly 5 fixture runs", () => {
-    expect(report.runs).toHaveLength(5);
+  it("report has exactly 6 fixture runs", () => {
+    // stage-0-to-1, stage-1-to-2, stage-2-to-3, stage-2-to-5a, stage-3-to-4, stage-4-to-5
+    // stage-2-to-5a added in Phase 2 Plan 02 (F-05: Phase 2 skips Stages 3+4 → direct to 5a)
+    expect(report.runs).toHaveLength(6);
   });
 
   it("each run has required fields: fixture, structurallyEquivalent, divergences", () => {

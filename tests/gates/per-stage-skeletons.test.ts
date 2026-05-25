@@ -1,10 +1,15 @@
 // tests/gates/per-stage-skeletons.test.ts
-// Tests that each of 6 per-stage gates returns a valid GateResult and
+// Tests that each per-stage gate returns a valid GateResult and
 // calls parseChecklist without throwing when checklist file is absent.
 //
-// Note: Stage 1 (runStage1Gate) was a skeleton in Phase 1. Phase 2 replaced
+// Note: Stage 1 (runStage1Gate) was a skeleton in Phase 1. Phase 2 Plan 01 replaced
 // it with real provenance-checking logic. Stage-1-specific assertions live in
-// tests/gates/stage-1-provenance.test.ts. This file covers stages 2-5b skeletons.
+// tests/gates/stage-1-provenance.test.ts.
+//
+// Note: Stage 2 (runStage2Gate) was a skeleton in Phase 1. Phase 2 Plan 02 replaced
+// it with real JTBD coverage, FID-02, orphan-node, and Mermaid validity logic.
+// Stage-2-specific assertions live in tests/gates/stage-2-latch.test.ts.
+// This file covers stages 3-5b skeletons.
 
 import { describe, it, expect } from "vitest";
 import { resolve, dirname } from "node:path";
@@ -36,9 +41,8 @@ const stage5am: any = await import("../../assets/scripts/gates/stage-5a.mjs");
 // @ts-ignore TS7016: no declaration for .mjs scripts
 const stage5bm: any = await import("../../assets/scripts/gates/stage-5b.mjs");
 
-// Stages 2-5b are still Phase 1 skeletons; stage-1 has real logic (Phase 2).
+// Stages 3-5b are still Phase 1 skeletons; stages 1 and 2 have real logic (Phase 2).
 const skeletonGates = [
-  { name: "stage-2", fn: stage2m.runStage2Gate },
   { name: "stage-3", fn: stage3m.runStage3Gate },
   { name: "stage-4", fn: stage4m.runStage4Gate },
   { name: "stage-5b", fn: stage5bm.runStage5bGate },
@@ -92,5 +96,19 @@ describe("stage-1 gate (Phase 2 real implementation)", () => {
     const result = await stage1m.runStage1Gate(withInteractions, {});
     expect(result.kind).toBe("not_runnable");
     expect(result.reason).toBe("no-personas-found");
+  });
+});
+
+// Stage 2: Phase 2 real gate — basic smoke test (full coverage in stage-2-latch.test.ts)
+describe("stage-2 gate (Phase 2 real implementation)", () => {
+  it("exports runStage2Gate", () => {
+    expect(typeof stage2m.runStage2Gate).toBe("function");
+  });
+
+  it("returns not_runnable when no ia/sitemap.json exists in fixture", async () => {
+    // with-interactions fixture has no ia/ directory — expect not_runnable (Phase 2 behavior)
+    const result = await stage2m.runStage2Gate(withInteractions, {});
+    expect(result.kind).toBe("not_runnable");
+    expect(result.reason).toBe("no-sitemap-found");
   });
 });
