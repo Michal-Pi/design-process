@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "artifact": "sitemap",
+  "stage": "2",
+  "generated": "2026-05-25T00:00:00.000Z",
+  "nodes": [
+    { "id": "home", "label": "Home", "type": "page" },
+    { "id": "dashboard", "label": "Dashboard", "type": "page" }
+  ],
+  "edges": [{ "from": "home", "to": "dashboard" }]
+}

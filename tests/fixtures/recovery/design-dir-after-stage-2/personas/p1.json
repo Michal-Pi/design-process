@@ -1,0 +1,16 @@
+{
+  "$schema": "https://design-os.dev/schemas/persona.v1.json",
+  "schemaVersion": 1,
+  "artifact": "persona",
+  "stage": "1",
+  "generated": "2026-05-25T00:00:00.000Z",
+  "provenance": "generated",
+  "owner": "design-os-eval",
+  "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+  "id": "p1",
+  "name": "Alex Chen",
+  "role": "Product Designer",
+  "goals": ["Ship faster", "Reduce design debt"],
+  "frustrations": ["Misaligned specs", "Late feedback"],
+  "jtbd": "When starting a new product I want a structured design process so I avoid building the wrong thing"
+}

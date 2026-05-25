@@ -1,0 +1,16 @@
+{
+  "$schema": "https://design-os.dev/schemas/persona.v1.json",
+  "schemaVersion": 1,
+  "artifact": "persona",
+  "stage": "1",
+  "generated": "2026-05-25T00:00:00.000Z",
+  "provenance": "generated",
+  "owner": "design-os-eval",
+  "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+  "id": "sample",
+  "name": "Sam Rivera",
+  "role": "UX Researcher",
+  "goals": ["Validate assumptions", "Document findings"],
+  "frustrations": ["Unclear research goals", "No synthesis process"],
+  "jtbd": "When I have raw interview data I want a clear synthesis framework so I can present actionable findings"
+}
