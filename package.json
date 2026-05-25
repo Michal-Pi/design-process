@@ -46,7 +46,8 @@
     "eslint": "^10.4.0",
     "tsx": "^4",
     "typescript": "^5.7",
-    "vitest": "^2"
+    "vitest": "^2",
+    "xstate": "^5.20.1"
   },
   "license": "Apache-2.0",
   "workspaces": [

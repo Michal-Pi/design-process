@@ -5,6 +5,7 @@ export const sampleMachine = setup({
   types: {} as { context: Record<string, never>; events: { type: 'NEXT' } }
 }).createMachine({
   id: 'sample',
+  context: {},
   initial: 'idle',
   states: {
     idle: { on: { NEXT: 'active' } },

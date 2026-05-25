@@ -73,7 +73,11 @@ describe("recovery fixtures — structural checks", () => {
   it("after-stage-1 manifest entry has stage='1' and result.kind='pass'", async () => {
     const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.design-os/manifest.lock");
     const content = await readFile(lock, "utf8");
-    const entry = JSON.parse(content.trim().split("\n")[0]);
+    const lines = content.trim().split("\n");
+    // noUncheckedIndexedAccess: assert the lock file has at least one line before
+    // accessing index 0. An empty manifest.lock would be a structural test failure.
+    expect(lines.length).toBeGreaterThan(0);
+    const entry = JSON.parse(lines[0]!);
     expect(entry.stage).toBe("1");
     expect(entry.result.kind).toBe("pass");
   });
