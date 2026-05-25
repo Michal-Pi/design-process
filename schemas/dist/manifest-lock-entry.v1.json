@@ -1,0 +1,286 @@
+{
+  "$id": "https://design-os.dev/schemas/manifest-lock-entry.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One hash-chain entry in the .design-os/manifest.lock append-only audit log",
+  "properties": {
+    "entryHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "gate": {
+      "type": "string"
+    },
+    "prevHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "result": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "evidence": {
+              "enum": [
+                "validated",
+                "proto",
+                "inferred"
+              ],
+              "type": "string"
+            },
+            "findings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "checkId": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "citation": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "na"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "checkId",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "pass",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "evidence",
+            "findings"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "evidence": {
+              "enum": [
+                "validated",
+                "proto",
+                "inferred"
+              ],
+              "type": "string"
+            },
+            "findings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "checkId": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "citation": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "na"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "checkId",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "pass_with_warnings",
+              "type": "string"
+            },
+            "warnings": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "evidence",
+            "findings",
+            "warnings"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "findings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "checkId": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "citation": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "na"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "checkId",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "failed_after_repair",
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "reason",
+            "findings"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "findings": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "checkId": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "citation": {
+                    "type": "string"
+                  },
+                  "evidence": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "pass",
+                      "fail",
+                      "na"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "checkId",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "const": "user_overridden",
+              "type": "string"
+            },
+            "overrideBanner": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "reason",
+            "overrideBanner",
+            "findings"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "not_runnable",
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "seq": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "sourceHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "stage": {
+      "type": "string"
+    },
+    "timestamp": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "seq",
+    "timestamp",
+    "stage",
+    "gate",
+    "result",
+    "sourceHash",
+    "prevHash",
+    "entryHash"
+  ],
+  "title": "Manifest Lock Entry",
+  "type": "object"
+}

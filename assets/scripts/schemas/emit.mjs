@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // assets/scripts/schemas/emit.mjs
-// Zod 4 z.toJSONSchema() emitter for all 6 artifact types.
+// Zod 4 z.toJSONSchema() emitter for all artifact types.
+// Plan 01 ships 6 artifact types; Plan 02 extends with finding + manifest-lock-entry.
 //
 // Replaces deprecated zod-to-json-schema package (EOL November 2025):
 //   npm page: "This package is no longer actively maintained" (Nov 2025)
@@ -9,7 +10,7 @@
 //   by default — zero additional dependency. See Open Q1 in 01-RESEARCH.md.
 //
 // Source: CONTEXT.md D-01, D-02, D-04; RESEARCH.md Pattern 2
-// Implements: SCHEMA-01..07, ART-03
+// Implements: SCHEMA-01..07, ART-03 (Plan 01); GATE-01..07, HAND-01..04 (Plan 02)
 
 import { z } from "zod";
 import { writeFile, mkdir, readFile } from "node:fs/promises";
@@ -44,7 +45,9 @@ function canonicalize(value) {
 }
 
 /**
- * Import all 6 Zod schema sources and the gate-result type.
+ * Import all Zod schema sources.
+ * Plan 01: 6 artifact schemas.
+ * Plan 02 (this extension): adds finding + manifest-lock-entry.
  * Using dynamic import so tsx can transpile .ts files at runtime.
  */
 async function loadSchemas() {
@@ -55,6 +58,9 @@ async function loadSchemas() {
     { InteractionSpecV1 },
     { AuditReportV1 },
     { HandoffBundleV1 },
+    // Plan 02 additions:
+    { Finding },
+    { ManifestLockEntry },
   ] = await Promise.all([
     import("../../../schemas/src/persona.ts"),
     import("../../../schemas/src/sitemap.ts"),
@@ -62,6 +68,8 @@ async function loadSchemas() {
     import("../../../schemas/src/interaction-spec.ts"),
     import("../../../schemas/src/audit-report.ts"),
     import("../../../schemas/src/handoff-bundle.ts"),
+    import("../../../schemas/src/finding.ts"),
+    import("../../../schemas/src/manifest-lock-entry.ts"),
   ]);
 
   return {
@@ -71,6 +79,9 @@ async function loadSchemas() {
     "interaction-spec": { schema: InteractionSpecV1, version: 1 },
     "audit-report": { schema: AuditReportV1, version: 1 },
     "handoff-bundle": { schema: HandoffBundleV1, version: 1 },
+    // Plan 02 additions:
+    finding: { schema: Finding, version: 1 },
+    "manifest-lock-entry": { schema: ManifestLockEntry, version: 1 },
   };
 }
 
