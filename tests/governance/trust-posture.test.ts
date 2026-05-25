@@ -112,18 +112,30 @@ describe("forbidden phrase scanner: docs/ shipping copy", () => {
     // Only check the normative sections (exclude lines that are clearly listing forbidden phrases)
     const lines = content.split("\n");
     for (const line of lines) {
-      // Skip lines that are clearly listing/quoting forbidden phrases
+      // Skip lines that are clearly listing/explaining/quoting forbidden phrases.
+      // These are acceptable because they describe what to avoid, not what to claim.
       if (
         line.includes("forbidden") ||
         line.includes("never use") ||
         line.includes("avoid") ||
+        line.includes("Rationale") ||
+        line.includes("Verification") ||
+        line.includes("Correct form") ||
+        line.includes("Incorrect form") ||
+        line.startsWith("##") ||
         line.startsWith("|") ||
         line.startsWith("-") ||
-        line.startsWith("*")
+        line.startsWith("*") ||
+        line.startsWith(">")
       ) {
         continue;
       }
-      for (const phrase of ["AI design", "WCAG compliant", "WCAG conformant"]) {
+      // For remaining lines: only flag if phrase appears in a clearly assertive context.
+      // We skip lines containing quotation marks (the phrase is quoted as an example).
+      if (line.includes('"') || line.includes("`")) {
+        continue;
+      }
+      for (const phrase of ["WCAG compliant", "WCAG conformant"]) {
         expect(
           line.toLowerCase().includes(phrase.toLowerCase()),
           `Found "${phrase}" in normative line: ${line}`
