@@ -3,13 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: executing
-last_updated: "2026-05-25T08:41:11.574Z"
+last_updated: "2026-05-25T09:10:15.677Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
-  percent: 20
+  completed_plans: 2
+  percent: 40
+  current_plan: "01-02"
 ---
 
 # State: design-os
@@ -63,6 +64,7 @@ Phase 4: [          ] 0%  Not started
 | PM review (n≥5) | ≥4 of 5 positive | Not started |
 | WCAG 2.2 AA contrast on own examples | 100% pass | Not started |
 | Phase 01 P01 | 90m | 3 tasks | 47 files |
+| Phase 01 P02 | 180m | 3 tasks | 47 files |
 
 ## Accumulated Context
 
@@ -81,6 +83,10 @@ Phase 4: [          ] 0%  Not started
 - [Phase ?]: Ajv strict: false required — Zod-emitted discriminatedUnion schemas conflict with ajv strict mode
 - [Phase ?]: schemas/dist committed to git — .gitignore scoped to /dist/ root only
 - [Phase ?]: FORMAT-07 DESIGN.md pinned to 2026.04; unsupported --design-md-version exits 1
+- [Phase 01 Plan 02]: GATE-07+08: stage-5a hardcoded not_runnable for empty interactions/ (codex §16 BLOCKER fix)
+- [Phase 01 Plan 02]: Open Q2 closed for Phase 1 — structural-equivalence is the baseline; semantic similarity deferred to Phase 4
+- [Phase 01 Plan 02]: Plan 03 must add ESLint @typescript-eslint/switch-exhaustiveness-check (Pitfall F mitigation)
+- [Phase 01 Plan 02]: tiktoken cl100k_base for token counting; JSON-body provenance not readable by YAML scanner (falls back to 'validated')
 
 ### Todos (next session)
 
@@ -104,23 +110,25 @@ None yet.
 
 ### Last Session
 
-- **Date:** 2026-05-24
-- **Activity:** Project initialization. PROJECT.md + REQUIREMENTS.md drafted. Research SUMMARY.md + STACK.md + FEATURES.md + ARCHITECTURE.md + PITFALLS.md completed. ROADMAP.md created.
+- **Date:** 2026-05-25
+- **Activity:** Phase 01 Plan 02 (Gate Runner + Handoff Bundle). Gate-runner base + 6 per-stage skeletons + manifest.lock SHA-256 hash chain + 4 stage-gate checklists. Handoff-bundle pipeline (tiktoken cl100k_base, 3k floor, 15k ceiling, section-aware truncation). Bundle-sufficiency eval harness (5 stage-transition fixtures, structural-equivalence baseline). 82 tests across 9 files, tsc clean.
 - **Artifacts produced:**
-  - `.planning/PROJECT.md` (26 active requirements R1-R26)
-  - `.planning/REQUIREMENTS.md` (142 v1 active REQ-IDs + v2 deferred + Out of Scope + traceability scaffold)
-  - `.planning/research/SUMMARY.md` + `STACK.md` + `FEATURES.md` + `ARCHITECTURE.md` + `PITFALLS.md`
-  - `.planning/ROADMAP.md` (4 phases, 14 weeks total, coverage 142/142)
-  - `.planning/STATE.md` (this file)
-- **Decisions captured:** v1.5 = 4 weeks; v2.0a/v2.0b split preserved; reverse-engineer moved to v2.0b; XState conditional + Mermaid canonical; ATOM-07/ADAPT-02/04/05 deferred to v2.1.
+  - `assets/scripts/gates/` (base.mjs + 6 per-stage skeletons + _parse-checklist.mjs)
+  - `assets/scripts/manifest-lock-append.mjs` (SHA-256 hash chain)
+  - `assets/scripts/handoff-bundle-build.mjs` (tiktoken budget + section-aware truncation)
+  - `assets/scripts/cli/` gate.mjs + handoff-bundle.mjs + eval-bundle-sufficiency.mjs
+  - `evals/bundles/sufficiency-structural.mjs` + 5 stage-transition fixture pairs
+  - `references/gates/` stage-1.md, stage-2.md, stage-5a.md, stage-5b.md
+  - `schemas/src/` finding.ts + manifest-lock-entry.ts
+  - 9 test files, 82 assertions total
+- **Decisions captured:** GATE-07+08 not_runnable from day one; Open Q2 structural baseline; Pitfall F mitigation deferred to Plan 03; tiktoken cl100k_base token counting.
 
 ### Next Session
 
-- **Likely activity:** `/gsd-plan-phase 1` (decompose Phase 1 into plans), or `/gsd-research-phase 1` first if the handoff-bundle / coexistence-eval methodology needs deeper exploration before planning.
+- **Likely activity:** `/gsd-execute-phase 01` Plan 03 — Determinism CI + schema-migration-guard + ESLint exhaustiveness rule + coexistence-eval scaffold.
 - **Required reading at session start:**
-  - `.planning/ROADMAP.md` (Phase 1 detail section)
-  - `.planning/research/ARCHITECTURE.md` §"Build Order" (validates Phase 1 deliverable list)
-  - `.planning/research/PITFALLS.md` §"Pitfall-to-Phase Mapping" (7 of 13 pitfalls map to Phase 1 prevention)
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-02-SUMMARY.md` (outstanding items for Plan 03)
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-03-PLAN.md`
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

@@ -36,13 +36,13 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Stage Validation Gates
 
-- [ ] **GATE-01**: Six stage gates implemented as deterministic Node ESM checklists: `gate/stage-1-complete`, `gate/stage-2-complete`, `gate/stage-3-complete`, `gate/stage-4-complete`, `gate/stage-5a-complete`, `gate/stage-5b-complete`
-- [ ] **GATE-02**: Each gate returns `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`
-- [ ] **GATE-03**: Four terminal states supported: PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN
-- [ ] **GATE-04**: Four evidence grades supported: VALIDATED / PROTO / INFERRED / MISSING
-- [ ] **GATE-05**: `USER_OVERRIDDEN` requires `--override-reason` flag and propagates a visible banner to every downstream artifact
-- [ ] **GATE-06**: CI mode (`audit --ci`) blocks merges on configured severities (default: only BLOCKER)
-- [ ] **GATE-07**: Gate-runner base class supports `not-runnable` terminal state from day one (codex BLOCKER fix from §16)
+- [x] **GATE-01**: Six stage gates implemented as deterministic Node ESM checklists: `gate/stage-1-complete`, `gate/stage-2-complete`, `gate/stage-3-complete`, `gate/stage-4-complete`, `gate/stage-5a-complete`, `gate/stage-5b-complete`
+- [x] **GATE-02**: Each gate returns `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`
+- [x] **GATE-03**: Four terminal states supported: PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN
+- [x] **GATE-04**: Four evidence grades supported: VALIDATED / PROTO / INFERRED / MISSING
+- [x] **GATE-05**: `USER_OVERRIDDEN` requires `--override-reason` flag and propagates a visible banner to every downstream artifact
+- [x] **GATE-06**: CI mode (`audit --ci`) blocks merges on configured severities (default: only BLOCKER)
+- [x] **GATE-07**: Gate-runner base class supports `not-runnable` terminal state from day one (codex BLOCKER fix from §16)
 - [ ] **GATE-08**: `gate/stage-5a-complete` returns `not-runnable, reason: stage-4-artifacts-absent` when `design/interactions/` is empty (CI-asserted on every v2.0a release)
 
 ### Per-Stage Fidelity Caps (Buxton Discipline)
@@ -107,10 +107,10 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Compact Stage Handoff Bundles
 
-- [ ] **HAND-01**: `design/.handoff/stage-N-bundle.md` written at the end of each stage workflow (~5-15k tokens)
-- [ ] **HAND-02**: Versioned JSON Schema for handoff-bundle (R24 deliverable; v1.5 prerequisite)
+- [x] **HAND-01**: `design/.handoff/stage-N-bundle.md` written at the end of each stage workflow (~5-15k tokens)
+- [x] **HAND-02**: Versioned JSON Schema for handoff-bundle (R24 deliverable; v1.5 prerequisite)
 - [ ] **HAND-03**: Next-stage workflows read only the bundle (+ stage-scoped references); raw upstream files only on explicit verification queries
-- [ ] **HAND-04**: Bundle-sufficiency eval gates release — Stage N+1 must produce equivalent output from bundle alone vs. full directory ingestion
+- [x] **HAND-04**: Bundle-sufficiency eval gates release — Stage N+1 must produce equivalent output from bundle alone vs. full directory ingestion
 
 ### Anchor Formats
 
@@ -348,13 +348,13 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ART-05 | Phase 1 | Pending |
 | ART-06 | Phase 1 | Pending |
 | ART-07 | Phase 1 | Pending |
-| GATE-01 | Phase 1 | Pending |
-| GATE-02 | Phase 1 | Pending |
-| GATE-03 | Phase 1 | Pending |
-| GATE-04 | Phase 1 | Pending |
-| GATE-05 | Phase 1 | Pending |
-| GATE-06 | Phase 1 | Pending |
-| GATE-07 | Phase 1 | Pending |
+| GATE-01 | Phase 1 | Done |
+| GATE-02 | Phase 1 | Done |
+| GATE-03 | Phase 1 | Done |
+| GATE-04 | Phase 1 | Done |
+| GATE-05 | Phase 1 | Done |
+| GATE-06 | Phase 1 | Done |
+| GATE-07 | Phase 1 | Done |
 | GATE-08 | Phase 2 | Pending |
 | FID-01 | Phase 2 | Pending |
 | FID-02 | Phase 2 | Pending |
@@ -401,10 +401,10 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ROUTE-07 | Phase 2 | Pending |
 | ROUTE-08 | Phase 1 | Pending |
 | ROUTE-09 | Phase 2 | Pending |
-| HAND-01 | Phase 1 | Pending |
-| HAND-02 | Phase 1 | Pending |
+| HAND-01 | Phase 1 | Done |
+| HAND-02 | Phase 1 | Done |
 | HAND-03 | Phase 1 | Pending |
-| HAND-04 | Phase 1 | Pending |
+| HAND-04 | Phase 1 | Done |
 | FORMAT-01 | Phase 1 | Complete |
 | FORMAT-02 | Phase 1 | Complete |
 | FORMAT-03 | Phase 1 | Complete |
