@@ -134,10 +134,40 @@ completed: "2026-05-25"
 **Total deviations:** 2 auto-fixed (both Rule 1 — test logic bugs)
 **Impact on plan:** Both fixes corrected test assertion logic — no code changes to gate or SKILL.md. Gate implementation and SKILL.md were correct from the start.
 
+## Codex Review Fixes (Post-Plan, 2026-05-25)
+
+Two P2 (HIGH) findings from the Codex review of Plan 02-04 were accepted and applied as atomic follow-up commits.
+
+### Finding 1 (P2 — CLOSED): Stage 5b gate didn't require evidence:INFERRED when field was absent
+
+- **File:** `assets/scripts/gates/stage-5b.mjs` lines 291-314
+- **Bug:** Gate only blocked when `$extensions.design-os` was present with wrong value. Missing block or missing `evidence` field silently passed despite D-51 requiring `evidence:INFERRED` on every Stage 5b DESIGN.md.
+- **Fix:** Restructured check to block on three cases: (a) `$extensions.design-os` block entirely absent, (b) `evidence` field absent (was `undefined`), (c) `evidence` != `'INFERRED'`. All three emit `5b-evidence-002` with a descriptive message. Added 2 new vitest tests: no-extensions-block fixture and extensions-no-evidence fixture — both assert `failed_after_repair` with `5b-evidence-002`. Existing evidence:validated path (Case 4) unchanged and still passes.
+- **Commit:** `63c5a3b`
+- **Tests added:** 2 new cases (721 total, was 719)
+
+### Finding 2 (P2 — CLOSED): systematize workflow gate step ran against `design/` before `--apply`
+
+- **File:** `skills/workflows/systematize.md` step 10
+- **Bug:** Gate command used `--design-dir design/`. On first run, `design/` is empty/stale, so the gate evaluated a missing file and returned `pass_with_warnings`, letting malformed staged output proceed. Same pattern as Wave 2 (structure.md) and Wave 3 (style.md) findings F-01.
+- **Fix:** Step 10 now runs the gate against `.design-os/preview/run-<timestamp>/` using the run-id captured in step 6. Host fallback section updated to match. Added explanatory note documenting why staged path is correct.
+- **Commit:** `44d7c21`
+
+---
+
 ## Cross-cutting Follow-up (from Wave 4 brief)
 
 **`skills/atoms/hifi/variants-preview.md` — `--variant` CLI bug check:**
 Reviewed the atom. It does NOT use `node bin/design-os.mjs preview --variant` — it uses the import-and-call pattern directly (imports `spawnAndProbe` and `emitTokens` inline). The `--variant` form that was fixed in 02-03 codex review finding 3 only existed in `style.md` Step 7 (now fixed). `variants-preview.md` is clean. No fix needed.
+
+**Gate-against-staged-path invariant — pattern now violated 3 of 3 times (deferred to Plan 02-05):**
+
+The "gate against staged path, not `design/`" rule has now been violated in all three workflow SKILL.mds shipped in Phase 2:
+- `skills/workflows/structure.md` — fixed in Wave 2 codex review
+- `skills/workflows/style.md` — fixed in Wave 3 codex review
+- `skills/workflows/systematize.md` — fixed in this review (Wave 4)
+
+This is a workflow-authoring footgun. The pattern is not documented anywhere that a future workflow author would naturally read before writing a gate step. **Action for Plan 02-05:** author `skills/workflows/INVARIANTS.md` (or extend an existing convention doc) to make this gate-path discipline explicit. The invariant to document: *"All gate invocations in a workflow SKILL.md must run against the staged preview path (`.design-os/preview/run-<timestamp>/`) BEFORE the `--apply` boundary, never against `design/`. The run-id from the staging step must be propagated to the gate step."*
 
 ## Known Stubs
 
