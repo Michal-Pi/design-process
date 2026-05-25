@@ -236,3 +236,65 @@ None. No new network endpoints, auth paths, or trust-boundary-crossing file acce
 - 810 tests pass — VERIFIED (full vitest run)
 - tsc --noEmit — CLEAN
 - lint-determinism — CLEAN
+
+---
+
+## Codex-Review Fix Pass (2026-05-25)
+
+Phase 2 final fix sweep addressing 5 P2 (HIGH) bugs found by Codex review.
+
+### Findings Fixed
+
+**Finding 1: ERROR severity not in audit-report schema**
+- **File:** `assets/scripts/cli/audit.mjs`
+- **Bug:** `slop-tells.mjs` emits findings with `severity: 'ERROR'` (5a-slop-001 rainbow gradient). Schema only allows `BLOCKER | WARN | INFO`. Generated reports with ERROR findings failed schema validation (AUDIT-08 violation).
+- **Fix:** Added `normalizeSeverity()` helper that maps `ERROR→BLOCKER` and `WARNING→WARN`. Applied in `runAudit()` before sorting/returning, and in `buildAuditReport()`. Updated `SEVERITY_ORDER` to canonical `{BLOCKER:0, WARN:1, INFO:2}`.
+- **Test:** "rainbow-gradient slop-tell emits BLOCKER (not ERROR) in findings and report validates against schema"
+- **Commits:** 70048bf
+
+**Finding 2: clean audit reports emit invalid YAML for findings field**
+- **File:** `assets/scripts/cli/audit.mjs:buildAuditReport`
+- **Bug:** Empty findings array serialized as bare `findings:` YAML key (parses as null). Schema requires `findings: []` (array). Clean reports failed schema validation; `.findings.map(...)` throws at consumers.
+- **Fix:** Explicit `findingsYaml` variable: when empty emit `findings: []`; otherwise emit `findings:` with items. Tested that `Array.isArray(parsed.data.findings)` is true and `findings: []` appears in the raw markdown.
+- **Test:** "audit on fixture with zero slop-tells produces findings:[] in frontmatter and validates against schema"
+- **Commits:** 70048bf
+
+**Finding 3: apply.mjs ENOENT on overwrite warning path**
+- **Files:** `assets/scripts/cli/apply.mjs`, `assets/scripts/init.mjs`
+- **Bug:** `apply.mjs` appends to `.design-os/private/run-log.jsonl` but `design-os init` only creates `.design-os/`, not `.design-os/private/`. `appendFile` throws ENOENT before the copy happens.
+- **Fix:** (a) `apply.mjs`: `await mkdir(dirname(logPath), { recursive: true })` before `appendFile`. (b) `init.mjs`: explicitly creates `.design-os/private/` in the init skeleton.
+- **Test:** "succeeds (no ENOENT) when .design-os/private/ does not exist" — overwrite with no private/ pre-existing; verifies run-log is written and no ENOENT.
+- **Commit:** ae19a6d
+
+**Finding 4: audit --pr only diffs HEAD~1 instead of PR range**
+- **File:** `assets/scripts/cli/audit.mjs:PR MODE`
+- **Bug:** Fallback to `HEAD~1` only covers the most recent commit. Multi-commit PRs miss design regressions from earlier commits.
+- **Fix:** Three-tier base-ref resolution: (1) explicit `--base <ref>` flag (new CLI option); (2) `GITHUB_BASE_REF` env var; (3) auto-detect default branch via `git symbolic-ref refs/remotes/origin/HEAD`, then compute merge-base via `git merge-base HEAD <base>`. Diff command changed to `git diff --name-only <base>...HEAD` (three-dot, full PR range).
+- **Test:** "passes an explicit --base ref and performs a three-dot diff (not HEAD~1)" — uses `base: 'HEAD'` to assert zero-file diff completes without crash.
+- **Commits:** 70048bf
+
+**Finding 5: silent pass when git diff fails**
+- **File:** `assets/scripts/cli/audit.mjs:PR MODE`
+- **Bug:** Catch block silently continued with empty `changedFiles`, emitting a clean report. CI passes even though the audit never ran.
+- **Fix:** On `git diff` exec error: `process.stderr.write()` a clear message naming the failure and command, then `process.exit(1)`. Does NOT proceed to emit a clean report.
+- **Test:** "runAudit --pr calls process.exit(1) when git diff command fails" — non-git dir causes git diff failure; intercepts `process.exit` and verifies `exitCode === 1` and stderr contains "audit --pr.*git diff failed".
+- **Commits:** 70048bf
+
+### Updated Metrics
+
+| Metric | Before fix pass | After fix pass |
+|--------|----------------|----------------|
+| Tests passing | 810 | 815 |
+| New tests added | 0 | 5 |
+| TypeScript errors | 0 | 0 |
+| Schema compliance violations | 5 (ERROR severity, null findings) | 0 |
+
+### Self-Check: PASSED (codex-review fix pass)
+
+- `normalizeSeverity()` exported in audit.mjs — VERIFIED
+- `findings: []` emitted for clean reports — VERIFIED (spot-check + test)
+- `.design-os/private/` created by apply.mjs before append — VERIFIED (spot-check)
+- `--base` CLI option present in audit command — VERIFIED
+- `process.exit(1)` on git diff failure — VERIFIED (test intercepts)
+- 815 tests pass — VERIFIED (full vitest run)
+- `tsc --noEmit` — CLEAN (0 errors)
