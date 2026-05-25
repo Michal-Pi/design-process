@@ -1,0 +1,29 @@
+{
+  "artifact": "persona",
+  "stage": "1",
+  "schemaVersion": 1,
+  "generated": "2025-01-15T10:00:00Z",
+  "provenance": "generated",
+  "owner": "design-os",
+  "lastReviewedAt": "2025-01-15T10:00:00Z",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "name": "The Overloaded IC",
+  "jobsToBeDone": [
+    "Surface relevant context automatically when starting a task",
+    "Share mental models without a synchronous call",
+    "Find the canonical version of a decision from 6 months ago"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Maintains a mental map of 'who knows what' across the org; anxious when that map feels stale or incomplete. Optimizes for reducing cognitive overhead.",
+    "emotionalReactions": [
+      "Frustrated when searches return irrelevant noise",
+      "Relieved when context surfaces unprompted before a meeting",
+      "Skeptical of 'AI summaries' that omit nuance"
+    ],
+    "guidingPrinciples": [
+      "I'd rather ask a question than make a wrong assumption",
+      "Speed of retrieval matters more than perfect organization",
+      "Context without source is useless"
+    ]
+  }
+}

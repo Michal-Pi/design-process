@@ -1,0 +1,17 @@
+PHASE 3 PLACEHOLDER
+
+This file represents the Stage 3 low-fidelity wireframe artifacts that will be
+shipped as Excalidraw JSON in Phase 3 of the design-os implementation.
+
+In Phase 3, this placeholder will be replaced by one or more .excalidraw files
+generated via convertToExcalidrawElements() from the Excalidraw library.
+
+Screens planned for Stage 3 → 4 handoff:
+- Search results page (primary JTBD flow)
+- Workspace overview with context panel
+- Knowledge base article view
+- Settings / integrations panel
+
+provenance: inferred
+stage: 3
+artifact: wireframes-placeholder

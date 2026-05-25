@@ -1,0 +1,16 @@
+PHASE 3 PLACEHOLDER
+
+This file represents the Stage 4 interaction specification artifacts that will be
+shipped in Phase 3. In production, Stage 4 produces:
+- Mermaid stateDiagram-v2 files (canonical designer-readable artifact)
+- XState v5 machine files (for components with async + ≥3 states + conditional transitions)
+- IxD spec Markdown files validated against interaction-spec.v1.json
+
+State machines planned for Stage 4 → 5 handoff:
+- SearchBox: idle → searching → results → empty-state / error-state
+- ContextPanel: collapsed → expanded → loading → loaded / error
+- KnowledgeBaseEntry: view → edit → saving → saved / conflict
+
+provenance: inferred
+stage: 4
+artifact: interactions-placeholder

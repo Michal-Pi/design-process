@@ -1,0 +1,35 @@
+{
+  "artifact": "sitemap",
+  "stage": "2",
+  "schemaVersion": 1,
+  "generated": "2025-01-20T11:00:00Z",
+  "provenance": "inferred",
+  "owner": "design-os",
+  "lastReviewedAt": "2025-01-20T11:00:00Z",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "variants": [
+    {
+      "id": "v1-category",
+      "scheme": "category",
+      "nodes": [
+        { "id": "home", "label": "Home" },
+        { "id": "workspace", "label": "Workspace", "parent": "home" },
+        { "id": "knowledge-base", "label": "Knowledge Base", "parent": "home" },
+        { "id": "search", "label": "Search", "parent": "home" },
+        { "id": "settings", "label": "Settings", "parent": "home" }
+      ],
+      "mermaidFlow": "flowchart TD\n  home[Home]\n  home --> workspace[Workspace]\n  home --> kb[Knowledge Base]\n  home --> search[Search]\n  home --> settings[Settings]"
+    },
+    {
+      "id": "v2-hierarchy",
+      "scheme": "hierarchy",
+      "nodes": [
+        { "id": "root", "label": "SkillsOS" },
+        { "id": "capture", "label": "Capture", "parent": "root" },
+        { "id": "retrieve", "label": "Retrieve", "parent": "root" },
+        { "id": "share", "label": "Share", "parent": "root" },
+        { "id": "admin", "label": "Admin", "parent": "root" }
+      ]
+    }
+  ]
+}

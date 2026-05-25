@@ -12,6 +12,7 @@ __pycache__/
 # Runtime-generated .design-os/ directories inside test fixtures
 tests/fixtures/**/.design-os/
 evals/bundles/**/.design-os/
+evals/bundles/last-run.json
 *.log
 # dist/ is excluded but schemas/dist/ is intentionally committed (D-02 versioning policy)
 /dist/
