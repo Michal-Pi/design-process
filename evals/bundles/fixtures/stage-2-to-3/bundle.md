@@ -6,7 +6,7 @@ generated: "2025-01-20T15:00:00Z"
 provenance: generated
 owner: design-os
 lastReviewedAt: "2025-01-20T15:00:00Z"
-sourceHash: sha256:f17b2a0b551ff2ed2e87485f3ed485098b1e35463b138b43348efd96e022d5d7
+sourceHash: sha256:458fcf82474d58d38d2b56140e11acb72e379f98ce2d205f4e623c3382413afd
 tokenCount: 3700
 truncationWarning: null
 provenanceWorstCase: validated
@@ -30,9 +30,12 @@ openQuestions:
 artifactsInventory:
   - path: upstream/sitemap.json
     brief: "LATCH-diverse sitemap with category and hierarchy variants; Mermaid flow for category variant"
+  - path: upstream/wireframes.placeholder
+    brief: "Stage 3 wireframe artifact locations and naming conventions (Phase 3 Plan 01 ships real .excalidraw files)"
 pointersToVerify:
   - "Two sitemap variants exist (LATCH requirement); tree-test must run before Stage 3 gates"
   - "Mermaid flow in v1-category variant should be validated via mermaid-cli before Stage 3"
+  - "Stage 3 wireframes are emitted to .design-os/preview/<run-id>/wireframes/<screen>/ per sketch.md workflow"
 ---
 
 ## Goal & scope

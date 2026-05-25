@@ -1,0 +1,34 @@
+# Stage 2 → 3 Wireframe Skeleton IR Placeholder
+
+This file documents the expected Stage 3 artifact locations for the stage-2-to-3
+handoff bundle. Phase 3 Plan 01 (03-01) ships the real Excalidraw emitter.
+
+## Artifact locations (per sketch.md workflow)
+
+The sketch workflow emits artifacts to:
+
+```
+.design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json
+.design-os/preview/<run-id>/wireframes/<screen>/v1.excalidraw
+.design-os/preview/<run-id>/wireframes/<screen>/v2.excalidraw
+...
+.design-os/preview/<run-id>/wireframes/<screen>/v8.excalidraw
+.design-os/preview/<run-id>/wireframes/<screen>/CHOICE.md
+```
+
+## Screens from Stage 2 sitemap
+
+Screens to wireframe (from `upstream/sitemap.json` v1-category variant):
+
+- `search-results` — primary JTBD: "Surface relevant context when starting a task"
+- `workspace-overview` — primary JTBD: "Manage active work in context"
+
+## Wireframe naming convention (OQ-4 resolution)
+
+Variants are named `v1.excalidraw` through `v8.excalidraw` (numeric, sortable).
+
+## Provenance
+
+artifact: wireframes-placeholder
+stage: 3
+provenance: inferred

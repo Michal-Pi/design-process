@@ -1,0 +1,44 @@
+# evals/triggers/sketch/triggers.yaml
+# Trigger evaluation prompts for design-os/sketch skill.
+#
+# shouldFire: prompts that should activate the sketch workflow
+# shouldNotFire: prompts that should NOT activate the sketch workflow
+#
+# Minimum: 12 prompts per category (recall ≥0.85, false-trigger ≤0.15 per R15)
+#
+# Source: PLAN.md 03-01 Task C; CONTEXT.md OQ-4
+# Implements: WF-04 trigger corpus
+
+skill: design-os/sketch
+
+shouldFire:
+  - "create wireframes for the dashboard screen"
+  - "generate low-fi sketches for onboarding"
+  - "make crazy eights for the checkout flow"
+  - "produce wireframe variants for search results"
+  - "sketch layout alternatives for the profile page"
+  - "run stage 3 on the admin screen"
+  - "low fidelity wireframes for notifications"
+  - "excalidraw wireframes for the navigation"
+  - "wireframe concepts for the landing page"
+  - "sketch divergent layouts for cart screen"
+  - "create sketch variants for home screen"
+  - "run crazy eights on signup flow"
+  - "generate wireframe alternatives for the settings page"
+  - "produce low-fi layout concepts for the inbox view"
+
+shouldNotFire:
+  - "create hi-fi mockups"
+  - "generate token colors"
+  - "audit the design system"
+  - "build the react component"
+  - "run stage 4 interaction design"
+  - "deploy the app"
+  - "create a persona"
+  - "map the user journey"
+  - "build a sitemap"
+  - "generate DESIGN.md"
+  - "run style workflow"
+  - "systematize tokens"
+  - "run stage 2 information architecture"
+  - "create a PRD for the product"
