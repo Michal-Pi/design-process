@@ -1,0 +1,129 @@
+{
+  "$id": "https://design-os.dev/schemas/interaction-spec.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "IxD specification with Mermaid stateDiagram-v2 (canonical) + optional XState v5 machine",
+  "properties": {
+    "artifact": {
+      "const": "interaction-spec",
+      "type": "string"
+    },
+    "generated": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "lastReviewedAt": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "mermaidStateDiagram": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1,
+      "type": "number"
+    },
+    "screen": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "sourceHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "stage": {
+      "const": "4",
+      "type": "string"
+    },
+    "states": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "label": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transitions": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "event": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "guard": {
+                  "type": "string"
+                },
+                "target": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "event",
+                "target"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "transitions"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "worstProvenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    },
+    "xstateMachine": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact",
+    "stage",
+    "schemaVersion",
+    "sourceHash",
+    "generated",
+    "provenance",
+    "owner",
+    "lastReviewedAt",
+    "screen",
+    "states",
+    "mermaidStateDiagram"
+  ],
+  "title": "Interaction Spec (Stage 4)",
+  "type": "object"
+}

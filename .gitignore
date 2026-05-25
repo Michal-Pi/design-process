@@ -10,5 +10,6 @@ __pycache__/
 .env.local
 .design-os/private/
 *.log
-dist/
+# dist/ is excluded but schemas/dist/ is intentionally committed (D-02 versioning policy)
+/dist/
 .tsc-out/

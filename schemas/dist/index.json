@@ -1,0 +1,28 @@
+{
+  "schemas": {
+    "audit-report": {
+      "path": "schemas/dist/audit-report.v1.json",
+      "version": 1
+    },
+    "handoff-bundle": {
+      "path": "schemas/dist/handoff-bundle.v1.json",
+      "version": 1
+    },
+    "interaction-spec": {
+      "path": "schemas/dist/interaction-spec.v1.json",
+      "version": 1
+    },
+    "manifest": {
+      "path": "schemas/dist/manifest.v1.json",
+      "version": 1
+    },
+    "persona": {
+      "path": "schemas/dist/persona.v1.json",
+      "version": 1
+    },
+    "sitemap": {
+      "path": "schemas/dist/sitemap.v1.json",
+      "version": 1
+    }
+  }
+}

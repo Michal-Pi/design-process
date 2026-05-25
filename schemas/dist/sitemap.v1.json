@@ -1,0 +1,126 @@
+{
+  "$id": "https://design-os.dev/schemas/sitemap.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "LATCH-diverse sitemap with DTCG-style custom $type organizational scheme",
+  "properties": {
+    "artifact": {
+      "const": "sitemap",
+      "type": "string"
+    },
+    "generated": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "lastReviewedAt": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1,
+      "type": "number"
+    },
+    "sourceHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "stage": {
+      "const": "2",
+      "type": "string"
+    },
+    "variants": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "mermaidFlow": {
+            "type": "string"
+          },
+          "nodes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "label": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "parent": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "label"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "scheme": {
+            "enum": [
+              "location",
+              "alphabetical",
+              "time",
+              "category",
+              "hierarchy"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "scheme",
+          "nodes"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "worstProvenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact",
+    "stage",
+    "schemaVersion",
+    "sourceHash",
+    "generated",
+    "provenance",
+    "owner",
+    "lastReviewedAt",
+    "variants"
+  ],
+  "title": "Sitemap (Stage 2)",
+  "type": "object"
+}

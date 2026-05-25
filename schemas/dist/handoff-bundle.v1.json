@@ -1,0 +1,180 @@
+{
+  "$id": "https://design-os.dev/schemas/handoff-bundle.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Stage handoff bundle with deterministic frame and LLM-summarized sections; 3–15k token budget",
+  "properties": {
+    "artifact": {
+      "const": "handoff-bundle",
+      "type": "string"
+    },
+    "artifactsInventory": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "brief": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "path": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "brief"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "decisionsMade": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "evidenceGrade": {
+            "enum": [
+              "validated",
+              "proto",
+              "inferred",
+              "missing"
+            ],
+            "type": "string"
+          },
+          "terminalState": {
+            "enum": [
+              "pass",
+              "pass_with_warnings",
+              "failed_after_repair",
+              "user_overridden",
+              "not_runnable"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision",
+          "terminalState",
+          "evidenceGrade"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generated": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "goalAndScope": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "lastReviewedAt": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "type": "string"
+    },
+    "openQuestions": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pointersToVerify": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "provenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    },
+    "provenanceWorstCase": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    },
+    "risksSurfaced": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": 1,
+      "type": "number"
+    },
+    "sourceHash": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "stage": {
+      "pattern": "^\\d(a|b)? → \\d(a|b)?$",
+      "type": "string"
+    },
+    "tokenCount": {
+      "maximum": 15000,
+      "minimum": 3000,
+      "type": "integer"
+    },
+    "truncationWarning": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "worstProvenance": {
+      "enum": [
+        "generated",
+        "validated",
+        "inferred",
+        "missing"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "artifact",
+    "stage",
+    "schemaVersion",
+    "sourceHash",
+    "generated",
+    "provenance",
+    "owner",
+    "lastReviewedAt",
+    "tokenCount",
+    "truncationWarning",
+    "goalAndScope",
+    "decisionsMade",
+    "openQuestions",
+    "artifactsInventory",
+    "pointersToVerify",
+    "provenanceWorstCase"
+  ],
+  "title": "Handoff Bundle (stage transition)",
+  "type": "object"
+}
