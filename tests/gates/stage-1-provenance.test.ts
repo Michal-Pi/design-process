@@ -8,6 +8,7 @@
 import { describe, it, expect } from "vitest";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { GateResult } from "../../schemas/src/gate-result.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
@@ -41,15 +42,15 @@ describe("runStage1Gate — provenance logic", () => {
       expect(result.evidence).toBe("proto");
     });
 
-    it("includes finding 1-provenance-001 (WARNING) when all personas are synthetic", async () => {
+    it("includes finding RED-01 (fail) when all personas are synthetic", async () => {
       const dir = resolve(STAGE1_FIXTURES, "all-synthetic-no-interviews");
       const result = await runStage1Gate(dir, {});
       expect(Array.isArray(result.findings)).toBe(true);
-      const provenance001 = result.findings.find(
-        (f: any) => f.id === "1-provenance-001"
+      const red01 = result.findings.find(
+        (f: any) => f.checkId === "RED-01"
       );
-      expect(provenance001).toBeDefined();
-      expect(provenance001.severity).toBe("WARNING");
+      expect(red01).toBeDefined();
+      expect(red01.status).toBe("fail");
     });
   });
 
@@ -93,16 +94,44 @@ describe("runStage1Gate — provenance logic", () => {
   });
 
   describe("synthetic personas without ASSUMPTIONS.md", () => {
-    it("includes finding 1-provenance-002 (ERROR) when ASSUMPTIONS.md is absent and all personas are synthetic", async () => {
+    it("includes finding RED-03 (fail) when ASSUMPTIONS.md is absent and all personas are synthetic", async () => {
       const dir = resolve(STAGE1_FIXTURES, "synthetic-no-assumptions");
       const result = await runStage1Gate(dir, {});
       expect(result.kind).toBe("pass_with_warnings");
-      const assumption002 = result.findings.find(
-        (f: any) => f.id === "1-provenance-002"
+      const red03 = result.findings.find(
+        (f: any) => f.checkId === "RED-03"
       );
-      expect(assumption002).toBeDefined();
-      expect(assumption002.severity).toBe("ERROR");
+      expect(red03).toBeDefined();
+      expect(red03.status).toBe("fail");
     });
+  });
+});
+
+describe("pass_with_warnings GateResult schema compliance", () => {
+  it("pass_with_warnings result satisfies GateResult schema (has warnings array)", async () => {
+    const dir = resolve(STAGE1_FIXTURES, "all-synthetic-no-interviews");
+    const result = await runStage1Gate(dir, {});
+    expect(result.kind).toBe("pass_with_warnings");
+    // Validate against the canonical GateResult discriminated union schema
+    const parsed = GateResult.safeParse(result);
+    expect(parsed.success).toBe(true);
+    if (parsed.success && parsed.data.kind === "pass_with_warnings") {
+      expect(Array.isArray(parsed.data.warnings)).toBe(true);
+    }
+  });
+
+  it("pass_with_warnings findings use checkId and status (not id/severity)", async () => {
+    const dir = resolve(STAGE1_FIXTURES, "all-synthetic-no-interviews");
+    const result = await runStage1Gate(dir, {});
+    expect(result.kind).toBe("pass_with_warnings");
+    for (const finding of result.findings) {
+      expect(typeof finding.checkId).toBe("string");
+      expect(finding.checkId.length).toBeGreaterThan(0);
+      expect(["pass", "fail", "na"]).toContain(finding.status);
+      // Old field names must NOT be present
+      expect((finding as any).id).toBeUndefined();
+      expect((finding as any).severity).toBeUndefined();
+    }
   });
 });
 

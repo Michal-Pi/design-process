@@ -68,12 +68,14 @@ async function readPersonaProvenance(filePath) {
  *
  * Gate logic (D-37):
  * 1. If no *.persona.json files found → not_runnable
- * 2. If all personas have provenance:'generated' or 'missing' → pass_with_warnings, evidence:'proto'
- *    - Add WARNING finding 1-provenance-001 (synthetic-persona red line)
- *    - If ASSUMPTIONS.md is absent → add ERROR finding 1-provenance-002 (RED-03)
- * 3. If at least one persona has provenance:'validated' AND interviews/ is non-empty
- *    → pass, evidence:'validated'
- * 4. Otherwise → pass_with_warnings, evidence:'proto'
+ * 2. If ANY persona has provenance:'generated' or 'missing':
+ *    a. Add WARNING finding RED-01 (synthetic-persona red line) when all personas are synthetic
+ *    b. If ASSUMPTIONS.md is absent → add finding RED-03 and downgrade to at most proto
+ *       (RED-03 fires whenever hasGenerated is true, regardless of mix — Finding 2 fix)
+ * 3. If all personas have provenance:'generated' or 'missing' → pass_with_warnings, evidence:'proto'
+ * 4. If at least one persona has provenance:'validated' AND interviews/ is non-empty
+ *    → pass, evidence:'validated' (only when ASSUMPTIONS.md check is satisfied or not needed)
+ * 5. Otherwise → pass_with_warnings, evidence:'proto'
  *
  * @param {string} designDir - Path to the design directory (containing research/personas/)
  * @param {object} [config] - Optional configuration (reserved; currently unused)
@@ -104,32 +106,43 @@ export async function runStage1Gate(designDir, config = {}) {
     existsSync(interviewsDir) &&
     readdirSync(interviewsDir).filter((f) => !f.startsWith(".")).length > 0;
 
-  // Step 4: Determine if all personas are synthetic (generated or missing)
+  // Step 4: Determine synthetic/generated persona states
   const allSynthetic = provenances.every(
     (p) => p === "generated" || p === "missing"
   );
+  const hasGenerated = provenances.some(
+    (p) => p === "generated" || p === "missing"
+  );
+
+  // Step 4a: RED-03 check — hoisted out of allSynthetic branch.
+  // ASSUMPTIONS.md is required whenever ANY persona has provenance:generated/missing,
+  // regardless of whether the mix also has validated personas (Finding 2 fix).
+  const assumptionsPath = join(designDir, "ASSUMPTIONS.md");
+  const assumptionsMissing = hasGenerated && !existsSync(assumptionsPath);
 
   if (allSynthetic) {
     // RED-01: All personas are synthetic — hard-block VALIDATED grade
-    const findings = /** @type {Array<{id: string, severity: string, message: string}>} */ ([]);
+    // Finding shape per GateResult schema: { checkId, status, evidence?, citation? }
+    /** @type {Array<{checkId: string, status: string, evidence?: string, citation?: string}>} */
+    const findings = [];
 
     findings.push({
-      id: "1-provenance-001",
-      severity: "WARNING",
-      message:
-        "All personas synthetic — evidence:VALIDATED grade blocked (RED-01). " +
+      checkId: "RED-01",
+      status: "fail",
+      evidence:
+        "All personas synthetic — evidence:VALIDATED grade blocked. " +
         "Real user interviews are required for VALIDATED grade.",
+      citation: "RED-01",
     });
 
-    // RED-03: ASSUMPTIONS.md is required when all personas are synthetic
-    const assumptionsPath = join(designDir, "ASSUMPTIONS.md");
-    if (!existsSync(assumptionsPath)) {
+    if (assumptionsMissing) {
       findings.push({
-        id: "1-provenance-002",
-        severity: "ERROR",
-        message:
-          "ASSUMPTIONS.md required when all personas are synthetic (RED-03). " +
+        checkId: "RED-03",
+        status: "fail",
+        evidence:
+          "ASSUMPTIONS.md required when personas include generated provenance (RED-03). " +
           "Document every persona claim as an item to validate.",
+        citation: "RED-03",
       });
     }
 
@@ -137,11 +150,34 @@ export async function runStage1Gate(designDir, config = {}) {
       kind: "pass_with_warnings",
       evidence: "proto",
       findings,
+      warnings: findings.map((f) => f.evidence ?? f.checkId),
     };
   }
 
   // Step 5: Check for at least one validated persona
   const hasValidatedPersona = provenances.some((p) => p === "validated");
+
+  // Mixed provenance: if ASSUMPTIONS.md is missing, downgrade to proto and warn (Finding 2 fix).
+  if (assumptionsMissing) {
+    /** @type {Array<{checkId: string, status: string, evidence?: string, citation?: string}>} */
+    const findings = [
+      {
+        checkId: "RED-03",
+        status: "fail",
+        evidence:
+          "ASSUMPTIONS.md required — design directory contains generated personas (RED-03). " +
+          "Document every synthetic persona claim as an item to validate.",
+        citation: "RED-03",
+      },
+    ];
+
+    return {
+      kind: "pass_with_warnings",
+      evidence: "proto",
+      findings,
+      warnings: findings.map((f) => f.evidence ?? f.checkId),
+    };
+  }
 
   if (hasValidatedPersona && interviewsExist) {
     // Full VALIDATED grade: validated persona + non-empty interviews
@@ -157,5 +193,6 @@ export async function runStage1Gate(designDir, config = {}) {
     kind: "pass_with_warnings",
     evidence: "proto",
     findings: [],
+    warnings: [],
   };
 }
