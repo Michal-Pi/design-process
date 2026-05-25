@@ -9,7 +9,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Distribution & Compatibility
 
-- [ ] **DIST-01**: Package conforms to agentskills.io v1 SKILL.md spec (frontmatter: `name`, `description` ≤200 chars, `version`, `license: Apache-2.0`, `compatibility:`, `allowed-tools:`)
+- [x] **DIST-01**: Package conforms to agentskills.io v1 SKILL.md spec (frontmatter: `name`, `description` ≤200 chars, `version`, `license: Apache-2.0`, `compatibility:`, `allowed-tools:`)
 - [ ] **DIST-02**: 22 triggerable skills (7 workflows + 15 atoms) — total trigger metadata ≤5k chars
 - [ ] **DIST-03**: Per-skill description ≤200 chars with 5+ trigger phrases, fire-condition keywords front-loaded in first 100 chars
 - [ ] **DIST-04**: Claude Code is the host-first target (full subagent dispatch supported)
@@ -28,7 +28,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [ ] **ART-01**: `design/` directory is the user-facing cross-stage artifact substrate, committed to git
 - [ ] **ART-02**: Per-file commit policy implemented (canonical summaries committed; rejected wireframes, raw transcripts, `.design-os/private/` gitignored)
-- [ ] **ART-03**: Per-artifact YAML frontmatter (`artifact`, `stage`, `generated`, `schemaVersion`, `sourceHash`, `provenance`, `owner`, `lastReviewedAt`)
+- [x] **ART-03**: Per-artifact YAML frontmatter (`artifact`, `stage`, `generated`, `schemaVersion`, `sourceHash`, `provenance`, `owner`, `lastReviewedAt`)
 - [ ] **ART-04**: `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
 - [ ] **ART-05**: PII scanner (`design-os scan --pii`) runs pre-commit and rejects transcripts/PII in committed paths
 - [ ] **ART-06**: `.design-os/` package-internal state (manifest.lock hash chain, manual-overrides.json, preview run state, gitignored private logs/screenshots) per v1.0.1 commit policy
@@ -114,13 +114,13 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Anchor Formats
 
-- [ ] **FORMAT-01**: PRD = Markdown + YAML 1.2 frontmatter (CommonMark)
-- [ ] **FORMAT-02**: Personas = JSON with required frontmatter; sitemap = custom `$type` schema (DTCG-style); flows = Mermaid
-- [ ] **FORMAT-03**: Wireframes = Excalidraw JSON (pinned schema version; never `latest`)
-- [ ] **FORMAT-04**: Interaction specs = Markdown + XState v5 machine (when applicable); motion tokens DTCG-compatible
-- [ ] **FORMAT-05**: Tokens = W3C DTCG v2025.10 (`application/design-tokens+json`, primitive→semantic→component tiers)
-- [ ] **FORMAT-06**: DESIGN.md emit per Google spec (April 2026, Apache-2.0); `$extensions.design-os` namespace for design-os-specific data
-- [ ] **FORMAT-07**: `design-md-validate.mjs` supports schema version pinning to survive Google spec drift
+- [x] **FORMAT-01**: PRD = Markdown + YAML 1.2 frontmatter (CommonMark)
+- [x] **FORMAT-02**: Personas = JSON with required frontmatter; sitemap = custom `$type` schema (DTCG-style); flows = Mermaid
+- [x] **FORMAT-03**: Wireframes = Excalidraw JSON (pinned schema version; never `latest`)
+- [x] **FORMAT-04**: Interaction specs = Markdown + XState v5 machine (when applicable); motion tokens DTCG-compatible
+- [x] **FORMAT-05**: Tokens = W3C DTCG v2025.10 (`application/design-tokens+json`, primitive→semantic→component tiers)
+- [x] **FORMAT-06**: DESIGN.md emit per Google spec (April 2026, Apache-2.0); `$extensions.design-os` namespace for design-os-specific data
+- [x] **FORMAT-07**: `design-md-validate.mjs` supports schema version pinning to survive Google spec drift
 
 ### References Corpus
 
@@ -167,7 +167,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [ ] **PERSIST-01**: `design/` for artifacts (committed, designer-readable, AI-readable) vs `.design-os/` (package state, selectively committed)
 - [ ] **PERSIST-02**: Decision log + hash chain + manual-override capture preserved from v1.0.1
-- [ ] **PERSIST-03**: Schema-migration tooling (`design-os migrate`) accompanies every schema bump from v1.5
+- [x] **PERSIST-03**: Schema-migration tooling (`design-os migrate`) accompanies every schema bump from v1.5
 - [ ] **PERSIST-04**: Recovery semantics — deleting `design/research/` triggers a confirm-before-regenerate prompt
 
 ### Polyglot Adapters
@@ -229,13 +229,13 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Versioned Schemas (v1.5 Prerequisite)
 
-- [ ] **SCHEMA-01**: `persona.v1.json` schema authored in Zod, emitted via `zod-to-json-schema`
-- [ ] **SCHEMA-02**: `sitemap.v1.json` schema
-- [ ] **SCHEMA-03**: `manifest.v1.json` schema
-- [ ] **SCHEMA-04**: `interaction-spec.v1.json` schema
-- [ ] **SCHEMA-05**: `audit-report.v1.json` schema
-- [ ] **SCHEMA-06**: `handoff-bundle.v1.json` schema
-- [ ] **SCHEMA-07**: Runtime validation via `ajv` 8 + `ajv-formats` at every workflow boundary
+- [x] **SCHEMA-01**: `persona.v1.json` schema authored in Zod, emitted via `zod-to-json-schema`
+- [x] **SCHEMA-02**: `sitemap.v1.json` schema
+- [x] **SCHEMA-03**: `manifest.v1.json` schema
+- [x] **SCHEMA-04**: `interaction-spec.v1.json` schema
+- [x] **SCHEMA-05**: `audit-report.v1.json` schema
+- [x] **SCHEMA-06**: `handoff-bundle.v1.json` schema
+- [x] **SCHEMA-07**: Runtime validation via `ajv` 8 + `ajv-formats` at every workflow boundary
 
 ### Partial-Output Recovery
 
@@ -330,7 +330,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DIST-01 | Phase 1 | Pending |
+| DIST-01 | Phase 1 | Complete |
 | DIST-02 | Phase 1 | Pending |
 | DIST-03 | Phase 1 | Pending |
 | DIST-04 | Phase 2 | Pending |
@@ -343,7 +343,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | SPINE-04 | Phase 1 | Pending |
 | ART-01 | Phase 1 | Pending |
 | ART-02 | Phase 1 | Pending |
-| ART-03 | Phase 1 | Pending |
+| ART-03 | Phase 1 | Complete |
 | ART-04 | Phase 1 | Pending |
 | ART-05 | Phase 1 | Pending |
 | ART-06 | Phase 1 | Pending |
@@ -405,13 +405,13 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | HAND-02 | Phase 1 | Pending |
 | HAND-03 | Phase 1 | Pending |
 | HAND-04 | Phase 1 | Pending |
-| FORMAT-01 | Phase 1 | Pending |
-| FORMAT-02 | Phase 1 | Pending |
-| FORMAT-03 | Phase 1 | Pending |
-| FORMAT-04 | Phase 1 | Pending |
-| FORMAT-05 | Phase 1 | Pending |
-| FORMAT-06 | Phase 1 | Pending |
-| FORMAT-07 | Phase 1 | Pending |
+| FORMAT-01 | Phase 1 | Complete |
+| FORMAT-02 | Phase 1 | Complete |
+| FORMAT-03 | Phase 1 | Complete |
+| FORMAT-04 | Phase 1 | Complete |
+| FORMAT-05 | Phase 1 | Complete |
+| FORMAT-06 | Phase 1 | Complete |
+| FORMAT-07 | Phase 1 | Complete |
 | REF-01 | Phase 1 | Pending |
 | REF-02 | Phase 1 | Pending |
 | REF-03 | Phase 3 | Pending |
@@ -440,7 +440,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | AUDIT-08 | Phase 2 | Pending |
 | PERSIST-01 | Phase 1 | Pending |
 | PERSIST-02 | Phase 1 | Pending |
-| PERSIST-03 | Phase 1 | Pending |
+| PERSIST-03 | Phase 1 | Complete |
 | PERSIST-04 | Phase 1 | Pending |
 | ADAPT-01 | Phase 2 | Pending |
 | ADAPT-02 | v2.1 (deferred) | Deferred |
@@ -484,13 +484,13 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | COST-08 | Phase 2 | Pending |
 | COST-09 | Phase 2 | Pending |
 | COST-10 | Phase 4 | Pending |
-| SCHEMA-01 | Phase 1 | Pending |
-| SCHEMA-02 | Phase 1 | Pending |
-| SCHEMA-03 | Phase 1 | Pending |
-| SCHEMA-04 | Phase 1 | Pending |
-| SCHEMA-05 | Phase 1 | Pending |
-| SCHEMA-06 | Phase 1 | Pending |
-| SCHEMA-07 | Phase 1 | Pending |
+| SCHEMA-01 | Phase 1 | Complete |
+| SCHEMA-02 | Phase 1 | Complete |
+| SCHEMA-03 | Phase 1 | Complete |
+| SCHEMA-04 | Phase 1 | Complete |
+| SCHEMA-05 | Phase 1 | Complete |
+| SCHEMA-06 | Phase 1 | Complete |
+| SCHEMA-07 | Phase 1 | Complete |
 | RECOV-01 | Phase 1 | Pending |
 | RECOV-02 | Phase 1 | Pending |
 | RECOV-03 | Phase 1 | Pending |

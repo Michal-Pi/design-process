@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: executing
-last_updated: "2026-05-24T20:02:19.348Z"
+last_updated: "2026-05-25T08:41:11.574Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 20
 ---
 
 # State: design-os
@@ -34,11 +34,12 @@ progress:
 
 **Progress:**
 
-```
+[██░░░░░░░░] 20%
 Phase 1: [          ] 0%  Not started
 Phase 2: [          ] 0%  Not started
 Phase 3: [          ] 0%  Not started
 Phase 4: [          ] 0%  Not started
+
 ```
 
 **Overall:** 0 / 4 phases complete.
@@ -61,6 +62,7 @@ Phase 4: [          ] 0%  Not started
 | Designer review (n≥5) | ≥4 of 5 positive | Not started |
 | PM review (n≥5) | ≥4 of 5 positive | Not started |
 | WCAG 2.2 AA contrast on own examples | 100% pass | Not started |
+| Phase 01 P01 | 90m | 3 tasks | 47 files |
 
 ## Accumulated Context
 
@@ -74,6 +76,11 @@ Phase 4: [          ] 0%  Not started
 | 2026-05-24 | XState v5 is conditional, Mermaid stateDiagram-v2 is canonical at Stage 4 | Codex §16 feedback — XState as primary overfits engineering audience. Designer-readable Mermaid renderer is a Phase 1 deliverable. |
 | 2026-05-24 | 4 IDs deferred from v1 phase mapping (ATOM-07, ADAPT-02, ADAPT-04, ADAPT-05) | All flagged "(v2.1)" or "(v2.1+)" inline in REQUIREMENTS.md. Tracked but not in v2.0 GA roadmap. |
 | 2026-05-24 | Project mode = standard (Horizontal Layers) | Infrastructure-heavy SKILL.md package work; each release (v1.5 → v2.0a → v2.0b → RC/GA) is itself a horizontal layer with internal stage workflows. |
+
+- [Phase ?]: D-01 substitution: zod-to-json-schema EOL Nov 2025 replaced by Zod 4 z.toJSONSchema()
+- [Phase ?]: Ajv strict: false required — Zod-emitted discriminatedUnion schemas conflict with ajv strict mode
+- [Phase ?]: schemas/dist committed to git — .gitignore scoped to /dist/ root only
+- [Phase ?]: FORMAT-07 DESIGN.md pinned to 2026.04; unsupported --design-md-version exits 1
 
 ### Todos (next session)
 
