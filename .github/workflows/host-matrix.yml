@@ -93,6 +93,17 @@ jobs:
           npm run eval:coexistence
           echo "eval:coexistence exit: $?"
 
+      # Adversarial CI (Phase 2 — D-50, RED-05, RED-06, worstProvenance)
+      # Runs for all hosts: adversarial suites are pure script tests with no LLM calls.
+      # RED-05: 100 synthetic-persona block tests (must all return pass_with_warnings)
+      # RED-06: 10 injection canary prompts (gate is proof against prompt content)
+      # worstProvenance: mixed-persona fixture propagation invariant
+      - name: Run adversarial CI (RED-05, RED-06, worstProvenance)
+        run: npx vitest run evals/adversarial/
+        env:
+          # No auth tokens needed: all adversarial tests are pure script tests
+          CI: true
+
       # Heartbeat — Pitfall E mitigation
       - name: Heartbeat — host-matrix summary
         if: always()

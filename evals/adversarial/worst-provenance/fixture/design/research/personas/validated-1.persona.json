@@ -1,0 +1,29 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: validated
+worstProvenance: validated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/adversarial-test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+---
+{
+  "name": "Validated User Gamma",
+  "jobsToBeDone": [
+    "Understand system behavior before committing changes",
+    "Validate assumptions with real usage data"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Evidence-driven thinking; validates assumptions before acting; prefers structured input over open-ended exploration",
+    "emotionalReactions": [
+      "Confident when backed by data",
+      "Uncomfortable when making assumptions without verification"
+    ],
+    "guidingPrinciples": [
+      "Measure before optimizing",
+      "User behavior beats assumptions"
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+---
+artifact: persona
+stage: "1"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/adversarial-test
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+---
+{
+  "name": "Synthetic User Beta",
+  "jobsToBeDone": [
+    "Share work with distributed teammates efficiently",
+    "Find past decisions without digging through history"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Thinks in terms of async workflows; values clarity over richness in communication artifacts",
+    "emotionalReactions": [
+      "Satisfied when work is easily discoverable",
+      "Anxious when context is missing from shared artifacts"
+    ],
+    "guidingPrinciples": [
+      "Good documentation reduces meetings",
+      "Context should travel with the artifact"
+    ]
+  }
+}

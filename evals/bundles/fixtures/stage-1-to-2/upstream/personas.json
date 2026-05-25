@@ -1,29 +1,90 @@
-{
-  "artifact": "persona",
-  "stage": "1",
-  "schemaVersion": 1,
-  "generated": "2025-01-15T10:00:00Z",
-  "provenance": "generated",
-  "owner": "design-os",
-  "lastReviewedAt": "2025-01-15T10:00:00Z",
-  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-  "name": "The Overloaded IC",
-  "jobsToBeDone": [
-    "Surface relevant context automatically when starting a task",
-    "Share mental models without a synchronous call",
-    "Find the canonical version of a decision from 6 months ago"
-  ],
-  "thinkingStyle": {
-    "cognitiveSpace": "Maintains a mental map of 'who knows what' across the org; anxious when that map feels stale or incomplete. Optimizes for reducing cognitive overhead.",
-    "emotionalReactions": [
-      "Frustrated when searches return irrelevant noise",
-      "Relieved when context surfaces unprompted before a meeting",
-      "Skeptical of 'AI summaries' that omit nuance"
+[
+  {
+    "artifact": "persona",
+    "stage": "1",
+    "schemaVersion": 1,
+    "provenance": "generated",
+    "worstProvenance": "generated",
+    "generated": "2026-05-25T00:00:00.000Z",
+    "owner": "design-os/eval",
+    "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+    "sourceHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "name": "The Overloaded IC",
+    "jobsToBeDone": [
+      "Surface relevant context automatically when starting a task",
+      "Share mental models without a synchronous call",
+      "Find the canonical version of a decision from 6 months ago"
     ],
-    "guidingPrinciples": [
-      "I'd rather ask a question than make a wrong assumption",
-      "Speed of retrieval matters more than perfect organization",
-      "Context without source is useless"
-    ]
+    "thinkingStyle": {
+      "cognitiveSpace": "Maintains a mental map of who knows what across the org; anxious when that map feels stale or incomplete. Optimizes for reducing cognitive overhead.",
+      "emotionalReactions": [
+        "Frustrated when searches return irrelevant noise",
+        "Relieved when context surfaces unprompted before a meeting",
+        "Skeptical of AI summaries that omit nuance"
+      ],
+      "guidingPrinciples": [
+        "I would rather ask a question than make a wrong assumption",
+        "Speed of retrieval matters more than perfect organization",
+        "Context without source is useless"
+      ]
+    }
+  },
+  {
+    "artifact": "persona",
+    "stage": "1",
+    "schemaVersion": 1,
+    "provenance": "generated",
+    "worstProvenance": "generated",
+    "generated": "2026-05-25T00:00:00.000Z",
+    "owner": "design-os/eval",
+    "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+    "sourceHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "name": "The Sprint Planner",
+    "jobsToBeDone": [
+      "Plan and communicate two-week sprints without losing track of cross-team dependencies",
+      "Retrospect on past sprints to improve team velocity predictably"
+    ],
+    "thinkingStyle": {
+      "cognitiveSpace": "Thinks in terms of capacity, dependencies, and blockers; constantly managing multiple parallel threads at different stages of completion.",
+      "emotionalReactions": [
+        "Anxious when blockers are invisible until the last minute",
+        "Satisfied when the team finishes a sprint with no carry-over",
+        "Frustrated by status updates that require manual aggregation"
+      ],
+      "guidingPrinciples": [
+        "Visibility reduces surprises",
+        "Dependencies should be explicit, not implied",
+        "Retrospectives only improve things if action items have owners"
+      ]
+    }
+  },
+  {
+    "artifact": "persona",
+    "stage": "1",
+    "schemaVersion": 1,
+    "provenance": "inferred",
+    "worstProvenance": "generated",
+    "generated": "2026-05-25T00:00:00.000Z",
+    "owner": "design-os/eval",
+    "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+    "sourceHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "name": "The Async Worker",
+    "jobsToBeDone": [
+      "Maintain deep focus despite asynchronous interruptions from collaborators in other timezones",
+      "Contribute meaningfully to team discussions without attending every synchronous meeting"
+    ],
+    "thinkingStyle": {
+      "cognitiveSpace": "Operates in focused blocks; treats communication as work that must be scheduled, not reactive. Strong preference for written over verbal handoffs.",
+      "emotionalReactions": [
+        "Protective of uninterrupted focus time",
+        "Relieved when decisions are documented before they need to be acted on",
+        "Guilty when slow async response times create bottlenecks for others"
+      ],
+      "guidingPrinciples": [
+        "Async-first is a feature, not a limitation",
+        "Written context is a gift to future-me and the team",
+        "Meetings should be a last resort, not a default"
+      ]
+    }
   }
-}
+]
