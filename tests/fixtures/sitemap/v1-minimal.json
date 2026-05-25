@@ -1,0 +1,31 @@
+{
+  "artifact": "sitemap",
+  "stage": "2",
+  "schemaVersion": 1,
+  "sourceHash": "sha256:d28584e7c5e7f51f485c5ca1104c5be0621d9b002c389fab64173259ab76f79a",
+  "generated": "2026-05-24T12:00:00Z",
+  "provenance": "generated",
+  "owner": "designer@example.com",
+  "lastReviewedAt": "2026-05-24T12:00:00Z",
+  "variants": [
+    {
+      "id": "by-category",
+      "scheme": "category",
+      "nodes": [
+        { "id": "home", "label": "Home" },
+        { "id": "workspace", "label": "Workspace", "parent": "home" },
+        { "id": "settings", "label": "Settings", "parent": "home" }
+      ],
+      "mermaidFlow": "flowchart TD\n  home[Home] --> workspace[Workspace]\n  home --> settings[Settings]"
+    },
+    {
+      "id": "by-hierarchy",
+      "scheme": "hierarchy",
+      "nodes": [
+        { "id": "root", "label": "Product Root" },
+        { "id": "core", "label": "Core Workflows", "parent": "root" },
+        { "id": "admin", "label": "Administration", "parent": "root" }
+      ]
+    }
+  ]
+}

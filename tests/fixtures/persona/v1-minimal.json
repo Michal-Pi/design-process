@@ -1,0 +1,27 @@
+{
+  "artifact": "persona",
+  "stage": "1",
+  "schemaVersion": 1,
+  "name": "Alex Chen",
+  "sourceHash": "sha256:cdba95e154bb857dabbcf458ed03cb38a1ff8150e901fa2348e3b8d574b39fdf",
+  "generated": "2026-05-24T12:00:00Z",
+  "provenance": "generated",
+  "worstProvenance": "generated",
+  "owner": "designer@example.com",
+  "lastReviewedAt": "2026-05-24T12:00:00Z",
+  "jobsToBeDone": [
+    "Organize team workflows without learning a complex tool",
+    "Find reliable patterns for async collaboration"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Pragmatic efficiency-seeker who mentally maps new tools to existing workflows",
+    "emotionalReactions": [
+      "Frustrated by tools that require extensive onboarding",
+      "Energized when a solution clicks immediately"
+    ],
+    "guidingPrinciples": [
+      "Do the simplest thing that works",
+      "If I can't explain it to my team in 2 minutes, it's too complex"
+    ]
+  }
+}

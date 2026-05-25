@@ -8,3 +8,7 @@ __pycache__/
 *.pyc
 .env
 .env.local
+.design-os/private/
+*.log
+dist/
+.tsc-out/

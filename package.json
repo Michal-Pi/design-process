@@ -1,0 +1,43 @@
+{
+  "name": "design-os",
+  "version": "0.1.0",
+  "description": "5-stage design process, operationalized as an agent-loop workflow",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "design-os": "./bin/design-os.mjs"
+  },
+  "scripts": {
+    "schemas:emit": "tsx assets/scripts/schemas/emit.mjs",
+    "test": "vitest run",
+    "validate": "tsx bin/design-os.mjs validate",
+    "test:schemas": "vitest run tests/schemas/",
+    "tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ajv": "^8",
+    "ajv-formats": "^3",
+    "apca-w3": "latest",
+    "commander": "^12",
+    "culori": "^4",
+    "get-port": "^7",
+    "globby": "^14",
+    "gray-matter": "^4",
+    "pino": "^9",
+    "semver": "^7",
+    "tiktoken": "^1",
+    "wcag-contrast": "^3",
+    "yaml": "^2",
+    "zod": "^4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/semver": "^7",
+    "tsx": "^4",
+    "typescript": "^5.7",
+    "vitest": "^2"
+  },
+  "license": "Apache-2.0"
+}
