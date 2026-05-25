@@ -15,8 +15,9 @@ export const command = {
   handler: async (args) => {
     // Task 3 fills in the real implementation.
     const { validateDesignMd } = await import("../design-md-validate.mjs");
+    // Commander converts --design-md-version to camelCase: designMdVersion
     await validateDesignMd(args.file, {
-      version: args["design-md-version"] ?? "2026.04",
+      version: args.designMdVersion ?? "2026.04",
     });
   },
 };

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-os.dev/schemas/design-md.2026.04.json",
+  "title": "Google DESIGN.md (April 2026)",
+  "description": "DESIGN.md frontmatter schema — pinned to Google DESIGN.md April 2026 OSS release",
+  "type": "object",
+  "required": [
+    "name",
+    "tokens",
+    "version"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Product or feature name"
+    },
+    "tokens": {
+      "type": "number",
+      "description": "Token budget for this design document"
+    },
+    "version": {
+      "type": "string",
+      "description": "DESIGN.md schema version"
+    },
+    "$extensions": {
+      "type": "object",
+      "description": "Optional extensions namespace",
+      "properties": {
+        "design-os": {
+          "type": "object",
+          "description": "design-os structured metadata (MRD §15)"
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

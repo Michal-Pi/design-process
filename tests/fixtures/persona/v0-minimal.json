@@ -1,0 +1,18 @@
+{
+  "artifact": "persona",
+  "stage": "1",
+  "name": "Alex Chen",
+  "owner": "designer@example.com",
+  "jobsToBeDone": [
+    "Organize team workflows without learning a complex tool"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Pragmatic efficiency-seeker",
+    "emotionalReactions": [
+      "Frustrated by tools that require extensive onboarding"
+    ],
+    "guidingPrinciples": [
+      "Do the simplest thing that works"
+    ]
+  }
+}
