@@ -1,3 +1,14 @@
+---
+artifact: persona-bundle
+stage: "1"
+schemaVersion: 1
+provenance: generated
+worstProvenance: generated
+generated: "2026-05-25T00:00:00.000Z"
+owner: design-os/eval
+lastReviewedAt: "2026-05-25T00:00:00.000Z"
+sourceHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+---
 [
   {
     "artifact": "persona",
@@ -12,18 +23,15 @@
     "name": "The Overloaded IC",
     "jobsToBeDone": [
       "Surface relevant context automatically when starting a task",
-      "Share mental models without a synchronous call",
-      "Find the canonical version of a decision from 6 months ago"
+      "Share mental models without a synchronous call"
     ],
     "thinkingStyle": {
-      "cognitiveSpace": "Maintains a mental map of who knows what across the org; anxious when that map feels stale or incomplete. Optimizes for reducing cognitive overhead.",
+      "cognitiveSpace": "Maintains a mental map of who knows what across the org; anxious when that map feels stale or incomplete.",
       "emotionalReactions": [
         "Frustrated when searches return irrelevant noise",
-        "Relieved when context surfaces unprompted before a meeting",
-        "Skeptical of AI summaries that omit nuance"
+        "Relieved when context surfaces unprompted before a meeting"
       ],
       "guidingPrinciples": [
-        "I would rather ask a question than make a wrong assumption",
         "Speed of retrieval matters more than perfect organization",
         "Context without source is useless"
       ]
@@ -41,20 +49,18 @@
     "sourceHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "name": "The Sprint Planner",
     "jobsToBeDone": [
-      "Plan and communicate two-week sprints without losing track of cross-team dependencies",
-      "Retrospect on past sprints to improve team velocity predictably"
+      "Plan and communicate sprints without losing track of cross-team dependencies",
+      "Retrospect on past sprints to improve velocity predictably"
     ],
     "thinkingStyle": {
-      "cognitiveSpace": "Thinks in terms of capacity, dependencies, and blockers; constantly managing multiple parallel threads at different stages of completion.",
+      "cognitiveSpace": "Thinks in terms of capacity, dependencies, and blockers; constantly managing parallel threads.",
       "emotionalReactions": [
         "Anxious when blockers are invisible until the last minute",
-        "Satisfied when the team finishes a sprint with no carry-over",
         "Frustrated by status updates that require manual aggregation"
       ],
       "guidingPrinciples": [
         "Visibility reduces surprises",
-        "Dependencies should be explicit, not implied",
-        "Retrospectives only improve things if action items have owners"
+        "Dependencies should be explicit, not implied"
       ]
     }
   },
@@ -70,19 +76,17 @@
     "sourceHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "name": "The Async Worker",
     "jobsToBeDone": [
-      "Maintain deep focus despite asynchronous interruptions from collaborators in other timezones",
-      "Contribute meaningfully to team discussions without attending every synchronous meeting"
+      "Maintain deep focus despite async interruptions from collaborators in other timezones",
+      "Contribute meaningfully without attending every synchronous meeting"
     ],
     "thinkingStyle": {
-      "cognitiveSpace": "Operates in focused blocks; treats communication as work that must be scheduled, not reactive. Strong preference for written over verbal handoffs.",
+      "cognitiveSpace": "Operates in focused blocks; treats communication as work that must be scheduled, not reactive.",
       "emotionalReactions": [
         "Protective of uninterrupted focus time",
-        "Relieved when decisions are documented before they need to be acted on",
-        "Guilty when slow async response times create bottlenecks for others"
+        "Relieved when decisions are documented before they need to be acted on"
       ],
       "guidingPrinciples": [
         "Async-first is a feature, not a limitation",
-        "Written context is a gift to future-me and the team",
         "Meetings should be a last resort, not a default"
       ]
     }
