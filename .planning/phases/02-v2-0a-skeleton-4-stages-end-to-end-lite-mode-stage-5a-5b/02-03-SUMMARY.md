@@ -225,3 +225,74 @@ Test count: 676 passing (639 baseline + 37 new)
 lint-determinism: CLEAN
 tsc --noEmit: clean
 SKILL.md descriptions: style.md 144 chars, tokens/emit.md 134 chars, hifi/variants-preview.md 119 chars (all ≤200)
+
+---
+
+## Codex Review Fixes (post-plan, 2026-05-25)
+
+Five findings from Codex review session `019e5fc6-519a-7f43-9642-f8b653ef2188` fixed.
+All 5 findings accepted (0 rejected).
+
+### Finding 1 (P2) — CLOSED: staging dir anchored to repo root, not designDir
+
+**Commit:** `8414852`
+**Bug:** `stagingDir` computed as `join(designDir, '.design-os', 'preview', runId)`, so with
+`--design-dir nested/path/design/` the staging artifacts landed at
+`nested/path/design/.design-os/preview/` instead of `.design-os/preview/`.
+**Fix:** Changed to `resolve(projectRoot, '.design-os', 'preview', runId)`.
+**New test:** `tokens-project: staging dir is anchored to projectRoot (not designDir)` —
+verifies `projectionPath` starts with `<repoRoot>/.design-os/preview/` when `designDir`
+is nested under `projectRoot`.
+
+### Finding 2 (P2) — CLOSED: shadcn wrapper CSS import path corrected
+
+**Commit:** `8414852` (same commit as Finding 1)
+**Bug:** Wrapper at `<stagingDir>/components/design-os-theme-provider.tsx` imported
+`'./design-os-tokens.css'` (relative to `components/`) — the CSS file doesn't exist there.
+**Fix:** Changed to `'../design-os-tokens.css'` (parent-relative, resolves to `<stagingDir>/design-os-tokens.css`).
+**New test:** `shadcn wrapper import uses '../design-os-tokens.css'` — reads the wrapper, asserts
+`import "../design-os-tokens.css"` is present and the resolved CSS path exists on disk.
+
+### Finding 3 (P2) — CLOSED: style.md preview invocation aligned with real preview CLI
+
+**Commit:** `1b687be`
+**Bug:** Step 7 used `node bin/design-os.mjs preview --design-dir design/ --variant <A|B|C>` —
+option surface doesn't exist; `preview` requires a subcommand (`spawn` or `release-port`).
+**Fix:** Rewrote step 7 to use the real two-step flow: `tokens-project.mjs` per variant (7a),
+`preview spawn --framework <vite|next|astro> --repo-root <path>` (7b), Playwright screenshot
+of returned `readyUrl` (7c), `preview release-port --run-id <id>` (7d).
+**Gap documented:** `preview spawn` returns server config but doesn't auto-screenshot; the
+Playwright invocation (7c) is manual. Plan 02-05 owns adding automated per-variant screenshot
+capture to the harness CLI.
+
+### Finding 4 (P2) — CLOSED: style.md handoff-bundle invocation aligned with real CLI options
+
+**Commit:** `1b687be` (same commit as Finding 3 — both in style.md)
+**Bug:** Step 10 used `--stage-from 2 --stage-to 5a` — these options don't exist.
+Real CLI requires `--from`, `--to`, `--design-dir`, `--body-file`.
+**Fix:** Rewrote step 10 with correct option names and documented the `--body-file` convention
+(Markdown file with palette choices, adapter, contrast measurements, D-42 caveats).
+
+### Finding 5 (P3) — CLOSED: D-43 regression test made real + gate hard-coded
+
+**Commit:** `429df2f`
+**Bug:** The "non-empty interactions" regression test created only an empty directory — a
+duplicate of the prior test. A real regression (gate returning `pass` when interaction files
+exist) would not be caught.
+**Root cause also fixed:** `gate-stage-5a.mjs` was erroneously returning `pass` when
+`interactions/` had files — contradicting D-43's "hard-coded `not_runnable` in v2.0a" contract.
+**Fix:** Updated `gate-stage-5a.mjs` to always return `not_runnable` in v2.0a (per D-43);
+updated `stage-5a-not-runnable.test.ts` assertions to match; rewrote the regression test to
+write a real interaction spec Markdown file before calling `runStage5aGate`, asserting
+`not_runnable` is returned even with content present.
+
+### Post-fix test count
+
+**678 tests passing** (676 baseline + 2 new: staging-dir anchor test + shadcn import test).
+`tsc --noEmit`: 0 errors.
+
+### Deferred items
+
+**Preview-spawn variant gap (not a bug — documented in Finding 3):** `preview spawn` does not
+auto-screenshot variants. Flagged for Plan 02-05 (e2e fixture). No new CLI options added.
+No other deferred items.
