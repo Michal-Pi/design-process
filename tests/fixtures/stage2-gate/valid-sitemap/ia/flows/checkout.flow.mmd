@@ -1,0 +1,7 @@
+flowchart TD
+  A[Start: Add to Cart] --> B{Has Account?}
+  B -->|Yes| C[Review Cart]
+  B -->|No| D[Create Account]
+  D --> C
+  C --> E[Enter Payment]
+  E --> F[End: Order Confirmed]

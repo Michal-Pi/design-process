@@ -1,0 +1,22 @@
+{
+  "artifact": "sitemap",
+  "stage": "2",
+  "schemaVersion": 1,
+  "generated": "2026-05-25T00:00:00.000Z",
+  "provenance": "generated",
+  "owner": "design-os",
+  "lastReviewedAt": "2026-05-25T00:00:00.000Z",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "variants": [
+    {
+      "id": "v1-category",
+      "scheme": "category",
+      "nodes": [
+        { "id": "home", "label": "Home" },
+        { "id": "browse", "label": "Browse", "parent": "home" },
+        { "id": "checkout", "label": "Checkout", "parent": "home" },
+        { "id": "profile", "label": "Profile", "parent": "home" }
+      ]
+    }
+  ]
+}
