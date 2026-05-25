@@ -47,7 +47,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Per-Stage Fidelity Caps (Buxton Discipline)
 
-- [ ] **FID-01**: Stage 1 — refuses solution-language output; output describes user needs, not features
+- [x] **FID-01**: Stage 1 — refuses solution-language output; output describes user needs, not features
 - [ ] **FID-02**: Stage 2 — sitemaps emit text + Mermaid boxes only; no colors, no typography
 - [ ] **FID-03**: Stage 3 — Excalidraw validator rejects color/typography/styling drift; LLM emissions of styling regenerate up to repair-loop limit, then fail
 - [ ] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
@@ -56,17 +56,17 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Synthetic-Persona Red Line (NN/g)
 
-- [ ] **RED-01**: Stage 1 hard-blocks `VALIDATED` evidence grade when only synthetic personas are present
-- [ ] **RED-02**: Every persona JSON carries `provenance: generated|validated|inferred|missing` frontmatter
-- [ ] **RED-03**: `ASSUMPTIONS.md` is a required parallel artifact when `provenance: generated` is present
-- [ ] **RED-04**: Provenance propagates downstream: any artifact derived from a `PROTO`-grade upstream artifact inherits `worstProvenance:` and cannot grade above PROTO
-- [ ] **RED-05**: Adversarial test suite asserts 100% block rate on synthetic-only Stage 1 completion across 100 prompts (CI-gated)
-- [ ] **RED-06**: Prompt-injection canary asserts the red-line cannot be bypassed via creative prompting
+- [x] **RED-01**: Stage 1 hard-blocks `VALIDATED` evidence grade when only synthetic personas are present
+- [x] **RED-02**: Every persona JSON carries `provenance: generated|validated|inferred|missing` frontmatter
+- [x] **RED-03**: `ASSUMPTIONS.md` is a required parallel artifact when `provenance: generated` is present
+- [x] **RED-04**: Provenance propagates downstream: any artifact derived from a `PROTO`-grade upstream artifact inherits `worstProvenance:` and cannot grade above PROTO
+- [x] **RED-05**: Adversarial test suite asserts 100% block rate on synthetic-only Stage 1 completion across 100 prompts (CI-gated)
+- [x] **RED-06**: Prompt-injection canary asserts the red-line cannot be bypassed via creative prompting
 
 ### Workflows (7 + audit)
 
 - [ ] **WF-01**: `ingest` (Stage 0) — Markdown PRD parse + frontmatter validation; paste-text path; interview fallback for empty PRDs (Lenny 1-pager)
-- [ ] **WF-02**: `discover` (Stage 1) — generates personas, JTBDs, OST, assumptions, competitive landscape, interview guide; `gate/stage-1-complete` enforced
+- [x] **WF-02**: `discover` (Stage 1) — generates personas, JTBDs, OST, assumptions, competitive landscape, interview guide; `gate/stage-1-complete` enforced
 - [ ] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
 - [ ] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
@@ -78,9 +78,9 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 ### Atomic Skills (15)
 
 - [ ] **ATOM-01**: `prd/parse-or-interview` (Stage 0)
-- [ ] **ATOM-02**: `research/synthesize` (Stage 1)
-- [ ] **ATOM-03**: `research/personas-proto` (Stage 1, Indi Young thinking-style format with provenance)
-- [ ] **ATOM-04**: `research/build-ost` (Stage 1, Torres OST)
+- [x] **ATOM-02**: `research/synthesize` (Stage 1)
+- [x] **ATOM-03**: `research/personas-proto` (Stage 1, Indi Young thinking-style format with provenance)
+- [x] **ATOM-04**: `research/build-ost` (Stage 1, Torres OST)
 - [ ] **ATOM-05**: `ia/sitemap-variants` (Stage 2, LATCH-diverse)
 - [ ] **ATOM-06**: `ia/flows-from-jobs` (Stage 2, Mermaid flowcharts per JTBD)
 - [ ] **ATOM-07**: `ia/tree-test-design` (Stage 2, Optimal Workshop format — v2.1)
@@ -356,20 +356,20 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | GATE-06 | Phase 1 | Done |
 | GATE-07 | Phase 1 | Done |
 | GATE-08 | Phase 2 | Pending |
-| FID-01 | Phase 2 | Pending |
+| FID-01 | Phase 2 | Complete |
 | FID-02 | Phase 2 | Pending |
 | FID-03 | Phase 3 | Pending |
 | FID-04 | Phase 3 | Pending |
 | FID-05 | Phase 2 | Pending |
 | FID-06 | Phase 3 | Pending |
-| RED-01 | Phase 2 | Pending |
-| RED-02 | Phase 2 | Pending |
-| RED-03 | Phase 2 | Pending |
-| RED-04 | Phase 2 | Pending |
-| RED-05 | Phase 2 | Pending |
-| RED-06 | Phase 2 | Pending |
+| RED-01 | Phase 2 | Complete |
+| RED-02 | Phase 2 | Complete |
+| RED-03 | Phase 2 | Complete |
+| RED-04 | Phase 2 | Complete |
+| RED-05 | Phase 2 | Complete |
+| RED-06 | Phase 2 | Complete |
 | WF-01 | Phase 2 | Pending |
-| WF-02 | Phase 2 | Pending |
+| WF-02 | Phase 2 | Complete |
 | WF-03 | Phase 2 | Pending |
 | WF-04 | Phase 3 | Pending |
 | WF-05 | Phase 3 | Pending |
@@ -378,9 +378,9 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | WF-08 | Phase 2 | Pending |
 | WF-09 | Phase 2 | Pending |
 | ATOM-01 | Phase 2 | Pending |
-| ATOM-02 | Phase 2 | Pending |
-| ATOM-03 | Phase 2 | Pending |
-| ATOM-04 | Phase 2 | Pending |
+| ATOM-02 | Phase 2 | Complete |
+| ATOM-03 | Phase 2 | Complete |
+| ATOM-04 | Phase 2 | Complete |
 | ATOM-05 | Phase 2 | Pending |
 | ATOM-06 | Phase 2 | Pending |
 | ATOM-07 | v2.1 (deferred) | Deferred |

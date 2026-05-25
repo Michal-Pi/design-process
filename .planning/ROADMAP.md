@@ -98,7 +98,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 
 **Plans:** 5 plans created (Phase 2 in progress)
 
-- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
+- [x] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
 - [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
 - [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3)
 - [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 4, after 02-03 — depends on budget-check.mjs + tokens-project.mjs)

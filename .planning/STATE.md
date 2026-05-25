@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
-status: executing
-last_updated: "2026-05-25T10:38:31.604Z"
+status: completed
+last_updated: "2026-05-25T14:25:09.777Z"
 progress:
-  total_phases: 1
+  total_phases: 2
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
-  percent: 100
+  total_plans: 10
+  completed_plans: 6
+  percent: 60
 ---
 
 # State: design-os
@@ -20,27 +20,27 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — ALL 5 PLANS COMPLETE. Phase 2 (v2.0a Skeleton) is next.
+- **Current focus:** Phase 2 (v2.0a Skeleton) — Plan 01 COMPLETE. Stage 1 gate + adversarial CI + discover workflow shipped. Plans 02-05 remain.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 01 COMPLETE — v1.5 Infrastructure & Determinism Foundation
-- **Next plan:** Phase 02 Plan 01 (v2.0a Skeleton — first Stage workflow)
-- **Plan:** 05 complete (all 5 Phase 1 plans delivered)
-- **Status:** Phase 01 complete; ready for Phase 02
+- **Phase:** 02 IN PROGRESS — v2.0a Skeleton (Plan 01 of 5 complete)
+- **Next plan:** Phase 02 Plan 02
+- **Plan:** 01 complete (Phase 2 Plan 1 delivered)
+- **Status:** Phase 02 Plan 01 complete; ready for Phase 02 Plan 02
 
 **Progress:**
 
-[██████████] 100% (Phase 1)
+[██████░░░░] 60%
 Phase 1: [██████████] 100% (5/5 plans complete)
-Phase 2: [          ] 0%   Not started
+Phase 2: [██░░░░░░░░] 20%  (1/5 plans complete)
 Phase 3: [          ] 0%   Not started
 Phase 4: [          ] 0%   Not started
 
-**Overall:** 1 / 4 phases complete.
+**Overall:** Phase 1 complete; Phase 2 in progress (1/5).
 
 ## Performance Metrics
 
@@ -65,6 +65,8 @@ Phase 4: [          ] 0%   Not started
 | Phase 01 P03 | 81m | 3 tasks | 67 files | 241 tests |
 | Phase 01 P04 | 19m | 3 tasks | 39 files |
 | Phase 01 P05 | 16m | 3 tasks | 50 files | 155 tests |
+| Phase 02 P01 | 60m | 3 tasks | 44 files | 139 tests added (605 total) |
+| Phase 02 P01 | 60m | 3 tasks | 44 files |
 
 ## Accumulated Context
 
@@ -102,6 +104,11 @@ Phase 4: [          ] 0%   Not started
 - [Phase 01 Plan 05]: keyword-filter design-stem regex covers designers (design+ers) — /\bdesign(?:ers?|ed|ing|s)?\b/i
 - [Phase 01 Plan 05]: ROUTE-08 enforced — no --route → suggestRoute() + formatRoute08Prompt() + exit 0; never silently runs all 5 stages
 - [Phase 01 Plan 05]: run-subagent Claude Code path is best-effort with CLAUDE_CODE_BIN; adapter pattern keeps shim swappable per D-23
+- [Phase 02 Plan 01]: D-37 implemented as pure Node.js script; gate reads YAML frontmatter provenance via gray-matter; missing frontmatter treated as 'missing' (most conservative)
+- [Phase 02 Plan 01]: D-38 implemented via checkWorstProvenance export from frontmatter-validate.mjs; cites[] array in artifact frontmatter drives persona-provenance inheritance
+- [Phase 02 Plan 01]: RED-05/06 adversarial tests are pure script tests with no LLM calls; 100 seed-based fixtures + 10 documented injection attack vectors; all 115 adversarial tests pass
+- [Phase 02 Plan 01]: per-stage-skeletons.test.ts updated to reflect Phase 2 stage-1 behavioral change; stages 2-5b skeleton assertions preserved intact
+- [Phase 02 Plan 01]: YAML frontmatter added to upstream/personas.json bundle fixture (gray-matter hybrid format) so sufficiency-structural eval can read provenance
 
 ### Todos (next session)
 
