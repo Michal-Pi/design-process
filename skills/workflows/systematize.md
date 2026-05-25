@@ -174,10 +174,16 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    If this exits 1 (exceeded 2× p50 = 80k tokens hard-stop), inform user:
    > "Token usage exceeded 80k (2× p50). Re-run with --continue-anyway to proceed."
 
-10. **Gate invocation.** Run the Stage 5b gate:
+10. **Gate invocation.** Run the Stage 5b gate against the **staged preview path** (not `design/`).
+    Use the run-id captured in step 6:
     ```
-    Bash: node bin/design-os.mjs gate --stage 5b --design-dir design/
+    Bash: node bin/design-os.mjs gate --stage 5b --design-dir .design-os/preview/run-<timestamp>/
     ```
+    where `<timestamp>` is the run-id captured when the staged output was written in step 6.
+
+    **Why staged path:** The gate must evaluate the output that will be applied — evaluating
+    `design/` at this point would check a stale or empty directory, letting malformed staged
+    output bypass the gate (see codex review finding F-01 pattern across structure/style/systematize).
 
     **Expected result: `pass_with_warnings, evidence: proto`** — this is the CORRECT v2.0a result.
 
@@ -242,8 +248,9 @@ available, validate manually: open the emitted DESIGN.md and confirm `name`, `to
 `version: "2026.04"` are present in the frontmatter, and `evidence: "INFERRED"` is set under
 `$extensions.design-os`.
 
-**Step 10 (gate):** Run `node bin/design-os.mjs gate --stage 5b --design-dir design/`
-directly. Expected output: `{ kind: 'pass_with_warnings', evidence: 'proto' }`.
+**Step 10 (gate):** Run the gate against the staged preview path (not `design/`):
+`node bin/design-os.mjs gate --stage 5b --design-dir .design-os/preview/run-<timestamp>/`
+using the run-id captured in step 6. Expected output: `{ kind: 'pass_with_warnings', evidence: 'proto' }`.
 
 **Codex CLI note:** Use `--depth lightweight` to skip TRUST-05 intake (steps 4a/4b) when
 context is limited. Token budget stays within the systematize p50 ≤40k limit with 2 questions
