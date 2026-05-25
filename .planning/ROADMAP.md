@@ -96,7 +96,13 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user running `audit --pr` against a PR that renames a route or breaks a sitemap link receives a severity-ranked `AUDIT-REPORT.md` (validated against `audit-report.v1.json`) with `findingId`, evidence pointer, fix recipe, and suppression option; `audit --slop-tells` flags rainbow gradients / Inter-default / glass-stack / three-column-grid on a fixture seeded with slop.
   5. A user installing v2.0a on Claude Code sees `design-os` triggers fire with recall ≥0.85 against the in-tree should-fire suite; on Codex CLI and Cursor (sequential-fallback scaffolded) the pass rate is within 0.10 of host-first — even though full Codex/Cursor parity is a Phase 4 release gate, v2.0a ships the scaffold.
 
-**Plans:** TBD
+**Plans:** 5 plans created (Phase 2 in progress)
+
+- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
+- [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
+- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
+- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
+- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
 
 ### Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path
 
@@ -123,7 +129,13 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user with a v2.0a `design/` directory runs `design-os migrate --from 2.0a --to 2.0b`; `sitemap.json` gains Stage 3 cross-refs, `persona.json` gains Stage 4 interaction needs, `MANIFEST.md` records new artifact types — and every existing v2.0a artifact continues to validate against its frozen schema while v2.0b workflows read the upgraded versions.
   5. A user runs `audit --all-stages` on a project missing Stage 2 + Stage 4 work; the report correctly identifies both gaps as a single ranked list (ACCEPT-06 prerequisite); `audit --new-feature` verifies a new feature passes through all 5 stages; `mature-app-refactor` (Stage 2 audit + Stage 4 audit + Stage 5b only) and full `new-product` budgets stay within `sketch` p50 ≤25k, `interact` p50 ≤30k, full `design` p50 ≤150k.
 
-**Plans:** TBD
+**Plans:** 5 plans created (Phase 2 in progress)
+
+- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
+- [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
+- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
+- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
+- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
 
 ### Phase 4: v2.0 RC + GA — Acceptance, Cross-Host, Launch
 
@@ -145,14 +157,20 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. The launch artifact ships: long-form post "The 5 design stages every AI tool skips — and why your prototype struggles past month 3" (softened hook per codex feedback, GTM-01), 90-second video showing 3 variants per stage (GTM-02), cross-post manifest executed on 8 marketplaces (GTM-03, DIST-07), named outreach to Brad Frost and Marty Cagan delivered (GTM-04, Cagan framed as intellectual heritage not endorsement claim), PR submitted to anthropics/skills#1008 for DESIGN.md consume/produce support (GTM-05), and the rapid-response GTM pivot plan to "interoperability with Claude Design" is documented and ready if Anthropic ships overlap during the launch window (GTM-07).
   5. Cost discipline holds at GA: full `design` workflow p50 ≤150k tokens / p95 ≤220k tokens on the 15-fixture suite (COST-07), wall-clock p50 ≤8 minutes for full 5 stages (COST-10) — both verified on the cross-host matrix with per-stage budgets continuing to hold from Phases 2-3.
 
-**Plans:** TBD
+**Plans:** 5 plans created (Phase 2 in progress)
+
+- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
+- [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
+- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
+- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
+- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
 
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. v1.5 — Infrastructure & Determinism Foundation | 5/5 | Complete | 2026-05-25 |
-| 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 0/0 | Not started | - |
+| 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 0/5 | Planned | - |
 | 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 0/0 | Not started | - |
 | 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 0/0 | Not started | - |
 
