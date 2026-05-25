@@ -143,7 +143,7 @@ If the script is absent (ships in Plan 02-05), skip with warning:
 **8. Run Stage 1 gate**
 
 ```bash
-node assets/scripts/cli/gate.mjs --stage 1 --design-dir design/
+node bin/design-os.mjs gate --stage 1 --design-dir design/
 ```
 
 - If `result.kind === 'not_runnable'`: halt with message and list what is missing.
@@ -182,7 +182,7 @@ to finalize the artifacts.
 For Codex CLI / Cursor (no subagent dispatch — sequential single-context execution):
 
 Run steps 1-11 sequentially in a single context window. Replace step 8 Bash invocation
-with direct execution: `node assets/scripts/cli/gate.mjs --stage 1 --design-dir design/`
+with direct execution: `node bin/design-os.mjs gate --stage 1 --design-dir design/`
 (no parallel execution). The sub-agent dispatch in step 4-6 is inline in this context.
 Ensure the context window is not exceeded; if persona generation causes context bloat,
 truncate persona descriptions to 3 bullet points each and continue.
