@@ -100,9 +100,9 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 
 - [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
 - [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
-- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
-- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
-- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
+- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3)
+- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 4, after 02-03 — depends on budget-check.mjs + tokens-project.mjs)
+- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + 6 triggers.yaml + skillgrade eval + 15-fixture budget suite + Next15/Tailwind4/shadcn e2e fixture (Wave 5)
 
 ### Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path
 
@@ -129,13 +129,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user with a v2.0a `design/` directory runs `design-os migrate --from 2.0a --to 2.0b`; `sitemap.json` gains Stage 3 cross-refs, `persona.json` gains Stage 4 interaction needs, `MANIFEST.md` records new artifact types — and every existing v2.0a artifact continues to validate against its frozen schema while v2.0b workflows read the upgraded versions.
   5. A user runs `audit --all-stages` on a project missing Stage 2 + Stage 4 work; the report correctly identifies both gaps as a single ranked list (ACCEPT-06 prerequisite); `audit --new-feature` verifies a new feature passes through all 5 stages; `mature-app-refactor` (Stage 2 audit + Stage 4 audit + Stage 5b only) and full `new-product` budgets stay within `sketch` p50 ≤25k, `interact` p50 ≤30k, full `design` p50 ≤150k.
 
-**Plans:** 5 plans created (Phase 2 in progress)
-
-- [ ] 02-01-PLAN.md — Stage 1 gate business logic + discover workflow SKILL.md + three atoms (personas-proto, synthesize, build-ost) + adversarial CI suites RED-05/06 + worstProvenance propagation (Wave 1)
-- [ ] 02-02-PLAN.md — Stage 2 gate business logic + structure workflow SKILL.md + two atoms (sitemap-variants, flows-from-jobs) + sitemap structural distance + Mermaid repair loop (Wave 2)
-- [ ] 02-03-PLAN.md — Style-lite workflow SKILL.md + tokens-project.mjs DTCG emit + three adapter paths (shadcn/Tailwind v4/@theme/plain CSS) + budget-check.mjs + stage-5a gate regression CI (Wave 3, parallel with 02-04)
-- [ ] 02-04-PLAN.md — Systematize-lite workflow SKILL.md + stage-5b gate business logic + DESIGN.md emit + Frost ≥3× deferred per D-44 (Wave 3, parallel with 02-03)
-- [ ] 02-05-PLAN.md — Audit scripts (slop-tells + PR detectors) + apply.mjs + ingest workflow + parse-or-interview atom + dispatch.mjs real wiring for 4 routes + Next15/Tailwind4/shadcn e2e fixture (Wave 4)
+**Plans:** TBD — planned after Phase 2 completes
 
 ### Phase 4: v2.0 RC + GA — Acceptance, Cross-Host, Launch
 
