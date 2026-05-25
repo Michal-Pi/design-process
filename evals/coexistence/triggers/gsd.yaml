@@ -1,0 +1,42 @@
+# evals/coexistence/triggers/gsd.yaml
+# Trigger corpus for GSD (Get-Shit-Done) — phase/plan/execute language.
+# D-16: ≥30 shouldFire prompts representative of GSD's domain.
+
+package: gsd
+description: >
+  Get-Shit-Done: orchestrates multi-phase software projects with plan,
+  execute, and review workflows. Manages roadmaps, milestones, and phases.
+
+shouldFire:
+  - prompt: "Start a new GSD project for building my SaaS app"
+  - prompt: "Run gsd-plan-phase for the authentication module"
+  - prompt: "Execute phase 2 of my project plan"
+  - prompt: "Create a roadmap for the next 3 months"
+  - prompt: "Plan the next sprint for my team"
+  - prompt: "Generate a project plan from this PRD"
+  - prompt: "Execute the current phase tasks"
+  - prompt: "Review phase 1 completion and plan phase 2"
+  - prompt: "Run gsd-execute-phase on the current milestone"
+  - prompt: "Create a milestone plan for v2.0"
+  - prompt: "Plan the tasks for this feature development"
+  - prompt: "Generate a project roadmap with phases"
+  - prompt: "Start planning the infrastructure phase"
+  - prompt: "Orchestrate the development workflow for my project"
+  - prompt: "Create a phased plan for migrating the database"
+  - prompt: "Run the planning workflow for this new feature"
+  - prompt: "Break down this epic into a phased execution plan"
+  - prompt: "Plan and execute the CI/CD infrastructure work"
+  - prompt: "Create a GSD phase plan for this architecture change"
+  - prompt: "Start the execution phase for the refactoring milestone"
+  - prompt: "Generate a phased roadmap for the product redesign"
+  - prompt: "Plan the tasks needed to complete this milestone"
+  - prompt: "Run the review workflow for the completed phase"
+  - prompt: "Orchestrate the execution of these development tasks"
+  - prompt: "Create a structured plan for this software project"
+  - prompt: "Plan the work breakdown for the next release"
+  - prompt: "Execute the planned tasks for this sprint"
+  - prompt: "Generate a project plan with milestones and phases"
+  - prompt: "Start planning the infrastructure work"
+  - prompt: "Create a roadmap for completing this feature"
+  - prompt: "Run the GSD workflow for this project"
+  - prompt: "Plan the phases for building this API"

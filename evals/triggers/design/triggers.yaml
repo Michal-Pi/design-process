@@ -1,0 +1,39 @@
+# evals/triggers/design/triggers.yaml
+# Per-skill trigger eval corpus for the 'design' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: design
+description: >
+  Scaffolds the 5-stage design process: research, IA, wireframes,
+  interactions, hi-fi. Creates design/ artifacts with stage-gated workflows.
+
+shouldFire:
+  - prompt: "Design a sitemap for a new SaaS product"
+  - prompt: "I need personas for a B2B app"
+  - prompt: "Run the 5-stage design process on this PRD"
+  - prompt: "Help me structure the user research for my mobile app"
+  - prompt: "Create an information architecture for an e-commerce platform"
+  - prompt: "Build user personas based on these interview notes"
+  - prompt: "Start the design workflow for my new product"
+  - prompt: "Generate a design system from scratch for this startup"
+  - prompt: "Map out the user flows for my web application"
+  - prompt: "I need to create wireframes for my app"
+  - prompt: "Run design research for this enterprise tool"
+  - prompt: "Create a stage 1 research synthesis for my product"
+  - prompt: "Help me with the information architecture design"
+  - prompt: "I want to design the interaction patterns for my app"
+
+shouldNotFire:
+  - prompt: "Fix this Python bug in my authentication module"
+  - prompt: "Write a SQL migration for adding a new column"
+  - prompt: "Refactor this React component to use hooks"
+  - prompt: "Deploy my application to Kubernetes"
+  - prompt: "Write unit tests for my API endpoints"
+  - prompt: "Audit my financial records for tax purposes"
+  - prompt: "Write a blog post about machine learning"
+  - prompt: "Debug this TypeScript compiler error"
+  - prompt: "Hand off this Jira ticket to the backend team"
+  - prompt: "Review my code for security vulnerabilities"
+  - prompt: "Set up CI/CD for my GitHub repository"
+  - prompt: "Write documentation for this npm package"

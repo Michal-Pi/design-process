@@ -1,0 +1,42 @@
+# evals/coexistence/triggers/shadcn.yaml
+# Trigger corpus for shadcn MCP — shadcn install/add commands.
+# D-16: ≥30 shouldFire prompts representative of shadcn's domain.
+
+package: shadcn
+description: >
+  shadcn/ui component management: install, add, and configure shadcn
+  components. Manages components/ui/ directory and Tailwind integration.
+
+shouldFire:
+  - prompt: "Add the shadcn button component to my project"
+  - prompt: "Install shadcn/ui in my Next.js app"
+  - prompt: "npx shadcn add dialog"
+  - prompt: "Add the shadcn data table component"
+  - prompt: "Install and configure shadcn in this project"
+  - prompt: "Add shadcn form components with validation"
+  - prompt: "Use shadcn add to install the combobox"
+  - prompt: "Configure shadcn with my existing Tailwind setup"
+  - prompt: "Add the shadcn sheet component"
+  - prompt: "Install shadcn toast notifications"
+  - prompt: "Add shadcn navigation menu to my app"
+  - prompt: "Use shadcn to add the calendar picker"
+  - prompt: "Install shadcn card component"
+  - prompt: "Add shadcn badge and avatar components"
+  - prompt: "Configure shadcn theme with custom CSS variables"
+  - prompt: "Add the shadcn accordion component"
+  - prompt: "Install shadcn tabs component"
+  - prompt: "Add shadcn command palette"
+  - prompt: "Use shadcn to add a dropdown menu"
+  - prompt: "Install shadcn input and label components"
+  - prompt: "Add shadcn progress indicator"
+  - prompt: "Configure shadcn with dark mode support"
+  - prompt: "Add the shadcn skeleton loading component"
+  - prompt: "Install shadcn separator component"
+  - prompt: "Add shadcn alert dialog"
+  - prompt: "Use shadcn popover component"
+  - prompt: "Install shadcn tooltip"
+  - prompt: "Add shadcn breadcrumb navigation"
+  - prompt: "Configure shadcn with Tailwind v4"
+  - prompt: "Add the shadcn chart component"
+  - prompt: "Install shadcn sidebar navigation"
+  - prompt: "Add all shadcn components for rapid prototyping"

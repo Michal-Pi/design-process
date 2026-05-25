@@ -1,0 +1,46 @@
+# evals/coexistence/triggers/design-os.yaml
+# Aggregate trigger corpus for design-os (all 3 skills: design, audit, handoff).
+# D-16: ≥30 shouldFire prompts aggregated across design + audit + handoff skills.
+# Used in aggregate coexistence eval to measure design-os recall with all 5 peer
+# packages installed.
+
+package: design-os
+description: >
+  5-stage design process (research, IA, wireframes, interactions, hi-fi)
+  with stage-gated workflows. Includes design audit and handoff bundling.
+
+shouldFire:
+  # design skill prompts
+  - prompt: "Design a sitemap for a new SaaS product"
+  - prompt: "I need personas for a B2B app"
+  - prompt: "Run the 5-stage design process on this PRD"
+  - prompt: "Help me structure the user research for my mobile app"
+  - prompt: "Create an information architecture for an e-commerce platform"
+  - prompt: "Build user personas based on these interview notes"
+  - prompt: "Start the design workflow for my new product"
+  - prompt: "Generate a design system from scratch for this startup"
+  - prompt: "Map out the user flows for my web application"
+  - prompt: "I need to create wireframes for my app"
+  - prompt: "Run design research for this enterprise tool"
+  # audit skill prompts
+  - prompt: "Audit this PR for design slop"
+  - prompt: "Find rainbow gradients in this codebase"
+  - prompt: "Check my design system for WCAG violations"
+  - prompt: "Audit the existing UI for accessibility issues"
+  - prompt: "Review my designs for fidelity cap violations"
+  - prompt: "Inspect this component library for design inconsistencies"
+  - prompt: "Audit stage 3 wireframes for low-fidelity compliance"
+  - prompt: "Scan the UI for hardcoded colors that bypass the design system"
+  # handoff skill prompts
+  - prompt: "Build a handoff bundle for stage 2"
+  - prompt: "Compress the stage 1 output for the next stage"
+  - prompt: "Create a handoff summary from these research artifacts"
+  - prompt: "Package the stage 3 outputs for the interaction design stage"
+  - prompt: "Generate a bundle from this stage directory"
+  - prompt: "Summarize these design artifacts into a handoff document"
+  - prompt: "Build the stage transition bundle for stage 1 to 2"
+  - prompt: "Create a context-efficient summary of the wireframe stage"
+  - prompt: "Package the IA artifacts for handoff to the next stage"
+  - prompt: "Compress and structure the research findings for stage 2"
+  - prompt: "Generate a handoff document from stage 4 artifacts"
+  - prompt: "Build a bundle from the interaction specification directory"

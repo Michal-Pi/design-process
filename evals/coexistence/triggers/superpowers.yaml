@@ -1,0 +1,42 @@
+# evals/coexistence/triggers/superpowers.yaml
+# Trigger corpus for Superpowers — TDD/debug engineering discipline.
+# D-16: ≥30 shouldFire prompts representative of Superpowers' domain.
+
+package: superpowers
+description: >
+  Superpowers: engineering discipline for TDD, debugging, code review,
+  and verification. Test-driven development with red-green-refactor cycles.
+
+shouldFire:
+  - prompt: "Write failing tests for this authentication feature first"
+  - prompt: "Debug this memory leak in the Node.js service"
+  - prompt: "Use TDD to implement this new API endpoint"
+  - prompt: "Write unit tests before implementing this feature"
+  - prompt: "Run the red-green-refactor cycle for this component"
+  - prompt: "Debug this race condition in the concurrent code"
+  - prompt: "Write integration tests for this database layer"
+  - prompt: "Use test-driven development for this payment flow"
+  - prompt: "Debug this React rendering bug"
+  - prompt: "Write property-based tests for this function"
+  - prompt: "Run TDD on this new feature implementation"
+  - prompt: "Debug the performance bottleneck in this query"
+  - prompt: "Write end-to-end tests for this user flow"
+  - prompt: "Use superpowers TDD discipline for this feature"
+  - prompt: "Debug this async/await exception handling"
+  - prompt: "Write contract tests for this API boundary"
+  - prompt: "Run the test suite and fix failing tests"
+  - prompt: "Debug the authentication token expiry issue"
+  - prompt: "Implement this feature using test-first development"
+  - prompt: "Write snapshot tests for these React components"
+  - prompt: "Debug the database connection pooling issue"
+  - prompt: "Run TDD for this state machine implementation"
+  - prompt: "Write mutation tests for this business logic"
+  - prompt: "Debug the webpack bundle size regression"
+  - prompt: "Use red-green-refactor to implement this validator"
+  - prompt: "Write performance tests for this critical path"
+  - prompt: "Debug the flaky CI test"
+  - prompt: "Implement using TDD: add failing test, then make it pass"
+  - prompt: "Debug this TypeScript compilation error"
+  - prompt: "Write the tests first, then implement the feature"
+  - prompt: "Run TDD discipline on this refactoring task"
+  - prompt: "Debug the websocket disconnection issue"

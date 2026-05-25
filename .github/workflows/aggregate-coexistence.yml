@@ -1,0 +1,95 @@
+# .github/workflows/aggregate-coexistence.yml
+# CI workflow: Run aggregate coexistence eval on schedule + dispatch.
+# Reports design-os recall with 5 peer packages installed.
+#
+# Open Q3 disposition:
+#   Phase 1 reports the recall number even if it doesn't pass (≥0.80 threshold).
+#   CI does NOT block on Phase 1 failures (continue-on-error: true).
+#   v2.0 GA enables blocking once threshold is empirically calibrated.
+#   See: CONTINGENCY-TRIG-04.md for the core/atoms split lever if recall <0.80.
+#
+# HEARTBEAT: Job summary always posts recall number per Pitfall E.
+#
+# TODO: enable blocking once threshold calibrated per Open Q3.
+
+name: aggregate-coexistence
+
+on:
+  schedule:
+    # Run weekly on Mondays at 08:00 UTC
+    - cron: "0 8 * * 1"
+  workflow_dispatch: {}
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "evals/coexistence/**"
+      - "evals/triggers/**"
+      - "evals/runners/**"
+      - "assets/scripts/**"
+
+jobs:
+  aggregate-coexistence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # TODO: enable blocking once threshold calibrated per Open Q3
+    # continue-on-error: false  # DISABLED in Phase 1; enable for GA
+    continue-on-error: true  # Phase 1: report number, do not block
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run aggregate coexistence eval
+        run: npm run eval:coexistence
+
+      - name: Show last-run.json
+        if: always()
+        run: |
+          if [ -f evals/coexistence/last-run.json ]; then
+            echo "=== Aggregate Coexistence Eval Results ==="
+            cat evals/coexistence/last-run.json
+          else
+            echo "last-run.json not found"
+          fi
+
+      # Heartbeat — post recall number as job summary per Pitfall E
+      - name: Heartbeat — aggregate-coexistence summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let recall = 'N/A';
+            let falseFireRate = 'N/A';
+            let pass = 'unknown';
+
+            try {
+              const data = JSON.parse(fs.readFileSync('evals/coexistence/last-run.json', 'utf8'));
+              recall = data.recall?.toFixed(3) ?? 'N/A';
+              falseFireRate = data.falseFireRate?.toFixed(3) ?? 'N/A';
+              pass = data.pass ? 'PASS' : 'FAIL (calibration phase — non-blocking in Phase 1)';
+            } catch (e) {
+              pass = 'ERROR: ' + e.message;
+            }
+
+            core.summary
+              .addHeading('aggregate-coexistence: ' + pass, 3)
+              .addTable([
+                [{ data: 'Metric', header: true }, { data: 'Value', header: true }],
+                ['design-os recall', recall],
+                ['design-os false-fire rate', falseFireRate],
+                ['pass (≥0.80)', pass],
+              ])
+              .addRaw('\n**Open Q3:** Phase 1 reports the number; blocking enabled at v2.0 GA.\n')
+              .write();
+
+            console.log('aggregate-coexistence: recall=' + recall + ' falseFireRate=' + falseFireRate + ' pass=' + pass);

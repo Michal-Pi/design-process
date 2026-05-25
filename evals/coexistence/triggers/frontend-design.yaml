@@ -1,0 +1,42 @@
+# evals/coexistence/triggers/frontend-design.yaml
+# Trigger corpus for frontend-design (Anthropic) — design-token/component review.
+# D-16: ≥30 shouldFire prompts representative of frontend-design's domain.
+
+package: frontend-design
+description: >
+  Frontend design quality review: design tokens, component architecture,
+  CSS patterns, color contrast, typography, spacing systems, and visual polish.
+
+shouldFire:
+  - prompt: "Review my design tokens for consistency"
+  - prompt: "Check the component architecture for design system compliance"
+  - prompt: "Evaluate the color contrast ratios in this UI"
+  - prompt: "Review the typography scale for this web app"
+  - prompt: "Check the spacing system for design consistency"
+  - prompt: "Evaluate the visual hierarchy of this landing page"
+  - prompt: "Review the CSS for design token usage"
+  - prompt: "Check the button component for design quality"
+  - prompt: "Evaluate the responsive design breakpoints"
+  - prompt: "Review the dark mode implementation for consistency"
+  - prompt: "Check this Tailwind config for design system alignment"
+  - prompt: "Evaluate the icon usage and sizing consistency"
+  - prompt: "Review the form design for usability and visual clarity"
+  - prompt: "Check the animation timing for design quality"
+  - prompt: "Evaluate the navigation design for clarity"
+  - prompt: "Review the card component for visual consistency"
+  - prompt: "Check the color palette for accessibility compliance"
+  - prompt: "Evaluate the loading state designs"
+  - prompt: "Review the modal design for focus management"
+  - prompt: "Check the table component for information density"
+  - prompt: "Evaluate the design token naming conventions"
+  - prompt: "Review the shadow system for depth consistency"
+  - prompt: "Check the border radius usage across components"
+  - prompt: "Evaluate the micro-interactions for design quality"
+  - prompt: "Review the illustration style for brand consistency"
+  - prompt: "Check the empty state designs for clarity"
+  - prompt: "Evaluate the error state visual design"
+  - prompt: "Review the onboarding flow for visual clarity"
+  - prompt: "Check the data visualization design for readability"
+  - prompt: "Evaluate the notification design system"
+  - prompt: "Review the frontend design for Tailwind v4 best practices"
+  - prompt: "Check the shadcn component customization for brand alignment"

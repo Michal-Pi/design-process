@@ -1,0 +1,37 @@
+# evals/triggers/audit/triggers.yaml
+# Per-skill trigger eval corpus for the 'audit' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: audit
+description: >
+  Audits existing design artifacts or UI for design slop, fidelity violations,
+  accessibility issues, and missing design system compliance.
+
+shouldFire:
+  - prompt: "Audit this PR for design slop"
+  - prompt: "Find rainbow gradients in this codebase"
+  - prompt: "Check my design system for WCAG violations"
+  - prompt: "Audit the existing UI for accessibility issues"
+  - prompt: "Review my designs for fidelity cap violations"
+  - prompt: "Inspect this component library for design inconsistencies"
+  - prompt: "Audit stage 3 wireframes for low-fidelity compliance"
+  - prompt: "Check if this design follows the established design system"
+  - prompt: "Reverse-engineer the design stages from this existing app"
+  - prompt: "Identify design debt in this interface"
+  - prompt: "Scan the UI for hardcoded colors that bypass the design system"
+  - prompt: "Verify that these components conform to the token specifications"
+
+shouldNotFire:
+  - prompt: "Audit my financial records for tax compliance"
+  - prompt: "Audit this SQL query for performance"
+  - prompt: "Write a new landing page for my product"
+  - prompt: "Create user personas for my app"
+  - prompt: "Build a sitemap for the new feature"
+  - prompt: "Deploy this to production"
+  - prompt: "Write unit tests for the payment module"
+  - prompt: "Audit the codebase for security vulnerabilities"
+  - prompt: "Review pull request number 42 for code quality"
+  - prompt: "Audit server logs for unusual activity"
+  - prompt: "Generate a new color palette for the marketing site"
+  - prompt: "Help me write a job description for a senior engineer"

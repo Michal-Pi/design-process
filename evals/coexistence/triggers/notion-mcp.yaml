@@ -1,0 +1,42 @@
+# evals/coexistence/triggers/notion-mcp.yaml
+# Trigger corpus for Notion MCP — Notion page/database query operations.
+# D-16: ≥30 shouldFire prompts representative of Notion MCP's domain.
+
+package: notion-mcp
+description: >
+  Notion MCP: query, create, and update Notion pages and databases.
+  Manages Notion workspace content, databases, and properties.
+
+shouldFire:
+  - prompt: "Get the content of my Notion page"
+  - prompt: "Query my Notion database for project status"
+  - prompt: "Create a new page in my Notion workspace"
+  - prompt: "Update the Notion page properties"
+  - prompt: "Search my Notion workspace for this document"
+  - prompt: "Add a new entry to my Notion database"
+  - prompt: "Get all items from the Notion tasks database"
+  - prompt: "Create a Notion page with this content"
+  - prompt: "Query Notion for pages modified this week"
+  - prompt: "Update my Notion project tracker"
+  - prompt: "Get the Notion database schema"
+  - prompt: "Create a new row in my Notion table"
+  - prompt: "Search Notion for documents about authentication"
+  - prompt: "Get the Notion page by URL"
+  - prompt: "List all databases in my Notion workspace"
+  - prompt: "Create a child page under this Notion parent"
+  - prompt: "Update Notion page title and content"
+  - prompt: "Query the Notion roadmap database"
+  - prompt: "Get recent changes from my Notion workspace"
+  - prompt: "Add properties to my Notion database"
+  - prompt: "Create a Notion template from this content"
+  - prompt: "Get all blocks from this Notion page"
+  - prompt: "Append content to my Notion page"
+  - prompt: "Query Notion for pages tagged with this label"
+  - prompt: "Create a meeting notes page in Notion"
+  - prompt: "Update the status in my Notion kanban"
+  - prompt: "Get the Notion block children for this page"
+  - prompt: "Search Notion database for incomplete tasks"
+  - prompt: "Create a new Notion database with custom properties"
+  - prompt: "Archive this Notion page"
+  - prompt: "Query the Notion team wiki"
+  - prompt: "Get the Notion workspace structure"

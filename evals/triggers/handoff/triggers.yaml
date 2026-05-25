@@ -1,0 +1,37 @@
+# evals/triggers/handoff/triggers.yaml
+# Per-skill trigger eval corpus for the 'handoff' skill.
+# TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
+# D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
+
+skill: handoff
+description: >
+  Builds a handoff bundle compressing stage output into a context-efficient
+  format for downstream stage consumption. 3k-15k token budget.
+
+shouldFire:
+  - prompt: "Build a handoff bundle for stage 2"
+  - prompt: "Compress the stage 1 output for the next stage"
+  - prompt: "Create a handoff summary from these research artifacts"
+  - prompt: "Package the stage 3 outputs for the interaction design stage"
+  - prompt: "Generate a bundle from this stage directory"
+  - prompt: "Summarize these design artifacts into a handoff document"
+  - prompt: "Build the stage transition bundle for stage 1 to 2"
+  - prompt: "Create a context-efficient summary of the wireframe stage"
+  - prompt: "Package the IA artifacts for handoff to the next stage"
+  - prompt: "Compress and structure the research findings for stage 2"
+  - prompt: "Generate a handoff document from stage 4 artifacts"
+  - prompt: "Build a bundle from the interaction specification directory"
+
+shouldNotFire:
+  - prompt: "Hand off this Jira ticket to the backend team"
+  - prompt: "Transfer the project to another developer"
+  - prompt: "Create a new component from scratch"
+  - prompt: "Design user personas for the product"
+  - prompt: "Write unit tests for the API"
+  - prompt: "Deploy the application to staging"
+  - prompt: "Hand off this responsibility to the QA team"
+  - prompt: "Pass this support ticket to tier 2"
+  - prompt: "Write release notes for version 2.0"
+  - prompt: "Create a new database schema"
+  - prompt: "Set up the development environment"
+  - prompt: "Implement the payment processing feature"
