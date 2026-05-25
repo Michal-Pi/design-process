@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: completed
-last_updated: "2026-05-25T15:03:11.615Z"
+last_updated: "2026-05-25T17:00:00.000Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 10
-  completed_plans: 8
-  percent: 80
+  completed_plans: 9
+  percent: 90
 ---
 
 # State: design-os
@@ -20,7 +20,7 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 2 (v2.0a Skeleton) — Plans 01-03 COMPLETE. Stage 1/2 gates + discover/structure/style workflows + DTCG tokens-project.mjs shipped. Plans 04-05 remain.
+- **Current focus:** Phase 2 (v2.0a Skeleton) — Plans 01-04 COMPLETE. Stage 1/2/5b gates + discover/structure/style/systematize workflows + DTCG tokens-project.mjs + DESIGN.md emit contract shipped. Plan 05 remains.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -29,18 +29,18 @@ progress:
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 02 IN PROGRESS — v2.0a Skeleton (Plan 01 of 5 complete)
 - **Next plan:** Phase 02 Plan 02
-- **Plan:** 03 complete (Phase 2 Plan 3 delivered)
-- **Status:** Phase 02 Plan 03 complete; ready for Phase 02 Plan 04
+- **Plan:** 04 complete (Phase 2 Plan 4 delivered)
+- **Status:** Phase 02 Plan 04 complete; ready for Phase 02 Plan 05
 
 **Progress:**
 
-[███████░░░] 70%
+[█████████░] 80%
 Phase 1: [██████████] 100% (5/5 plans complete)
-Phase 2: [██████░░░░] 60%  (3/5 plans complete)
+Phase 2: [████████░░] 80%  (4/5 plans complete)
 Phase 3: [          ] 0%   Not started
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1 complete; Phase 2 in progress (3/5).
+**Overall:** Phase 1 complete; Phase 2 in progress (4/5).
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 02 P01 | 60m | 3 tasks | 44 files | 139 tests added (605 total) |
 | Phase 02 P02 | 45m | 2 tasks | 13 files | 27 tests added (639 total) |
 | Phase 02 P03 | 25m | 2 tasks | 13 files | 37 tests added (676 total) |
+| Phase 02 P04 | 35m | 2 tasks | 5 files | 41 tests added (719 total) |
 
 ## Accumulated Context
 
@@ -114,6 +115,10 @@ Phase 4: [          ] 0%   Not started
 - [Phase 02 Plan 03]: DTCG semantic tier emits resolved OKLCH values not DTCG alias syntax — avoids consumer-side alias resolution complexity
 - [Phase 02 Plan 03]: Tailwind v4 @theme merge injects inside existing block (regex injection) — never creates duplicate @theme blocks (T-02-03-02)
 - [Phase 02 Plan 03]: budget-check.mjs supports tokensUsed/token_count/tokens field names for run-log flexibility across different log producers
+- [Phase 02 Plan 04]: Gate-safe DESIGN.md validation: inline AJV in stage-5b.mjs (validateDesignMd calls process.exit — unsafe for gate use); same design-md schema validated inline
+- [Phase 02 Plan 04]: 5b-frost-001 finding uses status:na (informational) for D-44 compliance — Frost ≥3× NOT a gate blocker in v2.0a; status:fail would incorrectly block the gate
+- [Phase 02 Plan 04]: Stage 5b-lite has empty composition.atoms — workflow body implements steps directly per RESEARCH.md §3 (no per-atom sub-agents for Stage 5b-lite)
+- [Phase 02 Plan 04]: F-04 deferred: DESIGN.md emit test deferred to T-02-05-B e2e fixture — emit logic is in SKILL.md procedure body (not a standalone export)
 
 ### Todos (next session)
 
@@ -153,10 +158,10 @@ None yet.
 
 ### Next Session
 
-- **Likely activity:** Phase 02 Plan 04 — systematize-lite workflow + stage-5b gate.
+- **Likely activity:** Phase 02 Plan 05 — e2e fixture suite, audit workflow, apply.mjs.
 - **Required reading at session start:**
-  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-03-SUMMARY.md`
-  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-04-PLAN.md`
+  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-04-SUMMARY.md`
+  - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-05-PLAN.md`
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
