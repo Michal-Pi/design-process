@@ -1,0 +1,17 @@
+{
+  "artifact": "persona",
+  "stage": 1,
+  "schemaVersion": 1,
+  "generated": "2025-01-01T00:00:00Z",
+  "provenance": "generated",
+  "owner": "design-os",
+  "lastReviewedAt": "2025-01-01T00:00:00Z",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "id": "p1",
+  "name": "Alex Truncation",
+  "age": 32,
+  "role": "Product Designer",
+  "jtbds": ["Validate design decisions quickly", "Ensure content quality"],
+  "painPoints": ["Too much content to review", "Context window limits"],
+  "goals": ["Efficient handoff", "High-quality bundles"]
+}

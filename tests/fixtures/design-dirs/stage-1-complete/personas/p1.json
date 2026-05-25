@@ -1,0 +1,20 @@
+{
+  "artifact": "persona",
+  "stage": "1",
+  "schemaVersion": 1,
+  "sourceHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "generated": "2026-05-24T12:00:00.000Z",
+  "provenance": "generated",
+  "owner": "michal.pilawski@gmail.com",
+  "lastReviewedAt": "2026-05-24T12:00:00.000Z",
+  "name": "Product Engineer",
+  "jobsToBeDone": [
+    "Translate Figma designs to production code with confidence",
+    "Validate that implemented components match design intent"
+  ],
+  "thinkingStyle": {
+    "cognitiveSpace": "Thinks in terms of component hierarchy and state management; prefers working from a clear design system contract",
+    "emotionalReactions": ["Frustrated by design-code gaps", "Satisfied when designs validate cleanly"],
+    "guidingPrinciples": ["Ship fast but maintain quality", "Design systems reduce rework", "Documentation should live with the code"]
+  }
+}
