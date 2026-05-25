@@ -17,7 +17,10 @@
 /**
  * Compute the bounding box of all elements in the array.
  *
- * @param {Array<{x: number, y: number, w: number, h: number, children?: Array}>} elements
+ * Supports both skeleton IR format (w/h) and Excalidraw v2 element format (width/height).
+ * Excalidraw v2 uses `width` and `height`; IR objects use `w` and `h`.
+ *
+ * @param {Array<{x: number, y: number, width?: number, height?: number, w?: number, h?: number, children?: Array}>} elements
  * @returns {{ minX: number, minY: number, maxX: number, maxY: number }}
  */
 function computeBoundingBox(elements) {
@@ -28,8 +31,11 @@ function computeBoundingBox(elements) {
 
   function visit(el) {
     if (typeof el.x === "number" && typeof el.y === "number") {
-      const x2 = el.x + (el.w ?? 0);
-      const y2 = el.y + (el.h ?? 0);
+      // Support Excalidraw v2 (width/height) and skeleton IR (w/h)
+      const elWidth = el.width ?? el.w ?? 0;
+      const elHeight = el.height ?? el.h ?? 0;
+      const x2 = el.x + elWidth;
+      const y2 = el.y + elHeight;
       if (el.x < minX) minX = el.x;
       if (el.y < minY) minY = el.y;
       if (x2 > maxX) maxX = x2;
@@ -76,15 +82,20 @@ function flattenElements(elements) {
  * Compute which 3×3 grid cell an element's center falls in.
  * Returns a cell index 0-8 (row-major: cell 0 = top-left, 8 = bottom-right).
  *
- * @param {object} el - Element with x, y, w, h
+ * Supports both skeleton IR format (w/h) and Excalidraw v2 element format (width/height).
+ *
+ * @param {object} el - Element with x, y, width/height (Excalidraw v2) or w/h (IR)
  * @param {{ minX: number, minY: number, maxX: number, maxY: number }} bbox
  * @returns {number} 0-8
  */
 function cellIndex(el, bbox) {
   const totalW = bbox.maxX - bbox.minX;
   const totalH = bbox.maxY - bbox.minY;
-  const cx = (el.x ?? 0) + (el.w ?? 0) / 2;
-  const cy = (el.y ?? 0) + (el.h ?? 0) / 2;
+  // Support Excalidraw v2 (width/height) and skeleton IR (w/h)
+  const elWidth = el.width ?? el.w ?? 0;
+  const elHeight = el.height ?? el.h ?? 0;
+  const cx = (el.x ?? 0) + elWidth / 2;
+  const cy = (el.y ?? 0) + elHeight / 2;
   const normX = (cx - bbox.minX) / totalW;
   const normY = (cy - bbox.minY) / totalH;
   const col = Math.min(2, Math.floor(normX * 3));

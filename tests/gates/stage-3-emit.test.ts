@@ -106,6 +106,57 @@ describe("T-03-01-A: wireframe-diversity.mjs", () => {
   });
 });
 
+describe("T-03-01-A: wireframe-diversity.mjs — Excalidraw v2 width/height keys (Finding 4)", () => {
+  it("Test 6: two wireframes differing only in element widths score diversity > 0 (Excalidraw v2 width/height keys)", () => {
+    // Before the fix, `el.w` and `el.h` were used instead of `el.width`/`el.height`.
+    // Excalidraw v2 elements use `width` and `height`. With the old code, all elements
+    // appeared to have zero size — bounding boxes were computed from top-left corners only.
+    // Same-position, different-size elements would score distance ≈ 0 (incorrectly).
+    const SAME_POSITION_NARROW = [
+      { type: "rectangle", x: 0, y: 0, width: 50, height: 50, label: "A" },
+      { type: "rectangle", x: 200, y: 0, width: 50, height: 50, label: "B" },
+      { type: "rectangle", x: 400, y: 0, width: 50, height: 50, label: "C" },
+    ];
+    const SAME_POSITION_WIDE = [
+      { type: "rectangle", x: 0, y: 0, width: 450, height: 400, label: "A" },
+      { type: "rectangle", x: 200, y: 0, width: 350, height: 400, label: "B" },
+      { type: "rectangle", x: 400, y: 0, width: 250, height: 400, label: "C" },
+    ];
+
+    const fpNarrow = computeStructuralFingerprint(SAME_POSITION_NARROW);
+    const fpWide = computeStructuralFingerprint(SAME_POSITION_WIDE);
+    const dist = pairwiseDistance(fpNarrow, fpWide);
+
+    // With the fix (width/height), the cell-center positions differ because
+    // center = x + width/2 — wide elements' centers land in different grid cells.
+    // The distance should be meaningfully > 0 (was 0 before the fix).
+    expect(dist).toBeGreaterThan(0);
+  });
+
+  it("Test 7: Excalidraw v2 elements (width/height) and IR elements (w/h) both produce non-zero fingerprints", () => {
+    // IR format uses w/h; Excalidraw v2 format uses width/height.
+    // Both must produce non-degenerate fingerprints.
+    const excalidrawElements = [
+      { type: "rectangle", x: 0, y: 0, width: 200, height: 100 },
+      { type: "rectangle", x: 0, y: 200, width: 200, height: 300 },
+    ];
+    const irElements = [
+      { type: "rectangle", x: 0, y: 0, w: 200, h: 100, label: "Header" },
+      { type: "rectangle", x: 0, y: 200, w: 200, h: 300, label: "Body" },
+    ];
+
+    const fpExcalidraw = computeStructuralFingerprint(excalidrawElements);
+    const fpIr = computeStructuralFingerprint(irElements);
+
+    // Both should produce equivalent fingerprints (same positions, same sizes)
+    expect(fpExcalidraw.elementCount).toBe(fpIr.elementCount);
+    // Grid distributions should be equal (same geometry regardless of key name)
+    for (let i = 0; i < 9; i++) {
+      expect(fpExcalidraw.gridHistogram[i]).toBeCloseTo(fpIr.gridHistogram[i], 6);
+    }
+  });
+});
+
 describe("T-03-01-A: lint-determinism checks", () => {
   it("Test 6: lint-determinism scan of new scripts reports zero violations", async () => {
     const { resolve, dirname } = await import("node:path");
