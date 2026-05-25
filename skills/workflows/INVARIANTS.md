@@ -19,15 +19,15 @@ Invariants every workflow author MUST uphold. These are not conventions — they
 **Correct pattern:**
 ```
 1. Workflow emits artifacts to .design-os/preview/run-<id>/
-2. Gate runs: gate-stage-N.mjs --staged .design-os/preview/run-<id>/
+2. Gate runs: node bin/design-os.mjs gate --stage N --design-dir .design-os/preview/run-<id>/
 3. Gate passes → diff surfaced → user runs --apply → artifacts move to design/
 4. Gate fails → diff surfaced → user fixes → re-emit → re-gate
 ```
 
 **Incorrect pattern (do not do this):**
 ```
-❌ gate-stage-N.mjs --dir design/   ← gates AFTER the fact; protects nothing
-❌ Running gate checks inside design/ without --staged flag
+❌ node bin/design-os.mjs gate --stage N --dir design/   ← gates AFTER the fact; protects nothing
+❌ Using a non-existent --staged flag (correct flag is --design-dir)
 ```
 
 **Enforced by:** `gate-stage-5b.mjs` preview-path assertion (added Plan 02-04, commit 44d7c21). Similar assertions added to gates 1a, 2, 4.

@@ -72,16 +72,19 @@ The IR array must contain exactly 8 objects. Each must use a distinct layout axi
 ```bash
 node bin/design-os.mjs excalidraw-render \
   --input .design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json \
-  --output .design-os/preview/<run-id>/wireframes/<screen>/ \
+  --output .design-os/preview/<run-id>/wireframes/ \
   --screen <screen>
 ```
 
-Produces `v1.excalidraw` through `v8.excalidraw` in the screen directory.
+The renderer appends `<screen>` to `--output`, writing to
+`.design-os/preview/<run-id>/wireframes/<screen>/v1.excalidraw` through `v8.excalidraw`.
+Do NOT pass the `<screen>` segment in `--output` — that would produce a double-nested
+path (`wireframes/<screen>/<screen>/v1.excalidraw`).
 
 **Step 4: Run Stage 3 gate (first pass — FID-03 + diversity check)**
 
 ```bash
-node bin/design-os.mjs gate --stage 3 --staged .design-os/preview/<run-id>/
+node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
 ```
 
 Expected outcomes:
@@ -109,7 +112,7 @@ Emit CHOICE.md to:
 **Step 6: Re-run Stage 3 gate to confirm CHOICE.md present**
 
 ```bash
-node bin/design-os.mjs gate --stage 3 --staged .design-os/preview/<run-id>/
+node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
 ```
 
 Expected outcome: `pass`. If still `failed_after_repair/3-choice-001`, verify the
@@ -120,7 +123,8 @@ CHOICE.md path matches `wireframes/<screen>/CHOICE.md`.
 ```bash
 node bin/design-os.mjs handoff-bundle \
   --from 3 --to 4 \
-  --staged .design-os/preview/<run-id>/
+  --design-dir .design-os/preview/<run-id>/ \
+  --body-file .design-os/preview/<run-id>/stage-3-summary.md
 ```
 
 **Step 8: Surface diff and await user `--apply`**

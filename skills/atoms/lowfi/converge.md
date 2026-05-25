@@ -103,7 +103,7 @@ while the content pane provides context without navigation context-switching.">
 
 After emitting, confirm the gate passes:
 ```bash
-node bin/design-os.mjs gate --stage 3 --staged .design-os/preview/<run-id>/
+node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
 ```
 
 The gate checks `wireframes/**/CHOICE.md` exists. If the CHOICE.md path is correct,
