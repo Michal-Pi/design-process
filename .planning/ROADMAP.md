@@ -62,11 +62,11 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user running `design-os scan --pii` on a `design/research/interviews/` fixture sees the commit rejected when transcripts contain email/phone patterns; the shipped `.gitignore` / `.gitattributes` defaults reject rejected wireframe variants, raw transcripts, and `.design-os/private/` while preserving canonical artifacts.
   5. A maintainer can read this week's Anthropic-Labs watcher report (Claude Design release notes + `anthropics/skills` issues + Anthropic blog) and the host-compatibility matrix CI shows Claude Code fully passing with Codex CLI + Cursor scaffolded (even if not-yet fully passing) — the GTM kill-risk monitor (Pitfall 9) is live from week 1.
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 - [x] 01-01-PLAN.md — Schemas Foundation: 6 Zod sources + JSON Schema emit pipeline + ajv runtime validation + design-os migrate + design-md-validate version pinning (Wave 1)
 - [x] 01-02-PLAN.md — Gate Runner + Handoff Bundle: base runGate with not_runnable + 6 per-stage skeletons + manifest.lock hash chain + tiktoken-budgeted handoff bundles + structural sufficiency eval + 4 stage-gate checklists (Wave 2)
-- [ ] 01-03-PLAN.md — Determinism CI + Eval Harness: verify --golden + lint-determinism + Mermaid renderer + skillgrade per-skill harness + aggregate coexistence eval + 5 CI workflows + recovery scripted test + ESLint exhaustiveness + Pitfall G schema-migration-guard (Wave 3)
+- [x] 01-03-PLAN.md — Determinism CI + Eval Harness: verify --golden + lint-determinism + Mermaid renderer + skillgrade per-skill harness + aggregate coexistence eval + 5 CI workflows + recovery scripted test + ESLint exhaustiveness + Pitfall G schema-migration-guard (Wave 3)
 - [ ] 01-04-PLAN.md — design/ Governance + PII Scanner + Persistence: gitignore/gitattributes templates + design-os init + PII scanner with allowlist + pre-commit hook + MANIFEST.md reconciler + override-banner propagation + recovery prompt + SPINE linearity check + 3 SKILL.md skeletons + TRUST-POSTURE.md + COPY-REVIEW-CHECKLIST.md (Wave 3)
 - [ ] 01-05-PLAN.md — Preview Harness + Routing + References + Watcher: port-manager + Playwright runner + permission-boundary security sandbox + Vite/Next/Astro adapters + variant-distance + run-subagent shim + 7-route registry with ROUTE-08 + 12 mandatory references + 2 more stage-gate checklists (3 and 4 — completing the 6-gate set) + 3 host-profile workspaces + Anthropic-Labs watcher cron + heartbeat + MAINTAINERS.md + RAPID-RESPONSE.md (Wave 3)
 

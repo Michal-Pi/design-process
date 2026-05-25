@@ -3,40 +3,39 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: length — 4 weeks
 status: executing
-last_updated: "2026-05-25T09:10:15.677Z"
+last_updated: "2026-05-25T09:49:11.730Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 40
-  current_plan: "01-02"
+  completed_plans: 4
+  percent: 80
 ---
 
 # State: design-os
 
-**Last updated:** 2026-05-24
+**Last updated:** 2026-05-25
 
 ## Project Reference
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — not yet started.
+- **Current focus:** Phase 1 (v1.5 Infrastructure & Determinism Foundation) — Plan 03 complete, Plans 04-05 remaining.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** None (roadmap just created)
-- **Next phase:** Phase 1 — v1.5 Infrastructure & Determinism Foundation
-- **Plan:** None
-- **Status:** Ready to execute
+- **Phase:** 01 — v1.5 Infrastructure & Determinism Foundation
+- **Next plan:** Phase 01 Plan 04 (Governance + PII scanner + regen-golden gate)
+- **Plan:** 03 complete
+- **Status:** Executing Phase 01
 
 **Progress:**
 
-[██░░░░░░░░] 20%
-Phase 1: [          ] 0%  Not started
+[████████░░] 80%
+Phase 1: [████████  ] 80% (4/5 plans complete)
 Phase 2: [          ] 0%  Not started
 Phase 3: [          ] 0%  Not started
 Phase 4: [          ] 0%  Not started
@@ -65,6 +64,7 @@ Phase 4: [          ] 0%  Not started
 | WCAG 2.2 AA contrast on own examples | 100% pass | Not started |
 | Phase 01 P01 | 90m | 3 tasks | 47 files |
 | Phase 01 P02 | 180m | 3 tasks | 47 files |
+| Phase 01 P03 | 81m | 3 tasks | 67 files | 241 tests |
 
 ## Accumulated Context
 
@@ -87,6 +87,11 @@ Phase 4: [          ] 0%  Not started
 - [Phase 01 Plan 02]: Open Q2 closed for Phase 1 — structural-equivalence is the baseline; semantic similarity deferred to Phase 4
 - [Phase 01 Plan 02]: Plan 03 must add ESLint @typescript-eslint/switch-exhaustiveness-check (Pitfall F mitigation)
 - [Phase 01 Plan 02]: tiktoken cl100k_base for token counting; JSON-body provenance not readable by YAML scanner (falls back to 'validated')
+- [Phase 01 Plan 03]: A2 assumption — dispatchToHost uses static-analysis keyword-overlap fallback (no public Claude Code headless eval API as of May 2026)
+- [Phase 01 Plan 03]: Open Q3 — aggregate coexistence recall threshold ≥0.80 calibrated empirically; Phase 1 non-blocking (continue-on-error: true); blocking enables at v2.0 GA
+- [Phase 01 Plan 03]: YAML-quoted descriptions in SKILL.md stubs — colons in frontmatter values must be wrapped in double-quotes for gray-matter
+- [Phase 01 Plan 03]: handoff-bundle generatedAt optional param — golden tests use fixed 2026-05-25T00:00:00.000Z timestamp for byte-identical determinism
+- [Phase 01 Plan 03]: schema-migration-guard uses --diff-filter=M (MODIFIED only) — fresh-v1 schemas (ADDED) exempt from migration requirement
 
 ### Todos (next session)
 
@@ -111,24 +116,26 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-25
-- **Activity:** Phase 01 Plan 02 (Gate Runner + Handoff Bundle). Gate-runner base + 6 per-stage skeletons + manifest.lock SHA-256 hash chain + 4 stage-gate checklists. Handoff-bundle pipeline (tiktoken cl100k_base, 3k floor, 15k ceiling, section-aware truncation). Bundle-sufficiency eval harness (5 stage-transition fixtures, structural-equivalence baseline). 82 tests across 9 files, tsc clean.
+- **Activity:** Phase 01 Plan 03 (Determinism CI + skillgrade + coexistence eval + recovery). verify-golden 5× byte-identical gate, lint-determinism LLM-import rejection, headless Mermaid renderer, skillgrade per-skill harness (TRIALS=3), 6-package coexistence eval with A2 fallback, recovery semantics (RECOV-01..03), 5 CI workflows, ESLint exhaustiveness, schema-migration-guard. 241 tests across 24 files.
 - **Artifacts produced:**
-  - `assets/scripts/gates/` (base.mjs + 6 per-stage skeletons + _parse-checklist.mjs)
-  - `assets/scripts/manifest-lock-append.mjs` (SHA-256 hash chain)
-  - `assets/scripts/handoff-bundle-build.mjs` (tiktoken budget + section-aware truncation)
-  - `assets/scripts/cli/` gate.mjs + handoff-bundle.mjs + eval-bundle-sufficiency.mjs
-  - `evals/bundles/sufficiency-structural.mjs` + 5 stage-transition fixture pairs
-  - `references/gates/` stage-1.md, stage-2.md, stage-5a.md, stage-5b.md
-  - `schemas/src/` finding.ts + manifest-lock-entry.ts
-  - 9 test files, 82 assertions total
-- **Decisions captured:** GATE-07+08 not_runnable from day one; Open Q2 structural baseline; Pitfall F mitigation deferred to Plan 03; tiktoken cl100k_base token counting.
+  - `assets/scripts/` verify-golden.mjs, lint-determinism.mjs, mermaid-render.mjs, recover.mjs
+  - `assets/scripts/cli/` verify.mjs, eval-skillgrade.mjs, eval-coexistence.mjs, recover.mjs
+  - `evals/runners/` dispatch-host.mjs, skillgrade.mjs
+  - `evals/coexistence/` aggregate-eval.mjs, install-corpus.mjs, 6 trigger YAMLs
+  - `evals/triggers/` design/, audit/, handoff/ trigger YAMLs
+  - `evals/fixtures/golden/` schemas-emit, handoff-bundle, gate-stage-5a, mermaid-render
+  - 5 GitHub Actions workflows (verify-golden, lint-determinism, host-matrix, aggregate-coexistence, schema-migration-guard)
+  - `docs/CONTINGENCY-TRIG-04.md`, `.eslintrc.cjs`
+  - `tests/fixtures/recovery/` 3 recovery fixtures with valid hash-chain manifest.lock
+  - 15 new test files, 159 new assertions (241 total passing)
+- **Decisions captured:** A2 assumption, Open Q3, YAML-quoted descriptions, generatedAt param, --diff-filter=M carve-out.
 
 ### Next Session
 
-- **Likely activity:** `/gsd-execute-phase 01` Plan 03 — Determinism CI + schema-migration-guard + ESLint exhaustiveness rule + coexistence-eval scaffold.
+- **Likely activity:** `/gsd-execute-phase 01` Plan 04 — Governance + PII scanner + interactive regen-golden gate.
 - **Required reading at session start:**
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-02-SUMMARY.md` (outstanding items for Plan 03)
-  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-03-PLAN.md`
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-03-SUMMARY.md` (outstanding items for Plan 04)
+  - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-PLAN.md`
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

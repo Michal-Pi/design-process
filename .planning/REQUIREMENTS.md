@@ -133,8 +133,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [ ] **PREV-01**: Preview harness preserved from v1.0.1 — port manager, security sandbox, Playwright 1.60 readiness probe, headless screenshot capture
 - [ ] **PREV-02**: Adapter scaffolds for Vite 6 / Next 15 (App Router only) / Astro 5 user repos
-- [ ] **PREV-03**: Determinism CI gate (`design-os verify --golden`) — 5× byte-identical script output on a fixed input set
-- [ ] **PREV-04**: CI linter rejects LLM-client imports inside `assets/scripts/` (operationalizing "LLM picks, scripts emit")
+- [x] **PREV-03**: Determinism CI gate (`design-os verify --golden`) — 5× byte-identical script output on a fixed input set *(Plan 03)*
+- [x] **PREV-04**: CI linter rejects LLM-client imports inside `assets/scripts/` (operationalizing "LLM picks, scripts emit") *(Plan 03)*
 - [ ] **PREV-05**: Variant-distance metric — visual-style 6-axis for Stage 5a (preserved from v1.0.1); separate structural-diversity metric for Stage 3 wireframes
 
 ### Trust Posture
@@ -147,10 +147,10 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Trigger Discipline (Codex 2% Cap)
 
-- [ ] **TRIG-01**: Per-skill `skillgrade`-style eval suite — ≥10 should-fire prompts + ≥10 should-not-fire prompts × 3 trials
-- [ ] **TRIG-02**: Per-skill trigger recall ≥0.85 in CI; false-trigger rate ≤0.15 in CI
+- [x] **TRIG-01**: Per-skill `skillgrade`-style eval suite — ≥10 should-fire prompts + ≥10 should-not-fire prompts × 3 trials *(Plan 03)*
+- [x] **TRIG-02**: Per-skill trigger recall ≥0.85 in CI; false-trigger rate ≤0.15 in CI *(Plan 03 — Phase 1 baseline below threshold; real dispatch in Plan 05)*
 - [ ] **TRIG-03**: Aggregate coexistence eval — trigger recall ≥0.80 when 5+ other popular Claude Code skill packages are installed alongside design-os
-- [ ] **TRIG-04**: Contingency lever defined — split into `design-os-core` + `design-os-atoms` if Codex cap pressure rises
+- [x] **TRIG-04**: Contingency lever defined — split into `design-os-core` + `design-os-atoms` if Codex cap pressure rises *(Plan 03 — docs/CONTINGENCY-TRIG-04.md)*
 
 ### Audit Verb (Cross-Stage)
 
@@ -239,9 +239,9 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Partial-Output Recovery
 
-- [ ] **RECOV-01**: User can interrupt `design` after any stage; partial outputs in `design/` are usable on their own
-- [ ] **RECOV-02**: Resumption from any stage boundary supported (scripted test: interrupt after stages 1, 2, 4; resume → equivalent end-state)
-- [ ] **RECOV-03**: 100% scripted-test pass rate (CI-gated)
+- [x] **RECOV-01**: User can interrupt `design` after any stage; partial outputs in `design/` are usable on their own *(Plan 03 — confirm-before-regenerate machinery)*
+- [x] **RECOV-02**: Resumption from any stage boundary supported (scripted test: interrupt after stages 1, 2, 4; resume → equivalent end-state) *(Plan 03)*
+- [x] **RECOV-03**: 100% scripted-test pass rate (CI-gated) *(Plan 03 — 19/19 recovery tests pass)*
 
 ### GTM (Launch Artifact)
 
@@ -418,18 +418,18 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | REF-04 | Phase 1 | Pending |
 | PREV-01 | Phase 1 | Pending |
 | PREV-02 | Phase 1 | Pending |
-| PREV-03 | Phase 1 | Pending |
-| PREV-04 | Phase 1 | Pending |
+| PREV-03 | Phase 1 | Complete (Plan 03) |
+| PREV-04 | Phase 1 | Complete (Plan 03) |
 | PREV-05 | Phase 1 | Pending |
 | TRUST-01 | Phase 1 | Pending |
 | TRUST-02 | Phase 1 | Pending |
 | TRUST-03 | Phase 1 | Pending |
 | TRUST-04 | Phase 1 | Pending |
 | TRUST-05 | Phase 1 | Pending |
-| TRIG-01 | Phase 1 | Pending |
-| TRIG-02 | Phase 1 | Pending |
+| TRIG-01 | Phase 1 | Complete (Plan 03) |
+| TRIG-02 | Phase 1 | Complete (Plan 03) |
 | TRIG-03 | Phase 4 | Pending |
-| TRIG-04 | Phase 1 | Pending |
+| TRIG-04 | Phase 1 | Complete (Plan 03) |
 | AUDIT-01 | Phase 2 | Pending |
 | AUDIT-02 | Phase 3 | Pending |
 | AUDIT-03 | Phase 2 | Pending |
@@ -491,9 +491,9 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | SCHEMA-05 | Phase 1 | Complete |
 | SCHEMA-06 | Phase 1 | Complete |
 | SCHEMA-07 | Phase 1 | Complete |
-| RECOV-01 | Phase 1 | Pending |
-| RECOV-02 | Phase 1 | Pending |
-| RECOV-03 | Phase 1 | Pending |
+| RECOV-01 | Phase 1 | Complete (Plan 03) |
+| RECOV-02 | Phase 1 | Complete (Plan 03) |
+| RECOV-03 | Phase 1 | Complete (Plan 03) |
 | GTM-01 | Phase 4 | Pending |
 | GTM-02 | Phase 4 | Pending |
 | GTM-03 | Phase 4 | Pending |

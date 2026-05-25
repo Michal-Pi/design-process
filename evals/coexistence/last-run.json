@@ -1,10 +1,10 @@
 {
   "calibrationNote": "Per Open Q3, threshold ≥0.80 is aggressive for Phase 1 (static-analysis fallback only). Phase 1 reports the number even if not yet passing. v2.0 GA enables blocking once threshold is empirically calibrated. TRIG-04 contingency: split into design-os-core + design-os-atoms if aggregate recall <0.80 after 2 tuning rounds.",
-  "designOsFalseFires": 31,
-  "designOsHits": 17,
+  "designOsFalseFires": 34,
+  "designOsHits": 16,
   "designOsTotal": 31,
-  "falseFireRate": 0.19375,
+  "falseFireRate": 0.2125,
   "pass": false,
   "peerTotal": 160,
-  "recall": 0.5483870967741935
+  "recall": 0.5161290322580645
 }
