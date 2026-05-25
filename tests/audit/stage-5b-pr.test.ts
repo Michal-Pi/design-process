@@ -7,6 +7,12 @@
 import { describe, it, expect } from 'vitest';
 import { detectStage5bPrIssues } from '../../assets/scripts/audit/stage-5b-pr.mjs';
 
+interface Finding {
+  id: string;
+  severity: string;
+  message: string;
+}
+
 describe('detectStage5bPrIssues', () => {
   it('detects evidence:validated in tokens.json diff → 5b-evidence-001 BLOCKER', () => {
     const content = `
@@ -19,7 +25,7 @@ describe('detectStage5bPrIssues', () => {
       }
     `;
     const findings = detectStage5bPrIssues('design/tokens.json', content);
-    const f = findings.find(f => f.id === '5b-evidence-001');
+    const f = findings.find((f: Finding) => f.id === '5b-evidence-001');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('BLOCKER');
   });
@@ -27,7 +33,7 @@ describe('detectStage5bPrIssues', () => {
   it('detects evidence:proto in tokens.json diff → 5b-evidence-001 BLOCKER', () => {
     const content = `"evidence": "proto"`;
     const findings = detectStage5bPrIssues('design/tokens.json', content);
-    const f = findings.find(f => f.id === '5b-evidence-001');
+    const f = findings.find((f: Finding) => f.id === '5b-evidence-001');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('BLOCKER');
   });
@@ -40,7 +46,7 @@ describe('detectStage5bPrIssues', () => {
       }
     `;
     const findings = detectStage5bPrIssues('design/tokens.json', content);
-    const f = findings.find(f => f.id === '5b-schema-001');
+    const f = findings.find((f: Finding) => f.id === '5b-schema-001');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
   });
@@ -57,8 +63,8 @@ describe('detectStage5bPrIssues', () => {
       }
     `;
     const findings = detectStage5bPrIssues('design/tokens.json', content);
-    expect(findings.find(f => f.id === '5b-evidence-001')).toBeUndefined();
-    expect(findings.find(f => f.id === '5b-schema-001')).toBeUndefined();
+    expect(findings.find((f: Finding) => f.id === '5b-evidence-001')).toBeUndefined();
+    expect(findings.find((f: Finding) => f.id === '5b-schema-001')).toBeUndefined();
   });
 
   it('each finding has id, severity, message', () => {

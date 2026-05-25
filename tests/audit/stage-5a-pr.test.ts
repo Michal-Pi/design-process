@@ -7,6 +7,12 @@
 import { describe, it, expect } from 'vitest';
 import { detectStage5aPrIssues } from '../../assets/scripts/audit/stage-5a-pr.mjs';
 
+interface Finding {
+  id: string;
+  severity: string;
+  message: string;
+}
+
 describe('detectStage5aPrIssues', () => {
   it('detects raw hex value → 5a-token-001 WARNING', () => {
     const content = `
@@ -16,7 +22,7 @@ describe('detectStage5aPrIssues', () => {
       }
     `;
     const findings = detectStage5aPrIssues('src/components/Button.css', content);
-    const f = findings.find(f => f.id === '5a-token-001');
+    const f = findings.find((f: Finding) => f.id === '5a-token-001');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
     expect(f?.message).toContain('Button.css');
@@ -25,7 +31,7 @@ describe('detectStage5aPrIssues', () => {
   it('detects hardcoded Tailwind color class → 5a-token-002 WARNING', () => {
     const content = `<button className="bg-blue-500 text-white hover:bg-blue-600">Click</button>`;
     const findings = detectStage5aPrIssues('src/components/Button.tsx', content);
-    const f = findings.find(f => f.id === '5a-token-002');
+    const f = findings.find((f: Finding) => f.id === '5a-token-002');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
   });
@@ -55,7 +61,7 @@ describe('detectStage5aPrIssues', () => {
     const findings = detectStage5aPrIssues('test.css', content);
     // Both hex values should be detected — at least 1 finding
     expect(findings.length).toBeGreaterThan(0);
-    expect(findings.every(f => f.id === '5a-token-001')).toBe(true);
+    expect(findings.every((f: Finding) => f.id === '5a-token-001')).toBe(true);
   });
 
   it('each finding has id, severity, message', () => {
@@ -71,6 +77,6 @@ describe('detectStage5aPrIssues', () => {
   it('detects 3-char hex values', () => {
     const content = `.a { color: #f00; }`;
     const findings = detectStage5aPrIssues('test.css', content);
-    expect(findings.find(f => f.id === '5a-token-001')).toBeDefined();
+    expect(findings.find((f: Finding) => f.id === '5a-token-001')).toBeDefined();
   });
 });

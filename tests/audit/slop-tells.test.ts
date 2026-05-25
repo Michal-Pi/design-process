@@ -7,6 +7,14 @@
 import { describe, it, expect } from 'vitest';
 import { detectSlopTells } from '../../assets/scripts/audit/slop-tells.mjs';
 
+interface Finding {
+  id: string;
+  severity: string;
+  message: string;
+  fixRecipe?: string;
+  suppressWith?: string;
+}
+
 describe('detectSlopTells', () => {
   it('detects rainbow gradient → 5a-slop-001 ERROR', async () => {
     const css = `
@@ -16,7 +24,7 @@ describe('detectSlopTells', () => {
     `;
     const findings = await detectSlopTells(css, 'src/components/Hero.css');
     expect(findings.length).toBeGreaterThan(0);
-    const f = findings.find(f => f.id === '5a-slop-001');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-001');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('ERROR');
     expect(f?.message).toContain('Hero.css');
@@ -29,7 +37,7 @@ describe('detectSlopTells', () => {
       }
     `;
     const findings = await detectSlopTells(css, 'src/styles/global.css');
-    const f = findings.find(f => f.id === '5a-slop-002');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-002');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
   });
@@ -42,7 +50,7 @@ describe('detectSlopTells', () => {
       }
     `;
     const findings = await detectSlopTells(css, 'src/components/Card.css');
-    const f = findings.find(f => f.id === '5a-slop-003');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-003');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
   });
@@ -55,7 +63,7 @@ describe('detectSlopTells', () => {
       }
     `;
     const findings = await detectSlopTells(css, 'src/layouts/Grid.css');
-    const f = findings.find(f => f.id === '5a-slop-004');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-004');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('INFO');
   });
@@ -67,7 +75,7 @@ describe('detectSlopTells', () => {
       }
     `;
     const findings = await detectSlopTells(css, 'src/styles/section.css');
-    const f = findings.find(f => f.id === '5a-slop-005');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-005');
     expect(f).toBeDefined();
     expect(f?.severity).toBe('WARNING');
   });
@@ -104,7 +112,7 @@ describe('detectSlopTells', () => {
   it('detects Inter in double-quoted font-family', async () => {
     const css = `body { font-family: "Inter", sans-serif; }`;
     const findings = await detectSlopTells(css, 'test.css');
-    const f = findings.find(f => f.id === '5a-slop-002');
+    const f = findings.find((f: Finding) => f.id === '5a-slop-002');
     expect(f).toBeDefined();
   });
 });
