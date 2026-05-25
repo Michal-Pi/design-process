@@ -107,14 +107,49 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
    - Variant B: primary lightness +10%
    - Variant C: primary lightness -10%
 
-   For each variant, use the preview harness:
+   For each variant:
+
+   **7a. Emit variant tokens** (re-run tokens-project with adjusted palette):
    ```
-   Bash: node bin/design-os.mjs preview --design-dir design/ --variant <A|B|C>
+   Bash: node assets/scripts/tokens-project.mjs \
+     --design-dir design/ \
+     --adapter <detected: shadcn|tailwind-v4|plain-css> \
+     --color-primary '<variant oklch value>' \
+     --color-background '<oklch value>' \
+     --color-foreground '<oklch value>' \
+     --border-radius '<rem value>' \
+     --font-family-base '<font stack>'
+   ```
+
+   **7b. Spawn the dev server** (detect framework from registry.mjs):
+   ```
+   Bash: node bin/design-os.mjs preview spawn \
+     --framework <vite|next|astro> \
+     --repo-root <absolute path to user repo root>
+   ```
+   This outputs JSON: `{ command, args, env, port, readyUrl, runId }`.
+   Note the `readyUrl` (e.g., `http://127.0.0.1:<port>/`) for the screenshot step.
+
+   **7c. Screenshot the running server** using Playwright (requires Playwright installed):
+   ```
+   Bash: npx playwright screenshot --browser chromium '<readyUrl>' \
+     .design-os/preview/run-<runId>/variant-<A|B|C>.png
+   ```
+   If Playwright is unavailable, skip screenshots and log a WARNING (see Host fallback below).
+
+   **7d. Release the port** when done with each variant:
+   ```
+   Bash: node bin/design-os.mjs preview release-port --run-id <runId>
    ```
 
    After generating all 3 variants, run the 6-axis visual diversity check. Minimum
    diversity score ≥0.15 between any pair of variants. If diversity < 0.15, log a
    WARNING but do not halt — variants are exploratory, not production selections.
+
+   **Note (variant-screenshot gap):** `preview spawn` launches a dev server and returns
+   its URL — it does not take screenshots automatically. The Playwright step (7c) is a
+   manual invocation. Plan 02-05 (e2e fixture) owns adding automated per-variant screenshot
+   capture to the preview harness CLI.
 
 8. **Post-check token budget.** Check usage after tokens + preview:
    ```
@@ -139,10 +174,24 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
 
    Do NOT treat `not_runnable` as a workflow failure. Continue to step 10.
 
-10. **Build handoff bundle.** Write the stage-5a handoff bundle:
+10. **Build handoff bundle.** Write the stage-5a handoff bundle. First, prepare a body file
+    containing the LLM summary of what was produced (tokens, adapter, palette rationale):
     ```
-    Bash: node bin/design-os.mjs handoff-bundle --stage-from 2 --stage-to 5a --design-dir design/
+    # Create body file with summary text (LLM fills in the content)
+    Bash: echo "<summary of stage-5a tokens and palette decisions>" > /tmp/stage-5a-body.md
     ```
+    Then build the bundle:
+    ```
+    Bash: node bin/design-os.mjs handoff-bundle \
+      --from 2 \
+      --to 5a \
+      --design-dir design/ \
+      --body-file /tmp/stage-5a-body.md
+    ```
+    The `--body-file` argument must point to a Markdown file whose content becomes the
+    bundle body. Typical content: palette choices, adapter used, contrast measurements,
+    DTCG tier summary, and any provisional assumptions (D-42). The command outputs JSON
+    with `{ tokenCount, tokens, truncationWarning, path }` — `path` is the written bundle.
 
 11. **Present staged artifacts and await --apply.**
     Read the staged artifacts from `.design-os/preview/run-<id>/`:
