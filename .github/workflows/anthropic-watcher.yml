@@ -1,0 +1,147 @@
+name: Anthropic-Labs Watcher
+
+# Daily cron polling Anthropic feeds for competitive-watch keywords (D-30, GTM-06).
+# Offset prime (37 past the hour) to reduce GitHub Actions cron collision.
+# See docs/MAINTAINERS.md for the named human owner of the weekly review.
+# See evals/watcher/keyword-filter.mjs for the keyword + heuristic logic.
+
+on:
+  schedule:
+    - cron: '37 7 * * *'   # 07:37 UTC daily
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    name: Poll Anthropic feeds
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Anthropic-Labs watcher
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const { matchesWatcherCriteria, KEYWORDS } = await import(
+              `${process.env.GITHUB_WORKSPACE}/evals/watcher/keyword-filter.mjs`
+            );
+
+            const maintainerHandle = 'TBD'; // Fill in before GA per docs/MAINTAINERS.md
+
+            // 1. Fetch anthropics/skills releases
+            let hits = [];
+            try {
+              const releases = await github.rest.repos.listReleases({
+                owner: 'anthropics',
+                repo: 'skills',
+                per_page: 20,
+              });
+              for (const release of releases.data) {
+                const title = release.name || release.tag_name || '';
+                const body = release.body || '';
+                if (matchesWatcherCriteria(title, body)) {
+                  hits.push({ source: 'anthropics/skills-releases', title, body: body.slice(0, 500), url: release.html_url });
+                }
+              }
+            } catch (e) {
+              core.warning(`anthropics/skills releases fetch failed: ${e.message}`);
+            }
+
+            // 2. Fetch Anthropic blog RSS (via fetch — available in Node 22 / actions/github-script)
+            try {
+              const resp = await fetch('https://www.anthropic.com/blog/rss.xml', { signal: AbortSignal.timeout(8000) });
+              const xml = await resp.text();
+              // Simple title extraction — avoid parsing XML library in inline script
+              const titleMatches = xml.matchAll(/<title><!?\[CDATA\[([^\]]+)\]\]><\/title>|<title>([^<]+)<\/title>/g);
+              const descMatches = xml.matchAll(/<description><!?\[CDATA\[([^\]]+)\]\]><\/description>|<description>([^<]+)<\/description>/g);
+              const titles = [...titleMatches].map(m => (m[1] || m[2] || '').trim());
+              const descs = [...descMatches].map(m => (m[1] || m[2] || '').trim());
+              for (let i = 0; i < titles.length; i++) {
+                const title = titles[i] || '';
+                const body = descs[i] || '';
+                if (matchesWatcherCriteria(title, body)) {
+                  hits.push({ source: 'anthropic-blog-rss', title, body: body.slice(0, 500), url: 'https://www.anthropic.com/blog' });
+                }
+              }
+            } catch (e) {
+              core.warning(`Anthropic blog RSS fetch failed: ${e.message}`);
+            }
+
+            // 3. For each hit, open a [competitive-watch] issue if not already open
+            for (const hit of hits) {
+              const issueTitle = `[competitive-watch] ${hit.title.slice(0, 80)}`;
+
+              // Check for existing open issue with same title prefix
+              const existing = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'competitive-watch',
+                per_page: 100,
+              });
+              const alreadyOpen = existing.data.some(i => i.title.startsWith(issueTitle.slice(0, 60)));
+              if (alreadyOpen) continue;
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: [
+                  `**Source:** ${hit.source}`,
+                  `**URL:** ${hit.url}`,
+                  `**Snippet:** ${hit.body}`,
+                  '',
+                  `cc @${maintainerHandle} — please review per [docs/RAPID-RESPONSE.md](docs/RAPID-RESPONSE.md).`,
+                  '',
+                  `*Keywords matched: ${KEYWORDS.filter(k => (hit.title + ' ' + hit.body).toLowerCase().includes(k.toLowerCase())).join(', ')}*`,
+                ].join('\n'),
+                labels: ['competitive-watch'],
+              });
+            }
+
+            // 4. Update or create heartbeat tracking issue
+            const trackerTitle = 'Anthropic Watcher: Status Tracker';
+            const trackers = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const tracker = trackers.data.find(i => i.title === trackerTitle);
+            const runDate = new Date().toISOString().split('T')[0];
+            const commentBody = `Ran ${runDate}; novel hits: ${hits.length}`;
+            if (tracker) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: tracker.number,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: trackerTitle,
+                body: `Tracking issue for the Anthropic-Labs watcher daily cron (D-30).\n\n${commentBody}`,
+                labels: ['competitive-watch'],
+              });
+            }
+
+            core.info(`Watcher complete. Novel hits: ${hits.length}`);

@@ -1,0 +1,92 @@
+name: Anthropic Watcher Heartbeat
+
+# Pitfall E mitigation: detects if the Anthropic-Labs Watcher cron missed its run.
+# Runs 1 hour after the watcher (08:37 UTC vs 07:37 UTC).
+# If the watcher's last run is older than 26 hours, opens a missed-cron issue.
+#
+# Sources: RESEARCH.md Pitfall E (heartbeat — missed-cron detection),
+#          CONTEXT.md D-30, PLAN.md Task 3 behavior block.
+
+on:
+  schedule:
+    - cron: '37 8 * * *'   # 08:37 UTC daily (1 hour after watcher)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  heartbeat:
+    name: Check watcher ran recently
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check heartbeat
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            // Find the most recent run of the Anthropic-Labs Watcher workflow
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'anthropic-watcher.yml',
+              per_page: 1,
+            });
+
+            const lastRun = runs.data.workflow_runs?.[0];
+
+            const now = Date.now();
+            const TWENTY_SIX_HOURS = 26 * 60 * 60 * 1000;
+
+            let missed = false;
+            let lastTs = 'unknown';
+
+            if (!lastRun) {
+              missed = true;
+              lastTs = 'never';
+            } else {
+              lastTs = lastRun.created_at;
+              const runAge = now - new Date(lastRun.created_at).getTime();
+              if (runAge > TWENTY_SIX_HOURS || lastRun.conclusion === 'failure') {
+                missed = true;
+              }
+            }
+
+            if (missed) {
+              const issueTitle = `Anthropic watcher heartbeat missed (last run: ${lastTs})`;
+              // Check for existing open heartbeat issue (avoid spam)
+              const existing = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'competitive-watch',
+                per_page: 50,
+              });
+              const alreadyOpen = existing.data.some(i => i.title.includes('heartbeat missed'));
+              if (!alreadyOpen) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: issueTitle,
+                  body: [
+                    `The Anthropic-Labs Watcher daily cron may have missed its run.`,
+                    `Last detected run: \`${lastTs}\``,
+                    '',
+                    `Please check the [watcher workflow logs](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/anthropic-watcher.yml) and re-trigger manually if needed.`,
+                    '',
+                    `See [docs/MAINTAINERS.md](docs/MAINTAINERS.md) for the review owner.`,
+                  ].join('\n'),
+                  labels: ['competitive-watch'],
+                });
+                core.warning(`Heartbeat: watcher missed! Issue opened.`);
+              } else {
+                core.warning(`Heartbeat: watcher missed but issue already open.`);
+              }
+            } else {
+              core.info(`Heartbeat OK: last watcher run was ${lastTs}`);
+            }

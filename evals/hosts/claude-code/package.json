@@ -1,0 +1,11 @@
+{
+  "name": "@design-os/evals-hosts-claude-code",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^2"
+  }
+}

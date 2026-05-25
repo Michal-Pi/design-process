@@ -23,13 +23,15 @@ describe('routing/registry: ROUTES', () => {
 
   it('4 routes are implemented-stub status', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    const implemented = Object.values(ROUTES).filter(r => r.status === 'implemented-stub');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const implemented = Object.values(ROUTES as Record<string, any>).filter(r => r.status === 'implemented-stub');
     expect(implemented).toHaveLength(4);
   });
 
   it('3 routes are not-yet-implemented status', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    const notYet = Object.values(ROUTES).filter(r => r.status === 'not-yet-implemented');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notYet = Object.values(ROUTES as Record<string, any>).filter(r => r.status === 'not-yet-implemented');
     expect(notYet).toHaveLength(3);
   });
 
@@ -70,14 +72,16 @@ describe('routing/registry: ROUTES', () => {
 
   it('every route has requiredStages array', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    for (const route of Object.values(ROUTES)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const route of Object.values(ROUTES as Record<string, any>)) {
       expect(Array.isArray(route.requiredStages)).toBe(true);
     }
   });
 
   it('every route has budgetTokensP50', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    for (const route of Object.values(ROUTES)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const route of Object.values(ROUTES as Record<string, any>)) {
       expect(typeof route.budgetTokensP50).toBe('number');
       expect(route.budgetTokensP50).toBeGreaterThan(0);
     }
