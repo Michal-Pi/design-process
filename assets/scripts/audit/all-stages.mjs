@@ -14,11 +14,12 @@
 // Sources: PLAN.md T-03-05-B; CONTEXT.md D-68, D-69; INVARIANTS.md
 // Implements: AUDIT-02, AUDIT-04
 
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, cp } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { detectStage3PrIssues } from './stage-3-pr.mjs';
@@ -101,6 +102,89 @@ function findSitemapNode(sitemap, featureName) {
 }
 
 /**
+ * Derive a safe screen name from a route path — mirrors the logic in stage-3-pr.mjs.
+ * Uses only the last path segment to avoid path-traversal (T-03-05-02).
+ *
+ * @param {string} routePath
+ * @returns {string}
+ */
+function routePathToScreenName(routePath) {
+  const segments = routePath.split('/').filter(Boolean);
+  const last = segments[segments.length - 1] ?? '';
+  return last.toLowerCase().replace(/\s+/g, '-');
+}
+
+/**
+ * Build a scoped staging directory containing only the artifacts that belong
+ * to the matched sitemap node (Finding 1 fix — D-69 scope enforcement).
+ *
+ * Copies:
+ *   - ia/sitemap.json (scoped to the single matched route)
+ *   - wireframes/<screen>/ directory (if it exists)
+ *   - interactions/<screen>.spec.md (if it exists)
+ *   - tokens.json (stage-agnostic; always included for 5a/5b detectors)
+ *
+ * T-03-05-02: routePath and label used as string matchers only — never as
+ * filesystem path components. The screen name is derived via routePathToScreenName()
+ * which takes only the last segment and sanitizes it.
+ *
+ * @param {string} resolvedDesignDir - Absolute path to the full design directory
+ * @param {{ path: string, label: string }} node - Matched sitemap node
+ * @param {object} fullSitemap - Full parsed sitemap
+ * @returns {Promise<string>} - Path to the scoped staging directory
+ */
+async function buildScopedDesignDir(resolvedDesignDir, node, fullSitemap) {
+  const scopedDir = await mkdtemp(join(tmpdir(), 'design-os-scope-'));
+
+  // ── ia/sitemap.json — scoped to the single matched route ──────────────────
+  const scopedSitemap = {
+    ...fullSitemap,
+    routes: (Array.isArray(fullSitemap.routes) ? fullSitemap.routes : []).filter(
+      (/** @type {unknown} */ r) => {
+        const rPath = typeof r === 'string' ? r : (/** @type {Record<string,unknown>} */ (r)['path'] ?? '');
+        return rPath === node.path;
+      }
+    ),
+  };
+  await mkdir(join(scopedDir, 'ia'), { recursive: true });
+  await writeFile(join(scopedDir, 'ia', 'sitemap.json'), JSON.stringify(scopedSitemap, null, 2), 'utf8');
+
+  // ── Screen name (derived from route path — NOT used as filesystem path directly) ──
+  const screenName = routePathToScreenName(node.path);
+
+  // ── wireframes/<screen>/ — copy only this screen's wireframe dir ───────────
+  if (screenName) {
+    const srcWireframes = join(resolvedDesignDir, 'wireframes', screenName);
+    if (existsSync(srcWireframes)) {
+      const destWireframes = join(scopedDir, 'wireframes', screenName);
+      await mkdir(destWireframes, { recursive: true });
+      await cp(srcWireframes, destWireframes, { recursive: true });
+    }
+  }
+
+  // ── interactions/<screen>.spec.md — copy only this screen's spec ──────────
+  if (screenName) {
+    const srcSpec = join(resolvedDesignDir, 'interactions', `${screenName}.spec.md`);
+    if (existsSync(srcSpec)) {
+      await mkdir(join(scopedDir, 'interactions'), { recursive: true });
+      await writeFile(
+        join(scopedDir, 'interactions', `${screenName}.spec.md`),
+        await readFile(srcSpec, 'utf8'),
+        'utf8'
+      );
+    }
+  }
+
+  // ── tokens.json — always include for stage 5a/5b detectors ───────────────
+  const srcTokens = join(resolvedDesignDir, 'tokens.json');
+  if (existsSync(srcTokens)) {
+    await writeFile(join(scopedDir, 'tokens.json'), await readFile(srcTokens, 'utf8'), 'utf8');
+  }
+
+  return scopedDir;
+}
+
+/**
  * Normalize a finding from any per-stage detector into a consistent shape
  * with a `stage` field and canonical `findingId`.
  *
@@ -144,8 +228,14 @@ function normalizeFinding(finding, stage) {
 export async function runAuditAllStages({ designDir, featureName, outputPath }) {
   const resolvedDesignDir = resolve(designDir);
 
-  // For --new-feature mode (D-69): validate featureName exists in sitemap
-  // T-03-05-02: findSitemapNode matches by label/path string — no filesystem use of featureName
+  // For --new-feature mode (D-69): validate featureName exists in sitemap, then build
+  // a scoped staging directory containing ONLY artifacts for the matched route.
+  // T-03-05-02: findSitemapNode matches by label/path string — no filesystem use of featureName.
+  // Finding 1 fix: detectors run against the scoped dir, not the full design dir.
+  let activeDesignDir = resolvedDesignDir;
+  /** @type {string | undefined} */
+  let scopedTmpDir;
+
   if (featureName) {
     const sitemapPath = join(resolvedDesignDir, 'ia', 'sitemap.json');
     if (!existsSync(sitemapPath)) {
@@ -164,63 +254,120 @@ export async function runAuditAllStages({ designDir, featureName, outputPath }) 
     if (!node) {
       throw new Error(`Feature "${featureName}" not found in sitemap — check label and path values`);
     }
+
+    // Build scoped staging directory — detectors will run against this, not the full dir.
+    // This ensures findings for unrelated routes (e.g. /dashboard) are excluded from a
+    // --new-feature --feature checkout audit (D-69 scope enforcement).
+    scopedTmpDir = await buildScopedDesignDir(resolvedDesignDir, node, sitemap);
+    activeDesignDir = scopedTmpDir;
   }
 
   const auditType = featureName ? `feature-audit:${featureName}` : 'all-stages';
   /** @type {Array<{findingId: string, severity: string, stage: string|number, evidence: string, fixRecipe: string}>} */
   const allFindings = [];
 
-  // ── Stage 1: no dedicated PR detector in Phase 3 (skip, no Stage 1 PR detector) ──
-
-  // ── Stage 2: no dedicated Stage 2 PR detector yet — placeholder (returns empty) ──
-  // The Stage 2 audit is covered by the existing --pr mode slop-tells + Stage 5a detector.
-  // A dedicated stage-2-pr.mjs is out of Phase 3 scope (ships with PR-audit workflows).
-
-  // ── Stage 3 (sketch/wireframes) ─────────────────────────────────────────────────
   try {
-    const sitemapPath = join(resolvedDesignDir, 'ia', 'sitemap.json');
-    const wireframesDir = join(resolvedDesignDir, 'wireframes');
-    const stage3Findings = await detectStage3PrIssues({
-      sitemapPath,
-      wireframesDir,
-    });
-    allFindings.push(...stage3Findings.map(f => normalizeFinding(f, 3)));
-  } catch {
-    // Detector failure is non-fatal — continue with remaining stages
-  }
+    // ── Stage 1: no dedicated PR detector in Phase 3 (skip, no Stage 1 PR detector) ──
 
-  // ── Stage 4 (interactions/IxD) ───────────────────────────────────────────────────
-  try {
-    const stage4Findings = await detectStage4PrIssues({ designDir: resolvedDesignDir });
-    allFindings.push(...stage4Findings.map(f => normalizeFinding(f, 4)));
-  } catch {
-    // Detector failure is non-fatal
-  }
+    // ── Stage 2: no dedicated Stage 2 PR detector yet — placeholder (returns empty) ──
+    // The Stage 2 audit is covered by the existing --pr mode slop-tells + Stage 5a detector.
+    // A dedicated stage-2-pr.mjs is out of Phase 3 scope (ships with PR-audit workflows).
 
-  // ── Stage 5a (tokens/style) ──────────────────────────────────────────────────────
-  // Stage 5a PR detector takes changedFilePath + content; for --all-stages we scan tokens.json
-  try {
-    const tokensPath = join(resolvedDesignDir, 'tokens.json');
-    if (existsSync(tokensPath)) {
-      const content = await readFile(tokensPath, 'utf8');
-      const stage5aFindings = detectStage5aPrIssues('tokens.json', content);
-      allFindings.push(...stage5aFindings.map(f => normalizeFinding(f, '5a')));
+    // ── Stage 3 (sketch/wireframes) ─────────────────────────────────────────────────
+    try {
+      const sitemapPath = join(activeDesignDir, 'ia', 'sitemap.json');
+      const wireframesDir = join(activeDesignDir, 'wireframes');
+      const stage3Findings = await detectStage3PrIssues({
+        sitemapPath,
+        wireframesDir,
+      });
+      allFindings.push(...stage3Findings.map(f => normalizeFinding(f, 3)));
+    } catch {
+      // Detector failure is non-fatal — continue with remaining stages
     }
-  } catch {
-    // Detector failure is non-fatal
-  }
 
-  // ── Stage 5b (design system/DTCG) ──────────────────────────────────────────────
-  // Stage 5b PR detector takes changedFilePath + content
-  try {
-    const tokensPath = join(resolvedDesignDir, 'tokens.json');
-    if (existsSync(tokensPath)) {
-      const content = await readFile(tokensPath, 'utf8');
-      const stage5bFindings = detectStage5bPrIssues('tokens.json', content);
-      allFindings.push(...stage5bFindings.map(f => normalizeFinding(f, '5b')));
+    // ── Stage 4 (interactions/IxD) ───────────────────────────────────────────────────
+    // Finding 2 fix: before calling detectStage4PrIssues (which only globs existing .spec.md
+    // files), enumerate expected .spec.md files from the sitemap and flag any that are missing.
+    // This catches routes present in sitemap.json with no corresponding spec file — which
+    // detectStage4PrIssues would silently skip (Lesson 5: coverage by identity, not just count).
+    try {
+      const sitemapPath = join(activeDesignDir, 'ia', 'sitemap.json');
+      if (existsSync(sitemapPath)) {
+        let sitemap;
+        try {
+          const raw = await readFile(sitemapPath, 'utf8');
+          sitemap = JSON.parse(raw);
+        } catch {
+          sitemap = null;
+        }
+
+        if (sitemap && Array.isArray(sitemap.routes)) {
+          const interactionsDir = join(activeDesignDir, 'interactions');
+          for (const route of sitemap.routes) {
+            const routePath = typeof route === 'string' ? route : (route.path ?? '');
+            const screenName = routePathToScreenName(routePath);
+            if (!screenName) continue;
+
+            const expectedSpec = join(interactionsDir, `${screenName}.spec.md`);
+            if (!existsSync(expectedSpec)) {
+              allFindings.push(normalizeFinding({
+                findingId: '4-pr-spec-missing-001',
+                severity: 'ERROR',
+                evidence: `${screenName}: missing interactions/${screenName}.spec.md`,
+                fixRecipe: `Run the interact workflow for screen '${screenName}' to produce interactions/${screenName}.spec.md`,
+              }, 4));
+            }
+          }
+        }
+      }
+    } catch {
+      // Missing-spec check failure is non-fatal
     }
-  } catch {
-    // Detector failure is non-fatal
+
+    try {
+      const stage4Findings = await detectStage4PrIssues({ designDir: activeDesignDir });
+      allFindings.push(...stage4Findings.map(f => normalizeFinding(f, 4)));
+    } catch {
+      // Detector failure is non-fatal
+    }
+
+    // ── Stage 5a (tokens/style) ────────────────────────────────────────────────────
+    // Stage 5a PR detector takes changedFilePath + content; for --all-stages we scan tokens.json
+    try {
+      const tokensPath = join(activeDesignDir, 'tokens.json');
+      if (existsSync(tokensPath)) {
+        const content = await readFile(tokensPath, 'utf8');
+        const stage5aFindings = detectStage5aPrIssues('tokens.json', content);
+        allFindings.push(...stage5aFindings.map(f => normalizeFinding(f, '5a')));
+      }
+    } catch {
+      // Detector failure is non-fatal
+    }
+
+    // ── Stage 5b (design system/DTCG) ──────────────────────────────────────────────
+    // Stage 5b PR detector takes changedFilePath + content
+    try {
+      const tokensPath = join(activeDesignDir, 'tokens.json');
+      if (existsSync(tokensPath)) {
+        const content = await readFile(tokensPath, 'utf8');
+        const stage5bFindings = detectStage5bPrIssues('tokens.json', content);
+        allFindings.push(...stage5bFindings.map(f => normalizeFinding(f, '5b')));
+      }
+    } catch {
+      // Detector failure is non-fatal
+    }
+
+  } finally {
+    // Clean up the scoped temp directory (--new-feature mode only)
+    if (scopedTmpDir) {
+      try {
+        const { rm } = await import('node:fs/promises');
+        await rm(scopedTmpDir, { recursive: true, force: true });
+      } catch {
+        // Cleanup failure is non-fatal
+      }
+    }
   }
 
   // Sort findings: severity DESC then stage ASC (D-68)
