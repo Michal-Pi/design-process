@@ -91,27 +91,27 @@ export function SimpleLoader() {
 function parseStateNames(specContent: string): string[] {
   const statesMatch = specContent.match(/## States\s*([\s\S]*?)(?=## |$)/);
   if (!statesMatch) return [];
-  const block = statesMatch[1];
+  const block = statesMatch[1] ?? '';
   const states: string[] = [];
   for (const line of block.split('\n')) {
     const m = line.match(/^-\s+([a-zA-Z][a-zA-Z0-9_-]*)\s*:/);
-    if (m) states.push(m[1]);
+    if (m) states.push(m[1] ?? '');
   }
-  return states;
+  return states.filter(Boolean);
 }
 
 /** Parse transition targets from a spec.md ## Transitions section */
 function parseTransitionTargets(specContent: string): string[] {
   const transMatch = specContent.match(/## Transitions\s*([\s\S]*?)(?=## |$)/);
   if (!transMatch) return [];
-  const block = transMatch[1];
+  const block = transMatch[1] ?? '';
   const targets: string[] = [];
   // Lines like: - idle --> loading : on SUBMIT
   for (const line of block.split('\n')) {
     const m = line.match(/-->\s+([a-zA-Z][a-zA-Z0-9_-]*)\s*/);
-    if (m) targets.push(m[1]);
+    if (m) targets.push(m[1] ?? '');
   }
-  return targets;
+  return targets.filter(Boolean);
 }
 
 /** Check that every transition target is declared in the states list */
