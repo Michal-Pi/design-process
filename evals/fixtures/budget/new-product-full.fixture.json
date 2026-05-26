@@ -1,0 +1,15 @@
+{
+  "route": "new-product",
+  "description": "Full 5-stage new-product route (v2.0b)",
+  "budgetTokens": 150000,
+  "stageAllocations": {
+    "ingest": 5000,
+    "discover": 30000,
+    "structure": 25000,
+    "sketch": 25000,
+    "interact": 30000,
+    "style": 25000,
+    "systematize": 10000
+  },
+  "notes": "D-66: per-stage ceilings are independent — no headroom donation between stages. Source: CONTEXT.md D-66, ROADMAP SC-5, COST-03 (sketch p50 ≤25k), COST-04 (interact p50 ≤30k), COST-07 (full ≤150k)."
+}
