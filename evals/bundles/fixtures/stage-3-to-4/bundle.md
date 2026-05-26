@@ -6,17 +6,16 @@ generated: "2025-01-25T16:00:00Z"
 provenance: generated
 owner: design-os
 lastReviewedAt: "2025-01-25T16:00:00Z"
-sourceHash: sha256:9f29e167dddf093c74a81d2d51dbce4178510a1bda4baa5dedf17a92a9f5f619
+sourceHash: sha256:b033815eafae1d45635f611dd0dd8934d838f4a8999fa937d8d4ff1c76065ce7
 tokenCount: 3800
 truncationWarning: null
-provenanceWorstCase: validated
+provenanceWorstCase: generated
 goalAndScope: >-
-  Stage 3 → 4 handoff: low-fidelity wireframe phase represented by placeholder
-  (Phase 1 baseline). Stage 4 interaction design must now specify state machines
-  for the components identified in the wireframe flow. In Phase 3, the placeholder
-  will be replaced by Excalidraw JSON and this bundle will be regenerated with
-  real sourceHash and provenance. For Phase 1, structural-equivalence is the
-  acceptance baseline per Open Q2.
+  Stage 3 → 4 handoff: low-fidelity wireframe phase (Phase 1 placeholder for Excalidraw)
+  plus Phase 3 Plan 02 interaction spec placeholder for search-results screen. Stage 4
+  interaction design specifies state machines for components identified in the wireframe flow.
+  interactions.placeholder ships a realistic spec with 4 canonical states + HAX-18 citations
+  as a fixture for bundle-sufficiency eval. sourceHash updated in Phase 3 Plan 02.
 decisionsMade:
   - decision: "SearchBox, ContextPanel, and KnowledgeBaseEntry identified as stateful components requiring XState machines"
     terminalState: pass
@@ -30,6 +29,8 @@ openQuestions:
 artifactsInventory:
   - path: upstream/wireframes.placeholder
     brief: "Phase 1 placeholder for Stage 3 low-fidelity wireframes; lists 4 planned screens"
+  - path: upstream/interactions.placeholder
+    brief: "Phase 3 Plan 02: search-results screen spec with 4 states + HAX-18 citations; replaces Phase 1 placeholder"
 pointersToVerify:
   - "Phase 3 will replace this placeholder with Excalidraw JSON; bundle must be regenerated at that point"
   - "Stage 4 IxD specs must map to screen-level wireframes when Phase 3 ships"

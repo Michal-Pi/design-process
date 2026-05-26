@@ -1,0 +1,53 @@
+---
+artifact: interaction-spec
+stage: "4"
+screen: search-results
+asyncOperations: true
+stateCount: 4
+hasConditionalTransitions: true
+provenance: generated
+owner: design-os
+schemaVersion: 1
+sourceHash: sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+generated: "2026-05-26T00:00:00.000Z"
+lastReviewedAt: "2026-05-26T00:00:00.000Z"
+mermaidStateDiagram: "stateDiagram-v2\n  [*] --> loading\n  loading --> success : DONE\n  loading --> error : ERROR\n  error --> loading : RETRY\n"
+states:
+  - name: loading
+    type: loading
+  - name: empty
+    type: empty
+  - name: error
+    type: error
+  - name: success
+    type: success
+---
+
+# Search Results Screen — Interaction Spec
+
+Stage 3 → 4 handoff: the search-results screen was identified in Stage 3 CHOICE.md
+(v1.excalidraw selected — card-grid layout). Stage 4 enumerates interaction states.
+
+## State Descriptions
+
+### loading
+Spinner with "Searching..." label. Debounced 200ms after last keystroke.
+AI-powered search: see hax-18 G7 (efficient invocation).
+
+### empty
+"No results for '<query>'" with suggestion chips for related topics.
+HAX-18 G2: make clear what the AI can search (scope = knowledge base articles).
+
+### error
+"Search unavailable" with retry button. If AI search fails, fall back to keyword search.
+HAX-18 G16: convey AI limitation ("Using keyword search — AI search is temporarily unavailable").
+
+### success
+Card grid of results ranked by relevance. Each card shows: title, excerpt, source, confidence badge.
+HAX-18 G11: "Ranked by relevance to your query" label.
+
+## References
+
+- See references/hax-18.md: G2, G7, G11, G16 applied to AI-powered search
+- Pattern: Card Stack (Tidwell §3) for results display
+- Accessibility: W3C APG Listbox pattern for keyboard navigation of results
