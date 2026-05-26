@@ -281,6 +281,12 @@ async function inferStage4(sourceDir, outputDir) {
           asyncOperations: hasAsync,
           stateCount: (hasLoading ? 1 : 0) + (hasError ? 1 : 0) + (hasEmpty ? 1 : 0) + 1,
           hasConditionalTransitions: hasAsync && (hasLoading || hasError),
+          // Bug fix (Finding 3): store hasError so spec emit can conditionally
+          // include the 'error' state AND its transitions. Without this, hasError
+          // was always undefined on the info object, causing info.hasError !== undefined
+          // to always be false — the error state was silently dropped from the states
+          // list while transitions to 'error' were still emitted (open transitions).
+          hasError,
           sourceFile: relPath,
         };
       }
@@ -321,14 +327,31 @@ Review the source code and populate this spec manually.
   } else {
     for (const [screenName, info] of Object.entries(screenInteractions)) {
       const specFile = join(interactionsDir, `${screenName}.spec.md`);
+      // Bug fix (Finding 3): use info.hasError === true (stored above) to conditionally
+      // include the 'error' state entry AND its transitions. This prevents open transitions
+      // (a transition targeting an undeclared state) which would fail gate-stage-4's
+      // D-59c no-open-transitions check.
       const stateList = [
         "- loading: Loading state (async operation in progress)",
-        info.hasError !== undefined && "- error: Error state (operation failed)",
+        info.hasError === true && "- error: Error state (operation failed, terminal — retry via RETRY transition)",
         "- idle: Default state",
         "- success: Success state (operation completed)",
       ]
         .filter(Boolean)
         .join("\n");
+
+      // Error-related transitions are only emitted when error handling was detected.
+      // This ensures every transition target maps to a declared state (D-59c gate check).
+      const transitions = [
+        "- idle --> loading : on SUBMIT",
+        "- loading --> success : on SUCCESS",
+        ...(info.hasError === true
+          ? [
+              "- loading --> error : on ERROR",
+              "- error --> idle : on RETRY",
+            ]
+          : []),
+      ].join("\n");
 
       const content = buildInferredMarkdown(
         {
@@ -338,6 +361,8 @@ Review the source code and populate this spec manually.
           asyncOperations: info.asyncOperations,
           stateCount: info.stateCount,
           hasConditionalTransitions: info.hasConditionalTransitions,
+          // Propagate hasError into frontmatter so gate-stage-4 can verify state completeness
+          ...(info.hasError === true ? { hasError: true } : {}),
         },
         `# Inferred Interaction Spec: ${screenName}
 
@@ -349,10 +374,7 @@ ${stateList}
 
 ## Transitions
 
-- idle --> loading : on SUBMIT
-- loading --> success : on SUCCESS
-- loading --> error : on ERROR
-- error --> idle : on RETRY
+${transitions}
 `
       );
       await writeFile(specFile, content, "utf8");
