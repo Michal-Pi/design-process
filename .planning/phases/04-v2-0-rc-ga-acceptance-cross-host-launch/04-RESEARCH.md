@@ -634,9 +634,9 @@ All 100-case adversarial corpora use fixed-seed fixture-builders with no LLM cal
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED in planning — see 04-02 + 04-03 plan frontmatter decisions)
 
-1. **Wall-clock measurement strategy for COST-10**
+1. **Wall-clock measurement strategy for COST-10** (RESOLVED in 04-02 `decisions.wall_clock_measurement`)
    - What we know: `dispatchSubagent()` returns `{ kind: 'sequential-fallback' }` in CI without `CLAUDE_CODE_BIN`. Wall-clock measured this way is dispatch overhead only (~1ms), not real LLM inference.
    - What's unclear: Does the planner intend for `release-gate.mjs` to run with real LLM dispatch (requiring `CLAUDE_CODE_BIN` = a real `claude` binary on the CI runner), or does it document the wall-clock gap in RELEASE-NOTES.md and reserve real measurement for manual SC-1 verification?
    - Recommendation: Adopt the same pattern as Phase 3 SC-1 (manually verified on clean laptop). Document COST-10 measurement as "requires real dispatch; CI measures sequential-fallback latency only."
