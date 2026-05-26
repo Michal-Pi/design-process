@@ -164,10 +164,26 @@ async function runFullStage5aChecklist(designDir, specFiles) {
         });
       }
 
-      // Condition 4b: evidence must be 'proto' or 'validated'
+      // Condition 4b: evidence must be 'proto' or 'validated' (D-60).
+      // INFERRED is the lite-mode trust level (D-51 Stage 5b systematize output).
+      // The full gate MUST NOT accept INFERRED as evidence — it is insufficient for
+      // Stage 5a promotion. Only 'proto' (LLM-generated, unreviewed) or 'validated'
+      // (human-reviewed) are acceptable at the full gate.
+      // 5a-evidence-trust-001: canonical check for evidence trust level enforcement.
       const evidence = tokensFrontmatter.evidence;
-      if (evidence && evidence !== "proto" && evidence !== "validated" && evidence !== "INFERRED") {
-        // Allow INFERRED as a fallback (Phase 2 compat) but warn about it
+      if (evidence === "INFERRED") {
+        // Full-gate rejection: INFERRED is the lite-mode trust level; not acceptable here.
+        findings.push({
+          checkId: "5a-evidence-trust-001",
+          status: "fail",
+          evidence:
+            `design/tokens.json frontmatter has evidence:'INFERRED'. ` +
+            "The Stage 5a full gate requires evidence:'proto' or 'validated' (D-60). " +
+            "INFERRED is the lite-mode trust level (Stage 5b systematize) and must not pass " +
+            "the full Stage 5a gate. Update tokens.json evidence to 'proto' after running the " +
+            "full style workflow, or to 'validated' after human review.",
+        });
+      } else if (evidence && evidence !== "proto" && evidence !== "validated") {
         findings.push({
           checkId: "5a-evidence-001",
           status: "fail",
