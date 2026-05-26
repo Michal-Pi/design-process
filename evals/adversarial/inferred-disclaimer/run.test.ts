@@ -32,8 +32,11 @@ describe("inferred-disclaimer adversarial suite — Test 9", () => {
 
       // Run validateFrontmatter on the adversarial fixture file.
       // Rule A: file in design/inferred/ with provenance:inferred but missing banner → error
+      // Use lenient:true so the function returns errors instead of calling process.exit(1).
+      // The adversarial check is: validateFrontmatter MUST return an error — the exact
+      // mechanism (return errors vs process.exit) is verified by Tests 4 and 5.
       const result = await validateFrontmatter(personaPath, {
-        lenient: false,
+        lenient: true,
         skipSchemaValidation: true,
       });
 

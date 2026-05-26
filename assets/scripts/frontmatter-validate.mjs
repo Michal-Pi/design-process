@@ -125,6 +125,69 @@ export async function checkWorstProvenance(artifactPath, basedir) {
 }
 
 /**
+ * Check Phase 3 INFERRED enforcement rules (D-64) for a file.
+ *
+ * Rule A: file in design/inferred/ with provenance:'inferred' MUST have the
+ *   INFERRED banner in the body. Missing banner → 'inferred-disclaimer-missing' error.
+ *
+ * Rule B: file in design/ (OUTSIDE design/inferred/) with provenance:'inferred' →
+ *   'inferred-bleed-detected' error (Pitfall D bleed prevention).
+ *
+ * Both rules run in strict mode (return errors; caller decides whether to exit 1).
+ *
+ * @param {string} filePath - Absolute or relative path to the file
+ * @param {import('gray-matter').GrayMatterFile<string>} parsed - Parsed gray-matter result
+ * @returns {{ errors: object[] }} Array of errors (empty if rules pass)
+ */
+function checkInferredEnforcementRules(filePath, parsed) {
+  const errors = [];
+  const normalized = resolve(filePath).replace(/\\/g, "/");
+  const frontmatter = parsed.data;
+  const body = parsed.content || "";
+
+  const isInInferredDir = normalized.includes("/design/inferred/") ||
+    normalized.replace(/\\/g, "/").includes("design/inferred/");
+
+  const isInDesignDir = (normalized.includes("/design/") || normalized.includes("design/")) &&
+    !normalized.includes("/design/inferred/") &&
+    !normalized.replace(/\\/g, "/").includes("design/inferred/");
+
+  const provenance = frontmatter["provenance"];
+
+  // Rule A: design/inferred/ file with provenance:inferred MUST have INFERRED banner
+  if (isInInferredDir && provenance === "inferred") {
+    const hasInferredBanner = />\s*\*\*INFERRED\*\*/i.test(body);
+    if (!hasInferredBanner) {
+      errors.push({
+        schemaPath: "#/inferred-disclaimer-missing",
+        instancePath: "/body",
+        keyword: "inferred-disclaimer-missing",
+        params: { rule: "A", provenance: "inferred" },
+        message:
+          "File in design/inferred/ with provenance:inferred must have the INFERRED banner " +
+          "('> **INFERRED** — ...') as the first paragraph of the body (D-64 Rule A).",
+      });
+    }
+  }
+
+  // Rule B: design/ file (outside design/inferred/) with provenance:inferred → bleed error
+  if (isInDesignDir && provenance === "inferred") {
+    errors.push({
+      schemaPath: "#/inferred-bleed-detected",
+      instancePath: "/provenance",
+      keyword: "inferred-bleed-detected",
+      params: { rule: "B", provenance: "inferred" },
+      message:
+        "File in design/ (outside design/inferred/) has provenance:inferred. " +
+        "Inferred artifacts must live in design/inferred/ only (D-64 Rule B — Pitfall D bleed prevention). " +
+        "Use 'design-os promote-inferred' to move this file after removing the INFERRED markers.",
+    });
+  }
+
+  return { errors };
+}
+
+/**
  * Validate the YAML frontmatter of a Markdown file.
  *
  * STRICT mode (default — files in design/):
@@ -133,8 +196,12 @@ export async function checkWorstProvenance(artifactPath, basedir) {
  * LENIENT mode (files in .design-os/private/):
  *   Prints warnings to stderr but exits 0 (non-blocking).
  *
+ * Phase 3 extension (D-64 — do NOT remove):
+ *   Rule A: design/inferred/ + provenance:inferred → MUST have INFERRED banner in body
+ *   Rule B: design/ (outside inferred/) + provenance:inferred → error (bleed prevention)
+ *
  * @param {string} filePath - Path to the .md file to validate
- * @param {{ lenient?: boolean }} [options] - Override mode (lenient flag)
+ * @param {{ lenient?: boolean, skipSchemaValidation?: boolean }} [options] - Override mode
  * @returns {Promise<{ valid: boolean, errors: object[], mode: string }>}
  */
 export async function validateFrontmatter(filePath, options = {}) {
@@ -142,46 +209,56 @@ export async function validateFrontmatter(filePath, options = {}) {
   const parsed = matter(rawContent);
   const frontmatter = parsed.data;
 
-  const artifact = frontmatter["artifact"];
-  if (!artifact) {
-    const err = {
-      schemaPath: "#/properties/artifact",
-      instancePath: "/artifact",
-      keyword: "required",
-      params: { missingProperty: "artifact" },
-      message: "Missing required field: artifact",
-    };
-    const lenient = options.lenient ?? isLenientPath(filePath);
-    if (lenient) {
-      console.warn(`[frontmatter-validate WARN] ${filePath}: ${err.message}`);
-      return { valid: false, errors: [err], mode: "lenient" };
+  const lenient = options.lenient ?? isLenientPath(filePath);
+  const mode = lenient ? "lenient" : "strict";
+  const skipSchemaValidation = options.skipSchemaValidation ?? false;
+
+  /** @type {object[]} */
+  const allErrors = [];
+
+  // ── Phase 3 D-64 INFERRED enforcement (Rules A and B) ────────────────────
+  // Run BEFORE schema validation so they are always checked regardless of artifact type.
+  const inferredCheck = checkInferredEnforcementRules(filePath, parsed);
+  allErrors.push(...inferredCheck.errors);
+
+  // ── Schema validation (existing logic) ────────────────────────────────────
+  if (!skipSchemaValidation) {
+    const artifact = frontmatter["artifact"];
+    if (!artifact) {
+      const err = {
+        schemaPath: "#/properties/artifact",
+        instancePath: "/artifact",
+        keyword: "required",
+        params: { missingProperty: "artifact" },
+        message: "Missing required field: artifact",
+      };
+      allErrors.push(err);
     } else {
-      console.error(`[frontmatter-validate ERROR] ${filePath}: ${err.message}`);
-      process.exit(1);
+      const result = await validate(artifact, frontmatter);
+      if (!result.valid) {
+        allErrors.push(...result.errors);
+      }
     }
   }
 
-  const result = await validate(artifact, frontmatter);
-
-  const lenient = options.lenient ?? isLenientPath(filePath);
-  const mode = lenient ? "lenient" : "strict";
-
-  if (!result.valid) {
-    const errorLines = result.errors.map(
+  // ── Report errors ─────────────────────────────────────────────────────────
+  if (allErrors.length > 0) {
+    const errorLines = allErrors.map(
       (e) =>
         `  [${e.keyword}] instancePath: ${e.instancePath || "/"}, schemaPath: ${e.schemaPath} — ${e.message}`
     );
 
     if (lenient) {
       console.warn(
-        `[frontmatter-validate WARN] ${filePath} has ${result.errors.length} frontmatter issue(s) (lenient mode — exit 0):`
+        `[frontmatter-validate WARN] ${filePath} has ${allErrors.length} frontmatter issue(s) (lenient mode — exit 0):`
       );
       for (const line of errorLines) {
         console.warn(line);
       }
+      return { valid: false, errors: allErrors, mode };
     } else {
       console.error(
-        `[frontmatter-validate ERROR] ${filePath} has ${result.errors.length} frontmatter issue(s) (strict mode — exit 1):`
+        `[frontmatter-validate ERROR] ${filePath} has ${allErrors.length} frontmatter issue(s) (strict mode — exit 1):`
       );
       for (const line of errorLines) {
         console.error(line);
@@ -190,7 +267,7 @@ export async function validateFrontmatter(filePath, options = {}) {
     }
   }
 
-  return { ...result, mode };
+  return { valid: true, errors: [], mode };
 }
 
 // Run when invoked directly.

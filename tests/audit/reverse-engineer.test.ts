@@ -203,8 +203,9 @@ Some content without the INFERRED banner blockquote.
         );
 
         // Should fail: provenance:inferred in design/inferred/ but no > **INFERRED** banner
+        // Use lenient:true so validateFrontmatter returns errors instead of calling process.exit(1)
         const result = await validateFrontmatter(testFile, {
-          lenient: false,
+          lenient: true,
           skipSchemaValidation: true,
         });
 
@@ -254,8 +255,9 @@ Content with > **INFERRED** banner but in wrong directory.
         );
 
         // Rule B: any file in design/ (outside design/inferred/) with provenance:inferred → error
+        // Use lenient:true so validateFrontmatter returns errors instead of calling process.exit(1)
         const result = await validateFrontmatter(testFile, {
-          lenient: false,
+          lenient: true,
           skipSchemaValidation: true,
         });
 
