@@ -174,6 +174,31 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    If this exits 1 (exceeded 2× p50 = 80k tokens hard-stop), inform user:
    > "Token usage exceeded 80k (2× p50). Re-run with --continue-anyway to proceed."
 
+9.5. **Stage recurrence evidence.** Before invoking the gate, copy the upstream wireframe
+    and interaction evidence files from `design/` into the staged preview directory so that
+    the Frost recurrence scan (`gate-stage-5b.mjs`) can find them:
+    ```
+    Bash: node bin/design-os.mjs stage-recurrence-evidence \
+      --source-design-dir design/ \
+      --staged-dir .design-os/preview/run-<timestamp>/
+    ```
+    where `<timestamp>` is the run-id from step 6.
+
+    **Why:** The gate runs against the staged path (INVARIANT-01). Without this step,
+    only `tokens.json` and `DESIGN.md` are present in the staged dir — `wireframes/`
+    and `interactions/` are absent. `countComponentRecurrences()` scores every component
+    at 0 and returns a false-positive `frost-recurrence-not-met` BLOCKER even when
+    the source `design/` has ample upstream Frost evidence. This step copies only
+    `wireframes/**/*.excalidraw` and `interactions/*.spec.md` — the two file types
+    consumed by the Frost scan — without touching `design/` directly.
+
+    If `design/wireframes/` and `design/interactions/` do not yet exist (v2.0a lite
+    users who have not yet run Stages 3–4), the command exits cleanly with
+    `skippedDirs: ["wireframes", "interactions"]` — the gate then proceeds with 0
+    component occurrences, which triggers the Frost BLOCKER only if component-tier
+    tokens exist in `tokens.json`. This is the correct behavior: a user who has not
+    run Stages 3–4 cannot promote components.
+
 10. **Gate invocation.** Run the Stage 5b gate against the **staged preview path** (not `design/`).
     Use the run-id captured in step 6:
     ```

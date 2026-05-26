@@ -184,6 +184,75 @@ None — all artifacts are fully implemented. Stage 5a full checklist runs real 
 | threat_flag: path-traversal | assets/scripts/gates/stage-5a.mjs | `designDir` from caller. T-03-03-01 mitigated: `existsSync(interactionsDir)` validates before readdir; `join()` used for all sub-paths. |
 | threat_flag: regex-bypass | assets/scripts/gates/stage-5b.mjs | Component name search in .spec.md. T-03-03-03 mitigated: literal `includes()` (not regex) for case-insensitive match; regex special chars in component names cannot bypass detection. |
 
+## Codex Review Fixes
+
+Two findings from the post-ship Codex review were accepted and resolved with atomic commits.
+
+### Finding 1 — [P1] Frost recurrence scan fails on staged design-dir (`gates/stage-5b.mjs:354`)
+
+**Root cause:** `countComponentRecurrences(designDir, ...)` globs `wireframes/**/*.excalidraw`
+and `interactions/*.spec.md` under `designDir`. When the gate runs against the staged preview
+path (`.design-os/preview/<run-id>/`), only `tokens.json` + `DESIGN.md` are present — the
+systematize workflow never copied the upstream evidence directories. Result: every component
+scores 0 recurrences → false-positive `frost-recurrence-not-met` BLOCKER even when the source
+`design/` has ample Frost evidence.
+
+**Fix:** New staging-side CLI helper:
+- **`assets/scripts/cli/stage-recurrence-evidence.mjs`** — exports `stageRecurrenceEvidence({ sourceDesignDir, stagedDir })` which copies only `wireframes/**/*.excalidraw` and `interactions/*.spec.md` from the source design dir into the staged preview dir. Also exports `command: { name, describe, builder, handler }` (Lesson 2 compliance). No LLM client imports (INVARIANT-05, lint-determinism clean).
+- **`skills/workflows/systematize.md`** — step 9.5 added: `node bin/design-os.mjs stage-recurrence-evidence --source-design-dir design/ --staged-dir .design-os/preview/run-<timestamp>/` before the gate invocation (step 10). Preserves INVARIANT-01 (gate against staged path).
+
+**Tests added:** `tests/cli/stage-recurrence-evidence.test.ts` (9 new tests):
+- End-to-end: 3 refs in source → staged → gate → no `5b-frost-002`
+- Inverse adversarial: 2 refs in source → staged → gate still blocks with `5b-frost-002`
+- 2 wireframe + 1 spec = 3× total → gate passes after staging
+- Copies `.excalidraw` files correctly
+- Copies `.spec.md` files correctly
+- Skips missing dirs without error
+- Does not copy non-evidence files
+- CLI module exports `{ name, describe, builder, handler }` (Lesson 2)
+
+**Commit:** `fa3e7cb` — `fix(03-03): stage-recurrence-evidence helper for staged-path Frost scan [P1]`
+
+---
+
+### Finding 2 — [P2] Stage 5a full gate accepts INFERRED evidence (`gates/stage-5a.mjs:~169`)
+
+**Root cause:** The full-gate evidence condition at line 169 excluded `'INFERRED'` from the fail
+branch: `evidence !== "INFERRED"` — meaning tokens.json with `evidence: INFERRED` (the lite-mode
+trust level, D-51 Stage 5b systematize output) silently passed the full Stage 5a gate. D-60
+requires the promoted full gate to accept ONLY `proto` or `validated`.
+
+**Fix:** `assets/scripts/gates/stage-5a.mjs` — the `INFERRED` exception is removed. A dedicated
+check `5a-evidence-trust-001` fires when `evidence === 'INFERRED'` in the full-gate path,
+returning `pass_with_warnings` (D-60 full-gate failures are warnings, not hard blocks — Phase 4
+gate hardening deferred). The lite-gate path (`not_runnable` for empty `interactions/`) is
+unaffected; GATE-07/GATE-08 back-compat preserved.
+
+Check shape: `{ checkId: '5a-evidence-trust-001', status: 'fail', evidence: string }` per Lesson 1.
+
+**Tests added:** `tests/gates/stage-5a-evidence-trust.test.ts` (5 new tests):
+- Test A: full-gate + `evidence:'INFERRED'` → NOT `kind:'pass'`; has `5a-evidence-trust-001` finding
+- Test B: full-gate + `evidence:'proto'` → passes; NO `5a-evidence-trust-001` finding
+- Test C: full-gate + `evidence:'validated'` → passes; NO `5a-evidence-trust-001` finding
+- Test D: lite-gate (empty `interactions/`) + `evidence:'INFERRED'` → `not_runnable` (back-compat)
+- Schema compliance: finding uses `checkId`, string `evidence`, no `findingId`/`severity`/`fixRecipe`
+
+**Commit:** `16acb07` — `fix(03-03): stage-5a full gate rejects evidence:INFERRED (D-60) [P2]`
+
+---
+
+### Post-fix verification
+
+| Check | Result |
+|-------|--------|
+| Total tests after fixes | 930 passing (1 pre-existing stage-2-latch flake unchanged) |
+| New tests added | 14 (9 for Finding 1, 5 for Finding 2) |
+| tsc --noEmit | CLEAN |
+| lint-determinism | CLEAN |
+| Pre-existing tests (916 baseline) | ALL PASS — 0 regressions |
+| Finding 1 commit | fa3e7cb |
+| Finding 2 commit | 16acb07 |
+
 ## Self-Check: PASSED
 
 | Check | Result |
@@ -197,8 +266,9 @@ None — all artifacts are fully implemented. Stage 5a full checklist runs real 
 | evals/adversarial/fid-06-frost-recurrence/ both files exist | PASS |
 | scaffold-component.md description ≤200 chars | PASS (114 chars) |
 | budget fixture sums to 150000 across 7 stages | PASS |
-| 5 commits: 210fd54, b1851db, 1062ba5, e42879e, 19100dd | PASS |
-| 916 tests (12 new, 904 baseline) | PASS (1 pre-existing flake only) |
+| 5 original commits: 210fd54, b1851db, 1062ba5, e42879e, 19100dd | PASS |
+| 2 codex-fix commits: fa3e7cb (P1), 16acb07 (P2) | PASS |
+| 930 tests (14 new codex-fix + 916 baseline) | PASS (1 pre-existing flake only) |
 | tsc --noEmit clean | PASS |
 | lint-determinism clean | PASS |
 | ROADMAP SC-1 (Stage 5a returns PASS on non-empty interactions) | PASS |
