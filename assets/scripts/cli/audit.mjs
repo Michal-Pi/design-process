@@ -6,13 +6,15 @@
 //   design-os audit --slop-tells [--scan-dir .] [--output design/AUDIT-REPORT.md]
 //   design-os audit --pr [--design-dir design/] [--output design/AUDIT-REPORT.md]
 //   design-os audit --slop-tells --pr [--continue-anyway]
+//   design-os audit --reverse-engineer-stages --source <path|url> [--output-dir design/inferred/] [--apply]
 //
 // Modes:
 //   --slop-tells: regex scan CSS/TSX files for 5 slop-tell patterns
 //   --pr: git diff --name-only HEAD~1 → route to stage-5a-pr or stage-5b-pr detectors
+//   --reverse-engineer-stages: infer Stage 4→3→2→1 artifacts from an existing prototype
 //
-// Sources: CONTEXT.md D-45, D-46, D-47, PLAN.md T-02-05-C action block
-// Implements: AUDIT-01, AUDIT-03, AUDIT-05, AUDIT-08, D-47, WF-08
+// Sources: CONTEXT.md D-45, D-46, D-47, D-62..D-64, PLAN.md T-02-05-C, T-03-04-A
+// Implements: AUDIT-01, AUDIT-03, AUDIT-05, AUDIT-06, AUDIT-07, AUDIT-08, D-47, D-62, WF-08
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync, readFileSync as readFileSyncNode } from 'node:fs';
@@ -356,7 +358,7 @@ export async function runAudit({ slopTells, pr, scanDir, designDir, output, bloc
 /** CLI module descriptor for auto-discovery by bin/design-os.mjs */
 export const command = {
   name: 'audit',
-  describe: 'Audit design artifacts for slop patterns (--slop-tells) or PR regressions (--pr)',
+  describe: 'Audit design artifacts for slop patterns (--slop-tells), PR regressions (--pr), or reverse-engineer stages (--reverse-engineer-stages)',
 
   /** @param {import("commander").Command} cmd */
   builder(cmd) {
@@ -368,15 +370,87 @@ export const command = {
       .option('--design-dir <path>', 'Design directory', 'design/')
       .option('--output <path>', 'Output path for AUDIT-REPORT.md', 'design/AUDIT-REPORT.md')
       .option('--block-on-severity <level>', 'Severity to block on (BLOCKER|ERROR|WARNING|INFO)', 'BLOCKER')
-      .option('--continue-anyway', 'Exit 0 even if BLOCKER findings present');
+      .option('--continue-anyway', 'Exit 0 even if BLOCKER findings present')
+      // --reverse-engineer-stages mode (D-62..D-64)
+      .option('--reverse-engineer-stages', 'Infer Stage 4→3→2→1 artifacts from an existing prototype (local path or live URL)')
+      .option('--source <path-or-url>', 'Local path to cloned repo or live URL (https://...) — required for --reverse-engineer-stages')
+      .option('--output-dir <path>', 'Output directory for inferred artifacts (--reverse-engineer-stages mode)', 'design/inferred/')
+      .option('--apply', 'Write artifacts to outputDir (default: dry-run, shows what would be created)');
   },
 
   async handler(args) {
     const slopTells = Boolean(args.slopTells ?? args['slop-tells']);
     const prMode = Boolean(args.pr);
+    const reverseEngineerStages = Boolean(args.reverseEngineerStages ?? args['reverse-engineer-stages']);
+
+    // === REVERSE-ENGINEER-STAGES MODE (D-62..D-64) ===
+    if (reverseEngineerStages) {
+      const source = /** @type {string|undefined} */ (args.source);
+      const outputDir = /** @type {string} */ (args.outputDir ?? args['output-dir'] ?? 'design/inferred/');
+      const apply = Boolean(args.apply);
+
+      if (!source) {
+        console.error(
+          'audit --reverse-engineer-stages: --source <path-or-url> is required.\n' +
+          '  Local: design-os audit --reverse-engineer-stages --source ./my-app\n' +
+          '  URL:   design-os audit --reverse-engineer-stages --source https://my-app.vercel.app'
+        );
+        process.exit(1);
+      }
+
+      const { runReverseEngineer } = await import('../audit/reverse-engineer.mjs');
+
+      if (!apply) {
+        console.log(`[DRY RUN] design-os audit --reverse-engineer-stages --source ${source} --output-dir ${outputDir}`);
+        console.log('  Would create artifacts in design/inferred/ with two-layer INFERRED enforcement:');
+        console.log('    1. YAML frontmatter: provenance:inferred + inferredDisclaimer + evidence:INFERRED');
+        console.log('    2. Body banner: > **INFERRED** — This artifact was reverse-engineered...');
+        console.log('');
+        console.log('  Inference order (Stage 4 → 3 → 2 → 1):');
+        console.log('    Stage 4: Interaction state catalog (from component async patterns)');
+        console.log('    Stage 3: Wireframe structure (from component tree shape)');
+        console.log('    Stage 2: IA/Sitemap (from routing structure)');
+        console.log('    Stage 1: Personas/JTBDs (from copy, onboarding text)');
+        console.log('');
+        console.log('  Use --apply to write artifacts.');
+        console.log('  After reviewing, use: design-os promote-inferred --file <path>');
+        return;
+      }
+
+      try {
+        console.log('[audit --reverse-engineer-stages] Starting inference pipeline...');
+        console.log(`  Source: ${source}`);
+        console.log(`  Output: ${outputDir}`);
+        console.log(`  Mode: ${source.startsWith('http') ? 'URL (Playwright crawl, depth=1)' : 'Local path'}`);
+        console.log('');
+
+        const result = await runReverseEngineer({ source, outputDir, dryRun: false });
+
+        console.log(`[audit --reverse-engineer-stages] Pipeline complete: ${result.artifactsCreated.length} artifact(s) created`);
+        console.log('');
+        console.log('Inference log:');
+        for (const entry of result.inferenceLog) {
+          console.log(`  Stage ${entry.stage}: confidence=${entry.confidence}`);
+        }
+        console.log('');
+        console.log('Artifacts created:');
+        for (const path of result.artifactsCreated) {
+          console.log(`  ${path}`);
+        }
+        console.log('');
+        console.log('IMPORTANT: Review each artifact in design/inferred/ and remove the');
+        console.log("  'provenance: inferred' frontmatter AND the > **INFERRED** banner before promoting.");
+        console.log('  Then use: design-os promote-inferred --file <path>');
+      } catch (err) {
+        console.error(`[audit --reverse-engineer-stages] Error: ${err instanceof Error ? err.message : String(err)}`);
+        process.exit(1);
+      }
+
+      return;
+    }
 
     if (!slopTells && !prMode) {
-      console.error('audit: specify --slop-tells or --pr (or both)');
+      console.error('audit: specify --slop-tells, --pr, or --reverse-engineer-stages (or a combination)');
       process.exit(1);
     }
 
