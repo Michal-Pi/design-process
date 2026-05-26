@@ -1,0 +1,34 @@
+{
+  "artifact": "sitemap",
+  "stage": "2",
+  "schemaVersion": "2.0a",
+  "generated": "2026-05-26T00:00:00.000Z",
+  "lastReviewedAt": "2026-05-26T00:00:00.000Z",
+  "provenance": "generated",
+  "owner": "design-os/structure",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "routes": [
+    {
+      "path": "/",
+      "label": "Home",
+      "stage": "2"
+    },
+    {
+      "path": "/dashboard",
+      "label": "Dashboard",
+      "stage": "2",
+      "children": [
+        {
+          "path": "/dashboard/overview",
+          "label": "Overview",
+          "stage": "2"
+        }
+      ]
+    },
+    {
+      "path": "/settings",
+      "label": "Settings",
+      "stage": "2"
+    }
+  ]
+}

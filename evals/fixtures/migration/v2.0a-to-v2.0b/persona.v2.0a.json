@@ -1,0 +1,26 @@
+{
+  "artifact": "persona",
+  "stage": "1",
+  "schemaVersion": "2.0a",
+  "generated": "2026-05-26T00:00:00.000Z",
+  "lastReviewedAt": "2026-05-26T00:00:00.000Z",
+  "provenance": "generated",
+  "owner": "design-os/discover",
+  "sourceHash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "name": "Busy Professional",
+  "role": "Product Manager",
+  "thinkingStyle": "analytical",
+  "jobsToBeDone": [
+    "Ship features faster without breaking production",
+    "Get team alignment on priorities"
+  ],
+  "painPoints": [
+    "Too many meetings",
+    "Unclear priorities"
+  ],
+  "goals": [
+    "Reduce time to ship",
+    "Improve team clarity"
+  ],
+  "worstProvenance": "generated"
+}
