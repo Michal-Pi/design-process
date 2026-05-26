@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0b
 milestone_name: v2.0b full 5-stage pipeline
 status: in_progress
-stopped_at: Phase 03 Plan 01 — all 3 tasks complete
-last_updated: "2026-05-25T21:10:00.000Z"
+stopped_at: Phase 03 Plan 02 — all 3 tasks complete
+last_updated: "2026-05-26T00:00:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 15
-  completed_plans: 12
-  percent: 80
+  completed_plans: 13
+  percent: 87
 ---
 
 # State: design-os
@@ -29,19 +29,19 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 IN PROGRESS — v2.0b full 5-stage pipeline
-- **Plan:** 01 complete (Phase 3 Plan 1 delivered — Stage 3 Sketch)
-- **Next plan:** Phase 03 Plan 02
-- **Status:** Phase 03 Plan 01 COMPLETE. Stage 3 (Sketch/Excalidraw/Diversity gate) shipped.
+- **Plan:** 02 complete (Phase 3 Plan 2 delivered — Stage 4 Interact + IxD machinery)
+- **Next plan:** Phase 03 Plan 03
+- **Status:** Phase 03 Plan 02 COMPLETE. Stage 4 (Interact/Mermaid stateDiagram-v2/XState v5/D-59 gate) shipped.
 
 **Progress:**
 
-[████████░░] 80%
+[████████░░] 87%
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
-Phase 3: [█░░░░░░░░░] 20%  1/5 plans — Stage 3 gate + sketch workflow delivered
+Phase 3: [██░░░░░░░░] 40%  2/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1+2 complete; Phase 3 in progress (1/5 plans). 868 tests passing.
+**Overall:** Phase 1+2 complete; Phase 3 in progress (2/5 plans). 900 tests passing.
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 02 P04 | 35m | 2 tasks | 5 files | 41 tests added (719 total) |
 | Phase 02 P05 | 90m | 3 tasks | 52 files | 91 tests added (810 total) |
 | Phase 03 P01 | 75m | 3 tasks | 22 files | 53 tests added (868 total) |
+| Phase 03 P02 | 90m | 3 tasks | 29 files | 21 tests added (900 total) |
 
 ## Accumulated Context
 
@@ -127,11 +128,17 @@ Phase 4: [          ] 0%   Not started
 - [Phase 02 Plan 05]: audit-report schema extended with optional auditType field; severity WARNING maps to WARN in schema enum
 - [Phase 02 Plan 05]: A2 static-analysis fallback for skillgrade recall; LLM-based gate deferred to Phase 4 GA release gate
 - [Phase 02 Plan 05]: dispatch.mjs unimplemented routes (new-product, mature-app-refactor, DS-extraction) return route_not_yet_implemented — v2.0b scope
+- [Phase 03 Plan 02]: D-57 needsXState() pure function: asyncOperations===true AND stateCount>=3 AND hasConditionalTransitions===true; XState v5 setup() pattern with sorted output for determinism
+- [Phase 03 Plan 02]: D-58 single-IR dual-output: emitFromSpec() returns { mermaidSource, xstateSource: string|null }; same spec object drives both emitters
+- [Phase 03 Plan 02]: D-59(c) extractStateNames() source-declaration-only: captures bare names, left-of-arrow sources, annotations, composite declarations — does NOT capture transition targets (right of -->); extractTransitionTargets() is separate
+- [Phase 03 Plan 02]: sufficiency-structural eval: provenanceWorstCase in bundle.md must match worst provenance of upstream artifacts; interactions.placeholder with provenance:generated required bundle.md update validated→generated
+- [Phase 03 Plan 02]: mermaid-render.mjs validateMermaidSource() dispatches on diagram type (stateDiagram-v2 vs flowchart); composite state syntax handled natively by Mermaid CLI
+- [Phase 03 Plan 02]: Tests 8/9 (mermaid-cli headless) require 15000ms timeout in vitest — @mermaid-js/mermaid-cli takes 1-3s per invocation in full suite
 
 ### Todos (next session)
 
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Continue Phase 03 Plan 02 — next Stage 3/4 deliverables
+- [ ] Continue Phase 03 Plan 03 — Gate Promotions (stage-5a full + stage-5b Frost BLOCKER + FID-06 adversarial + ATOM-15)
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
 
 ### Blockers
@@ -150,26 +157,28 @@ None yet.
 
 ### Last Session
 
-- **Date:** 2026-05-25
-- **Activity:** Phase 03 Plan 01 — Stage 3 Sketch: excalidraw-render.mjs, wireframe-diversity.mjs, gate-stage-3.mjs (full), sketch/crazy-eights/converge SKILL.md files, FID-03 adversarial suite (40 fixtures).
-- **Stopped at:** Phase 03 Plan 01 — all 3 tasks complete
+- **Date:** 2026-05-26
+- **Activity:** Phase 03 Plan 02 — Stage 4 Interact: state-machine-emit.mjs, mermaid-render stateDiagram-v2 extension, gate-stage-4.mjs (full D-59 logic), stage-3-pr.mjs, stage-4-pr.mjs, interact workflow + 3 IxD atoms + 7 references + triggers + bundle fixture update.
+- **Stopped at:** Phase 03 Plan 02 — all 3 tasks complete
 - **Artifacts produced:**
-  - `assets/scripts/excalidraw-render.mjs` (sole .excalidraw emitter)
-  - `assets/scripts/wireframe-diversity.mjs` (3-factor diversity metric)
-  - `assets/scripts/cli/excalidraw-render.mjs` (Commander CLI)
-  - `assets/scripts/gates/stage-3.mjs` (full gate replacing Phase 1 skeleton)
-  - `skills/workflows/sketch.md`, `skills/atoms/lowfi/crazy-eights.md`, `skills/atoms/lowfi/converge.md`
-  - `evals/adversarial/fid-03-styled-wireframe/` (40-fixture suite)
-  - `evals/golden/excalidraw-render.golden.json`
-  - `references/gates/stage-3.md`, `references/buxton-sketching.md`, `references/sprint-crazy-eights.md`, `references/shape-up-pitches.md`
-- **Final state:** 868 tests passing | 66 test files | tsc clean | lint-determinism CLEAN
+  - `assets/scripts/state-machine-emit.mjs` (D-57 dual-output emitter)
+  - `assets/scripts/cli/state-machine-emit.mjs` (Commander CLI, exit-2 repair signal)
+  - `assets/scripts/gates/stage-4.mjs` (full D-59 three-condition gate)
+  - `assets/scripts/audit/stage-3-pr.mjs` + `stage-4-pr.mjs` (PR detectors)
+  - `assets/scripts/mermaid-render.mjs` (extended with validateMermaidSource + stateDiagram-v2 support)
+  - `skills/workflows/interact.md`, `skills/atoms/ixd/state-catalog.md`, `skills/atoms/ixd/pattern-variants.md`, `skills/atoms/ixd/state-machine.md`
+  - `evals/golden/state-machine-emit.golden.json`
+  - `evals/triggers/interact/triggers.yaml` (14 should-fire + 14 should-not-fire)
+  - `references/gates/stage-4.md`, 7 reference files (saffer, tidwell, head-motion, hax-18, xstate-v5, apg, material-3)
+  - `evals/bundles/fixtures/stage-3-to-4/upstream/interactions.placeholder` (realistic Stage 4 spec)
+- **Final state:** 900 tests passing | tsc clean | lint-determinism CLEAN | verify-golden state-machine-emit PASS
 
 ### Next Session
 
-- **Likely activity:** Phase 03 Plan 02
+- **Likely activity:** Phase 03 Plan 03
 - **Required reading at session start:**
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-01-SUMMARY.md`
-  - Phase 03 Plan 02 PLAN.md
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-02-SUMMARY.md`
+  - Phase 03 Plan 03 PLAN.md
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

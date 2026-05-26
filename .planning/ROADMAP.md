@@ -131,8 +131,8 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 
 **Plans:** 5 plans (Wave 1: 03-01 + 03-02 parallel, Wave 2: 03-03 + 03-04 parallel, Wave 3: 03-05)
 
-- [ ] 03-01-PLAN.md — Stage 3 (Sketch): excalidraw-render.mjs + wireframe-diversity.mjs + gate-stage-3.mjs + FID-03 adversarial CI + sketch workflow + crazy-eights + converge atoms (Wave 1)
-- [ ] 03-02-PLAN.md — Stage 4 (Interact): state-machine-emit.mjs + mermaid-render stateDiagram-v2 + gate-stage-4.mjs + stage-3/4-pr.mjs + interact workflow + IxD atoms + 7 references (Wave 1, parallel)
+- [x] 03-01-PLAN.md — Stage 3 (Sketch): excalidraw-render.mjs + wireframe-diversity.mjs + gate-stage-3.mjs + FID-03 adversarial CI + sketch workflow + crazy-eights + converge atoms (Wave 1)
+- [x] 03-02-PLAN.md — Stage 4 (Interact): state-machine-emit.mjs + mermaid-render stateDiagram-v2 + gate-stage-4.mjs + stage-3/4-pr.mjs + interact workflow + IxD atoms + 7 references (Wave 1, parallel)
 - [ ] 03-03-PLAN.md — Gate Promotions: stage-5a.mjs full gate (D-60) + stage-5b.mjs Frost BLOCKER (D-70) + FID-06 adversarial + ATOM-15 scaffold-component (Wave 2)
 - [ ] 03-04-PLAN.md — Reverse-Engineer + Migration: audit --reverse-engineer-stages + INFERRED enforcement + promote-inferred + v2.0a→v2.0b migration scripts (Wave 2, parallel)
 - [ ] 03-05-PLAN.md — Route Completion + Audit: dispatch.mjs (new-product/mature-app-refactor/DS-extraction) + audit --all-stages + audit --new-feature + design SKILL.md update (Wave 3)
@@ -165,7 +165,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 |-------|----------------|--------|-----------|
 | 1. v1.5 — Infrastructure & Determinism Foundation | 5/5 | Complete | 2026-05-25 |
 | 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 5/5 | Complete   | 2026-05-25 |
-| 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 0/5 | In Progress | - |
+| 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 2/5 | In Progress | - |
 | 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 0/0 | Not started | - |
 
 ## Coverage

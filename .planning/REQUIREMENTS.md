@@ -50,7 +50,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **FID-01**: Stage 1 — refuses solution-language output; output describes user needs, not features
 - [x] **FID-02**: Stage 2 — sitemaps emit text + Mermaid boxes only; no colors, no typography
 - [ ] **FID-03**: Stage 3 — Excalidraw validator rejects color/typography/styling drift; LLM emissions of styling regenerate up to repair-loop limit, then fail
-- [ ] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
+- [x] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
 - [x] **FID-05**: Stage 5a — refuses to render hi-fi when `design/interactions/` is empty or incomplete
 - [ ] **FID-06**: Stage 5b — promotes a component to system only when it appears ≥3× in upstream wireframes/interactions (Frost rule)
 
@@ -69,7 +69,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **WF-02**: `discover` (Stage 1) — generates personas, JTBDs, OST, assumptions, competitive landscape, interview guide; `gate/stage-1-complete` enforced
 - [x] **WF-03**: `structure` (Stage 2) — generates 2-5 sitemap variants (LATCH-diverse), Mermaid flows, optional tree-test design; `gate/stage-2-complete` enforced
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
-- [ ] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
+- [x] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
 - [x] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
 - [x] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.design-os`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
 - [x] **WF-08**: `audit` (cross-stage) — modes: `--stage N`, `--all-stages`, `--pr`, `--slop-tells`, `--new-feature`, `--reverse-engineer-stages`
@@ -86,9 +86,9 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **ATOM-07**: `ia/tree-test-design` (Stage 2, Optimal Workshop format — v2.1)
 - [ ] **ATOM-08**: `lowfi/crazy-eights` (Stage 3, 8 Excalidraw JSON variants per screen)
 - [ ] **ATOM-09**: `lowfi/converge` (Stage 3, Decider pick with rationale)
-- [ ] **ATOM-10**: `ixd/state-machine` (Stage 4, XState v5 emit, conditional)
-- [ ] **ATOM-11**: `ixd/pattern-variants` (Stage 4, 3 interaction-pattern variants with tradeoffs)
-- [ ] **ATOM-12**: `ixd/state-catalog` (Stage 4, enumerate all states per component)
+- [x] **ATOM-10**: `ixd/state-machine` (Stage 4, XState v5 emit, conditional)
+- [x] **ATOM-11**: `ixd/pattern-variants` (Stage 4, 3 interaction-pattern variants with tradeoffs)
+- [x] **ATOM-12**: `ixd/state-catalog` (Stage 4, enumerate all states per component)
 - [x] **ATOM-13**: `hifi/variants-preview` (Stage 5a, generate + preview + screenshot in one atom)
 - [x] **ATOM-14**: `tokens/emit` (Stage 5b, DTCG → Tailwind v4 / shadcn / plain CSS / Style Dictionary projections)
 - [ ] **ATOM-15**: `system/scaffold-component` (Stage 5b, full state set, consumes Stage 4 machine — v2.1 per MRD §3.8; pulled into v2.0b)
@@ -126,7 +126,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [x] **REF-01**: `references/` organized hybrid file-based (no vector DB, no knowledge graph) — by stage and canon body
 - [x] **REF-02**: Stage 0+1+2+5 reference corpus complete by end of v1.5 infra
-- [ ] **REF-03**: Stage 3+4 reference corpus added in v2.0b (Buxton, Sprint Crazy 8s, Saffer microinteractions, Tidwell, head motion, HAX-18, XState v5, APG, Material 3)
+- [x] **REF-03**: Stage 3+4 reference corpus added in v2.0b (Buxton, Sprint Crazy 8s, Saffer microinteractions, Tidwell, head motion, HAX-18, XState v5, APG, Material 3)
 - [x] **REF-04**: Six stage-gate operational checklists (`references/gates/stage-N.md`) shipped before the corresponding stage workflow
 
 ### Preview & Determinism
@@ -191,14 +191,14 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### v2.0b Full 5-Stage Scope
 
-- [ ] **MVPB-01**: Workflows added: `sketch`, `interact`
+- [x] **MVPB-01**: Workflows added: `sketch`, `interact`
 - [ ] **MVPB-02**: 6 atoms added: `lowfi/crazy-eights`, `lowfi/converge`, `ixd/state-machine`, `ixd/pattern-variants`, `ixd/state-catalog`, `system/scaffold-component`
-- [ ] **MVPB-03**: Excalidraw renderer + Mermaid renderer + XState code emitter shipped in `assets/scripts/`
-- [ ] **MVPB-04**: Stage-3 and Stage-4 gates implemented
+- [x] **MVPB-03**: Excalidraw renderer + Mermaid renderer + XState code emitter shipped in `assets/scripts/`
+- [x] **MVPB-04**: Stage-3 and Stage-4 gates implemented
 - [ ] **MVPB-05**: Stage-5a / 5b gates promoted from `-lite` to full
 - [ ] **MVPB-06**: `audit --reverse-engineer-stages` mode shipped (Lovable refugee path)
 - [ ] **MVPB-07**: Stage 3 risk-triggered (per routing matrix); not default on every route
-- [ ] **MVPB-08**: XState v5 machine required only for components with async + ≥3 states + conditional transitions; otherwise spec.md state catalog + Mermaid stateDiagram-v2 is canonical
+- [x] **MVPB-08**: XState v5 machine required only for components with async + ≥3 states + conditional transitions; otherwise spec.md state catalog + Mermaid stateDiagram-v2 is canonical
 - [ ] **MVPB-09**: Remaining routes shipped: `mature-app-refactor`, `DS-extraction (Lovable refugee)`, `new-product` full
 - [ ] **MVPB-10**: Schema migration v2.0a → v2.0b for `sitemap.json`, `persona.json`, `MANIFEST.md`
 
@@ -359,7 +359,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | FID-01 | Phase 2 | Complete |
 | FID-02 | Phase 2 | Complete |
 | FID-03 | Phase 3 | Pending |
-| FID-04 | Phase 3 | Pending |
+| FID-04 | Phase 3 | Complete |
 | FID-05 | Phase 2 | Complete |
 | FID-06 | Phase 3 | Pending |
 | RED-01 | Phase 2 | Complete |
@@ -372,7 +372,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | WF-02 | Phase 2 | Complete |
 | WF-03 | Phase 2 | Complete |
 | WF-04 | Phase 3 | Pending |
-| WF-05 | Phase 3 | Pending |
+| WF-05 | Phase 3 | Complete |
 | WF-06 | Phase 2 | Complete |
 | WF-07 | Phase 2 | Complete |
 | WF-08 | Phase 2 | Complete |
@@ -386,9 +386,9 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ATOM-07 | v2.1 (deferred) | Deferred |
 | ATOM-08 | Phase 3 | Pending |
 | ATOM-09 | Phase 3 | Pending |
-| ATOM-10 | Phase 3 | Pending |
-| ATOM-11 | Phase 3 | Pending |
-| ATOM-12 | Phase 3 | Pending |
+| ATOM-10 | Phase 3 | Complete |
+| ATOM-11 | Phase 3 | Complete |
+| ATOM-12 | Phase 3 | Complete |
 | ATOM-13 | Phase 2 | Complete |
 | ATOM-14 | Phase 2 | Complete |
 | ATOM-15 | Phase 3 | Pending |
@@ -414,7 +414,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | FORMAT-07 | Phase 1 | Complete |
 | REF-01 | Phase 1 | Done |
 | REF-02 | Phase 1 | Done |
-| REF-03 | Phase 3 | Pending |
+| REF-03 | Phase 3 | Complete |
 | REF-04 | Phase 1 | Done |
 | PREV-01 | Phase 1 | Done |
 | PREV-02 | Phase 1 | Done |
@@ -455,14 +455,14 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | MVPA-06 | Phase 2 | Complete |
 | MVPA-07 | Phase 2 | Complete |
 | MVPA-08 | Phase 2 | Complete |
-| MVPB-01 | Phase 3 | Pending |
+| MVPB-01 | Phase 3 | Complete |
 | MVPB-02 | Phase 3 | Pending |
-| MVPB-03 | Phase 3 | Pending |
-| MVPB-04 | Phase 3 | Pending |
+| MVPB-03 | Phase 3 | Complete |
+| MVPB-04 | Phase 3 | Complete |
 | MVPB-05 | Phase 3 | Pending |
 | MVPB-06 | Phase 3 | Pending |
 | MVPB-07 | Phase 3 | Pending |
-| MVPB-08 | Phase 3 | Pending |
+| MVPB-08 | Phase 3 | Complete |
 | MVPB-09 | Phase 3 | Pending |
 | MVPB-10 | Phase 3 | Pending |
 | ACCEPT-01 | Phase 4 | Pending |
