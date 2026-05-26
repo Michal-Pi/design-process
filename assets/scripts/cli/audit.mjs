@@ -7,14 +7,18 @@
 //   design-os audit --pr [--design-dir design/] [--output design/AUDIT-REPORT.md]
 //   design-os audit --slop-tells --pr [--continue-anyway]
 //   design-os audit --reverse-engineer-stages --source <path|url> [--output-dir design/inferred/] [--apply]
+//   design-os audit --all-stages [--design-dir design/] [--output design/AUDIT-REPORT.md]
+//   design-os audit --new-feature --feature <name> [--design-dir design/] [--output design/AUDIT-REPORT.md]
 //
 // Modes:
 //   --slop-tells: regex scan CSS/TSX files for 5 slop-tell patterns
 //   --pr: git diff --name-only HEAD~1 → route to stage-5a-pr or stage-5b-pr detectors
 //   --reverse-engineer-stages: infer Stage 4→3→2→1 artifacts from an existing prototype
+//   --all-stages: unified ranked audit across all 6 stage detectors (D-68)
+//   --new-feature: post-hoc validator for a named feature; DOES NOT generate new artifacts (D-69)
 //
-// Sources: CONTEXT.md D-45, D-46, D-47, D-62..D-64, PLAN.md T-02-05-C, T-03-04-A
-// Implements: AUDIT-01, AUDIT-03, AUDIT-05, AUDIT-06, AUDIT-07, AUDIT-08, D-47, D-62, WF-08
+// Sources: CONTEXT.md D-45, D-46, D-47, D-62..D-64, D-68, D-69, PLAN.md T-02-05-C, T-03-04-A, T-03-05-B
+// Implements: AUDIT-01, AUDIT-02, AUDIT-03, AUDIT-04, AUDIT-05, AUDIT-06, AUDIT-07, AUDIT-08, D-47, D-62, D-68, D-69, WF-08
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync, readFileSync as readFileSyncNode } from 'node:fs';
@@ -375,7 +379,12 @@ export const command = {
       .option('--reverse-engineer-stages', 'Infer Stage 4→3→2→1 artifacts from an existing prototype (local path or live URL)')
       .option('--source <path-or-url>', 'Local path to cloned repo or live URL (https://...) — required for --reverse-engineer-stages')
       .option('--output-dir <path>', 'Output directory for inferred artifacts (--reverse-engineer-stages mode)', 'design/inferred/')
-      .option('--apply', 'Write artifacts to outputDir (default: dry-run, shows what would be created)');
+      .option('--apply', 'Write artifacts to outputDir (default: dry-run, shows what would be created)')
+      // --all-stages mode (D-68): unified ranked audit across all 6 stage detectors
+      .option('--all-stages', 'Run all per-stage detectors and produce a unified ranked AUDIT-REPORT.md (D-68)')
+      // --new-feature mode (D-69): post-hoc validator for a named feature; RETROSPECTIVE, no new artifacts
+      .option('--new-feature', 'Post-hoc validator: verify a named feature against all 5 stages (D-69, retrospective — no new artifacts)')
+      .option('--feature <name>', 'Feature name to scope (required for --new-feature; matches sitemap route path or label)');
   },
 
   async handler(args) {
@@ -449,8 +458,58 @@ export const command = {
       return;
     }
 
+    // === ALL-STAGES MODE (D-68) ===
+    const allStagesMode = Boolean(args.allStages ?? args['all-stages']);
+    // === NEW-FEATURE MODE (D-69) ===
+    const newFeatureMode = Boolean(args.newFeature ?? args['new-feature']);
+    const featureName = /** @type {string|undefined} */ (args.feature);
+
+    if (allStagesMode || newFeatureMode) {
+      const designDir = resolve(process.cwd(), /** @type {string} */ (args.designDir ?? args['design-dir'] ?? 'design/'));
+      const output = resolve(process.cwd(), args.output ?? 'design/AUDIT-REPORT.md');
+
+      if (newFeatureMode && !featureName) {
+        console.error(
+          'audit --new-feature: --feature <name> is required.\n' +
+          '  Example: design-os audit --new-feature --feature checkout'
+        );
+        process.exit(1);
+      }
+
+      const { runAuditAllStages } = await import('../audit/all-stages.mjs');
+
+      try {
+        const result = await runAuditAllStages({
+          designDir,
+          featureName: newFeatureMode ? featureName : undefined,
+          outputPath: output,
+        });
+
+        const mode = newFeatureMode ? `--new-feature ${featureName ?? ''}` : '--all-stages';
+        console.log(`audit ${mode}: ${result.findings.length} finding(s) → ${output}`);
+
+        if (result.findings.length > 0) {
+          const counts = /** @type {Record<string, number>} */ ({});
+          for (const f of result.findings) {
+            counts[f.severity] = (counts[f.severity] ?? 0) + 1;
+          }
+          console.log('  ' + Object.entries(counts).map(([s, c]) => `${s}: ${c}`).join(', '));
+        }
+
+        if (!result.valid) {
+          console.error('audit: AUDIT-REPORT.md failed schema validation — check findings format');
+          process.exit(1);
+        }
+      } catch (err) {
+        console.error(`audit: ${err instanceof Error ? err.message : String(err)}`);
+        process.exit(1);
+      }
+
+      return;
+    }
+
     if (!slopTells && !prMode) {
-      console.error('audit: specify --slop-tells, --pr, or --reverse-engineer-stages (or a combination)');
+      console.error('audit: specify --slop-tells, --pr, --reverse-engineer-stages, --all-stages, or --new-feature');
       process.exit(1);
     }
 

@@ -1,0 +1,14 @@
+{
+  "route": "audit-all-stages",
+  "description": "Unified per-stage audit across all 6 stage detectors",
+  "budgetTokens": 30000,
+  "stageAllocations": {
+    "stage-1-pr": 5000,
+    "stage-2-pr": 5000,
+    "stage-3-pr": 5000,
+    "stage-4-pr": 5000,
+    "stage-5a-pr": 5000,
+    "stage-5b-pr": 5000
+  },
+  "notes": "audit --all-stages runs 6 detectors sequentially. Budget is an estimate — this is a local filesystem scan with no LLM calls; actual cost is near-zero. Included for completeness. AUDIT-02."
+}
