@@ -49,20 +49,19 @@ describe("D-43 regression guard: gate-stage-5a always returns not_runnable", () 
     }
   });
 
-  it("returns not_runnable even when interactions/ HAS real files (v2.0a hard-code)", async () => {
-    // D-43: gate is hard-coded not_runnable in v2.0a regardless of interactions content.
-    // The FULL gate that promotes to PASS based on Stage 4 artifacts ships in Phase 3.
+  it("Phase 3 (D-60): returns full-gate result (pass or pass_with_warnings) when interactions/ has real .spec.md files", async () => {
+    // D-60: In Phase 3, when interactions/ contains at least one .spec.md file,
+    // the gate MUST run the full checklist and return either 'pass' or 'pass_with_warnings'
+    // (never 'not_runnable'). The v2.0a hard-code is replaced by the conditional branch.
     //
-    // This test writes a REAL interaction artifact file so that if gate-stage-5a.mjs is
-    // ever modified to check file content and return 'pass', this test will FAIL —
-    // catching the regression before it lands in production.
-    //
-    // A mere empty-directory test (as the previous version had) would not catch a
-    // regression where runStage5aGate returns 'pass' when real interaction files exist.
-    const tmpDir = await mkdtemp(join(tmpdir(), "d43-with-interactions-"));
+    // This test replaces the v2.0a D-43 "always not_runnable" assertion.
+    // It passes a minimal design-dir with interactions/.spec.md present.
+    // The full checklist will produce warnings (missing tokens.json, CHOICE.md, sitemap)
+    // but MUST NOT return not_runnable.
+    const tmpDir = await mkdtemp(join(tmpdir(), "d60-with-interactions-"));
     try {
       await mkdir(join(tmpDir, "interactions"), { recursive: true });
-      // Write a real interaction spec file (valid Markdown with Stage 4 content)
+      // Write a real interaction spec file (valid .spec.md)
       await writeFile(
         join(tmpDir, "interactions", "some-interaction.spec.md"),
         [
@@ -87,11 +86,11 @@ describe("D-43 regression guard: gate-stage-5a always returns not_runnable", () 
         "utf8"
       );
 
-      // D-43 v2.0a: gate MUST still return not_runnable even with real interaction files.
-      // The gate is hard-coded until Phase 3 ships full Stage 4 validation logic.
+      // D-60 Phase 3: gate MUST NOT return not_runnable when interactions/ has real spec files.
+      // It will return pass or pass_with_warnings (full checklist mode).
       const result = await runStage5aGate(tmpDir);
-      expect(result.kind).toBe("not_runnable");
-      expect(result.reason).toBe("stage-4-artifacts-absent");
+      expect(result.kind).not.toBe("not_runnable");
+      expect(result.kind === "pass" || result.kind === "pass_with_warnings").toBe(true);
     } finally {
       await rm(tmpDir, { recursive: true, force: true });
     }
