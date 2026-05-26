@@ -208,3 +208,126 @@ The reverse-engineer inference functions (`inferStage4`, `inferStage3`, `inferSt
 | lint-determinism clean | PASS |
 | OQ-2 mirror structure in design/inferred/ | PASS (documented + tested) |
 | OQ-5 depth=1 URL crawler | PASS (shouldExcludeUrl + crawlUrlToFs depth=1 contract) |
+
+---
+
+## Codex Review Fixes
+
+Three findings from the post-ship codex review accepted and fixed.
+
+### Finding 1 [P1] — Wire reverse-engineer through the audit command
+
+**Problem:** `audit.md` documented `design-os audit --reverse-engineer-stages --source <path>` but the implementation only registered a standalone `design-os reverse-engineer` top-level command. Running `design-os audit --reverse-engineer-stages` exited with "unknown option".
+
+**Fix:** Extended `cli/audit.mjs` builder to register `--reverse-engineer-stages`, `--source <path-or-url>`, `--output-dir <path>`, and `--apply` options directly on the `audit` command. Handler detects `reverseEngineerStages` flag and dispatches to `runReverseEngineer()` from `audit/reverse-engineer.mjs`. Dry-run (no `--apply`) prints inference plan without writing files. The standalone `reverse-engineer` CLI is kept in place as an internal helper — `audit --reverse-engineer-stages` is now the advertised surface per `audit.md`. Lesson 2 compliance: `{name, describe, builder, handler}` export shape preserved.
+
+**Verification — `node bin/design-os.mjs audit --reverse-engineer-stages --help`:**
+
+```
+Usage: design-os audit [options]
+
+Audit design artifacts for slop patterns (--slop-tells), PR regressions (--pr),
+or reverse-engineer stages (--reverse-engineer-stages)
+
+Options:
+  --slop-tells                 Run regex slop-tell linters on CSS/TSX files
+  --pr                         Run Stage 5a/5b detectors on PR diff
+  --base <ref>                 Explicit base ref for --pr mode (e.g.
+                               origin/main). Overrides GITHUB_BASE_REF and
+                               auto-detection.
+  --scan-dir <path>            Directory to scan (slop-tells mode) (default: ".")
+  --design-dir <path>          Design directory (default: "design/")
+  --output <path>              Output path for AUDIT-REPORT.md (default: "design/AUDIT-REPORT.md")
+  --block-on-severity <level>  Severity to block on (BLOCKER|ERROR|WARNING|INFO) (default: "BLOCKER")
+  --continue-anyway            Exit 0 even if BLOCKER findings present
+  --reverse-engineer-stages    Infer Stage 4→3→2→1 artifacts from an existing prototype (local path or live URL)
+  --source <path-or-url>       Local path to cloned repo or live URL (https://...) — required for --reverse-engineer-stages
+  --output-dir <path>          Output directory for inferred artifacts (--reverse-engineer-stages mode) (default: "design/inferred/")
+  --apply                      Write artifacts to outputDir (default: dry-run, shows what would be created)
+  -h, --help                   display help for command
+```
+
+**Test added:** `tests/cli/audit-reverse-engineer-integration.test.ts` — 6 tests (--help flags, missing --source exits non-zero, dry-run no files, --apply creates artifacts, surface level check, no regression on runAudit).
+
+**Commit:** `53c9b11` — `fix(03-04): wire --reverse-engineer-stages through audit command [Finding 1 P1]`
+
+---
+
+### Finding 2 [P1] — Route v2.0a migrations from the CLI
+
+**Problem:** `cli/migrate.mjs` used `parseInt` coercion and required `--path`. Running `design-os migrate --from 2.0a --to 2.0b --design-dir ./design` failed — `parseInt('2.0a')` returns `2` and `parseInt('2.0b')` returns `2`, causing a version collision. The new v2.0a→v2.0b migration was shipped but unreachable via CLI.
+
+**Fix:** Rewrote `cli/migrate.mjs` with two routing modes: Mode A (legacy integer chain — back-compat preserved) and Mode B (named string-version migration). `isStringVersion()` detects semver-ish format via `/^\d+\.\d+[a-z]*$/`. A `NAMED_MIGRATION_TABLE` maps `'2.0a→2.0b'` to `runV20aMigration()` from `schemas/migrations/run-v2.0a-to-v2.0b.mjs`. Added `--design-dir` and `--apply` options. Integer chain: `parseInt` coercion moved to handler; `--path` validated at runtime (no longer a Commander-level `requiredOption`).
+
+**Verification — `node bin/design-os.mjs migrate --help`:**
+
+```
+Usage: design-os migrate [options]
+
+Migrate design artifacts between schema versions (integer chain or named e.g. --from 2.0a --to 2.0b)
+
+Options:
+  --from <version>     Source schema version (integer or semver-ish, e.g. 2.0a)
+  --to <version>       Target schema version (integer or semver-ish, e.g. 2.0b)
+  --path <path>        Path to the artifact file to migrate (integer chain mode)
+  --in-place           Overwrite the source file in place (integer chain mode) (default: false)
+  --design-dir <path>  Design directory to migrate (named migration mode) (default: "design/")
+  --apply              Write changes in-place (default: dry-run that prints diff without writing) (default: false)
+  -h, --help           display help for command
+```
+
+**Dry-run verification:**
+```
+node bin/design-os.mjs migrate --from 2.0a --to 2.0b --design-dir evals/fixtures/migration/v2.0a-to-v2.0b/
+# → prints: Dry run: use --apply to write changes
+```
+
+**Apply verification (on temp copy):**
+```
+node bin/design-os.mjs migrate --from 2.0a --to 2.0b --design-dir <tmpDir> --apply
+# → [migrate] APPLIED sitemap.json → v2.0b
+# → [migrate] APPLIED .../primary.persona.json → v2.0b
+# → [migrate] APPLIED MANIFEST.md → v2.0b
+```
+After `--apply`, `sitemap.json` `schemaVersion` verified as `"2.0b"`.
+
+**Test added:** `tests/cli/migrate-v2.0a-to-v2.0b-integration.test.ts` — 7 tests (--help flags, dry-run no-modify, --apply sitemap/persona/MANIFEST, idempotency, unknown migration error, integer chain back-compat).
+
+**Commit:** `7c1a888` — `fix(03-04): route v2.0a→v2.0b migration from CLI migrate command [Finding 2 P1]`
+
+---
+
+### Finding 3 [P2] — Preserve error-state signals in inferred specs
+
+**Problem:** In `inferStage4()` (`audit/reverse-engineer.mjs`), when error handling (`setError(...)` or `error` state) was detected in a component, the code incremented `stateCount` for `hasError` but did NOT store `hasError: true` on the `screenInteractions[componentName]` object. Later, the spec emit used `info.hasError !== undefined` as the condition — but since `hasError` was never stored, `info.hasError` was always `undefined`, making the condition `undefined !== undefined = false`. The `error` state was silently dropped from the `## States` list while transitions `loading --> error` and `error --> idle` were still emitted. This created open transitions (transitions to undeclared states) that would fail gate-stage-4's D-59c no-open-transitions check.
+
+**Fix (3 changes in `inferStage4()`):**
+1. Added `hasError,` to the `screenInteractions[screenName]` object (storing the detected value).
+2. Changed state list condition from `info.hasError !== undefined` (always false) to `info.hasError === true` (correct guard).
+3. Made error-related transitions (`loading --> error`, `error --> idle`) conditional on `info.hasError === true` — no more open transitions on components without error handling.
+4. Added `hasError: true` to spec frontmatter when applicable (for gate-stage-4 state completeness verification).
+
+**Test added:** `tests/audit/reverse-engineer-error-state.test.ts` — 5 tests:
+- Component with `setError()` produces spec with `error` state declared in `## States`
+- Spec with error state has no open transitions (all targets declared)
+- Component without error handling does NOT get error state or error transitions
+- Error state has sensible defaults (terminal-style, ≤1 outgoing transition)
+- `hasError: true` emitted in spec frontmatter when error detected
+
+**Commits:** `39a9845` — `fix(03-04): preserve error-state signals in inferred interaction specs [Finding 3 P2]`
+           `62e5a6a` — `fix(03-04): fix noUncheckedIndexedAccess TS errors in reverse-engineer-error-state test`
+
+---
+
+### Post-Fix Verification
+
+| Check | Result |
+|-------|--------|
+| `node bin/design-os.mjs audit --reverse-engineer-stages --help` shows `--source`, `--output-dir` | PASS |
+| `node bin/design-os.mjs migrate --help` shows `--design-dir`, `--apply`, semver-ish description | PASS |
+| `migrate --from 2.0a --to 2.0b --apply` writes sitemap + persona + MANIFEST to v2.0b | PASS |
+| Error component spec has `error` state declared AND no open transitions | PASS |
+| `tsc --noEmit` clean | PASS |
+| `npm run lint:determinism` clean | PASS |
+| Full test suite: 969 passing, 2 pre-existing flakes only (`stage-2-latch.test.ts`) | PASS |
+| New tests: +18 tests (6 Finding 1 + 7 Finding 2 + 5 Finding 3) | PASS |
