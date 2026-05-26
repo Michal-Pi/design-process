@@ -211,7 +211,8 @@ describe("v2.0a → v2.0b migration", () => {
         expect(existsSync(lockPath)).toBe(true);
 
         const lockContent = await readFile(lockPath, "utf8");
-        const entry = JSON.parse(lockContent.trim().split("\n")[0]);
+        const firstLine = lockContent.trim().split("\n")[0] ?? "{}";
+        const entry = JSON.parse(firstLine);
         expect(entry.stage).toBe("migrate-sitemap-2.0a-to-2.0b");
       } finally {
         await rm(tmpDir, { recursive: true, force: true });
