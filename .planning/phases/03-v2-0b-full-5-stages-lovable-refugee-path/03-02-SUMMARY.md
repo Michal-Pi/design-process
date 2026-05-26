@@ -204,3 +204,97 @@ None — all artifacts are fully implemented.
 | SKILL.md descriptions ≤200 chars | PASS (159, 154, 140, 165) |
 | Pitfall B composite state | PASS (stateDiagram-v2 composite handled by Mermaid CLI) |
 | Zero file overlap with 03-01 | PASS (confirmed: different files_modified arrays) |
+
+---
+
+## Codex Review Fixes
+
+All 4 findings accepted and fixed as atomic commits. Tests: 904 total (up from 900, 4 new tests added). tsc and lint:determinism both clean after fixes.
+
+### Finding 1 — [P1] CLI dispatcher contract violation
+
+**Commit:** `2d993f9`
+**Files:** `assets/scripts/cli/state-machine-emit.mjs`
+
+**Problem:** Module exported `{ name, description, options, action }`. The dispatcher at `bin/design-os.mjs` requires `{ name, describe, builder, handler }`. The wrong shape caused `error: unknown option '--spec'` at runtime — Commander never registered the options.
+
+**Fix:** Rewrote the CLI module to use the canonical Commander contract exported by all sibling CLI modules (`excalidraw-render.mjs`, `gate.mjs`). Preserved: security check (T-03-02-01 `..` path traversal guard), `emitToFiles()` call, exit-code-2 repair signaling.
+
+**Verification:**
+```
+$ node bin/design-os.mjs state-machine-emit --help
+Usage: design-os state-machine-emit [options]
+
+Emit Mermaid stateDiagram-v2 and conditional XState v5 machine from a .spec.md file.
+
+Options:
+  --spec <path>    Path to the .spec.md interaction spec file (required)
+  --output <dir>   Output directory for .diagram.mmd and .machine.ts (required)
+  --screen <name>  Override screen name (defaults to spec file stem)
+  -h, --help       display help for command
+```
+Both `--spec` and `--output` appear in the option list. Previously they were absent (unknown options).
+
+---
+
+### Finding 2 — [P2] Custom-state declarations missing
+
+**Commit:** `022a7ca`
+**Files:** `assets/scripts/state-machine-emit.mjs`, `evals/golden/state-machine-emit.golden.json`, `tests/state-machine/emit.test.ts`
+
+**Problem:** `emitMermaid()` skipped custom (non-typed) states entirely: if `stateTypeAnnotation(state.type)` returned `''`, the state got no declaration line. If a custom state was referenced only as a transition target (e.g., `running --> permission-denied : NO_PERMS`), `extractStateNames()` in `stage-4.mjs` wouldn't see it as declared, causing false D-59c open-transition findings.
+
+**Fix:** Every state in `spec.states` now gets an explicit declaration:
+- Typed state (loading/empty/error/success): `  stateName : %% <type>` (unchanged)
+- Custom/untyped state: `  stateName` (bare declaration — new)
+
+**Golden fixture updated:** `idle` (custom type) now appears as bare `  idle` in `mermaidOutput` before the `[*] --> idle` entry transition.
+
+**Tests added:**
+- Test 11: asserts bare declaration line for every custom-type state
+- Test 12: asserts `extractStateNames()` sees all states (including custom-target-only) as declared — D-59c open-transition regression guard
+
+---
+
+### Finding 3 — [P2] Diagram-coverage by globby instead of count+identity (Lesson 5 violation)
+
+**Commit:** `3a7a9e1`
+**Files:** `assets/scripts/gates/stage-4.mjs`, `tests/gates/stage-4.test.ts`
+
+**Problem:** The D-59c open-transition check looped over `globby(['interactions/*.diagram.mmd'])`. If no diagrams existed, the loop body ran zero times, no finding was pushed, and if other checks passed, the gate returned `pass` despite diagrams being completely absent.
+
+**Fix:** Before the open-transition loop, compute the expected diagram set as every screen that has a `.spec.md` (the `specScreenNames` set already computed for condition (a)). For each screen in that set with no matching `.diagram.mmd`, push `{ checkId: '4-c-diagram-missing-001', status: 'fail', evidence: '...' }`. This compares both counts AND identities — not just file existence count.
+
+**Test 6 added:** Fixture with 3 sitemap screens, all 3 having `.spec.md` but only 2 having `.diagram.mmd`. Gate must fail with exactly one `4-c-diagram-missing-001` finding naming the missing screen.
+
+---
+
+### Finding 4 — [P2] Gate finding shape schema-incompatible (Lesson 1 violation)
+
+**Commit:** `212ceaf`
+**Files:** `assets/scripts/gates/stage-4.mjs`, `tests/gates/stage-4.test.ts`
+
+**Problem:** Findings were pushed as `{ findingId: '...', status: 'fail', evidence: { screen: ..., missing: [...] }, fixRecipe: '...' }`. The `Finding` schema in `schemas/src/gate-result.ts` (Zod) requires `{ checkId, status: 'pass'|'fail'|'na', evidence?: string }`. The non-conforming shape fails ajv validation in `appendManifestLockEntry()` when `runGate()` calls it.
+
+**Fix:** Grepped all occurrences in `stage-4.mjs` and converted:
+- `findingId` → `checkId`
+- `evidence: { ... }` → `evidence: '<human-readable string with the same info>'`
+- `fixRecipe` removed (not in schema)
+
+Reference template: `gates/stage-3.mjs`.
+
+**Tests updated (Tests 1-3):** Assertions now use `f.checkId` (not `f.findingId`), assert `evidence` is a `string`, and explicitly assert `findingId`/`fixRecipe` are `undefined` (regression guard).
+
+**Test 7 added:** End-to-end `runGate('4', dir, {})` that exercises `appendManifestLockEntry()` ajv validation path. The test fails if finding shape regresses to the old non-conforming shape.
+
+---
+
+### Post-fix Verification
+
+| Check | Result |
+|-------|--------|
+| `node bin/design-os.mjs state-machine-emit --help` | PASS — `--spec` and `--output` appear in option list |
+| `npm test` (full suite) | PASS — 904 tests (up from 900), 1-2 pre-existing stage-2-latch flakes only |
+| `npx tsc --noEmit` | PASS — clean |
+| `npm run lint:determinism` | PASS — CLEAN |
+| All 4 fix commits | 2d993f9, 022a7ca, 212ceaf, 3a7a9e1 |
