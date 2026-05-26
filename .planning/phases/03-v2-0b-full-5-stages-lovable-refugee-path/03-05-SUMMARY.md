@@ -198,3 +198,96 @@ None — all required artifacts are fully implemented. The `skills/design/SKILL.
 | lint-determinism clean on all new/modified scripts | PASS |
 | 983 tests (18 new + 969 pre-existing — minus 0 regressions) | PASS (1 pre-existing flake only) |
 | Task commits: 0f81b66, 7a54799, d57e81e, 4a346a2, 682cce9 | PASS |
+
+---
+
+## Codex Review Fixes
+
+Three findings accepted from post-ship Codex review. Applied after the 983-test baseline. All 3 commits use `fix(03-05):` prefix per Conventional Commits.
+
+### Finding 1 [P2] — Restrict `--new-feature` audits to selected route
+
+**File:** `assets/scripts/audit/all-stages.mjs:183-186`
+
+**Problem:** `--new-feature --feature checkout` passed the full `design/` directory to every per-stage detector. Findings from unrelated routes (e.g. `/dashboard`) appeared in a `/checkout` audit output. D-69 specifies this mode is scoped to the matched sitemap node ONLY.
+
+**Fix:**
+- Added `buildScopedDesignDir()` helper that creates a temp staging directory containing only the matched route's artifacts: `ia/sitemap.json` (filtered to matched route), `wireframes/<screen>/`, `interactions/<screen>.spec.md`, `tokens.json`.
+- In `runAuditAllStages()`, when `featureName` is set, build the scoped dir and pass it as `activeDesignDir` to all detectors instead of `resolvedDesignDir`.
+- Scoped tmp dir cleaned up in a `finally` block.
+- T-03-05-02 path-traversal containment preserved: `featureName` used only for sitemap string matching; screen name derived from `route.path` last segment via `routePathToScreenName()`.
+- Added `routePathToScreenName()` helper (mirrors `stage-3-pr.mjs` logic, defined locally).
+
+**Test file:** `tests/audit/all-stages-new-feature-scope.test.ts` (4 tests)
+- checkout audit includes checkout findings
+- checkout audit EXCLUDES dashboard findings (core scope assertion)
+- full `--all-stages` includes both routes' findings
+- dashboard audit scopes correctly, excludes checkout
+
+**Commit:** 6fca98f
+
+---
+
+### Finding 2 [P2] — Flag missing Stage 4 specs in `--all-stages` audits
+
+**File:** `assets/scripts/audit/all-stages.mjs:193-195`
+
+**Problem:** `detectStage4PrIssues` only globs existing `.spec.md` files. A route in `sitemap.json` with no `interactions/<screen>.spec.md` produced ZERO findings — a partially-built project appeared clean. Lesson 5 violation: coverage by count AND identity required.
+
+**Fix (in all-stages.mjs, same commit as Finding 1):**
+- Before calling `detectStage4PrIssues`, enumerate expected `.spec.md` files from `sitemap.json` using `routePathToScreenName()`.
+- For each missing spec, push a finding:
+  `{ findingId: '4-pr-spec-missing-001', severity: 'ERROR', evidence: '<screen>: missing interactions/<screen>.spec.md', fixRecipe: 'Run the interact workflow...' }`
+- Normalized through `normalizeFinding()` — severity `ERROR` becomes `BLOCKER` per `normalizeSeverity()` (correct: missing spec is a blocking correctness gap).
+
+**Test file:** `tests/audit/all-stages-missing-spec-coverage.test.ts` (4 tests)
+- 3 routes, 2 specs → exactly 1 `4-pr-spec-missing-001` finding
+- Finding references missing screen name in evidence
+- INVERSE: all 3 specs present → no missing-spec finding
+- 1 route, 0 specs → 1 finding naming screen + spec path
+
+**Commit:** e56a016 (test-only commit; code change was in 6fca98f alongside Finding 1)
+
+---
+
+### Finding 3 [P2] — Include budget hints in actual subagent handoff
+
+**File:** `assets/scripts/routing/dispatch.mjs:135-136`
+
+**Problem:** `dispatch.mjs` passed `{ stage, tokenBudget }` to `dispatchSubagent` but `dispatchSubagent` only destructured `{ prompt, tools, context }`. The budget was silently dropped. D-66's per-stage 150k split was documentation-only — the subagent LLM was never informed.
+
+**Fix (`run-subagent.mjs`):**
+- Extended `dispatchSubagent` signature to accept optional `tokenBudget?: number` and `stage?: string`. Backward-compatible: existing callers that omit them continue to work unchanged.
+- Added `buildBudgetPreamble()` that constructs a soft-budget preamble: `"[Token budget (ingest): You have a soft token budget of 5k tokens for this stage. Stay under it. Each stage ceiling is independent — unused budget does NOT carry over to later stages. A 2× soft-stop applies...]"`
+- Preamble is prepended to `prompt` before dispatch on ALL host paths (claude-code, codex-cli, cursor, default/unknown).
+- `tokenBudget` and `stage` forwarded in all return values.
+- `default` case also includes `prompt`/`tokenBudget`/`stage` in the return value (consistency).
+
+**Test file:** `tests/routing/dispatch-budget-passthrough.test.ts` (8 tests)
+- `dispatchSubagent` accepts `tokenBudget`+`stage` without throwing
+- backward-compat: omitting `tokenBudget` still works
+- prompt preamble includes "token budget" when `tokenBudget` provided
+- prompt preamble includes the stage name
+- no preamble when `tokenBudget` is omitted
+- dispatch `new-product`: all 7 invocations carry correct `tokenBudget` values (5k, 30k, 25k, 25k, 30k, 25k, 10k)
+- dispatch `new-product`: all 7 invocations carry `stage` field
+- Phase 2 routes (`new-feature`) still dispatch correctly (backward-compat)
+
+**Commit:** 159e493
+
+---
+
+### Codex Review Fix Verification
+
+| Check | Result |
+|-------|--------|
+| Finding 1 test: checkout audit excludes dashboard findings | PASS (4/4 scope tests) |
+| Finding 2 test: 3-screen sitemap, 1 missing spec → 1 finding with screen name | PASS (4/4 coverage tests) |
+| Finding 2 test: all specs present → 0 missing-spec findings | PASS (inverse assertion) |
+| Finding 3 test: prompt preamble includes "token budget" and stage name | PASS (5/5 unit tests) |
+| Finding 3 test: new-product route passes correct budgets to all 7 stages | PASS (2/2 dispatch tests) |
+| Finding 3 test: Phase 2 routes work without tokenBudget (backward-compat) | PASS |
+| tsc --noEmit clean (including new test files) | PASS |
+| lint-determinism clean (all-stages.mjs, run-subagent.mjs) | PASS |
+| Full test suite: 999 tests, 997 pass (2 pre-existing stage-2-latch flakes only) | PASS |
+| package.json unchanged (no new deps added) | PASS |
