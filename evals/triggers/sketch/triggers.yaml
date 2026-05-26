@@ -5,8 +5,9 @@
 # shouldNotFire: prompts that should NOT activate the sketch workflow
 #
 # Minimum: 12 prompts per category (recall ≥0.85, false-trigger ≤0.15 per R15)
+# Phase 3 tuning: added prompts for crazy-eights, excalidraw, low-fi terminology (D-32)
 #
-# Source: PLAN.md 03-01 Task C; CONTEXT.md OQ-4
+# Source: PLAN.md 03-01 Task C, 03-05 Task C; CONTEXT.md OQ-4, D-32
 # Implements: WF-04 trigger corpus
 
 skill: design-os/sketch
@@ -26,6 +27,9 @@ shouldFire:
   - "run crazy eights on signup flow"
   - "generate wireframe alternatives for the settings page"
   - "produce low-fi layout concepts for the inbox view"
+  - "I need 8 layout divergent concepts for the feed screen"
+  - "do a low-fi exploration of the modal dialog"
+  - "create excalidraw sketches showing 3 different nav structures"
 
 shouldNotFire:
   - "create hi-fi mockups"
@@ -42,3 +46,6 @@ shouldNotFire:
   - "systematize tokens"
   - "run stage 2 information architecture"
   - "create a PRD for the product"
+  - "map all loading and error states"
+  - "create a state machine for auth"
+  - "extract the design system"

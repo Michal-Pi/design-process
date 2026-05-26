@@ -1,3 +1,15 @@
+# evals/triggers/interact/triggers.yaml
+# Trigger evaluation prompts for design-os/interact skill.
+#
+# shouldFire: prompts that should activate the interact workflow
+# shouldNotFire: prompts that should NOT activate the interact workflow
+#
+# Minimum: 12 prompts per category (recall ≥0.85, false-trigger ≤0.15 per R15)
+# Phase 3 tuning: added prompts for XState, IxD, state-catalog terminology (D-32)
+#
+# Source: PLAN.md 03-02 Task C, 03-05 Task C; CONTEXT.md D-32
+# Implements: WF-05 trigger corpus
+
 skill: design-os/interact
 
 shouldFire:
@@ -15,6 +27,9 @@ shouldFire:
   - "IxD state catalog for settings page"
   - "create interaction spec for the login screen"
   - "map all states for the shopping cart"
+  - "build XState v5 machine for the multi-step form"
+  - "create a Mermaid stateDiagram for the feed screen"
+  - "enumerate all loading states and transition flows for the search feature"
 
 shouldNotFire:
   - "create wireframe sketches"
@@ -31,3 +46,6 @@ shouldNotFire:
   - "reverse engineer the prototype"
   - "run stage 2 structure workflow"
   - "create low-fidelity wireframe"
+  - "run audit --all-stages"
+  - "generate token palette"
+  - "create crazy eights variants"

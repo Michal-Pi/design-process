@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0b
 milestone_name: v2.0b full 5-stage pipeline
-status: completed
-stopped_at: Phase 03 Plan 04 — all 2 TDD tasks complete (reverse-engineer pipeline + migration scripts)
-last_updated: "2026-05-26T12:30:00.000Z"
+status: in_progress
+stopped_at: Phase 03 Plan 05 — executing route completion + audit modes + e2e fixture
+last_updated: "2026-05-26T13:00:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 15
-  completed_plans: 15
-  percent: 100
+  completed_plans: 14
+  percent: 93
 ---
 
 # State: design-os
@@ -28,20 +28,20 @@ progress:
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 03 COMPLETE — v2.0b full 5-stage pipeline
-- **Plan:** 04 complete (Phase 3 Plan 4 delivered — reverse-engineer pipeline D-62/63/64 + INFERRED enforcement + v2.0a→v2.0b migrations D-65)
-- **Next plan:** Phase 04 Plan 01 (RC / GA preparation)
-- **Status:** Phase 03 Plan 04 COMPLETE. All 5 plans in Phase 3 delivered. Reverse-engineer pipeline, INFERRED two-layer enforcement, promote-inferred CLI, migration scripts shipped. 953 tests passing.
+- **Phase:** 03 IN PROGRESS — v2.0b full 5-stage pipeline
+- **Plan:** 05 executing (Phase 3 Plan 5 — route completion + audit modes: new-product/mature-app-refactor/DS-extraction dispatch + audit --all-stages + audit --new-feature + SKILL.md update + trigger tuning)
+- **Next plan:** Phase 04 Plan 01 (RC / GA preparation) — after 03-05 + verifier pass
+- **Status:** Phase 03 Plan 05 executing. 14/15 plans delivered so far. 969 tests passing (post-codex-review fixes).
 
 **Progress:**
 
-[██████████] 100% (Phase 3 complete — entering Phase 4)
+[█████████ ] 93% (Phase 3 Plan 5 executing)
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
-Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations)
+Phase 3: [█████████ ] 80%  (4/5 plans — executing 03-05)
 Phase 4: [          ] 0%   Not started (RC / GA preparation)
 
-**Overall:** Phase 1+2+3 complete; 15/15 plans delivered. 953 tests passing.
+**Overall:** 14/15 plans delivered. 969 tests passing.
 
 ## Performance Metrics
 

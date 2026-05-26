@@ -17,8 +17,8 @@ allowed-tools:
 
 ## Status
 
-**v2.0a** — 4 routes fully wired with real stage dispatch. The `ingest` and `audit` workflows
-are available as standalone skills. Stages 3 (sketch) and 4 (interact) ship in v2.0b.
+**v2.0b** — All 7 routes fully wired with real stage dispatch. Stages 3 (sketch) and 4
+(interact) are live. `audit --all-stages` and `audit --new-feature` post-hoc validator added.
 
 ## Default behavior
 
@@ -38,15 +38,38 @@ design-os design --design-dir ./design
 
 The design skill dispatches to 7 named routes via `--route <name>`:
 
-| Route | v2.0a Status | Stages | Budget (p50) | Description |
-|-------|-------------|--------|--------------|-------------|
-| `new-feature` | **implemented** | discover → structure → style-5a → systematize-5b | 60k tokens | Feature-scoped design starting from Stage 1 research |
-| `design-bug` | **implemented** | style-5a | 20k tokens | Stage 5a touch-up for a visual or token regression |
-| `brand-refresh` | **implemented** | style-5a → systematize-5b | 55k tokens | Token + surface refresh (Stages 5a + 5b lite) |
-| `PR-audit` | **implemented** | audit --pr | 15k tokens | Audit a PR for Stage 5a/5b design regressions |
-| `new-product` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | all 5 stages | 150k tokens | Full 5-stage workflow for a greenfield product |
-| `mature-app-refactor` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | 2, 4, 5b | 45k tokens | Design-system extraction + refactor |
-| `DS-extraction` | ROUTE_NOT_YET_IMPLEMENTED (v2.0b) | audit + 1-5 | 120k tokens | Reverse-engineer stages from Lovable/v0 prototype |
+### Phase 2 routes (v2.0a)
+
+| Route | Status | Stages | Budget (p50) | Description |
+|-------|--------|--------|--------------|-------------|
+| `new-feature` | implemented | discover → structure → style-5a → systematize-5b | 60k tokens | Feature-scoped design starting from Stage 1 research |
+| `design-bug` | implemented | style-5a | 20k tokens | Stage 5a touch-up for a visual or token regression |
+| `brand-refresh` | implemented | style-5a → systematize-5b | 55k tokens | Token + surface refresh (Stages 5a + 5b lite) |
+| `PR-audit` | implemented | audit --pr | 15k tokens | Audit a PR for Stage 5a/5b design regressions |
+
+### Phase 3 routes (v2.0b)
+
+| Route | Stages run | Budget p50 | Use case |
+|-------|-----------|-----------|---------|
+| `new-product` | ingest→discover→structure→sketch→interact→style→systematize | ≤150k | Fresh PRD, full 5-stage design |
+| `mature-app-refactor` | audit stage-2 + audit stage-4 + systematize | ≤45k | Existing product, fill IA + IxD gaps + extract DS |
+| `DS-extraction` | audit --reverse-engineer-stages + backfill | ≤120k | Lovable/v0/Bolt refugee with prototype |
+
+### Per-stage token budget (D-66) — `new-product` route
+
+Per-stage ceilings are independent — stages do NOT donate unused budget to later stages.
+The 2× soft-stop from Phase 2 (run-subagent.mjs) is preserved.
+
+| Stage | Workflow | Budget (p50) |
+|-------|----------|-------------|
+| ingest | `skills/workflows/ingest.md` | ≤5k |
+| discover | `skills/workflows/discover.md` | ≤30k |
+| structure | `skills/workflows/structure.md` | ≤25k |
+| sketch | `skills/workflows/sketch.md` | ≤25k |
+| interact | `skills/workflows/interact.md` | ≤30k |
+| style | `skills/workflows/style.md` | ≤25k |
+| systematize | `skills/workflows/systematize.md` | ≤10k |
+| **Total** | | **≤150k** |
 
 ## Gates
 
