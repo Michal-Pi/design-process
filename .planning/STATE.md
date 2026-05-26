@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0b
 milestone_name: v2.0b full 5-stage pipeline
 status: completed
-stopped_at: Phase 03 Plan 03 — all 3 tasks complete
-last_updated: "2026-05-26T10:30:00.000Z"
+stopped_at: Phase 03 Plan 04 — all 2 TDD tasks complete (reverse-engineer pipeline + migration scripts)
+last_updated: "2026-05-26T12:30:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 15
-  completed_plans: 14
-  percent: 93
+  completed_plans: 15
+  percent: 100
 ---
 
 # State: design-os
@@ -21,27 +21,27 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 3 (v2.0b) — Gate promotions complete. Stage 5a D-60 full-gate, Stage 5b D-70 Frost BLOCKER (FID-06), ATOM-15 scaffold-component, REF-03 IA references, budget fixture shipped. 916 tests passing.
+- **Current focus:** Phase 3 (v2.0b) — COMPLETE. Reverse-engineer pipeline (D-62/63/64), INFERRED two-layer enforcement, v2.0a→v2.0b migration scripts (D-65), promote-inferred CLI, frontmatter-validate Rule A/B, audit.md extended. 953 tests passing.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 03 IN PROGRESS — v2.0b full 5-stage pipeline
-- **Plan:** 03 complete (Phase 3 Plan 3 delivered — gate promotions stage-5a D-60 + stage-5b D-70 FID-06)
-- **Next plan:** Phase 03 Plan 04
-- **Status:** Phase 03 Plan 03 COMPLETE. Gate promotions (D-60 stage-5a full-gate + D-70 stage-5b Frost BLOCKER) shipped. ATOM-15 + REF-03 + budget fixture delivered.
+- **Phase:** 03 COMPLETE — v2.0b full 5-stage pipeline
+- **Plan:** 04 complete (Phase 3 Plan 4 delivered — reverse-engineer pipeline D-62/63/64 + INFERRED enforcement + v2.0a→v2.0b migrations D-65)
+- **Next plan:** Phase 04 Plan 01 (RC / GA preparation)
+- **Status:** Phase 03 Plan 04 COMPLETE. All 5 plans in Phase 3 delivered. Reverse-engineer pipeline, INFERRED two-layer enforcement, promote-inferred CLI, migration scripts shipped. 953 tests passing.
 
 **Progress:**
 
-[█████████░] 93%
+[██████████] 100% (Phase 3 complete — entering Phase 4)
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
-Phase 3: [███░░░░░░░] 60%  3/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions
-Phase 4: [          ] 0%   Not started
+Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations)
+Phase 4: [          ] 0%   Not started (RC / GA preparation)
 
-**Overall:** Phase 1+2 complete; Phase 3 in progress (3/5 plans). 916 tests passing.
+**Overall:** Phase 1+2+3 complete; 15/15 plans delivered. 953 tests passing.
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 03 P01 | 75m | 3 tasks | 22 files | 53 tests added (868 total) |
 | Phase 03 P02 | 90m | 3 tasks | 29 files | 21 tests added (900 total) |
 | Phase 03 P03 | 75m | 3 tasks | 13 files | 16 tests added (916 total) |
+| Phase 03 P04 | 90m | 2 tasks | 17 files | 37 tests added (953 total) |
 
 ## Accumulated Context
 
@@ -140,12 +141,18 @@ Phase 4: [          ] 0%   Not started
 - [Phase 03 Plan 03]: Frost counter priority: schema-violation hasBlocker checked before frostBlockers — Phase 2 tests depend on schema-violation taking precedence
 - [Phase 03 Plan 03]: Frost search uses case-insensitive String.includes() (NOT regex) — prevents regex special-char bypass; counts both .excalidraw element.label and .spec.md body text
 - [Phase 03 Plan 03]: Vacuous Frost pass: 0 component-tier tokens in tokens.json → Frost check skipped entirely (no components to verify)
+- [Phase 03 Plan 04]: D-64 INFERRED two-layer enforcement: YAML frontmatter provenance:inferred + inferredDisclaimer + evidence:INFERRED AND Markdown body `> **INFERRED** — ...` blockquote banner — both layers required; frontmatter-only invisible to LLM readers; body-only strippable by copy-paste
+- [Phase 03 Plan 04]: Rule A regex `/>\s*\*\*INFERRED\*\*/i` matches any occurrence in gray-matter parsed body — adversarial fixture must not contain the pattern even in commentary text
+- [Phase 03 Plan 04]: skipSchemaValidation option added to validateFrontmatter() — allows INFERRED rule testing on non-schema artifact types (design-doc) without hitting process.exit(1)
+- [Phase 03 Plan 04]: Playwright dynamically imported inside crawlUrlToFs() — prevents test failures when Playwright browsers not available in CI
+- [Phase 03 Plan 04]: v2.0a/v2.0b migration uses STRING schemaVersions ('2.0a', '2.0b') NOT integers — distinct from existing v0→v1 integer chain; invoked via run-v2.0a-to-v2.0b.mjs directly (not through discoverMigrations() auto-discovery glob)
+- [Phase 03 Plan 04]: promote-inferred path computation uses relative(inferredDir, absFilePath) to compute target in design/ — mirrors OQ-2 directory structure
 
 ### Todos (next session)
 
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Continue Phase 03 Plan 04 — `audit --reverse-engineer-stages` + refugee path workflows
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
+- [ ] Phase 04 Plan 01 — RC / GA preparation (trigger eval, coexistence eval, axe runner, release packaging)
 
 ### Blockers
 
@@ -164,26 +171,31 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-26
-- **Activity:** Phase 03 Plan 03 — Gate promotions: stage-5a D-60 full-gate (TDD RED+GREEN, atomic OQ-1), stage-5b D-70 Frost BLOCKER FID-06 adversarial suite, ATOM-15 scaffold-component + REF-03 IA references (wodtke-ia.md, spencer-card-sort.md) + budget fixture.
-- **Stopped at:** Phase 03 Plan 03 — all 3 tasks complete
+- **Activity:** Phase 03 Plan 04 — Reverse-engineer pipeline (D-62/63/64): runReverseEngineer() Stage 4→3→2→1 inference, shouldExcludeUrl(), crawlUrlToFs() Playwright depth=1 dynamic import. INFERRED two-layer enforcement: Rule A (design/inferred/ missing banner) + Rule B (bleed prevention) in frontmatter-validate.mjs. promote-inferred CLI with path-traversal guard. v2.0a→v2.0b migration scripts (sitemap wireframeRefs, persona interactionNeeds, MANIFEST stage3/4artifacts). audit.md extended with --reverse-engineer-stages section + --new-feature stub. 9 adversarial tests for INFERRED enforcement.
+- **Stopped at:** Phase 03 Plan 04 — all 2 TDD tasks complete (A: reverse-engineer + B: migration scripts)
 - **Artifacts produced:**
-  - `assets/scripts/gates/stage-5a.mjs` (D-60 full-gate promotion — conditional checklist)
-  - `assets/scripts/gates/stage-5b.mjs` (D-70 Frost BLOCKER — FID-06 countComponentRecurrences)
-  - `tests/gates/stage-5a-full-gate.test.ts` (5 tests A-E for full-gate checklist)
-  - `tests/gates/stage-5a-not-runnable-regression.test.ts` (updated Test 3 for D-60)
-  - `tests/gates/stage-5b-frost.test.ts` (5 FID-06 adversarial tests)
-  - `evals/adversarial/fid-06-frost-recurrence/fixture-builder.mjs` + `run.test.ts`
-  - `skills/atoms/system/scaffold-component.md` (ATOM-15)
-  - `references/wodtke-ia.md` + `references/spencer-card-sort.md` (REF-03)
-  - `evals/fixtures/budget/new-product-full.fixture.json` (D-66 per-stage ceilings, 150k total)
-- **Final state:** 916 tests passing | tsc clean | lint-determinism CLEAN
+  - `assets/scripts/audit/reverse-engineer.mjs` (runReverseEngineer, shouldExcludeUrl, crawlUrlToFs, INFERRED_BANNER, INFERRED_FRONTMATTER)
+  - `assets/scripts/cli/reverse-engineer.mjs` (CLI wrapper)
+  - `assets/scripts/cli/promote-inferred.mjs` (promote-inferred CLI + promoteInferredFile)
+  - `assets/scripts/frontmatter-validate.mjs` (extended: Rule A + Rule B + skipSchemaValidation option)
+  - `schemas/migrations/sitemap-v2.0a-to-v2.0b.mjs` (addWireframeRefsToRoute, dry-run, idempotent)
+  - `schemas/migrations/persona-v2.0a-to-v2.0b.mjs` (interactionNeeds delta)
+  - `schemas/migrations/manifest-v2.0a-to-v2.0b.mjs` (gray-matter + eemeli/yaml round-trip)
+  - `schemas/migrations/run-v2.0a-to-v2.0b.mjs` (orchestrator)
+  - `tests/audit/reverse-engineer.test.ts` (9 tests)
+  - `evals/adversarial/inferred-disclaimer/fixture-builder.mjs` + `run.test.ts` (adversarial INFERRED)
+  - `tests/migration/v2.0a-to-v2.0b.test.ts` (13 tests)
+  - `evals/fixtures/migration/v2.0a-to-v2.0b/` (3 v2.0a fixture files)
+  - `skills/workflows/audit.md` (extended --reverse-engineer-stages + --new-feature stub)
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-04-SUMMARY.md`
+- **Final state:** 953 tests passing | tsc clean | lint-determinism CLEAN
 
 ### Next Session
 
-- **Likely activity:** Phase 03 Plan 04
+- **Likely activity:** Phase 04 Plan 01 — RC / GA preparation
 - **Required reading at session start:**
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-03-SUMMARY.md`
-  - Phase 03 Plan 04 PLAN.md
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-04-SUMMARY.md`
+  - Phase 04 Plan 01 PLAN.md (if it exists)
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*

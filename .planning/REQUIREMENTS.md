@@ -159,8 +159,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **AUDIT-03**: `audit --slop-tells` library preserved from v1.0.1 (rainbow gradients, Inter-default, glass-stack, three-column-grid, etc.)
 - [ ] **AUDIT-04**: `audit --new-feature` verifies a new feature passes through all 5 stages
 - [x] **AUDIT-05**: `audit --pr` diffs a PR against the design contract with structured findings (`findingId`, severity, evidence pointer, fix recipe, suppression option)
-- [ ] **AUDIT-06**: `audit --reverse-engineer-stages` infers stages 1-4 from an existing Lovable/v0/Bolt prototype (Lovable refugee path) — shipped in v2.0b
-- [ ] **AUDIT-07**: All reverse-engineered artifacts carry `provenance: inferred` and propagate `INFERRED` grade downstream
+- [x] **AUDIT-06**: `audit --reverse-engineer-stages` infers stages 1-4 from an existing Lovable/v0/Bolt prototype (Lovable refugee path) — shipped in v2.0b
+- [x] **AUDIT-07**: All reverse-engineered artifacts carry `provenance: inferred` and propagate `INFERRED` grade downstream
 - [x] **AUDIT-08**: AUDIT-REPORT.md output schema versioned and validated
 
 ### Persistence Split
@@ -196,11 +196,11 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **MVPB-03**: Excalidraw renderer + Mermaid renderer + XState code emitter shipped in `assets/scripts/`
 - [x] **MVPB-04**: Stage-3 and Stage-4 gates implemented
 - [x] **MVPB-05**: Stage-5a / 5b gates promoted from `-lite` to full
-- [ ] **MVPB-06**: `audit --reverse-engineer-stages` mode shipped (Lovable refugee path)
+- [x] **MVPB-06**: `audit --reverse-engineer-stages` mode shipped (Lovable refugee path)
 - [ ] **MVPB-07**: Stage 3 risk-triggered (per routing matrix); not default on every route
 - [x] **MVPB-08**: XState v5 machine required only for components with async + ≥3 states + conditional transitions; otherwise spec.md state catalog + Mermaid stateDiagram-v2 is canonical
 - [ ] **MVPB-09**: Remaining routes shipped: `mature-app-refactor`, `DS-extraction (Lovable refugee)`, `new-product` full
-- [ ] **MVPB-10**: Schema migration v2.0a → v2.0b for `sitemap.json`, `persona.json`, `MANIFEST.md`
+- [x] **MVPB-10**: Schema migration v2.0a → v2.0b for `sitemap.json`, `persona.json`, `MANIFEST.md`
 
 ### Acceptance Criteria
 
@@ -435,8 +435,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | AUDIT-03 | Phase 2 | Complete |
 | AUDIT-04 | Phase 3 | Pending |
 | AUDIT-05 | Phase 2 | Complete |
-| AUDIT-06 | Phase 3 | Pending |
-| AUDIT-07 | Phase 3 | Pending |
+| AUDIT-06 | Phase 3 | Complete |
+| AUDIT-07 | Phase 3 | Complete |
 | AUDIT-08 | Phase 2 | Complete |
 | PERSIST-01 | Phase 1 | Complete |
 | PERSIST-02 | Phase 1 | Complete |
@@ -460,11 +460,11 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | MVPB-03 | Phase 3 | Complete |
 | MVPB-04 | Phase 3 | Complete |
 | MVPB-05 | Phase 3 | Complete |
-| MVPB-06 | Phase 3 | Pending |
+| MVPB-06 | Phase 3 | Complete |
 | MVPB-07 | Phase 3 | Pending |
 | MVPB-08 | Phase 3 | Complete |
 | MVPB-09 | Phase 3 | Pending |
-| MVPB-10 | Phase 3 | Pending |
+| MVPB-10 | Phase 3 | Complete |
 | ACCEPT-01 | Phase 4 | Pending |
 | ACCEPT-02 | Phase 4 | Pending |
 | ACCEPT-03 | Phase 4 | Pending |
