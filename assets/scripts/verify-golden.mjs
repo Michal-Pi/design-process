@@ -31,6 +31,7 @@ const FIXTURE_RUNNERS = {
   "mermaid-render": runMermaidRenderFixture,
   "tokens-project": runTokensProjectFixtures,
   "excalidraw-render": runExcalidrawRenderFixture,
+  "state-machine-emit": runStateMachineEmitFixture,
 };
 
 /**
@@ -538,6 +539,84 @@ async function runExcalidrawRenderFixture() {
   }
 
   return [{ name: "excalidraw-render", pass: true }];
+}
+
+/**
+ * Run the state-machine-emit golden fixture 5× and compare with expected JSON.
+ * Input: 4-state async spec (D-57 trigger conditions all true)
+ * Golden: evals/golden/state-machine-emit.golden.json
+ * @returns {Promise<{ name: string; pass: boolean; mismatch?: string }[]>}
+ */
+async function runStateMachineEmitFixture() {
+  const goldenPath = join(ROOT, "evals/golden/state-machine-emit.golden.json");
+
+  if (!existsSync(goldenPath)) {
+    return [
+      {
+        name: "state-machine-emit",
+        pass: false,
+        mismatch: `Golden file not found: ${goldenPath}. Run: node assets/scripts/state-machine-emit.mjs --regen to regenerate.`,
+      },
+    ];
+  }
+
+  const { emitMermaid, emitXState } = await import("./state-machine-emit.mjs");
+
+  const golden = JSON.parse(await readFile(goldenPath, "utf8"));
+  const spec = golden.input;
+
+  const expectedMermaidHash = sha256(golden.mermaidOutput);
+  const expectedXstateHash = sha256(golden.xstateOutput);
+
+  const mermaidHashes = [];
+  const xstateHashes = [];
+
+  for (let i = 0; i < BYTE_IDENTICAL_RUNS; i++) {
+    const mermaidOutput = emitMermaid(spec);
+    const xstateOutput = emitXState(spec);
+    mermaidHashes.push(sha256(mermaidOutput));
+    xstateHashes.push(sha256(xstateOutput));
+  }
+
+  const results = [];
+
+  // Check Mermaid output determinism and golden match
+  const mermaidAllSame = mermaidHashes.every((h) => h === mermaidHashes[0]);
+  if (!mermaidAllSame) {
+    results.push({
+      name: "state-machine-emit / mermaidOutput",
+      pass: false,
+      mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+    });
+  } else if (mermaidHashes[0] !== expectedMermaidHash) {
+    results.push({
+      name: "state-machine-emit / mermaidOutput",
+      pass: false,
+      mismatch: `Output hash ${mermaidHashes[0]} != expected ${expectedMermaidHash}. Run npm run regen-golden to update.`,
+    });
+  } else {
+    results.push({ name: "state-machine-emit / mermaidOutput", pass: true });
+  }
+
+  // Check XState output determinism and golden match
+  const xstateAllSame = xstateHashes.every((h) => h === xstateHashes[0]);
+  if (!xstateAllSame) {
+    results.push({
+      name: "state-machine-emit / xstateOutput",
+      pass: false,
+      mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
+    });
+  } else if (xstateHashes[0] !== expectedXstateHash) {
+    results.push({
+      name: "state-machine-emit / xstateOutput",
+      pass: false,
+      mismatch: `Output hash ${xstateHashes[0]} != expected ${expectedXstateHash}. Run npm run regen-golden to update.`,
+    });
+  } else {
+    results.push({ name: "state-machine-emit / xstateOutput", pass: true });
+  }
+
+  return results;
 }
 
 /**

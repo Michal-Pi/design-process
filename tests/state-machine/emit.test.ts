@@ -151,7 +151,7 @@ describe('mermaid-render stateDiagram-v2 extension', () => {
   loading --> error : ERROR
 `;
     await expect(mermaidRender.validateMermaidSource(mmdSource)).resolves.not.toThrow();
-  });
+  }, 15000 /* mermaid-cli headless: allow 15s */);
 
   it('Test 9: validateMermaidSource() with composite state syntax does not throw', async () => {
     // Pitfall B: composite state (state name { ... }) — must handle
@@ -165,7 +165,7 @@ describe('mermaid-render stateDiagram-v2 extension', () => {
   Active --> [*] : DONE
 `;
     await expect(mermaidRender.validateMermaidSource(mmdSource)).resolves.not.toThrow();
-  });
+  }, 15000 /* mermaid-cli headless: allow 15s */);
 });
 
 describe('verify-golden', () => {

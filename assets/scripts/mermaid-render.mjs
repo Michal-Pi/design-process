@@ -87,6 +87,79 @@ export async function renderMermaidFile(inputPath, outputPath) {
   await writeFile(absOutput, cleanSvg, "utf8");
 }
 
+/**
+ * Detect the Mermaid diagram type from the source string.
+ * Supports stateDiagram-v2 dispatch (Phase 3 extension) alongside flowchart.
+ *
+ * @param {string} source - Raw Mermaid source
+ * @returns {'stateDiagram-v2' | 'flowchart' | 'other'}
+ */
+function detectDiagramType(source) {
+  const trimmed = source.trimStart();
+  if (trimmed.startsWith('stateDiagram-v2')) return 'stateDiagram-v2';
+  if (trimmed.startsWith('flowchart') || trimmed.startsWith('graph ')) return 'flowchart';
+  return 'other';
+}
+
+/**
+ * Validate Mermaid source by attempting a headless render.
+ * Extended for stateDiagram-v2 in Phase 3 (Plan 03-02).
+ *
+ * This function dispatches on diagram type:
+ *   - stateDiagram-v2: validated via the same pipeline as flowchart
+ *   - flowchart: existing validation pipeline
+ *   - other: best-effort validation
+ *
+ * On validation failure, returns { valid: false, error: <string> }.
+ * The caller (SKILL.md atom or state-machine-emit.mjs) is responsible for
+ * the max-2-retry repair loop.
+ *
+ * Pitfall B: composite state syntax (state Name { ... }) is handled by
+ * Mermaid CLI natively — no special parsing needed on our side.
+ *
+ * @param {string} mermaidSource - Raw Mermaid source to validate
+ * @returns {Promise<{ valid: true } | { valid: false, error: string }>}
+ */
+export async function validateMermaidSource(mermaidSource) {
+  const diagramType = detectDiagramType(mermaidSource);
+
+  // Write to a temp file and invoke @mermaid-js/mermaid-cli for validation
+  const { tmpdir } = await import('node:os');
+  const { join: pathJoin } = await import('node:path');
+  const { writeFile: wf, unlink } = await import('node:fs/promises');
+  const { createHash } = await import('node:crypto');
+
+  const hash = createHash('sha256').update(mermaidSource).digest('hex').slice(0, 12);
+  const tempInput = pathJoin(tmpdir(), `mermaid-validate-${hash}.mmd`);
+  const tempOutput = pathJoin(tmpdir(), `mermaid-validate-${hash}.svg`);
+
+  await wf(tempInput, mermaidSource, 'utf8');
+
+  try {
+    const { run } = await import('@mermaid-js/mermaid-cli');
+    await run(tempInput, tempOutput, {
+      parseMMDOptions: {
+        mermaidConfig: MERMAID_CONFIG,
+        backgroundColor: 'white',
+      },
+      quiet: true,
+    });
+
+    // Clean up temp files
+    await unlink(tempInput).catch(() => {});
+    await unlink(tempOutput).catch(() => {});
+
+    return { valid: true };
+  } catch (err) {
+    // Clean up temp input on failure
+    await unlink(tempInput).catch(() => {});
+    await unlink(tempOutput).catch(() => {});
+
+    const errorMsg = String(err?.message ?? err);
+    throw new Error(`Mermaid ${diagramType} validation failed: ${errorMsg}`);
+  }
+}
+
 // Run when invoked directly.
 const isMain =
   process.argv[1] &&
