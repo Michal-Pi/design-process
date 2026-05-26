@@ -5,11 +5,13 @@
 // D-59: Three conditions: (a) sitemap coverage, (b) state completeness, (c) no open transitions
 // INVARIANT-01: gate runs against staged path (not design/)
 //
-// Updated for Codex review Finding 4 (Lesson 1 violation):
-//   All finding assertions now use canonical {checkId, evidence: string}
-//   instead of {findingId, evidence: object, fixRecipe}.
-//   Test 7 added: end-to-end runGate() test exercises ajv validation in
-//   appendManifestLockEntry() to catch finding-shape regressions.
+// Updated for Codex review findings:
+//   Finding 3 (Lesson 5): Test 6 — identity-based diagram coverage (not just globby count).
+//     3 screens with only 2 diagrams must fail with 4-c-diagram-missing-001.
+//   Finding 4 (Lesson 1): All finding assertions use canonical {checkId, evidence: string}
+//     instead of {findingId, evidence: object, fixRecipe}.
+//   Finding 4: Test 7 — end-to-end runGate() test exercises ajv validation in
+//     appendManifestLockEntry() to catch finding-shape regressions.
 
 import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
@@ -271,6 +273,64 @@ describe('gate-stage-4.mjs: no open transitions (D-59c)', () => {
     // Must NOT have old non-conforming keys (regression guard)
     expect(openFinding?.findingId).toBeUndefined();
     expect(openFinding?.fixRecipe).toBeUndefined();
+  });
+});
+
+describe('gate-stage-4.mjs: diagram identity coverage (D-59c, Lesson 5)', () => {
+  const tmpDirs: string[] = [];
+
+  afterEach(async () => {
+    for (const dir of tmpDirs.splice(0)) {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('Test 6: sitemap with 3 screens where only 2 have diagrams fails with 4-c-diagram-missing-001 for the missing one', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'gate4-test6-'));
+    tmpDirs.push(dir);
+
+    await mkdir(join(dir, 'ia'), { recursive: true });
+    await writeFile(
+      join(dir, 'ia/sitemap.json'),
+      buildSitemapJson(['/dashboard', '/profile', '/settings'])
+    );
+
+    await mkdir(join(dir, 'interactions'), { recursive: true });
+
+    // All 3 screens have .spec.md files (sitemap is fully covered at the spec level)
+    for (const screen of ['dashboard', 'profile', 'settings']) {
+      await writeFile(
+        join(dir, `interactions/${screen}.spec.md`),
+        buildSpecMd(screen, FULL_STATES)
+      );
+    }
+
+    // Only 2 screens have .diagram.mmd files — settings is intentionally missing
+    for (const screen of ['dashboard', 'profile']) {
+      await writeFile(
+        join(dir, `interactions/${screen}.diagram.mmd`),
+        buildDiagramMmd(
+          ['loading', 'empty', 'error', 'success'],
+          [['loading', 'success', 'DONE'], ['loading', 'error', 'ERROR']]
+        )
+      );
+    }
+
+    // Gate must fail because 'settings' has a .spec.md but no .diagram.mmd
+    const result = await runStage4Gate(dir);
+    expect(result.kind).toBe('failed_after_repair');
+
+    // Must report exactly ONE 4-c-diagram-missing-001 finding (for 'settings' only)
+    const missingFindings = result.findings.filter((f: any) => f.checkId === '4-c-diagram-missing-001');
+    expect(missingFindings).toHaveLength(1);
+
+    const missingFinding = missingFindings[0];
+    expect(typeof missingFinding?.evidence).toBe('string');
+    expect(missingFinding?.evidence).toContain('settings');
+
+    // Must NOT report screens that DO have diagrams
+    expect(missingFinding?.evidence).not.toContain('dashboard');
+    expect(missingFinding?.evidence).not.toContain('profile');
   });
 });
 

@@ -6,10 +6,12 @@
 //
 // D-59 Three conditions:
 //   (a) Sitemap coverage: every route in sitemap.json has a .spec.md in interactions/
+//       AND every .spec.md screen has a matching .diagram.mmd (identity check, not just count)
 //   (b) State completeness: every .spec.md enumerates loading, empty, error, success states
 //   (c) No open transitions: every Mermaid --> target is a declared state name
 //
 // Lesson 1 (INVARIANTS.md): Finding shape MUST be {checkId, status, evidence: string}.
+// Lesson 5 (INVARIANTS.md): Compare diagram counts AND identities against expected set.
 //   NOT {findingId, fixRecipe, evidence: object}. Validated by ajv in appendManifestLockEntry().
 //
 // T-03-02-02: State-name regex only matches \w[\w-]* identifiers; tested against
@@ -222,12 +224,36 @@ export async function runStage4Gate(designDir) {
     }
   }
 
-  // ── Condition (c): No open transitions ─────────────────────────────────────
+  // ── Condition (c): Diagram identity coverage + no open transitions ──────────
+  //
+  // Lesson 5 (INVARIANTS.md): Do NOT rely on "globby ≥1 diagram" as coverage.
+  // For every .spec.md screen, assert a matching .diagram.mmd exists by IDENTITY.
+  // Only then run the open-transition check on diagrams that exist.
+  //
+  // Expected diagram set = every screen that has a .spec.md file.
+  // If a .spec.md exists but its .diagram.mmd is absent → 4-c-diagram-missing-001.
   const diagramFiles = await globby(['interactions/*.diagram.mmd'], {
     cwd: designDir,
     absolute: false,
   });
 
+  // Build a set of screen names that have diagrams (for identity comparison)
+  const diagramScreenNames = new Set(
+    diagramFiles.map((f) => basename(f, '.diagram.mmd'))
+  );
+
+  // For every screen that has a .spec.md, assert a .diagram.mmd also exists
+  for (const screenName of specScreenNames) {
+    if (!diagramScreenNames.has(screenName)) {
+      findings.push({
+        checkId: '4-c-diagram-missing-001',
+        status: 'fail',
+        evidence: `${screenName}: missing interactions/${screenName}.diagram.mmd. Run state-machine-emit --spec interactions/${screenName}.spec.md to produce the diagram.`,
+      });
+    }
+  }
+
+  // Open-transition check for diagrams that DO exist
   for (const diagramFile of diagramFiles) {
     const screenName = basename(diagramFile, '.diagram.mmd');
     const fullPath = join(designDir, diagramFile);
