@@ -9,6 +9,9 @@
 //   (b) State completeness: every .spec.md enumerates loading, empty, error, success states
 //   (c) No open transitions: every Mermaid --> target is a declared state name
 //
+// Lesson 1 (INVARIANTS.md): Finding shape MUST be {checkId, status, evidence: string}.
+//   NOT {findingId, fixRecipe, evidence: object}. Validated by ajv in appendManifestLockEntry().
+//
 // T-03-02-02: State-name regex only matches \w[\w-]* identifiers; tested against
 //             Mermaid comment syntax to prevent false positives.
 //
@@ -111,6 +114,11 @@ function routeToScreenName(routePath) {
  * Run the Stage 4 gate against a staged design directory.
  * Implements D-59 three-condition checklist.
  *
+ * Finding shape: {checkId: string, status: 'pass'|'fail'|'na', evidence: string}
+ * Per Lesson 1 (INVARIANTS.md) and gate-result.ts schema. Never use findingId,
+ * fixRecipe, or object-valued evidence — those shapes fail ajv validation in
+ * appendManifestLockEntry().
+ *
  * @param {string} designDir - Staged preview path (INVARIANT-01: never design/)
  * @returns {Promise<import("../../../schemas/src/gate-result.js").GateResultType>}
  */
@@ -140,10 +148,9 @@ export async function runStage4Gate(designDir) {
       reason: 'sitemap-parse-error',
       findings: [
         {
-          findingId: '4-coverage-001',
+          checkId: '4-coverage-001',
           status: 'fail',
-          evidence: { error: `Failed to parse sitemap.json: ${err.message}` },
-          fixRecipe: 'Fix sitemap.json JSON syntax.',
+          evidence: `Failed to parse sitemap.json: ${err.message}. Fix sitemap.json JSON syntax.`,
         },
       ],
     };
@@ -169,10 +176,9 @@ export async function runStage4Gate(designDir) {
 
     if (screenName && !specScreenNames.has(screenName)) {
       findings.push({
-        findingId: '4-coverage-001',
+        checkId: '4-coverage-001',
         status: 'fail',
-        evidence: { route: routePath, expectedScreen: screenName },
-        fixRecipe: `Run ixd/state-catalog atom for screen '${screenName}' to produce ${screenName}.spec.md`,
+        evidence: `Route '${routePath}' (screen '${screenName}') has no matching interactions/${screenName}.spec.md. Run ixd/state-catalog atom to produce ${screenName}.spec.md.`,
       });
     }
   }
@@ -191,10 +197,9 @@ export async function runStage4Gate(designDir) {
       specData = parsed.data;
     } catch (err) {
       findings.push({
-        findingId: '4-states-001',
+        checkId: '4-states-001',
         status: 'fail',
-        evidence: { screen: screenName, error: `Failed to parse spec: ${err.message}` },
-        fixRecipe: `Fix YAML frontmatter in ${screenName}.spec.md`,
+        evidence: `${screenName}.spec.md: failed to parse YAML frontmatter — ${err.message}. Fix YAML syntax in ${screenName}.spec.md.`,
       });
       continue;
     }
@@ -210,10 +215,9 @@ export async function runStage4Gate(designDir) {
 
     if (missingTypes.length > 0) {
       findings.push({
-        findingId: '4-states-001',
+        checkId: '4-states-001',
         status: 'fail',
-        evidence: { screen: screenName, missing: missingTypes },
-        fixRecipe: `Add missing state types [${missingTypes.join(', ')}] to ${screenName}.spec.md`,
+        evidence: `${screenName}.spec.md: missing canonical state types [${missingTypes.join(', ')}]. Add these state types to pass D-59(b).`,
       });
     }
   }
@@ -244,10 +248,9 @@ export async function runStage4Gate(designDir) {
     if (openTargets.length > 0) {
       const uniqueOpenTargets = [...new Set(openTargets)];
       findings.push({
-        findingId: '4-open-transition-001',
+        checkId: '4-open-transition-001',
         status: 'fail',
-        evidence: { screen: screenName, openTargets: uniqueOpenTargets },
-        fixRecipe: `State(s) [${uniqueOpenTargets.join(', ')}] in ${screenName}.diagram.mmd are targeted in transitions but not declared. Declare them or correct the transition targets.`,
+        evidence: `${screenName}.diagram.mmd: state(s) [${uniqueOpenTargets.join(', ')}] are transition targets but not declared. Declare them or correct the transition targets.`,
       });
     }
   }
