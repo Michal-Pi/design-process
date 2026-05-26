@@ -52,7 +52,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **FID-03**: Stage 3 — Excalidraw validator rejects color/typography/styling drift; LLM emissions of styling regenerate up to repair-loop limit, then fail
 - [x] **FID-04**: Stage 4 — state diagrams are Mermaid stateDiagram-v2; no hi-fi visuals in interactive prototypes
 - [x] **FID-05**: Stage 5a — refuses to render hi-fi when `design/interactions/` is empty or incomplete
-- [ ] **FID-06**: Stage 5b — promotes a component to system only when it appears ≥3× in upstream wireframes/interactions (Frost rule)
+- [x] **FID-06**: Stage 5b — promotes a component to system only when it appears ≥3× in upstream wireframes/interactions (Frost rule)
 
 ### Synthetic-Persona Red Line (NN/g)
 
@@ -91,7 +91,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **ATOM-12**: `ixd/state-catalog` (Stage 4, enumerate all states per component)
 - [x] **ATOM-13**: `hifi/variants-preview` (Stage 5a, generate + preview + screenshot in one atom)
 - [x] **ATOM-14**: `tokens/emit` (Stage 5b, DTCG → Tailwind v4 / shadcn / plain CSS / Style Dictionary projections)
-- [ ] **ATOM-15**: `system/scaffold-component` (Stage 5b, full state set, consumes Stage 4 machine — v2.1 per MRD §3.8; pulled into v2.0b)
+- [x] **ATOM-15**: `system/scaffold-component` (Stage 5b, full state set, consumes Stage 4 machine — v2.1 per MRD §3.8; pulled into v2.0b)
 
 ### Job-Routing Matrix (7 routes)
 
@@ -192,10 +192,10 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 ### v2.0b Full 5-Stage Scope
 
 - [x] **MVPB-01**: Workflows added: `sketch`, `interact`
-- [ ] **MVPB-02**: 6 atoms added: `lowfi/crazy-eights`, `lowfi/converge`, `ixd/state-machine`, `ixd/pattern-variants`, `ixd/state-catalog`, `system/scaffold-component`
+- [x] **MVPB-02**: 6 atoms added: `lowfi/crazy-eights`, `lowfi/converge`, `ixd/state-machine`, `ixd/pattern-variants`, `ixd/state-catalog`, `system/scaffold-component`
 - [x] **MVPB-03**: Excalidraw renderer + Mermaid renderer + XState code emitter shipped in `assets/scripts/`
 - [x] **MVPB-04**: Stage-3 and Stage-4 gates implemented
-- [ ] **MVPB-05**: Stage-5a / 5b gates promoted from `-lite` to full
+- [x] **MVPB-05**: Stage-5a / 5b gates promoted from `-lite` to full
 - [ ] **MVPB-06**: `audit --reverse-engineer-stages` mode shipped (Lovable refugee path)
 - [ ] **MVPB-07**: Stage 3 risk-triggered (per routing matrix); not default on every route
 - [x] **MVPB-08**: XState v5 machine required only for components with async + ≥3 states + conditional transitions; otherwise spec.md state catalog + Mermaid stateDiagram-v2 is canonical
@@ -218,8 +218,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [ ] **COST-01**: `discover` p50 ≤30k tokens (lightweight depth)
 - [ ] **COST-02**: `structure` p50 ≤25k tokens
-- [ ] **COST-03**: `sketch` p50 ≤25k tokens
-- [ ] **COST-04**: `interact` p50 ≤30k tokens
+- [x] **COST-03**: `sketch` p50 ≤25k tokens
+- [x] **COST-04**: `interact` p50 ≤30k tokens
 - [ ] **COST-05**: `style` p50 ≤55k tokens (preserves v1.0.1 budget)
 - [ ] **COST-06**: `systematize` p50 ≤40k tokens
 - [ ] **COST-07**: Full `design` workflow p50 ≤150k tokens; p95 ≤220k tokens
@@ -361,7 +361,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | FID-03 | Phase 3 | Pending |
 | FID-04 | Phase 3 | Complete |
 | FID-05 | Phase 2 | Complete |
-| FID-06 | Phase 3 | Pending |
+| FID-06 | Phase 3 | Complete |
 | RED-01 | Phase 2 | Complete |
 | RED-02 | Phase 2 | Complete |
 | RED-03 | Phase 2 | Complete |
@@ -391,7 +391,7 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ATOM-12 | Phase 3 | Complete |
 | ATOM-13 | Phase 2 | Complete |
 | ATOM-14 | Phase 2 | Complete |
-| ATOM-15 | Phase 3 | Pending |
+| ATOM-15 | Phase 3 | Complete |
 | ROUTE-01 | Phase 3 | Pending |
 | ROUTE-02 | Phase 2 | Complete |
 | ROUTE-03 | Phase 3 | Pending |
@@ -456,10 +456,10 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | MVPA-07 | Phase 2 | Complete |
 | MVPA-08 | Phase 2 | Complete |
 | MVPB-01 | Phase 3 | Complete |
-| MVPB-02 | Phase 3 | Pending |
+| MVPB-02 | Phase 3 | Complete |
 | MVPB-03 | Phase 3 | Complete |
 | MVPB-04 | Phase 3 | Complete |
-| MVPB-05 | Phase 3 | Pending |
+| MVPB-05 | Phase 3 | Complete |
 | MVPB-06 | Phase 3 | Pending |
 | MVPB-07 | Phase 3 | Pending |
 | MVPB-08 | Phase 3 | Complete |
@@ -476,8 +476,8 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | ACCEPT-09 | Phase 4 | Pending |
 | COST-01 | Phase 2 | Pending |
 | COST-02 | Phase 2 | Pending |
-| COST-03 | Phase 3 | Pending |
-| COST-04 | Phase 3 | Pending |
+| COST-03 | Phase 3 | Complete |
+| COST-04 | Phase 3 | Complete |
 | COST-05 | Phase 2 | Pending |
 | COST-06 | Phase 2 | Pending |
 | COST-07 | Phase 4 | Pending |

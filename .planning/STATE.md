@@ -2,26 +2,26 @@
 gsd_state_version: 1.0
 milestone: v2.0b
 milestone_name: v2.0b full 5-stage pipeline
-status: in_progress
-stopped_at: Phase 03 Plan 02 — all 3 tasks complete
-last_updated: "2026-05-26T00:00:00.000Z"
+status: completed
+stopped_at: Phase 03 Plan 03 — all 3 tasks complete
+last_updated: "2026-05-26T10:30:00.000Z"
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 2
   total_plans: 15
-  completed_plans: 13
-  percent: 87
+  completed_plans: 14
+  percent: 93
 ---
 
 # State: design-os
 
-**Last updated:** 2026-05-25
+**Last updated:** 2026-05-26
 
 ## Project Reference
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 2 (v2.0a Skeleton) — ALL 5 PLANS COMPLETE. Audit workflow, apply.mjs, real dispatch wiring for 4 routes, 6 SKILL.md files, trigger corpus (recall ≥0.85), 15 budget fixtures, INVARIANTS.md shipped. 810 tests passing. Phase 2 COMPLETE — ready for Phase 3 (v2.0b).
+- **Current focus:** Phase 3 (v2.0b) — Gate promotions complete. Stage 5a D-60 full-gate, Stage 5b D-70 Frost BLOCKER (FID-06), ATOM-15 scaffold-component, REF-03 IA references, budget fixture shipped. 916 tests passing.
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -29,19 +29,19 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 IN PROGRESS — v2.0b full 5-stage pipeline
-- **Plan:** 02 complete (Phase 3 Plan 2 delivered — Stage 4 Interact + IxD machinery)
-- **Next plan:** Phase 03 Plan 03
-- **Status:** Phase 03 Plan 02 COMPLETE. Stage 4 (Interact/Mermaid stateDiagram-v2/XState v5/D-59 gate) shipped.
+- **Plan:** 03 complete (Phase 3 Plan 3 delivered — gate promotions stage-5a D-60 + stage-5b D-70 FID-06)
+- **Next plan:** Phase 03 Plan 04
+- **Status:** Phase 03 Plan 03 COMPLETE. Gate promotions (D-60 stage-5a full-gate + D-70 stage-5b Frost BLOCKER) shipped. ATOM-15 + REF-03 + budget fixture delivered.
 
 **Progress:**
 
-[████████░░] 87%
+[█████████░] 93%
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
-Phase 3: [██░░░░░░░░] 40%  2/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms
+Phase 3: [███░░░░░░░] 60%  3/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions
 Phase 4: [          ] 0%   Not started
 
-**Overall:** Phase 1+2 complete; Phase 3 in progress (2/5 plans). 900 tests passing.
+**Overall:** Phase 1+2 complete; Phase 3 in progress (3/5 plans). 916 tests passing.
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Phase 4: [          ] 0%   Not started
 | Phase 02 P05 | 90m | 3 tasks | 52 files | 91 tests added (810 total) |
 | Phase 03 P01 | 75m | 3 tasks | 22 files | 53 tests added (868 total) |
 | Phase 03 P02 | 90m | 3 tasks | 29 files | 21 tests added (900 total) |
+| Phase 03 P03 | 75m | 3 tasks | 13 files | 16 tests added (916 total) |
 
 ## Accumulated Context
 
@@ -134,11 +135,16 @@ Phase 4: [          ] 0%   Not started
 - [Phase 03 Plan 02]: sufficiency-structural eval: provenanceWorstCase in bundle.md must match worst provenance of upstream artifacts; interactions.placeholder with provenance:generated required bundle.md update validated→generated
 - [Phase 03 Plan 02]: mermaid-render.mjs validateMermaidSource() dispatches on diagram type (stateDiagram-v2 vs flowchart); composite state syntax handled natively by Mermaid CLI
 - [Phase 03 Plan 02]: Tests 8/9 (mermaid-cli headless) require 15000ms timeout in vitest — @mermaid-js/mermaid-cli takes 1-3s per invocation in full suite
+- [Phase 03 Plan 03]: D-60 stage-5a conditional gate: if interactions/ has ≥1 .spec.md → run 4-condition checklist; else → not_runnable/stage-4-artifacts-absent (OQ-1 TDD atomic)
+- [Phase 03 Plan 03]: D-70 Frost BLOCKER uses failed_after_repair/frost-recurrence-not-met (not not_runnable — additionalProperties:false blocks findings on not_runnable)
+- [Phase 03 Plan 03]: Frost counter priority: schema-violation hasBlocker checked before frostBlockers — Phase 2 tests depend on schema-violation taking precedence
+- [Phase 03 Plan 03]: Frost search uses case-insensitive String.includes() (NOT regex) — prevents regex special-char bypass; counts both .excalidraw element.label and .spec.md body text
+- [Phase 03 Plan 03]: Vacuous Frost pass: 0 component-tier tokens in tokens.json → Frost check skipped entirely (no components to verify)
 
 ### Todos (next session)
 
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Continue Phase 03 Plan 03 — Gate Promotions (stage-5a full + stage-5b Frost BLOCKER + FID-06 adversarial + ATOM-15)
+- [ ] Continue Phase 03 Plan 04 — `audit --reverse-engineer-stages` + refugee path workflows
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
 
 ### Blockers
@@ -158,27 +164,26 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-26
-- **Activity:** Phase 03 Plan 02 — Stage 4 Interact: state-machine-emit.mjs, mermaid-render stateDiagram-v2 extension, gate-stage-4.mjs (full D-59 logic), stage-3-pr.mjs, stage-4-pr.mjs, interact workflow + 3 IxD atoms + 7 references + triggers + bundle fixture update.
-- **Stopped at:** Phase 03 Plan 02 — all 3 tasks complete
+- **Activity:** Phase 03 Plan 03 — Gate promotions: stage-5a D-60 full-gate (TDD RED+GREEN, atomic OQ-1), stage-5b D-70 Frost BLOCKER FID-06 adversarial suite, ATOM-15 scaffold-component + REF-03 IA references (wodtke-ia.md, spencer-card-sort.md) + budget fixture.
+- **Stopped at:** Phase 03 Plan 03 — all 3 tasks complete
 - **Artifacts produced:**
-  - `assets/scripts/state-machine-emit.mjs` (D-57 dual-output emitter)
-  - `assets/scripts/cli/state-machine-emit.mjs` (Commander CLI, exit-2 repair signal)
-  - `assets/scripts/gates/stage-4.mjs` (full D-59 three-condition gate)
-  - `assets/scripts/audit/stage-3-pr.mjs` + `stage-4-pr.mjs` (PR detectors)
-  - `assets/scripts/mermaid-render.mjs` (extended with validateMermaidSource + stateDiagram-v2 support)
-  - `skills/workflows/interact.md`, `skills/atoms/ixd/state-catalog.md`, `skills/atoms/ixd/pattern-variants.md`, `skills/atoms/ixd/state-machine.md`
-  - `evals/golden/state-machine-emit.golden.json`
-  - `evals/triggers/interact/triggers.yaml` (14 should-fire + 14 should-not-fire)
-  - `references/gates/stage-4.md`, 7 reference files (saffer, tidwell, head-motion, hax-18, xstate-v5, apg, material-3)
-  - `evals/bundles/fixtures/stage-3-to-4/upstream/interactions.placeholder` (realistic Stage 4 spec)
-- **Final state:** 900 tests passing | tsc clean | lint-determinism CLEAN | verify-golden state-machine-emit PASS
+  - `assets/scripts/gates/stage-5a.mjs` (D-60 full-gate promotion — conditional checklist)
+  - `assets/scripts/gates/stage-5b.mjs` (D-70 Frost BLOCKER — FID-06 countComponentRecurrences)
+  - `tests/gates/stage-5a-full-gate.test.ts` (5 tests A-E for full-gate checklist)
+  - `tests/gates/stage-5a-not-runnable-regression.test.ts` (updated Test 3 for D-60)
+  - `tests/gates/stage-5b-frost.test.ts` (5 FID-06 adversarial tests)
+  - `evals/adversarial/fid-06-frost-recurrence/fixture-builder.mjs` + `run.test.ts`
+  - `skills/atoms/system/scaffold-component.md` (ATOM-15)
+  - `references/wodtke-ia.md` + `references/spencer-card-sort.md` (REF-03)
+  - `evals/fixtures/budget/new-product-full.fixture.json` (D-66 per-stage ceilings, 150k total)
+- **Final state:** 916 tests passing | tsc clean | lint-determinism CLEAN
 
 ### Next Session
 
-- **Likely activity:** Phase 03 Plan 03
+- **Likely activity:** Phase 03 Plan 04
 - **Required reading at session start:**
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-02-SUMMARY.md`
-  - Phase 03 Plan 03 PLAN.md
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-03-SUMMARY.md`
+  - Phase 03 Plan 04 PLAN.md
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
