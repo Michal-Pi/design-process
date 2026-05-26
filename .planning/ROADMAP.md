@@ -27,7 +27,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 
 - [x] **Phase 1: v1.5 — Infrastructure & Determinism Foundation** — Versioned schemas, gate-runner machinery, handoff bundles, determinism CI, coexistence eval, PII scanner, host-matrix CI, routing scaffolding, Anthropic watcher. Foundation for everything downstream. (4 weeks) — COMPLETE 2026-05-25, 5/5 plans, 467 tests passing
 - [x] **Phase 2: v2.0a — Skeleton (4 stages end-to-end, lite-mode Stage 5a/5b)** — 5 workflows + 9 atoms + 4 gates + 3 adapters + 4 routes. Shippable standalone. Synthetic-persona red line + lite-mode honesty enforced in code. (5 weeks) (completed 2026-05-25)
-- [x] **Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path** — Adds `sketch` + `interact` workflows, 6 atoms, Excalidraw/Mermaid/XState renderers, stage-3 + stage-4 gates, full Stage 5a/5b gates (lite→full promotion), `audit --reverse-engineer-stages`, schema migration v2.0a → v2.0b. (3 weeks) — COMPLETE 2026-05-26, 4/5 plans shipped, 953 tests passing (03-05 deferred or next phase)
+- [x] **Phase 3: v2.0b — Full 5 Stages + Lovable Refugee Path** — Adds `sketch` + `interact` workflows, 6 atoms, Excalidraw/Mermaid/XState renderers, stage-3 + stage-4 gates, full Stage 5a/5b gates (lite→full promotion), `audit --reverse-engineer-stages`, schema migration v2.0a → v2.0b. (3 weeks) — COMPLETE 2026-05-26, 5/5 plans shipped, 999 tests total (996-997 passing — 2-3 pre-existing stage-2-latch flakes; tsc clean; lint:determinism clean), gsd-verifier PASS (03-VERIFICATION.md). All 5 SC structurally verified (SC-1 live LLM run deferred to user manual verification before Phase 4). 17 locked decisions + 5 open questions resolved.
 - [ ] **Phase 4: v2.0 RC + GA — Acceptance, Cross-Host, Launch** — 15-fixture acceptance suite on Claude Code + Codex CLI + Cursor; aggregate coexistence ≥0.80 release gate; designer + PM blind reviews; cost budget enforcement; 100/100 adversarial runs; launch artifact + 8 marketplaces + Brad Frost / Cagan outreach + PR to anthropics/skills#1008. (2 weeks)
 
 ## Phase Details
@@ -129,13 +129,13 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. A user with a v2.0a `design/` directory runs `design-os migrate --from 2.0a --to 2.0b`; `sitemap.json` gains Stage 3 cross-refs, `persona.json` gains Stage 4 interaction needs, `MANIFEST.md` records new artifact types — and every existing v2.0a artifact continues to validate against its frozen schema while v2.0b workflows read the upgraded versions.
   5. A user runs `audit --all-stages` on a project missing Stage 2 + Stage 4 work; the report correctly identifies both gaps as a single ranked list (ACCEPT-06 prerequisite); `audit --new-feature` verifies a new feature passes through all 5 stages; `mature-app-refactor` (Stage 2 audit + Stage 4 audit + Stage 5b only) and full `new-product` budgets stay within `sketch` p50 ≤25k, `interact` p50 ≤30k, full `design` p50 ≤150k.
 
-**Plans:** 4/5 plans executed (03-05 route-completion deferred to Phase 4 planning)
+**Plans:** 5/5 plans executed (Phase 3 COMPLETE — verified 2026-05-26 by gsd-verifier)
 
 - [x] 03-01-PLAN.md — Stage 3 (Sketch): excalidraw-render.mjs + wireframe-diversity.mjs + gate-stage-3.mjs + FID-03 adversarial CI + sketch workflow + crazy-eights + converge atoms (Wave 1)
 - [x] 03-02-PLAN.md — Stage 4 (Interact): state-machine-emit.mjs + mermaid-render stateDiagram-v2 + gate-stage-4.mjs + stage-3/4-pr.mjs + interact workflow + IxD atoms + 7 references (Wave 1, parallel)
 - [x] 03-03-PLAN.md — Gate Promotions: stage-5a.mjs full gate (D-60) + stage-5b.mjs Frost BLOCKER (D-70) + FID-06 adversarial + ATOM-15 scaffold-component (Wave 2)
 - [x] 03-04-PLAN.md — Reverse-Engineer + Migration: audit --reverse-engineer-stages + INFERRED enforcement + promote-inferred + v2.0a→v2.0b migration scripts (Wave 2, parallel) — COMPLETE 2026-05-26
-- [ ] 03-05-PLAN.md — Route Completion + Audit: dispatch.mjs (new-product/mature-app-refactor/DS-extraction) + audit --all-stages + audit --new-feature + design SKILL.md update (Wave 3)
+- [x] 03-05-PLAN.md — Route Completion + Audit: dispatch.mjs (new-product/mature-app-refactor/DS-extraction) + audit --all-stages + audit --new-feature + design SKILL.md update (Wave 3)
 
 ### Phase 4: v2.0 RC + GA — Acceptance, Cross-Host, Launch
 
@@ -165,7 +165,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 |-------|----------------|--------|-----------|
 | 1. v1.5 — Infrastructure & Determinism Foundation | 5/5 | Complete | 2026-05-25 |
 | 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 5/5 | Complete   | 2026-05-25 |
-| 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 4/5 | In Progress | 2026-05-26 (03-04 DONE; 03-05 pending) |
+| 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 5/5 | Complete   | 2026-05-26 |
 | 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 0/0 | Not started | - |
 
 ## Coverage

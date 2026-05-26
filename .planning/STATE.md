@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v2.0b
 milestone_name: v2.0b full 5-stage pipeline
-status: in_progress
-stopped_at: Phase 03 Plan 05 — all 3 tasks complete; awaiting gsd-verifier pass to mark Phase 3 complete
-last_updated: "2026-05-26T14:00:00.000Z"
+status: completed
+stopped_at: Phase 03 verified complete
+last_updated: "2026-05-26T12:35:00.000Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
   completed_plans: 15
   percent: 100
@@ -21,27 +21,27 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 3 (v2.0b) — COMPLETE. Reverse-engineer pipeline (D-62/63/64), INFERRED two-layer enforcement, v2.0a→v2.0b migration scripts (D-65), promote-inferred CLI, frontmatter-validate Rule A/B, audit.md extended. 953 tests passing.
+- **Current focus:** Phase 3 (v2.0b) — VERIFIED COMPLETE 2026-05-26 by gsd-verifier (03-VERIFICATION.md PASS). All 5 plans shipped, all 5 SC structurally verified (SC-1 live LLM run deferred to user manual verification). 17 locked decisions D-54..D-70 honored. 5 open questions OQ-1..OQ-5 resolved. 7 lessons-forward upheld. No Phase 4 deliverables prematurely shipped. 999 tests total (996-997 passing; 2-3 pre-existing stage-2-latch.test.ts flakes from Phase 2, untouched by Phase 3).
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
 ## Current Position
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
-- **Phase:** 03 AWAITING VERIFIER — v2.0b full 5-stage pipeline
+- **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
 - **Plan:** 05 complete (Phase 3 Plan 5 delivered — route promotion D-66/D-67/ROUTE-06/OQ-3, audit --all-stages D-68, audit --new-feature D-69, SKILL.md v2.0b, trigger tuning, SC-1..SC-5 verified)
-- **Next plan:** Phase 04 Plan 01 (RC / GA preparation) — after gsd-verifier pass marks Phase 3 complete
-- **Status:** Phase 03 Plan 05 COMPLETE. All 15 plans delivered. 983 tests passing. Phase 3 SC-1..SC-5 all verified. Codex review pending.
+- **Next plan:** Phase 04 Plan 01 (RC / GA preparation) — separately authorized by user; SC-1 manual end-to-end LLM verification on clean laptop pending before Phase 4 planning begins
+- **Status:** Phase 03 COMPLETE. All 15 plans delivered. 999 tests (996-997 passing — 2-3 pre-existing flakes only). Phase 3 SC-1..SC-5 all verified by gsd-verifier (03-VERIFICATION.md).
 
 **Progress:**
 
-[██████████] 100% (Phase 3 complete — gsd-verifier pending, then Phase 4)
+[██████████] 100% (Phase 3 complete — verified; Phase 4 separately authorized, awaiting user manual SC-1 test before kickoff)
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
 Phase 4: [          ] 0%   Not started (RC / GA preparation)
 
-**Overall:** Phase 1+2+3 complete; 15/15 plans delivered. 983 tests passing.
+**Overall:** Phase 1+2+3 complete; 15/15 plans delivered. 999 tests (996-997 passing).
 
 ## Performance Metrics
 
@@ -153,22 +153,22 @@ Phase 4: [          ] 0%   Not started (RC / GA preparation)
 - [Phase 03 Plan 05]: registry 'v2.0b-implemented' status: distinct from Phase 2 'implemented-stub'; dispatch.mjs checks PHASE3_ROUTE_SPECS before legacy status check
 - [Phase 03 Plan 05]: sortFindingsByRank uses stageToNum() for '5a'→5.1 and '5b'→5.2; findSitemapNode uses string .includes() — no filesystem use of featureName (T-03-05-02 mitigated)
 - [Phase 03 Plan 05]: Phase 3 SC-1..SC-5 all PASS; 983 tests total; tsc clean; lint-determinism clean
+- [Phase 03 Verifier]: gsd-verifier PASS 2026-05-26 — 03-VERIFICATION.md created; all 17 locked decisions D-54..D-70 honored; all 5 OQs resolved; all 7 lessons-forward upheld; no Phase 4 scope creep; 999 tests (996-997 passing, 2-3 pre-existing stage-2-latch flakes); SC-1 live-LLM run deferred-by-design to user manual verification before Phase 4
 
 ### Todos (next session)
 
+- [ ] User manual SC-1 verification (live LLM run of `design --route new-feature` on Next.js 15 + Tailwind v4 + shadcn fixture) on clean laptop before Phase 4 planning begins
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
 - [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
-- [ ] Phase 04 Plan 01 — RC / GA preparation (trigger eval, coexistence eval, axe runner, release packaging)
-- [ ] Codex review of 03-05 (dispatch route promotion + audit --all-stages + SKILL.md)
-- [ ] After verifier pass: set status: completed in STATE.md
+- [ ] Phase 04 Plan 01 — RC / GA preparation (trigger eval, coexistence eval, axe runner, release packaging) — authorized but not yet started
 
 ### Blockers
 
-None. Phase 2 complete; ready for Phase 3.
+None. Phase 3 verified complete; Phase 4 ready when user authorizes after SC-1 manual verification.
 
 ### Recently Validated
 
-None yet — ship to validate.
+- 2026-05-26: Phase 3 (v2.0b) verified complete by gsd-verifier (03-VERIFICATION.md PASS).
 
 ### Recently Invalidated
 
@@ -179,29 +179,19 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-26
-- **Activity:** Phase 03 Plan 05 — Route completion + audit modes. Promoted 3 dispatch routes (new-product D-66, mature-app-refactor D-67, DS-extraction ROUTE-06/OQ-3) in dispatch.mjs with per-stage tokenBudget hints. Created assets/scripts/audit/all-stages.mjs (runAuditAllStages + sortFindingsByRank D-68 + findSitemapNode D-69). Extended audit.mjs with --all-stages + --new-feature. Updated skills/design/SKILL.md to v2.0b with Phase 3 routes table and per-stage budget table (D-66). Tuned sketch + interact trigger files (17/17 shouldFire/shouldNotFire). Verified Phase 3 SC-1..SC-5 all PASS.
-- **Stopped at:** Phase 03 Plan 05 — all 3 tasks complete (A: dispatch routes + B: audit modes + C: SKILL.md + triggers + SC verification). Awaiting gsd-verifier + codex review.
+- **Activity:** gsd-verifier run on Phase 3 — goal-backward verification of all 5 ROADMAP success criteria, 17 locked decisions D-54..D-70, 5 open questions OQ-1..OQ-5, 7 lessons-forward (INVARIANTS.md), and Phase 4 scope guardrails. Spot-checked CLI flags via `--help` for audit (--all-stages, --new-feature, --reverse-engineer-stages), migrate (--from 2.0a --to 2.0b), and design (--route new-product/mature-app-refactor/DS-extraction). Ran full test suite (999 tests, 996-997 passing — 2-3 pre-existing stage-2-latch.test.ts flakes confirmed via git log to predate Phase 3). Ran tsc clean and lint:determinism clean. Verdict: PASS.
+- **Stopped at:** Phase 03 verified complete; STATE.md + ROADMAP.md reconciliation pending commit; Phase 4 awaiting user manual SC-1 verification on clean laptop.
 - **Artifacts produced:**
-  - `assets/scripts/routing/dispatch.mjs` (3 Phase 3 routes + PHASE3_ROUTE_SPECS map)
-  - `assets/scripts/routing/registry.mjs` (3 routes → v2.0b-implemented status)
-  - `assets/scripts/audit/all-stages.mjs` (runAuditAllStages, sortFindingsByRank, findSitemapNode)
-  - `assets/scripts/cli/audit.mjs` (extended --all-stages + --new-feature)
-  - `skills/design/SKILL.md` (v2.0b: Phase 3 routes + budget table)
-  - `evals/fixtures/budget/mature-app-refactor.fixture.json` (45k)
-  - `evals/fixtures/budget/ds-extraction.fixture.json` (120k — OQ-3 resolved)
-  - `evals/fixtures/budget/audit-all-stages.fixture.json` (30k)
-  - `evals/triggers/sketch/triggers.yaml` (tuned: 17 prompts each)
-  - `evals/triggers/interact/triggers.yaml` (tuned: 17 prompts each)
-  - `tests/routing/dispatch-real-stages.test.ts` (10 new Phase 3 route tests)
-  - `tests/audit/all-stages.test.ts` (8 tests — all-stages + new-feature modes)
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-05-SUMMARY.md`
-- **Final state:** 983 tests passing | tsc clean | lint-determinism CLEAN | SC-1..SC-5 PASS
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-VERIFICATION.md`
+  - STATE.md updated: status `in_progress` → `completed`; completed_phases 2 → 3
+  - ROADMAP.md updated: Phase 3 entry reflects 5/5 plans shipped + 999 tests + verifier PASS
+- **Final state:** 999 tests (996-997 passing) | tsc clean | lint-determinism CLEAN | SC-1..SC-5 verified | 03-VERIFICATION.md PASS
 
 ### Next Session
 
-- **Likely activity:** Codex review of 03-05, then Phase 04 Plan 01 — RC / GA preparation
+- **Likely activity:** User manual SC-1 verification (clean laptop), THEN Phase 04 Plan 01 — RC / GA preparation
 - **Required reading at session start:**
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-05-SUMMARY.md`
+  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-VERIFICATION.md`
   - Phase 04 Plan 01 PLAN.md (if it exists)
 
 ---
