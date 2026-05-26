@@ -20,6 +20,8 @@ const ROOT = resolve(__dirname, '../..');
 const emit = await import('../../assets/scripts/state-machine-emit.mjs');
 // @ts-ignore TS7016: no declaration for .mjs scripts
 const mermaidRender = await import('../../assets/scripts/mermaid-render.mjs');
+// @ts-ignore TS7016: no declaration for .mjs scripts — used for extractStateNames in D-59c regression guard
+const stage4m: any = await import('../../assets/scripts/gates/stage-4.mjs');
 
 /** Minimal 3-state async spec (D-57 trigger: all 3 conditions true) */
 const ASYNC_3_STATE_SPEC = {
@@ -172,5 +174,52 @@ describe('verify-golden', () => {
   it('Test 10: state-machine-emit.golden.json exists', () => {
     const goldenPath = join(ROOT, 'evals/golden/state-machine-emit.golden.json');
     expect(existsSync(goldenPath)).toBe(true);
+  });
+});
+
+describe('custom-state bare declaration (Finding 2 — D-59c regression guard)', () => {
+  // Spec where 'permission-denied' is a custom type state, used ONLY as a transition target
+  // from 'running'. If emitMermaid() skips custom states with no annotation, the diagram
+  // will have 'permission-denied' only on the right side of an arrow — triggering D-59c.
+  const CUSTOM_TARGET_ONLY_SPEC = {
+    asyncOperations: true,
+    stateCount: 4,
+    hasConditionalTransitions: true,
+    states: [
+      { name: 'idle', type: 'custom' },
+      { name: 'running', type: 'loading' },
+      { name: 'done', type: 'success' },
+      { name: 'permission-denied', type: 'custom' },
+    ],
+    transitions: [
+      { from: 'idle', to: 'running', event: 'START' },
+      { from: 'running', to: 'done', event: 'COMPLETE' },
+      { from: 'running', to: 'permission-denied', event: 'NO_PERMS' },
+    ],
+  };
+
+  it('Test 11: emitMermaid() emits a bare declaration line for every custom-type state', () => {
+    const mmd = emit.emitMermaid(CUSTOM_TARGET_ONLY_SPEC);
+    // 'idle' is custom — must appear as a bare declaration (exactly "  idle" on its own line)
+    expect(mmd).toMatch(/^\s+idle\s*$/m);
+    // 'permission-denied' is custom — must appear as a bare declaration
+    expect(mmd).toMatch(/^\s+permission-denied\s*$/m);
+    // Typed states still get annotations
+    expect(mmd).toContain('running : %% loading');
+    expect(mmd).toContain('done : %% success');
+  });
+
+  it('Test 12: emitMermaid() output passes D-59c open-transition check for custom-target states', () => {
+    const mmd = emit.emitMermaid(CUSTOM_TARGET_ONLY_SPEC);
+    // Verify using the extractStateNames + extractTransitionTargets helpers from stage-4.mjs
+    // (imported at top of test file via the stage4m import)
+    // We use the gate module's extractStateNames to simulate what the gate does
+    const { extractStateNames } = stage4m;
+    const declared = extractStateNames(mmd);
+    // All transition targets must be in the declared set
+    const targets = ['idle', 'running', 'done', 'permission-denied'];
+    for (const target of targets) {
+      expect(declared.has(target)).toBe(true);
+    }
   });
 });

@@ -103,12 +103,22 @@ function stateTypeAnnotation(type) {
 export function emitMermaid(spec) {
   const lines = ['stateDiagram-v2'];
 
-  // Emit state annotations (sorted by name for determinism)
+  // Emit state declarations (sorted by name for determinism).
+  // Every state MUST appear as an explicit declaration so that states used only
+  // as transition targets (custom/untyped states) are still declared in the diagram.
+  // This prevents the D-59c open-transition gate from flagging them as undeclared.
+  //
+  // If the state has a type annotation (loading/empty/error/success), emit:
+  //   stateName : %% <type>
+  // Otherwise (custom / untyped), emit a bare declaration:
+  //   stateName
   const sortedStates = [...spec.states].sort((a, b) => a.name.localeCompare(b.name));
   for (const state of sortedStates) {
     const annotation = stateTypeAnnotation(state.type);
     if (annotation) {
       lines.push(`  ${state.name} :${annotation}`);
+    } else {
+      lines.push(`  ${state.name}`);
     }
   }
 

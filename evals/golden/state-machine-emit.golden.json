@@ -44,6 +44,6 @@
       }
     ]
   },
-  "mermaidOutput": "stateDiagram-v2\n  error : %% error\n  loading : %% loading\n  success : %% success\n  [*] --> idle\n  error --> idle : RETRY\n  idle --> loading : SUBMIT\n  loading --> error : ERROR\n  loading --> success : DONE\n",
+  "mermaidOutput": "stateDiagram-v2\n  error : %% error\n  idle\n  loading : %% loading\n  success : %% success\n  [*] --> idle\n  error --> idle : RETRY\n  idle --> loading : SUBMIT\n  loading --> error : ERROR\n  loading --> success : DONE\n",
   "xstateOutput": "import { setup, assign } from 'xstate';\n\nexport const machine = setup({\n  types: {\n    context: {} as Record<string, unknown>,\n    events: {} as   | { type: 'DONE' }\n  | { type: 'ERROR' }\n  | { type: 'RETRY' }\n  | { type: 'SUBMIT' },\n  },\n}).createMachine({\n  initial: 'idle',\n  states: {\n    error: {\n      on: {\n        RETRY: 'idle',\n      },\n    },\n    idle: {\n      on: {\n        SUBMIT: 'loading',\n      },\n    },\n    loading: {\n      on: {\n        DONE: {\n          target: 'success',\n          actions: assign({}),\n        },\n        ERROR: {\n          target: 'error',\n          actions: assign({}),\n        },\n      },\n    },\n    success: {},\n  },\n});\n"
 }
