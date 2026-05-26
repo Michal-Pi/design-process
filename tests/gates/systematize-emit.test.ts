@@ -299,7 +299,6 @@ $extensions:
     stage: "5b-lite"
     generatedBy: "design-os/systematize"
     componentCount: 1
-    frostNote: "Frost ≥3× recurrence not yet verified — Phase 3 (v2.0b)"
 ---
 
 ## Typography rationale
@@ -316,11 +315,22 @@ Primary oklch(60% 0.2 270). Contrast 4.7:1 (reported, not claimed).
 
 ## Component decisions
 
-- **button**: Promoted from component tier (≥1 appearance in Stage 5a output, v2.0a threshold).
+- **button**: Promoted from component tier (button appears in multiple screens).
 `;
 
       await writeFile(join(tmpDir, "tokens.json"), tokensJson);
       await writeFile(join(tmpDir, "DESIGN.md"), designMdInferred);
+
+      // Phase 3 (D-70): Add ≥3 interaction spec files referencing 'button'
+      // so the Frost recurrence check passes (button appears ≥3× in specs)
+      const { mkdir: mkdirFn } = await import("node:fs/promises");
+      await mkdirFn(join(tmpDir, "interactions"), { recursive: true });
+      for (let i = 0; i < 3; i++) {
+        await writeFile(
+          join(tmpDir, "interactions", `screen-${i}.spec.md`),
+          `---\nartifact: interaction-spec\nstage: 4\n---\n\nUses the button component in this screen.\n`
+        );
+      }
 
       const result = await gate5b.runStage5bGate(tmpDir);
 
@@ -332,6 +342,12 @@ Primary oklch(60% 0.2 270). Contrast 4.7:1 (reported, not claimed).
         (f: any) => f.checkId === "5b-evidence-001" || f.checkId === "5b-evidence-002"
       );
       expect(evidenceBlockers?.length ?? 0).toBe(0);
+
+      // Confirm no Frost BLOCKER (button appears 3× in interactions)
+      const frostBlocker = result.findings?.find(
+        (f: any) => f.checkId === "5b-frost-002"
+      );
+      expect(frostBlocker).toBeUndefined();
     } finally {
       await rm(tmpDir, { recursive: true, force: true });
     }

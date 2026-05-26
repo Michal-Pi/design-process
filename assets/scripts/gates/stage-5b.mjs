@@ -1,30 +1,37 @@
 // assets/scripts/gates/stage-5b.mjs
-// Stage 5b (Systematize-Lite / DESIGN.md) gate — Phase 2 real business logic.
+// Stage 5b (Systematize-Lite / DESIGN.md) gate — Phase 3 upgraded.
 //
-// Gate logic (Plan 02-04 T-02-04-A, D-44, D-51):
+// Gate logic (Plan 02-04 T-02-04-A + Plan 03-03 T-03-03-B, D-61, D-70):
 // 1. tokens.json absent → not_runnable (reason: 'no-tokens-found')
 // 2. tokens.json present: parse YAML frontmatter; if evidence !== 'INFERRED' → BLOCKER (5b-evidence-001)
 // 3. Parse tokens.json body JSON. Count component-tier keys.
 //    - count === 0 → finding 5b-component-001 (WARNING)
-//    - count ≥ 1  → finding 5b-frost-001 (INFO: Frost ≥3× deferred per D-44)
+//    - count ≥ 1  → run Frost recurrence check (D-61, D-70, Phase 3):
+//                    scan .excalidraw labels + .spec.md body for each component name
+//                    if any component count < 3 → BLOCKER 5b-frost-002 (failed_after_repair, reason:'frost-recurrence-not-met')
 // 4. DESIGN.md absent → finding 5b-missing-001 (ERROR — workflow will generate it)
 //    DESIGN.md present → validate schema (name, tokens, version required).
 //    - schema invalid → BLOCKER 5b-schema-001 (failed_after_repair)
 //    - $extensions.design-os.evidence present but ≠ 'INFERRED' → BLOCKER 5b-evidence-002
-// 5. Any BLOCKER → failed_after_repair (reason: 'schema-violation')
-//    Otherwise → pass_with_warnings (evidence: 'proto', D-44 note in warnings)
+// 5. Any BLOCKER → failed_after_repair (reason: 'schema-violation' unless frost, then 'frost-recurrence-not-met')
+//    Otherwise → pass_with_warnings (evidence: 'proto')
+//
+// D-61: Frost recurrence counted per-gate-run from filesystem state — NOT persisted.
+// D-70: Frost ≥3× is now a HARD BLOCKER (failed_after_repair) — NOT informational (D-44 was Phase 2).
+// T-03-03-03: Use literal case-insensitive includes() for component name search — not regex.
 //
 // NO LLM imports — must pass lint-determinism.mjs (PREV-04, D-13).
 //
-// Source: CONTEXT.md D-44, D-51; PLAN.md T-02-04-A
-// Implements: GATE-01, WF-07, MVPA-04, D-44, D-51
+// Source: CONTEXT.md D-44, D-51, D-61, D-70; PLAN.md T-02-04-A, T-03-03-B
+// Implements: GATE-01, WF-07, MVPA-04, D-44, D-51, D-61, D-70, FID-06
 
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import matter from "gray-matter";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { globby } from "globby";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DESIGN.md schema (minimal, matches design-md-validate.mjs inline schema)
@@ -107,11 +114,11 @@ function validateDesignMdContent(content) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Parse tokens.json content (YAML frontmatter + JSON body) and count component-tier keys.
- * Returns { componentCount, frontmatter, bodyParseError? }
+ * Parse tokens.json content (YAML frontmatter + JSON body) and extract component info.
+ * Returns { componentCount, componentNames, frontmatter, bodyParseError? }
  *
  * @param {string} content - Raw tokens.json content
- * @returns {{ componentCount: number, frontmatter: object, bodyParseError?: string }}
+ * @returns {{ componentCount: number, componentNames: string[], frontmatter: object, bodyParseError?: string }}
  */
 function parseTokensJson(content) {
   let frontmatter = {};
@@ -124,12 +131,13 @@ function parseTokensJson(content) {
     // The body after YAML frontmatter is the raw JSON string
     const bodyContent = parsed.content?.trim();
     if (!bodyContent) {
-      return { componentCount: 0, frontmatter, bodyParseError: "empty body" };
+      return { componentCount: 0, componentNames: [], frontmatter, bodyParseError: "empty body" };
     }
     jsonBody = JSON.parse(bodyContent);
   } catch (err) {
     return {
       componentCount: 0,
+      componentNames: [],
       frontmatter,
       bodyParseError: `parse error: ${err.message}`,
     };
@@ -138,7 +146,7 @@ function parseTokensJson(content) {
   // Count component-tier keys: top-level 'component' group keys
   const componentGroup = jsonBody["component"];
   if (!componentGroup || typeof componentGroup !== "object") {
-    return { componentCount: 0, frontmatter };
+    return { componentCount: 0, componentNames: [], frontmatter };
   }
 
   // Filter out DTCG metadata keys ($schema, $description, $type, $value, $extensions)
@@ -146,7 +154,110 @@ function parseTokensJson(content) {
     (k) => !k.startsWith("$")
   );
 
-  return { componentCount: componentNames.length, frontmatter };
+  return { componentCount: componentNames.length, componentNames, frontmatter };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Frost recurrence counter (D-61)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Count occurrences of each component name across:
+ * - .excalidraw files in designDir/wireframes/ subtree (element label field, case-insensitive)
+ * - .spec.md files in designDir/interactions/ (body text, case-insensitive literal match)
+ *
+ * T-03-03-03: Uses literal String.prototype.toLowerCase().includes() (NOT regex)
+ * for case-insensitive matching. Prevents regex special-char issues with component names.
+ *
+ * @param {string} designDir - Path to the design directory
+ * @param {string[]} componentNames - Component names to count
+ * @returns {Promise<object>} Map of componentName to total occurrence count
+ */
+async function countComponentRecurrences(designDir, componentNames) {
+  // Map<string, number>: componentName -> total occurrence count
+  const counts = new Map(componentNames.map((n) => [n, 0]));
+
+  if (componentNames.length === 0) {
+    return counts;
+  }
+
+  // ── Scan .excalidraw files in wireframes/**/ ────────────────────────────────
+  const wireframesDir = join(designDir, "wireframes");
+  if (existsSync(wireframesDir)) {
+    const excalidrawFiles = await globby(["wireframes/**/*.excalidraw"], {
+      cwd: designDir,
+      absolute: true,
+    });
+
+    for (const filePath of excalidrawFiles) {
+      let raw;
+      try {
+        raw = await readFile(filePath, "utf8");
+      } catch {
+        continue; // Skip unreadable files
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        continue; // Skip malformed JSON
+      }
+
+      const elements = Array.isArray(parsed.elements) ? parsed.elements : [];
+      for (const element of elements) {
+        const label = (element.label ?? "").toLowerCase();
+        for (const name of componentNames) {
+          // T-03-03-03: literal case-insensitive includes check (not regex)
+          if (label === name.toLowerCase() || label.includes(name.toLowerCase())) {
+            counts.set(name, (counts.get(name) ?? 0) + 1);
+          }
+        }
+      }
+    }
+  }
+
+  // ── Scan .spec.md files in interactions/ ────────────────────────────────────
+  const interactionsDir = join(designDir, "interactions");
+  if (existsSync(interactionsDir)) {
+    const specFiles = await globby(["interactions/*.spec.md"], {
+      cwd: designDir,
+      absolute: true,
+    });
+
+    for (const filePath of specFiles) {
+      let raw;
+      try {
+        raw = await readFile(filePath, "utf8");
+      } catch {
+        continue;
+      }
+
+      // Parse out the body (skip YAML frontmatter)
+      let bodyText;
+      try {
+        const parsed = matter(raw);
+        bodyText = (parsed.content ?? "").toLowerCase();
+      } catch {
+        bodyText = raw.toLowerCase();
+      }
+
+      for (const name of componentNames) {
+        // T-03-03-03: literal case-insensitive includes check (not regex)
+        const nameLower = name.toLowerCase();
+        // Count occurrences in body text by finding each occurrence
+        let pos = 0;
+        while (true) {
+          const idx = bodyText.indexOf(nameLower, pos);
+          if (idx === -1) break;
+          counts.set(name, (counts.get(name) ?? 0) + 1);
+          pos = idx + nameLower.length;
+        }
+      }
+    }
+  }
+
+  return counts;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -157,11 +268,13 @@ function parseTokensJson(content) {
  * Run the Stage 5b gate against a design directory.
  *
  * Returns GateResult:
- * - not_runnable     → tokens.json absent
- * - failed_after_repair → any BLOCKER finding (evidence mismatch, schema invalid)
- * - pass_with_warnings  → otherwise (D-44: v2.0a always warns about Frost ≥3× deferral)
+ * - not_runnable         → tokens.json absent
+ * - failed_after_repair  → any BLOCKER finding (evidence mismatch, schema invalid,
+ *                           or Frost recurrence < 3× per D-70)
+ * - pass_with_warnings   → otherwise
  *
- * D-44: Frost ≥3× recurrence is NOT enforced as a gate blocker in v2.0a.
+ * D-61: Frost ≥3× recurrence is now a HARD BLOCKER in Phase 3 (D-70).
+ *       Returns failed_after_repair with reason:'frost-recurrence-not-met'.
  * D-51: evidence:INFERRED is the only valid value for Stage 5a/5b artifacts.
  *
  * @param {string} designDir - Path to the design directory (containing tokens.json and DESIGN.md)
@@ -182,6 +295,7 @@ export async function runStage5bGate(designDir) {
   /** @type {Array<{checkId: string, status: string, evidence?: string, citation?: string}>} */
   const findings = [];
   let hasBlocker = false;
+  let frostBlockers = [];
 
   // ── Step 2: Parse tokens.json YAML frontmatter + JSON body ────────────────
   let tokensContent;
@@ -194,10 +308,10 @@ export async function runStage5bGate(designDir) {
       evidence: `Failed to read tokens.json: ${err.message}`,
     });
     hasBlocker = true;
-    return buildResult(hasBlocker, findings);
+    return buildResult(hasBlocker, findings, frostBlockers);
   }
 
-  const { componentCount, frontmatter: tokensFrontmatter, bodyParseError } =
+  const { componentCount, componentNames, frontmatter: tokensFrontmatter, bodyParseError } =
     parseTokensJson(tokensContent);
 
   // Body parse error is a BLOCKER (malformed JSON must not crash gate, but must fail)
@@ -208,7 +322,7 @@ export async function runStage5bGate(designDir) {
       evidence: `tokens.json body parse error: ${bodyParseError}`,
     });
     hasBlocker = true;
-    return buildResult(hasBlocker, findings);
+    return buildResult(hasBlocker, findings, frostBlockers);
   }
 
   // ── Step 2a: Enforce evidence:INFERRED on tokens.json (D-51) ─────────────
@@ -223,9 +337,10 @@ export async function runStage5bGate(designDir) {
     hasBlocker = true;
   }
 
-  // ── Step 3: Component-tier token count ────────────────────────────────────
+  // ── Step 3: Component-tier token count + Frost recurrence check (D-61, D-70) ──
   if (componentCount === 0) {
-    // WARNING: no components found (not a BLOCKER in v2.0a)
+    // WARNING: no components found (vacuously satisfies Frost check — nothing to promote)
+    // T-03-03-02: if no component-tier tokens exist, Frost check is vacuously satisfied.
     findings.push({
       checkId: "5b-component-001",
       status: "fail",
@@ -234,16 +349,38 @@ export async function runStage5bGate(designDir) {
         "Add tokens under the 'component' group to register promoted components.",
     });
   } else {
-    // INFO: Frost ≥3× recurrence deferred to Phase 3 (D-44)
-    findings.push({
-      checkId: "5b-frost-001",
-      status: "na",
-      evidence:
-        `Frost ≥3× recurrence not yet verified (requires Phase 3 Stage 4 artifacts) — D-44. ` +
-        `Component-tier token count: ${componentCount}. ` +
-        `In v2.0a-lite, ≥1 component appearance is sufficient (threshold deferred to Phase 3).`,
-      citation: "D-44",
-    });
+    // D-61/D-70: Frost recurrence hard BLOCKER check (Phase 3)
+    // Count occurrences of each promoted component across wireframes/ + interactions/
+    const recurrenceCounts = await countComponentRecurrences(designDir, componentNames);
+
+    for (const [name, count] of recurrenceCounts) {
+      if (count < 3) {
+        // BLOCKER: component appears fewer than 3× — FID-06 threshold not met
+        const frostFinding = {
+          checkId: "5b-frost-002",
+          status: "fail",
+          evidence:
+            `Component '${name}' appears ${count}× across wireframes and interaction specs — ` +
+            `requires ≥3 per Frost atomic design discipline (FID-06). ` +
+            `Ensure '${name}' appears in at least 3 wireframes or interaction specs before promotion.`,
+          citation: "FID-06",
+        };
+        frostBlockers.push(frostFinding);
+        findings.push(frostFinding);
+      }
+    }
+
+    // If all components meet threshold, record pass finding
+    if (frostBlockers.length === 0) {
+      findings.push({
+        checkId: "5b-frost-pass-001",
+        status: "pass",
+        evidence:
+          `All ${componentCount} promoted component(s) appear ≥3× across wireframes and interaction specs. ` +
+          `Frost recurrence requirement (FID-06, D-61) satisfied.`,
+        citation: "D-61",
+      });
+    }
   }
 
   // ── Step 4: DESIGN.md check ───────────────────────────────────────────────
@@ -271,7 +408,7 @@ export async function runStage5bGate(designDir) {
         evidence: `Failed to read DESIGN.md: ${err.message}`,
       });
       hasBlocker = true;
-      return buildResult(hasBlocker, findings);
+      return buildResult(hasBlocker, findings, frostBlockers);
     }
 
     const { valid, errors, frontmatter: designMdFrontmatter } =
@@ -328,7 +465,7 @@ export async function runStage5bGate(designDir) {
     }
   }
 
-  return buildResult(hasBlocker, findings);
+  return buildResult(hasBlocker, findings, frostBlockers);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -337,18 +474,36 @@ export async function runStage5bGate(designDir) {
 
 /**
  * Build the final GateResult from accumulated findings.
- * Any BLOCKER → failed_after_repair.
- * Otherwise → pass_with_warnings (evidence:'proto', D-44 note).
  *
- * @param {boolean} hasBlocker
+ * Priority (schema violations take precedence over Frost):
+ * 1. Any non-Frost BLOCKER → failed_after_repair (reason: 'schema-violation')
+ * 2. Frost-only BLOCKER → failed_after_repair (reason: 'frost-recurrence-not-met')
+ * 3. Otherwise → pass_with_warnings (evidence:'proto')
+ *
+ * D-70: When Frost is the SOLE blocker (no schema/evidence violations),
+ * the reason is 'frost-recurrence-not-met'. When schema violations also exist,
+ * they take priority with reason 'schema-violation' (both findings still present).
+ *
+ * @param {boolean} hasBlocker - true if any non-Frost blocker was found
  * @param {Array<{checkId: string, status: string, evidence?: string, citation?: string}>} findings
+ * @param {Array<{checkId: string, status: string, evidence?: string, citation?: string}>} frostBlockers
  * @returns {import("../../schemas/src/gate-result.js").GateResultType}
  */
-function buildResult(hasBlocker, findings) {
+function buildResult(hasBlocker, findings, frostBlockers) {
+  // Schema violations take priority over Frost (findings include both)
   if (hasBlocker) {
     return {
       kind: "failed_after_repair",
       reason: "schema-violation",
+      findings,
+    };
+  }
+
+  // D-70: Frost-only BLOCKER → specific reason 'frost-recurrence-not-met'
+  if (frostBlockers.length > 0) {
+    return {
+      kind: "failed_after_repair",
+      reason: "frost-recurrence-not-met",
       findings,
     };
   }
@@ -358,8 +513,8 @@ function buildResult(hasBlocker, findings) {
     evidence: "proto",
     findings,
     warnings: [
-      "Full Stage 5b pass requires Phase 3 — Frost ≥3× recurrence verification and complete Stage 4 artifacts. " +
-        "v2.0a lite-mode: pass_with_warnings evidence:proto is the correct terminal state (D-44).",
+      "Stage 5b gate: all checks passed. Full VALIDATED grade requires designer review " +
+        "and explicit evidence upgrade from 'proto' to 'validated'.",
     ],
   };
 }

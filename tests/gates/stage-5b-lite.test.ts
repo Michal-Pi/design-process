@@ -193,29 +193,28 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     expect(result.reason).toBe("no-tokens-found");
   });
 
-  // ── Case 2: tokens.json present, DESIGN.md absent → pass_with_warnings ────
+  // ── Case 2: tokens.json present, DESIGN.md absent, component at 0× → frost BLOCKER ────
+  // Phase 3 note: The 'button' component in tokens.json with no wireframes or spec files
+  // has recurrence count 0, which triggers the D-70 Frost BLOCKER (5b-frost-002).
+  // To get pass_with_warnings, the component must appear ≥3× across wireframes + interactions.
 
-  it("returns pass_with_warnings when DESIGN.md is absent (tokens.json with component)", async () => {
+  it("returns failed_after_repair (frost BLOCKER) when tokens.json has component but 0 occurrences in wireframes/specs (Phase 3 D-70)", async () => {
     await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+    // No wireframes/ or interactions/ — button component appears 0×
+    // D-70: 0× < 3 threshold → hard BLOCKER
 
     const result = await runStage5bGate(tmpDir);
 
-    expect(result.kind).toBe("pass_with_warnings");
-    expect(result.warnings).toBeDefined();
-    expect(Array.isArray(result.warnings)).toBe(true);
+    // Phase 3: Frost recurrence at 0× triggers BLOCKER (failed_after_repair)
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("frost-recurrence-not-met");
 
-    // Should have finding 5b-missing-001 (DESIGN.md not yet emitted)
-    const finding5bMissing = result.findings?.find(
-      (f: any) => f.checkId === "5b-missing-001"
-    );
-    expect(finding5bMissing).toBeDefined();
-    expect(finding5bMissing.status).toBe("fail");
-
-    // Should also have 5b-frost-001 (INFO: Frost ≥3× deferred)
+    // Must have finding 5b-frost-002
     const frostFinding = result.findings?.find(
-      (f: any) => f.checkId === "5b-frost-001"
+      (f: any) => f.checkId === "5b-frost-002"
     );
     expect(frostFinding).toBeDefined();
+    expect(frostFinding.status).toBe("fail");
   });
 
   // ── Case 3: DESIGN.md fails schema validation → failed_after_repair ────────
@@ -294,24 +293,32 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     expect(finding.citation).toBe("D-51");
   });
 
-  // ── Case 5: tokens.json with ≥1 component → pass_with_warnings (5b-frost-001 INFO) ──
+  // ── Case 5 (Phase 3 D-70): tokens.json with ≥1 component + 0× occurrences → BLOCKER ──
+  // Phase 2 note: The D-44 '5b-frost-001 INFO' finding no longer exists in Phase 3.
+  // D-70 replaces it with a hard BLOCKER (5b-frost-002) when recurrence < 3.
 
-  it("records 5b-frost-001 INFO when tokens.json has ≥1 component-tier token (D-44: Frost ≥3× NOT enforced)", async () => {
+  it("Phase 3 D-70: returns failed_after_repair with 5b-frost-002 when component-tier token has 0 occurrences (old D-44 INFO replaced)", async () => {
     await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+    // No wireframes or interactions — 'button' appears 0× (below threshold of 3)
 
     const result = await runStage5bGate(tmpDir);
 
-    expect(result.kind).toBe("pass_with_warnings");
+    // D-70: 0× < 3 → BLOCKER, NOT informational (D-44 INFO is Phase 2 only)
+    expect(result.kind).toBe("failed_after_repair");
+    expect(result.reason).toBe("frost-recurrence-not-met");
 
-    // D-44: Frost ≥3× is NOT enforced as a gate blocker — only recorded as INFO
-    const frostFinding = result.findings?.find(
+    // Must have finding 5b-frost-002 (NOT 5b-frost-001 which was Phase 2 only)
+    const frostFinding002 = result.findings?.find(
+      (f: any) => f.checkId === "5b-frost-002"
+    );
+    expect(frostFinding002).toBeDefined();
+    expect(frostFinding002.status).toBe("fail");
+
+    // 5b-frost-001 (Phase 2 INFO) must NOT be present in Phase 3
+    const frostFinding001 = result.findings?.find(
       (f: any) => f.checkId === "5b-frost-001"
     );
-    expect(frostFinding).toBeDefined();
-    // Status must be 'na' (informational) — NOT fail/error
-    expect(frostFinding.status).toBe("na");
-    // Evidence must reference the Phase 3 deferral
-    expect(frostFinding.evidence).toMatch(/Frost.*3.*Phase 3/i);
+    expect(frostFinding001).toBeUndefined();
   });
 
   // ── Case 6: tokens.json with zero component-tier tokens → pass_with_warnings (5b-component-001 WARNING) ──
@@ -331,27 +338,36 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     expect(compFinding.status).toBe("fail");
   });
 
-  // ── Case 7: Valid tokens + valid DESIGN.md + evidence:INFERRED + ≥1 component → pass_with_warnings evidence:proto ──
+  // ── Case 7 (Phase 3): Valid tokens + valid DESIGN.md + ≥3× Frost occurrences → pass_with_warnings ──
+  // Phase 3 note: With 'button' at 0× occurrences (no wireframes/specs), the Phase 2 D-44
+  // fixture would trigger D-70 BLOCKER. Updated to use NO component tokens (0 components
+  // = vacuously satisfies Frost check) to test the pass path.
 
-  it("returns pass_with_warnings evidence:proto for valid tokens + valid DESIGN.md (D-44: full pass requires Phase 3)", async () => {
-    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+  it("returns pass_with_warnings evidence:proto for valid tokens (no components) + valid DESIGN.md (Phase 3)", async () => {
+    // Use tokens with NO component tier — vacuously satisfies Frost check (no components to check)
+    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_NO_COMPONENT);
     await writeFile(join(tmpDir, "DESIGN.md"), VALID_DESIGN_MD_INFERRED);
 
     const result = await runStage5bGate(tmpDir);
 
-    // v2.0a lite-mode: never returns kind:'pass' — always pass_with_warnings
+    // With no component-tier tokens, Frost check is vacuous — should return pass_with_warnings
     expect(result.kind).toBe("pass_with_warnings");
     expect(result.evidence).toBe("proto");
     expect(result.warnings).toBeDefined();
     expect(Array.isArray(result.warnings)).toBe(true);
     expect(result.warnings.length).toBeGreaterThan(0);
 
-    // The Frost INFO finding must be present (D-44: count recorded, not enforced)
-    const frostFinding = result.findings?.find(
+    // 5b-frost-001 (Phase 2 INFO) must NOT exist in Phase 3
+    const frostFinding001 = result.findings?.find(
       (f: any) => f.checkId === "5b-frost-001"
     );
-    expect(frostFinding).toBeDefined();
-    expect(frostFinding.status).toBe("na");
+    expect(frostFinding001).toBeUndefined();
+
+    // 5b-frost-002 BLOCKER must also NOT be present (vacuous satisfaction)
+    const frostFinding002 = result.findings?.find(
+      (f: any) => f.checkId === "5b-frost-002"
+    );
+    expect(frostFinding002).toBeUndefined();
 
     // No BLOCKER findings
     const blockerFindings = result.findings?.filter(
@@ -361,9 +377,11 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
   });
 
   // ── Additional: evidence:INFERRED on tokens.json is NOT a blocker ─────────
+  // Phase 3 note: using VALID_TOKENS_NO_COMPONENT to avoid frost BLOCKER from 0× button
 
   it("does not block when tokens.json has evidence:INFERRED (correct value)", async () => {
-    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+    // Use no-component tokens to avoid Frost BLOCKER (0× component occurrences would block)
+    await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_NO_COMPONENT);
     await writeFile(join(tmpDir, "DESIGN.md"), VALID_DESIGN_MD_INFERRED);
 
     const result = await runStage5bGate(tmpDir);
@@ -412,19 +430,20 @@ describe("runStage5bGate — GateResult shape compliance", () => {
   it("pass_with_warnings has required warnings array (lesson 1 from codex review)", async () => {
     const tmpDir2 = await mkdtemp(join(tmpdir(), "stage-5b-shape-"));
     try {
-      await writeFile(join(tmpDir2, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
+      // Use no-component tokens to get pass_with_warnings (Frost check vacuously satisfied)
+      await writeFile(join(tmpDir2, "tokens.json"), VALID_TOKENS_NO_COMPONENT);
       await writeFile(join(tmpDir2, "DESIGN.md"), VALID_DESIGN_MD_INFERRED);
 
       const result = await runStage5bGate(tmpDir2);
 
-      if (result.kind === "pass_with_warnings") {
-        // Lesson 1: pass_with_warnings MUST have warnings: string[]
-        expect(result.warnings).toBeDefined();
-        expect(Array.isArray(result.warnings)).toBe(true);
-        result.warnings.forEach((w: unknown) => {
-          expect(typeof w).toBe("string");
-        });
-      }
+      // With no component tokens, Frost check passes → should reach pass_with_warnings
+      expect(result.kind).toBe("pass_with_warnings");
+      // Lesson 1: pass_with_warnings MUST have warnings: string[]
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
+      result.warnings.forEach((w: unknown) => {
+        expect(typeof w).toBe("string");
+      });
     } finally {
       await rm(tmpDir2, { recursive: true, force: true });
     }
