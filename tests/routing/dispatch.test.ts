@@ -26,18 +26,18 @@ describe('routing/dispatch: dispatchRoute', () => {
     expect(typeof result.budgetTokensP50).toBe('number');
   });
 
-  it('not-yet-implemented route returns route_not_yet_implemented', async () => {
+  it('Phase 3 route new-product returns route_dispatched (promoted from stub)', async () => {
     const { dispatchRoute } = await import('../../assets/scripts/routing/dispatch.mjs');
     const result = await dispatchRoute({ routeName: 'new-product', designDir: '/tmp', opts: {} });
-    expect(result.kind).toBe('route_not_yet_implemented');
+    expect(result.kind).toBe('route_dispatched');
     expect(result.name).toBe('new-product');
   });
 
-  it('route_not_yet_implemented includes shipsIn field', async () => {
+  it('Phase 3 route mature-app-refactor returns route_dispatched (promoted from stub)', async () => {
     const { dispatchRoute } = await import('../../assets/scripts/routing/dispatch.mjs');
     const result = await dispatchRoute({ routeName: 'mature-app-refactor', designDir: '/tmp', opts: {} });
-    expect(result.kind).toBe('route_not_yet_implemented');
-    expect(result.shipsIn).toBeDefined();
+    expect(result.kind).toBe('route_dispatched');
+    expect(result.stages).toHaveLength(3);
   });
 
   it('unknown route name returns unknown_route', async () => {
@@ -67,10 +67,11 @@ describe('routing/dispatch: dispatchRoute', () => {
     expect(result.kind).toBe('route_dispatched');
   });
 
-  it('DS-extraction returns route_not_yet_implemented', async () => {
+  it('DS-extraction returns route_dispatched (Phase 3 promoted)', async () => {
     const { dispatchRoute } = await import('../../assets/scripts/routing/dispatch.mjs');
     const result = await dispatchRoute({ routeName: 'DS-extraction', designDir: '/tmp', opts: {} });
-    expect(result.kind).toBe('route_not_yet_implemented');
+    expect(result.kind).toBe('route_dispatched');
+    expect(result.stages).toHaveLength(5);
   });
 });
 

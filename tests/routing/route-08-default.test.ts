@@ -28,9 +28,10 @@ describe('ROUTE-08: default behavior (no --route given)', () => {
     expect(result.stdout).toContain('route_dispatched');
   });
 
-  it('CLI: design --route new-product prints route_not_yet_implemented', async () => {
+  it('CLI: design --route new-product prints route_dispatched (Phase 3 promoted)', async () => {
     const result = await execFileAsync('node', [BIN, 'design', '--route', 'new-product', '--design-dir', '/tmp']);
-    expect(result.stdout).toContain('route_not_yet_implemented');
+    // Phase 3: new-product is now a real route (promoted from route_not_yet_implemented)
+    expect(result.stdout).toContain('route_dispatched');
   });
 
   it('CLI: design --route invalid-route prints unknown_route', async () => {

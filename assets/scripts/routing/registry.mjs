@@ -28,10 +28,10 @@ import { join } from 'node:path';
 export const ROUTES = {
   'new-product': {
     name: 'new-product',
-    status: 'not-yet-implemented',
+    status: 'v2.0b-implemented',
     shipsIn: 'v2.0b',
-    requiredStages: ['0', '1', '2', '5a', '5b'],
-    optionalStages: ['3', '4'],
+    requiredStages: ['0', '1', '2', '3', '4', '5a', '5b'],
+    optionalStages: [],
     skipWithWarning: [],
     budgetTokensP50: 150000,
     description: 'Full 5-stage workflow for a greenfield product',
@@ -48,7 +48,7 @@ export const ROUTES = {
   },
   'mature-app-refactor': {
     name: 'mature-app-refactor',
-    status: 'not-yet-implemented',
+    status: 'v2.0b-implemented',
     shipsIn: 'v2.0b',
     requiredStages: ['2', '4', '5b'],
     skipWithWarning: ['1', '3', '5a'],
@@ -78,7 +78,7 @@ export const ROUTES = {
   },
   'DS-extraction': {
     name: 'DS-extraction',
-    status: 'not-yet-implemented',
+    status: 'v2.0b-implemented',
     shipsIn: 'v2.0b',
     requiredStages: ['audit-reverse', '1', '2', '4', '5b'],
     skipWithWarning: ['0'],

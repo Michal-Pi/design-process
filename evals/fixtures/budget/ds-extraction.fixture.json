@@ -1,0 +1,13 @@
+{
+  "route": "DS-extraction",
+  "description": "Lovable refugee: reverse-engineer-stages + backfill stages 2, 4, 5b from inferred artifacts.",
+  "budgetTokens": 120000,
+  "stageAllocations": {
+    "reverse-engineer-stages": 60000,
+    "discover-from-inferred": 15000,
+    "structure-from-inferred": 15000,
+    "interact-from-inferred": 15000,
+    "systematize-from-inferred": 15000
+  },
+  "notes": "OQ-3 resolved: 120k (not 60k). The 60k figure in CONTEXT.md domain boundary referred only to Stage 5b sub-step. ROUTE-06 full route = 120k. Source: CONTEXT.md D-62, RESEARCH.md OQ-3."
+}

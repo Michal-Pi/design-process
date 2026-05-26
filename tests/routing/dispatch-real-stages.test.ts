@@ -222,8 +222,8 @@ describe('dispatch: Phase 3 new routes (T-03-05-A)', () => {
     // Total budget = sum of all stage budgets = 120000
     const calls = mockFn.mock.calls;
     expect(calls).toHaveLength(5);
-    const totalBudget = calls.reduce((sum: number, call) => {
-      const arg = call[0] as Record<string, unknown>;
+    const totalBudget = calls.reduce((sum: number, call: unknown[]) => {
+      const arg = (call as [Record<string, unknown>])[0];
       return sum + ((arg['tokenBudget'] as number) ?? 0);
     }, 0);
     expect(totalBudget).toBe(120_000);

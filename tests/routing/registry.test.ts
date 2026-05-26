@@ -21,18 +21,25 @@ describe('routing/registry: ROUTES', () => {
     expect(ROUTES['PR-audit']).toBeDefined();
   });
 
-  it('4 routes are implemented-stub status', async () => {
+  it('4 routes are implemented-stub status (v2.0a routes)', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const implemented = Object.values(ROUTES as Record<string, any>).filter(r => r.status === 'implemented-stub');
     expect(implemented).toHaveLength(4);
   });
 
-  it('3 routes are not-yet-implemented status', async () => {
+  it('3 routes are v2.0b-implemented status (Phase 3 promoted routes)', async () => {
+    const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const v2b = Object.values(ROUTES as Record<string, any>).filter(r => r.status === 'v2.0b-implemented');
+    expect(v2b).toHaveLength(3);
+  });
+
+  it('0 routes are not-yet-implemented status (all Phase 3 routes promoted)', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const notYet = Object.values(ROUTES as Record<string, any>).filter(r => r.status === 'not-yet-implemented');
-    expect(notYet).toHaveLength(3);
+    expect(notYet).toHaveLength(0);
   });
 
   it('new-feature is implemented-stub', async () => {
@@ -55,19 +62,19 @@ describe('routing/registry: ROUTES', () => {
     expect(ROUTES['PR-audit'].status).toBe('implemented-stub');
   });
 
-  it('new-product is not-yet-implemented', async () => {
+  it('new-product is v2.0b-implemented (Phase 3 promoted)', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    expect(ROUTES['new-product'].status).toBe('not-yet-implemented');
+    expect(ROUTES['new-product'].status).toBe('v2.0b-implemented');
   });
 
-  it('mature-app-refactor is not-yet-implemented', async () => {
+  it('mature-app-refactor is v2.0b-implemented (Phase 3 promoted)', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    expect(ROUTES['mature-app-refactor'].status).toBe('not-yet-implemented');
+    expect(ROUTES['mature-app-refactor'].status).toBe('v2.0b-implemented');
   });
 
-  it('DS-extraction is not-yet-implemented', async () => {
+  it('DS-extraction is v2.0b-implemented (Phase 3 promoted)', async () => {
     const { ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
-    expect(ROUTES['DS-extraction'].status).toBe('not-yet-implemented');
+    expect(ROUTES['DS-extraction'].status).toBe('v2.0b-implemented');
   });
 
   it('every route has requiredStages array', async () => {
@@ -92,15 +99,15 @@ describe('routing/registry: ROUTES', () => {
     expect(ROUTES['new-feature'].budgetTokensP50).toBe(60000);
   });
 
-  it('exports IMPLEMENTED_ROUTES array', async () => {
+  it('exports IMPLEMENTED_ROUTES array (v2.0a routes: 4)', async () => {
     const { IMPLEMENTED_ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
     expect(Array.isArray(IMPLEMENTED_ROUTES)).toBe(true);
     expect(IMPLEMENTED_ROUTES).toHaveLength(4);
   });
 
-  it('exports NOT_YET_IMPLEMENTED_ROUTES array', async () => {
+  it('exports NOT_YET_IMPLEMENTED_ROUTES array (0 — all Phase 3 routes promoted)', async () => {
     const { NOT_YET_IMPLEMENTED_ROUTES } = await import('../../assets/scripts/routing/registry.mjs');
     expect(Array.isArray(NOT_YET_IMPLEMENTED_ROUTES)).toBe(true);
-    expect(NOT_YET_IMPLEMENTED_ROUTES).toHaveLength(3);
+    expect(NOT_YET_IMPLEMENTED_ROUTES).toHaveLength(0);
   });
 });
