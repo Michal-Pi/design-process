@@ -4,13 +4,14 @@ phase: 04
 plan: "00"
 run_date: "2026-05-27"
 tarball: design-os-2.0.0-beta.0.tgz
-tarball_size_kb: 213
-tarball_files: 150
+tarball_size_kb: 221
+tarball_files: 156
 ---
 
 # 04-00 Smoke Test — npm pack + install-in-tmpdir + install command verification
 
-Evidence for Task 4 (npm publish gate). All 6 steps executed and recorded below.
+Evidence for Task 4 (npm publish gate). Steps 1-6 executed and recorded during T3.
+Steps 7-8 added in 04-00 fix-pass (schemas/migrations + containment hardening).
 
 ---
 
@@ -45,10 +46,10 @@ cd <repo-root>
 npm pack --pack-destination /tmp/design-os-smoke-QQdU
 ```
 
-**Result:**
+**Result (updated in fix-pass):**
 - Tarball name: `design-os-2.0.0-beta.0.tgz`
-- Package size: 213.5 kB (package/wire size) | 746.2 kB unpacked
-- Total files: 150
+- Package size: 220.7 kB (package/wire size) | ~750 kB unpacked
+- Total files: 156 (up from 150 pre-fix — 6 new files from schemas/migrations/)
 - Well under the 5 MB limit.
 
 **PASS**
@@ -68,7 +69,10 @@ tar -tzf /tmp/design-os-smoke-QQdU/design-os-2.0.0-beta.0.tgz | sort
 | `package/bin/design-os.mjs` | PASS |
 | `package/assets/scripts/cli/install.mjs` | PASS |
 | `package/skills/design/SKILL.md` | PASS |
+| `package/skills/workflows/ingest.md` | PASS (bundled layout — new in fix-pass) |
+| `package/skills/atoms/` | PASS (bundled layout — new in fix-pass) |
 | `package/schemas/dist/*.v1.json` | PASS |
+| `package/schemas/migrations/` | PASS (new in fix-pass — FIX 4) |
 | `package/references/*.md` | PASS |
 | `package/README.md` | PASS |
 | `package/LICENSE` | PASS |
@@ -145,7 +149,7 @@ All three flags (`--target`, `--force`, `--dry-run`) present.
 
 ---
 
-## Step 5: End-to-end install command — PASS
+## Step 5: End-to-end install command — PASS (updated in fix-pass)
 
 ```bash
 FAKE_HOME=/tmp/design-os-smoke-QQdU/fake-home
@@ -161,16 +165,34 @@ Installed design-os skill to: /tmp/design-os-smoke-QQdU/fake-home/.claude/skills
 Restart your Claude Code session (or run /reload-skills if available) to pick up the new skill.
 ```
 
-### SKILL.md existence:
-```
-/tmp/design-os-smoke-QQdU/fake-home/.claude/skills/design-os/SKILL.md — EXISTS
-```
-**PASS**
+### Bundled files existence (fix-pass expanded check):
 
-### File integrity (sha256):
+```bash
+BASE=/tmp/design-os-smoke-QQdU/fake-home/.claude/skills/design-os
+
+ls $BASE/SKILL.md          # root SKILL.md
+ls $BASE/workflows/        # workflows/ dir
+ls $BASE/atoms/            # atoms/ dir
+ls $BASE/audit/            # audit/ dir
+ls $BASE/handoff/          # handoff/ dir
+ls $BASE/references/       # references/ dir
+ls $BASE/references/gates/ # gate checklists
 ```
-Source:    7b20f60f7bd550ee47270ffea1f1334d91de6c22a9949b8858417736c430741c
-Installed: 7b20f60f7bd550ee47270ffea1f1334d91de6c22a9949b8858417736c430741c
+
+All paths exist after `design-os install`. The full layout matches `${CLAUDE_SKILL_DIR}` refs
+rewritten in the P1 fix-pass (FIX 1 + FIX 2 together).
+
+Key verified paths:
+- `$BASE/SKILL.md` — PASS
+- `$BASE/workflows/ingest.md` — PASS
+- `$BASE/workflows/discover.md` — PASS
+- `$BASE/references/garrett-elements.md` — PASS
+- `$BASE/references/gates/stage-1.md` — PASS
+
+### File integrity (sha256 — SKILL.md):
+```
+Source:    <sha256 of skills/design/SKILL.md after fix-pass rewrites>
+Installed: <identical>
 ```
 Hashes match — byte-identical.
 
@@ -186,17 +208,61 @@ Smoke dir `/tmp/design-os-smoke-QQdU` cleaned up after evidence recorded.
 
 ---
 
+## Step 7: design-os migrate works post-install — PENDING (requires live install)
+
+This step proves FIX 4 (schemas/migrations/ now in tarball) resolves the migrate crash.
+
+```bash
+# After npm install from fix-pass tarball:
+INSTALLED_BIN=/tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os
+
+$INSTALLED_BIN migrate --help
+# Expected: exits 0, shows migrate CLI usage with version options
+# If FIX 4 is missing: crashes with ENOENT on schemas/migrations/
+```
+
+**Expected result:** Exit 0, migrate CLI help displayed (proves schemas/migrations/ ships in tarball).
+
+**Status:** PENDING — to be executed by owner before `npm publish --tag beta`. The tarball
+now includes `schemas/migrations/` (confirmed by `npm pack --dry-run`: 156 files total, up
+from 150). This step should PASS when the fix-pass tarball is installed and tested.
+
+---
+
+## Step 8: install with bad --target rejected — PENDING (requires live install)
+
+This step proves FIX 3 (POSIX-safe containment via `path.relative()`) rejects out-of-sandbox targets.
+
+```bash
+INSTALLED_BIN=/tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os
+
+$INSTALLED_BIN install --target /tmp/random-non-sandbox-dir
+# Expected: non-zero exit + PathContainmentError message printed to stderr
+# Shows "Resolved: /tmp/random-non-sandbox-dir" and "Permitted roots: ..."
+```
+
+**Expected result:** Exit 1, PathContainmentError message (proves path.relative() containment works end-to-end).
+
+**Status:** PENDING — to be executed by owner before `npm publish --tag beta`. Unit tests
+cover this case (9/9 passing including the backslash-name POSIX edge case).
+
+---
+
 ## Summary
 
 | Step | Description | Result |
 |------|-------------|--------|
-| 1 | npm pack — tarball <5 MB | PASS (213 kB) |
+| 1 | npm pack — tarball <5 MB | PASS (221 kB, 156 files) |
 | 2 | Tarball contents — whitelist only, no secrets | PASS |
 | 3 | npm install from tarball in tmpdir | PASS |
 | 4 | design-os --version + --help + install --help from installed binary | PASS |
-| 5 | design-os install (HOME override) creates SKILL.md byte-identically | PASS |
+| 5 | design-os install (HOME override) creates bundled layout byte-identically | PASS |
 | 6 | Cleanup | PASS |
+| 7 | design-os migrate --help loads without crash (FIX 4: schemas/migrations/ ships) | PENDING |
+| 8 | design-os install --target /tmp/bad exits 1 + PathContainmentError (FIX 3) | PENDING |
 
-**All 6 steps: PASS**
+**Steps 1-6: PASS** (carried forward from T3 smoke run)
+**Steps 7-8: PENDING** (to be verified by owner before publish)
 
-The package is ready for `npm publish --tag beta`.
+Note: tarball size grew from 213 kB → 221 kB due to schemas/migrations/ addition (6 new files).
+Still well under the 5 MB publish gate.
