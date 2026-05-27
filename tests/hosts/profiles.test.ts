@@ -50,17 +50,29 @@ describe('host-profile workspaces: vitest.config sets HOST_PROFILE', () => {
   }
 });
 
-describe('root package.json workspaces', () => {
-  it('package.json has workspaces field', async () => {
+// D-80 (04-00): The top-level 'workspaces' field was intentionally removed from
+// package.json for npm @beta publish. evals/hosts/* are dev-only fixtures, not
+// shipped to users. Tests below verify the new contract (workspaces absent +
+// files whitelist present) rather than the old workspaces contract.
+describe('root package.json publish-readiness (D-80 contract)', () => {
+  it('package.json does NOT have a top-level workspaces field (dev fixtures excluded from publish)', async () => {
     const content = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf-8'));
-    expect(content.workspaces).toBeDefined();
-    expect(Array.isArray(content.workspaces)).toBe(true);
+    expect(content.workspaces).toBeUndefined();
   });
 
-  for (const host of HOSTS) {
-    it(`workspaces includes evals/hosts/${host}`, async () => {
-      const content = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf-8'));
-      expect(content.workspaces).toContain(`evals/hosts/${host}`);
-    });
-  }
+  it('package.json has a files whitelist for npm publish', async () => {
+    const content = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf-8'));
+    expect(Array.isArray(content.files)).toBe(true);
+    expect(content.files.length).toBeGreaterThan(0);
+  });
+
+  it('package.json files whitelist includes bin/', async () => {
+    const content = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf-8'));
+    expect(content.files).toContain('bin/');
+  });
+
+  it('package.json files whitelist includes skills/', async () => {
+    const content = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf-8'));
+    expect(content.files).toContain('skills/');
+  });
 });

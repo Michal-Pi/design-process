@@ -9,12 +9,16 @@
 // Source: CONTEXT.md D-08; PLAN.md Task 3 action
 // Implements: HAND-04 (bundle-sufficiency eval CLI entry point)
 
-import { runStructuralSufficiencyEval } from "../../../evals/bundles/sufficiency-structural.mjs";
-
 /**
  * Auto-discovered command object per the Plan 01 dispatcher contract.
  * `name` contains a space — the dispatcher creates an `eval` subcommand group
  * and registers `bundle-sufficiency` under it.
+ *
+ * NOTE: The evals/ directory is excluded from the published npm tarball (it is
+ * dev-only). The import of sufficiency-structural.mjs is therefore LAZY (inside
+ * the handler) so that `design-os --help` and other commands do not crash in
+ * installed (npm) contexts where evals/ is absent. The eval only runs when the
+ * user explicitly invokes `design-os eval bundle-sufficiency` in a dev checkout.
  */
 export const command = {
   name: "eval bundle-sufficiency",
@@ -28,6 +32,12 @@ export const command = {
 
   /** @param {Record<string, unknown>} _args */
   handler: async (_args) => {
+    // Lazy import: only load eval module when command is actually invoked.
+    // This prevents startup failures in npm-installed contexts where evals/
+    // directory is not included in the published package.
+    const { runStructuralSufficiencyEval } = await import(
+      "../../../evals/bundles/sufficiency-structural.mjs"
+    );
     const report = await runStructuralSufficiencyEval();
 
     console.log(
