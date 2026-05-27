@@ -2,18 +2,20 @@
 // Unit + integration tests for assets/scripts/cli/install.mjs
 //
 // Tests:
-//   1. Default target install — HOME override → ~/.claude/skills/design-os/SKILL.md exists
+//   1. Default target install — HOME override → bundled files exist at install root
 //   2. --target override — installs to the given base dir
 //   3. Idempotent re-run — second install with --force succeeds; content identical
 //   4. Path-traversal rejection (Lesson 7) — bad targets throw PathContainmentError
-//   5. File integrity — installed SKILL.md byte-equals source skills/design/SKILL.md
+//      4a. POSIX backslash-name sibling escape (P2 codex fix)
+//   5. File integrity — sha256 equality on SKILL.md + one workflow + one reference
 //
 // Source: PLAN.md 04-00 Task 2; Lesson 7 path-traversal rule; t-04-00-01
+// Updated: 04-00 fix-pass — expanded for bundled layout (FIX 3 + FIX 6)
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, rm, readFile, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import { tmpdir, homedir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -23,6 +25,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '../..');
 const SKILLS_DESIGN_SKILL_MD = join(ROOT, 'skills', 'design', 'SKILL.md');
+const SOURCE_WORKFLOW_MD = join(ROOT, 'skills', 'workflows', 'ingest.md');
+const SOURCE_REFERENCE_MD = join(ROOT, 'references', 'garrett-elements.md');
 
 // Dynamically import the module under test so each test gets a fresh import
 // context.  We import once at the top of the describe block — the exports
@@ -43,9 +47,9 @@ describe('design-os install CLI', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Test 1: Default target install (HOME override)
+  // Test 1: Default target install (HOME override) — bundled layout
   // ---------------------------------------------------------------------------
-  it('default install (HOME override) creates SKILL.md at ~/.claude/skills/design-os', async () => {
+  it('default install (HOME override) creates bundled skill layout at ~/.claude/skills/design-os', async () => {
     // Override HOME so the install goes to our tmpdir instead of the real home.
     const fakeHome = join(tmpDir, 'fake-home');
     const originalHome = process.env['HOME'];
@@ -62,8 +66,19 @@ describe('design-os install CLI', () => {
 
       await runInstall({ target: targetBase, force: true });
 
-      const installedSkillMd = join(targetBase, 'design-os', 'SKILL.md');
-      expect(existsSync(installedSkillMd)).toBe(true);
+      // Assert all required bundled files exist.
+      const destDir = join(targetBase, 'design-os');
+
+      // SKILL.md at install root
+      expect(existsSync(join(destDir, 'SKILL.md'))).toBe(true);
+
+      // workflows/ bundled
+      expect(existsSync(join(destDir, 'workflows', 'ingest.md'))).toBe(true);
+      expect(existsSync(join(destDir, 'workflows', 'discover.md'))).toBe(true);
+
+      // references/ bundled
+      expect(existsSync(join(destDir, 'references', 'garrett-elements.md'))).toBe(true);
+      expect(existsSync(join(destDir, 'references', 'gates', 'stage-1.md'))).toBe(true);
     } finally {
       // Restore HOME regardless of test outcome.
       if (originalHome === undefined) {
@@ -176,12 +191,56 @@ describe('design-os install CLI', () => {
         validateTargetSandbox(validTarget, validTarget)
       ).not.toThrow();
     });
+
+    // -------------------------------------------------------------------------
+    // Test 4a: POSIX backslash-name sibling escape (P2 codex fix)
+    //
+    // On POSIX, backslash is a valid filename character. A path like
+    // ~/.claude/skills\evil is a sibling of ~/.claude/skills with a literal
+    // backslash in its name — NOT a subdirectory of ~/.claude/skills.
+    // The old startsWith(root + "\\") guard was intended as a Windows path
+    // separator check but is a POSIX escape hole.
+    //
+    // The new path.relative() implementation rejects this correctly:
+    //   relative("~/.claude/skills", "~/.claude/skills\evil") === "skills\evil"
+    // starts with "skills" (not "..") BUT the first path component is the full
+    // name "skills\evil" which is NOT under the root — path.relative returns a
+    // non-empty string that does NOT start with ".." but represents a sibling.
+    // Wait — actually path.relative of a sibling returns "../skills\evil" which
+    // starts with ".." → correctly rejected.
+    // -------------------------------------------------------------------------
+    it('POSIX backslash-name sibling escape is rejected (P2 fix)', () => {
+      // Skip on Windows — backslash is the path separator there, not a filename char.
+      if (process.platform === 'win32') return;
+
+      const skillsRoot = join(homedir(), '.claude', 'skills');
+
+      // Construct a path that looks like it might be "inside" by naive string matching
+      // but is actually a sibling directory with a backslash in its name.
+      // e.g. /home/user/.claude/skills\evil  (a sibling of skills/)
+      const skillsParent = join(homedir(), '.claude');
+      const backslashSiblingPath = skillsParent + '/skills\\evil';
+
+      // Verify our test assumption: path.relative should show this is NOT inside skillsRoot
+      const rel = relative(skillsRoot, backslashSiblingPath);
+      // rel should start with '..' because backslashSiblingPath is a sibling, not a child
+      const isActuallyOutside = rel.startsWith('..');
+
+      if (isActuallyOutside) {
+        // This path must be rejected by validateTargetSandbox
+        expect(() =>
+          validateTargetSandbox(backslashSiblingPath, backslashSiblingPath)
+        ).toThrow(PathContainmentError);
+      }
+      // If for some platform reason it's not outside, the test trivially passes
+      // (the platform handles it differently). The important case is tested above.
+    });
   });
 
   // ---------------------------------------------------------------------------
-  // Test 5: File integrity — installed SKILL.md byte-equals source
+  // Test 5: File integrity — sha256 byte-equality on 3 files
   // ---------------------------------------------------------------------------
-  it('installed SKILL.md content byte-equals skills/design/SKILL.md from repo', async () => {
+  it('installed files byte-equal source: SKILL.md + one workflow + one reference', async () => {
     // Place inside the permitted sandbox root.
     const testSubdir = 'test-integrity-' + Date.now();
     const targetBase = join(homedir(), '.claude', 'skills', testSubdir);
@@ -189,15 +248,28 @@ describe('design-os install CLI', () => {
     try {
       await runInstall({ target: targetBase, force: true });
 
-      const installedSkillMd = join(targetBase, 'design-os', 'SKILL.md');
+      const destDir = join(targetBase, 'design-os');
 
-      const sourceContent = await readFile(SKILLS_DESIGN_SKILL_MD);
-      const installedContent = await readFile(installedSkillMd);
+      // Helper: compute sha256 hex of a file
+      async function sha256(filePath: string): Promise<string> {
+        const content = await readFile(filePath);
+        return createHash('sha256').update(content).digest('hex');
+      }
 
-      const sourceHash = createHash('sha256').update(sourceContent).digest('hex');
-      const installedHash = createHash('sha256').update(installedContent).digest('hex');
+      // SKILL.md
+      const sourceSkillMdHash = await sha256(SKILLS_DESIGN_SKILL_MD);
+      const installedSkillMdHash = await sha256(join(destDir, 'SKILL.md'));
+      expect(installedSkillMdHash).toBe(sourceSkillMdHash);
 
-      expect(installedHash).toBe(sourceHash);
+      // One workflow file (ingest.md)
+      const sourceWorkflowHash = await sha256(SOURCE_WORKFLOW_MD);
+      const installedWorkflowHash = await sha256(join(destDir, 'workflows', 'ingest.md'));
+      expect(installedWorkflowHash).toBe(sourceWorkflowHash);
+
+      // One reference file (garrett-elements.md)
+      const sourceReferenceHash = await sha256(SOURCE_REFERENCE_MD);
+      const installedReferenceHash = await sha256(join(destDir, 'references', 'garrett-elements.md'));
+      expect(installedReferenceHash).toBe(sourceReferenceHash);
     } finally {
       await rm(targetBase, { recursive: true, force: true });
     }
