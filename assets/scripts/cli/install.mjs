@@ -1,9 +1,20 @@
 // assets/scripts/cli/install.mjs
 // CLI subcommand: design-os install
 //
-// Copies the bundled SKILL.md package from the npm-installed location into
+// Copies the bundled skill package from the npm-installed location into
 // the user's host skills directory, making it available to Claude Code /
 // Codex CLI / Cursor without any manual file copy step.
+//
+// Installed layout (under <targetBase>/design-os/):
+//   SKILL.md            ← promoted from skills/design/SKILL.md
+//   workflows/          ← copied from skills/workflows/
+//   atoms/              ← copied from skills/atoms/
+//   audit/              ← copied from skills/audit/
+//   handoff/            ← copied from skills/handoff/
+//   references/         ← copied from references/
+//
+// This layout satisfies ${CLAUDE_SKILL_DIR} path refs rewritten in SKILL.md
+// and all workflow/atom .md files during the P1 fix-pass (04-00).
 //
 // Usage (via dispatcher):
 //   node bin/design-os.mjs install
@@ -30,7 +41,7 @@
 // Passes lint-determinism.mjs (INVARIANT-05): no LLM imports.
 
 import { cp, mkdir, rm, stat } from "node:fs/promises";
-import { resolve, join, dirname } from "node:path";
+import { resolve, join, dirname, relative, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 import { fileURLToPath } from "node:url";
 
@@ -48,9 +59,32 @@ const __dirname = dirname(__filename);
 const PACKAGE_ROOT = resolve(__dirname, "../../..");
 
 /**
- * The skills/design directory inside the package (what gets installed).
+ * The single SKILL.md file to promote to the install root.
  */
-const SOURCE = join(PACKAGE_ROOT, "skills", "design");
+const SOURCE_SKILL_FILE = join(PACKAGE_ROOT, "skills", "design", "SKILL.md");
+
+/**
+ * Directories to copy recursively into the install directory.
+ * Each entry is [sourcePath, destSubdirName].
+ *
+ * After install, the layout is:
+ *   <destDir>/SKILL.md         ← from skills/design/SKILL.md
+ *   <destDir>/workflows/       ← from skills/workflows/
+ *   <destDir>/atoms/           ← from skills/atoms/
+ *   <destDir>/audit/           ← from skills/audit/
+ *   <destDir>/handoff/         ← from skills/handoff/
+ *   <destDir>/references/      ← from references/
+ *
+ * ${CLAUDE_SKILL_DIR} resolves to <destDir>, so all path refs in SKILL.md
+ * and workflow/atom files resolve correctly post-install.
+ */
+const SOURCE_DIRS = [
+  [join(PACKAGE_ROOT, "skills", "workflows"), "workflows"],
+  [join(PACKAGE_ROOT, "skills", "atoms"), "atoms"],
+  [join(PACKAGE_ROOT, "skills", "audit"), "audit"],
+  [join(PACKAGE_ROOT, "skills", "handoff"), "handoff"],
+  [join(PACKAGE_ROOT, "references"), "references"],
+];
 
 /**
  * Default install base: ~/.claude/skills/
@@ -63,7 +97,7 @@ function defaultTargetBase() {
 /**
  * Permitted sandbox roots for --target path containment (Lesson 7).
  * A user-supplied --target must resolve inside one of these.
- * Paths end WITHOUT trailing slash so startsWith() boundary checks work correctly.
+ * Paths end WITHOUT trailing slash so containment checks work correctly.
  *
  * @returns {string[]}
  */
@@ -104,10 +138,11 @@ export class PathContainmentError extends Error {
 /**
  * Validate that resolvedTarget is inside one of the sandbox roots.
  *
- * Uses path.resolve() normalisation + exact-boundary startsWith() check
- * (NOT lexical String.includes('..'): per Lesson 7, the containment check must
- * use resolved paths, not raw string inspection — a path like './foo/../../../etc'
- * looks safe lexically but resolves outside the sandbox).
+ * Uses path.relative() — the canonical POSIX-safe and Windows-safe containment
+ * idiom. On POSIX, backslash is a valid filename character, so a startsWith check
+ * with a backslash separator can be fooled by a directory literally named
+ * "skills\evil" (a sibling of the expected root). path.relative() handles
+ * separators correctly per the active platform regardless of that edge case.
  *
  * @param {string} suppliedTarget - Raw value from the --target flag.
  * @param {string} resolvedTarget - path.resolve(suppliedTarget) result.
@@ -115,14 +150,32 @@ export class PathContainmentError extends Error {
  */
 export function validateTargetSandbox(suppliedTarget, resolvedTarget) {
   const roots = sandboxRoots();
-  const contained = roots.some(
-    (root) =>
-      resolvedTarget === root ||
-      resolvedTarget.startsWith(root + "/") ||
-      resolvedTarget.startsWith(root + "\\") // Windows path separator guard
-  );
+  const contained = roots.some((root) => {
+    if (resolvedTarget === root) return true;
+    const rel = relative(root, resolvedTarget);
+    // Inside root if rel is non-empty AND doesn't start with '..' AND isn't absolute
+    return rel.length > 0 && !rel.startsWith("..") && !isAbsolute(rel);
+  });
   if (!contained) {
     throw new PathContainmentError(suppliedTarget, resolvedTarget, roots);
+  }
+}
+
+/**
+ * Verify that a source path exists; throw a clear error if missing.
+ *
+ * @param {string} sourcePath - Absolute path to check.
+ * @param {string} description - Human-readable name for error messages.
+ */
+async function verifySourceExists(sourcePath, description) {
+  try {
+    await stat(sourcePath);
+  } catch {
+    throw new Error(
+      `install: ${description} not found at ${sourcePath}.\n` +
+        `  This usually means the npm package is corrupt or the files whitelist excluded it.\n` +
+        `  Please reinstall design-os from npm: npm i -g design-os@beta`
+    );
   }
 }
 
@@ -155,29 +208,21 @@ export async function runInstall(opts) {
   // Dry-run: print what would happen without touching the filesystem.
   if (dryRun) {
     console.log(`[DRY RUN] install: would copy`);
-    console.log(`  from: ${SOURCE}`);
-    console.log(`  to:   ${destDir}`);
+    console.log(`  SKILL.md from: ${SOURCE_SKILL_FILE}`);
+    for (const [srcDir, destSubdir] of SOURCE_DIRS) {
+      console.log(`  ${destSubdir}/ from: ${srcDir}`);
+    }
+    console.log(`  to:   ${destDir}/`);
     console.log(
       `\nNo changes made. Remove --dry-run to perform the actual install.`
     );
     return;
   }
 
-  // Verify the source exists (guards against a bad files whitelist).
-  let sourceOk;
-  try {
-    await stat(SOURCE);
-    sourceOk = true;
-  } catch {
-    sourceOk = false;
-  }
-
-  if (!sourceOk) {
-    throw new Error(
-      `install: skills/design not found at ${SOURCE}.\n` +
-        `  This usually means the npm package is corrupt or the files whitelist excluded it.\n` +
-        `  Please reinstall design-os from npm: npm i -g design-os@beta`
-    );
+  // Verify all sources exist (guards against a bad files whitelist).
+  await verifySourceExists(SOURCE_SKILL_FILE, "skills/design/SKILL.md");
+  for (const [srcDir, destSubdir] of SOURCE_DIRS) {
+    await verifySourceExists(srcDir, `skills/${destSubdir} (or references/)`);
   }
 
   // Check if destination already exists and warn if --force is not set.
@@ -205,8 +250,13 @@ export async function runInstall(opts) {
   }
   await mkdir(destDir, { recursive: true });
 
-  // Copy skills/design → <targetBase>/design-os
-  await cp(SOURCE, destDir, { recursive: true });
+  // Copy SKILL.md to install root.
+  await cp(SOURCE_SKILL_FILE, join(destDir, "SKILL.md"));
+
+  // Copy each source directory recursively.
+  for (const [srcDir, destSubdir] of SOURCE_DIRS) {
+    await cp(srcDir, join(destDir, destSubdir), { recursive: true });
+  }
 
   console.log(`Installed design-os skill to: ${destDir}`);
   console.log(
