@@ -1,6 +1,6 @@
 {
   "name": "design-os",
-  "version": "0.1.0",
+  "version": "2.0.0-beta.0",
   "description": "5-stage design process, operationalized as an agent-loop workflow",
   "type": "module",
   "engines": {
@@ -9,6 +9,40 @@
   "bin": {
     "design-os": "./bin/design-os.mjs"
   },
+  "files": [
+    "bin/",
+    "assets/",
+    "schemas/dist/",
+    "skills/",
+    "references/",
+    "templates/",
+    "README.md",
+    "LICENSE",
+    "CLAUDE.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "homepage": "https://github.com/Michal-Pi/design-process#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Michal-Pi/design-process.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Michal-Pi/design-process/issues"
+  },
+  "keywords": [
+    "claude-code",
+    "agentskills",
+    "skill-md",
+    "design-system",
+    "5-stage-design",
+    "garrett-spine",
+    "design-tokens",
+    "dtcg",
+    "stage-gated"
+  ],
   "scripts": {
     "schemas:emit": "tsx assets/scripts/schemas/emit.mjs",
     "test": "vitest run",
@@ -49,10 +83,5 @@
     "vitest": "^2",
     "xstate": "^5.20.1"
   },
-  "license": "Apache-2.0",
-  "workspaces": [
-    "evals/hosts/claude-code",
-    "evals/hosts/codex-cli",
-    "evals/hosts/cursor"
-  ]
+  "license": "Apache-2.0"
 }
