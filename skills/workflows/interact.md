@@ -21,11 +21,11 @@ artifacts:
     - .design-os/preview/<run-id>/interactions/<screen>.diagram.mmd
     - .design-os/preview/<run-id>/interactions/<screen>.machine.ts (conditional)
 references:
-  - "@references/saffer-microinteractions.md"
-  - "@references/tidwell-patterns.md"
-  - "@references/hax-18.md"
-  - "@references/xstate-v5.md"
-  - "@references/apg.md"
+  - "@${CLAUDE_SKILL_DIR}/references/saffer-microinteractions.md"
+  - "@${CLAUDE_SKILL_DIR}/references/tidwell-patterns.md"
+  - "@${CLAUDE_SKILL_DIR}/references/hax-18.md"
+  - "@${CLAUDE_SKILL_DIR}/references/xstate-v5.md"
+  - "@${CLAUDE_SKILL_DIR}/references/apg.md"
 ---
 
 # W4: Interact — Stage 4 Interaction Design
@@ -109,5 +109,5 @@ Do not enumerate more than 8 states per screen; add a `custom` type for screen-s
 ## HAX-18 Note
 
 If any screen has `asyncOperations:true` (AI product, data fetching, or ML-powered feature),
-read `@references/hax-18.md` and cite relevant HAX-18 guidelines (G1, G7, G16) in the spec body.
+read `@${CLAUDE_SKILL_DIR}/references/hax-18.md` and cite relevant HAX-18 guidelines (G1, G7, G16) in the spec body.
 The Stage 4 PR detector (`stage-4-pr.mjs`) flags missing HAX-18 citations as `4-pr-hax18-001`.

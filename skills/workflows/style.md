@@ -54,9 +54,9 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
    ```
 
 3. **Load references.** Read the following reference files to inform token decisions:
-   - `references/dtcg-v2025-10.md` — DTCG v2025.10 token spec
-   - `references/shadcn-tailwind-v4.md` — shadcn/ui CSS variable naming
-   - `references/wcag-2-2.md` — WCAG 2.2 AA contrast requirements
+   - `${CLAUDE_SKILL_DIR}/references/dtcg-v2025-10.md` — DTCG v2025.10 token spec
+   - `${CLAUDE_SKILL_DIR}/references/shadcn-tailwind-v4.md` — shadcn/ui CSS variable naming
+   - `${CLAUDE_SKILL_DIR}/references/wcag-2-2.md` — WCAG 2.2 AA contrast requirements
 
 3a. **--depth dispatch (F-07):**
    - If `--depth lightweight`: skip TRUST-05 intake, use defaults (brand: professional/calm,

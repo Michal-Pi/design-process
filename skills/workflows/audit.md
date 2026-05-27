@@ -51,7 +51,7 @@ Glob pattern: `{src,components,app}/**/*.{css,tsx,ts}` (excludes `node_modules`)
 ### Step 2: Collect findings
 
 Run `detectSlopTells(content, filePath)` from `assets/scripts/audit/slop-tells.mjs`
-on each file. Patterns loaded from `references/slop-tells/heuristics.md`:
+on each file. Patterns loaded from `${CLAUDE_SKILL_DIR}/references/slop-tells/heuristics.md`:
 
 | Pattern | FindingId | Severity |
 | --- | --- | --- |

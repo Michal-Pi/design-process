@@ -53,10 +53,10 @@ directly. If neither exists, halt with message:
 **2. Load reference files**
 
 Read the following references to ground persona generation and synthesis:
-- `references/garrett-elements.md` — Stage 1 = Strategy plane (user needs, product objectives)
-- `references/indi-young-thinking-styles.md` — Indi Young thinking-style format for personas
-- `references/torres-ost.md` — Torres Opportunity Solution Tree format
-- `references/klement-jtbd.md` — Klement Jobs To Be Done statement format
+- `${CLAUDE_SKILL_DIR}/references/garrett-elements.md` — Stage 1 = Strategy plane (user needs, product objectives)
+- `${CLAUDE_SKILL_DIR}/references/indi-young-thinking-styles.md` — Indi Young thinking-style format for personas
+- `${CLAUDE_SKILL_DIR}/references/torres-ost.md` — Torres Opportunity Solution Tree format
+- `${CLAUDE_SKILL_DIR}/references/klement-jtbd.md` — Klement Jobs To Be Done statement format
 
 **2a. Depth dispatch (F-07)**
 
@@ -80,7 +80,7 @@ Record all answers. They ground persona generation and reduce hallucinated claim
 
 **4. Inline ATOM-03: Generate proto-personas (research/personas-proto)**
 
-Using the intake answers and `references/indi-young-thinking-styles.md`:
+Using the intake answers and `${CLAUDE_SKILL_DIR}/references/indi-young-thinking-styles.md`:
 - Generate 2-3 proto-personas using Indi Young thinking-style format.
   Each persona must include: `cognitiveSpace`, `emotionalReactions`, `guidingPrinciples`.
 - Write each persona to `design/research/personas/<slug>.persona.json` with YAML frontmatter:
@@ -101,7 +101,7 @@ Using the intake answers and `references/indi-young-thinking-styles.md`:
 
 **5. Inline ATOM-04: Build Opportunity Solution Tree (research/build-ost)**
 
-Using the personas and `references/torres-ost.md`:
+Using the personas and `${CLAUDE_SKILL_DIR}/references/torres-ost.md`:
 - For each persona, identify 1-2 primary objectives (outcomes they seek).
 - Structure a Torres OST: Objectives → Strategies → Tactics.
 - Emit as Mermaid flowchart to `design/research/ost.mmd` (flowchart LR format).
@@ -116,7 +116,7 @@ Using the personas and `references/torres-ost.md`:
 
 **6. Inline ATOM-02: Synthesize JTBDs (research/synthesize)**
 
-Using the personas, OST, and `references/klement-jtbd.md`:
+Using the personas, OST, and `${CLAUDE_SKILL_DIR}/references/klement-jtbd.md`:
 - For each persona, derive 1-2 JTBDs in Klement format:
   "When I [situation], I want to [motivation], so I can [expected outcome]."
 - Write each JTBD to `design/research/jobs/<slug>.jtbd.md`.

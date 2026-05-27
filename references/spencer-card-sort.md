@@ -107,6 +107,6 @@ After card sorting → after designing the sitemap → validate with tree testin
 
 ## Relationship to Other References
 
-- Complements @references/wodtke-ia.md (taxonomy design and IA principles)
+- Complements @${CLAUDE_SKILL_DIR}/references/wodtke-ia.md (taxonomy design and IA principles)
 - Upstream of tree testing (Optimal Workshop — v2.1+ ingestion)
 - Informs Stage 2 `sitemap.json` evidence grading (INFERRED → proto → validated)

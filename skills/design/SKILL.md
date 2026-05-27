@@ -62,23 +62,23 @@ The 2× soft-stop from Phase 2 (run-subagent.mjs) is preserved.
 
 | Stage | Workflow | Budget (p50) |
 |-------|----------|-------------|
-| ingest | `skills/workflows/ingest.md` | ≤5k |
-| discover | `skills/workflows/discover.md` | ≤30k |
-| structure | `skills/workflows/structure.md` | ≤25k |
-| sketch | `skills/workflows/sketch.md` | ≤25k |
-| interact | `skills/workflows/interact.md` | ≤30k |
-| style | `skills/workflows/style.md` | ≤25k |
-| systematize | `skills/workflows/systematize.md` | ≤10k |
+| ingest | `${CLAUDE_SKILL_DIR}/workflows/ingest.md` | ≤5k |
+| discover | `${CLAUDE_SKILL_DIR}/workflows/discover.md` | ≤30k |
+| structure | `${CLAUDE_SKILL_DIR}/workflows/structure.md` | ≤25k |
+| sketch | `${CLAUDE_SKILL_DIR}/workflows/sketch.md` | ≤25k |
+| interact | `${CLAUDE_SKILL_DIR}/workflows/interact.md` | ≤30k |
+| style | `${CLAUDE_SKILL_DIR}/workflows/style.md` | ≤25k |
+| systematize | `${CLAUDE_SKILL_DIR}/workflows/systematize.md` | ≤10k |
 | **Total** | | **≤150k** |
 
 ## Gates
 
 Stage-to-stage transitions require passing the corresponding gate checklist:
 
-- `references/gates/stage-1.md` — Research → IA
-- `references/gates/stage-2.md` — IA → Low-Fi
-- `references/gates/stage-5a.md` — Interaction → Hi-Fi
-- `references/gates/stage-5b.md` — Hi-Fi → Design System
+- `${CLAUDE_SKILL_DIR}/references/gates/stage-1.md` — Research → IA
+- `${CLAUDE_SKILL_DIR}/references/gates/stage-2.md` — IA → Low-Fi
+- `${CLAUDE_SKILL_DIR}/references/gates/stage-5a.md` — Interaction → Hi-Fi
+- `${CLAUDE_SKILL_DIR}/references/gates/stage-5b.md` — Hi-Fi → Design System
 
 Each gate returns a `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`.
 
@@ -86,25 +86,25 @@ Note: Stage 3 + Stage 4 gate checklists ship in Phase 3 (v2.0b) alongside the ga
 
 ## References
 
-Canon references available under `references/` (each ≤2k tokens, citations not full quotes per D-24):
+Canon references available under `${CLAUDE_SKILL_DIR}/references/` (each ≤2k tokens, citations not full quotes per D-24):
 
 | File | Canon |
 |------|-------|
-| `references/garrett-elements.md` | Garrett 5-plane spine (Strategy/Scope/Structure/Skeleton/Surface) |
-| `references/cooper-goodwin.md` | Goodwin goal-directed design + interaction framework |
-| `references/torres-ost.md` | Torres Opportunity Solution Tree |
-| `references/klement-jtbd.md` | Klement Jobs To Be Done statement format |
-| `references/indi-young-thinking-styles.md` | Indi Young thinking-styles + synthetic-persona red line |
-| `references/rosenfeld-ia.md` | Rosenfeld/Morville IA vocabulary (sitemap.json schema) |
-| `references/dtcg-v2025-10.md` | W3C DTCG v2025.10 token format |
-| `references/design-md.md` | Google DESIGN.md April 2026 (Stage 5b contract) |
-| `references/wcag-2-2.md` | WCAG 2.2 contrast measurement (never claim conformance) |
-| `references/radix-step-roles.md` | Radix step roles for accessible multi-step flows |
-| `references/shadcn-tailwind-v4.md` | shadcn/ui + Tailwind v4 @theme projection |
-| `references/prd/lenny-one-pager.md` | Lenny one-pager PRD (Stage 0 interview fallback) |
+| `${CLAUDE_SKILL_DIR}/references/garrett-elements.md` | Garrett 5-plane spine (Strategy/Scope/Structure/Skeleton/Surface) |
+| `${CLAUDE_SKILL_DIR}/references/cooper-goodwin.md` | Goodwin goal-directed design + interaction framework |
+| `${CLAUDE_SKILL_DIR}/references/torres-ost.md` | Torres Opportunity Solution Tree |
+| `${CLAUDE_SKILL_DIR}/references/klement-jtbd.md` | Klement Jobs To Be Done statement format |
+| `${CLAUDE_SKILL_DIR}/references/indi-young-thinking-styles.md` | Indi Young thinking-styles + synthetic-persona red line |
+| `${CLAUDE_SKILL_DIR}/references/rosenfeld-ia.md` | Rosenfeld/Morville IA vocabulary (sitemap.json schema) |
+| `${CLAUDE_SKILL_DIR}/references/dtcg-v2025-10.md` | W3C DTCG v2025.10 token format |
+| `${CLAUDE_SKILL_DIR}/references/design-md.md` | Google DESIGN.md April 2026 (Stage 5b contract) |
+| `${CLAUDE_SKILL_DIR}/references/wcag-2-2.md` | WCAG 2.2 contrast measurement (never claim conformance) |
+| `${CLAUDE_SKILL_DIR}/references/radix-step-roles.md` | Radix step roles for accessible multi-step flows |
+| `${CLAUDE_SKILL_DIR}/references/shadcn-tailwind-v4.md` | shadcn/ui + Tailwind v4 @theme projection |
+| `${CLAUDE_SKILL_DIR}/references/prd/lenny-one-pager.md` | Lenny one-pager PRD (Stage 0 interview fallback) |
 
 Gate checklists (v1.5 set — Stages 3+4 ship Phase 3):
-- `references/gates/stage-1.md`, `stage-2.md`, `stage-5a.md`, `stage-5b.md`
+- `${CLAUDE_SKILL_DIR}/references/gates/stage-1.md`, `${CLAUDE_SKILL_DIR}/references/gates/stage-2.md`, `${CLAUDE_SKILL_DIR}/references/gates/stage-5a.md`, `${CLAUDE_SKILL_DIR}/references/gates/stage-5b.md`
 
 ## Related skills
 

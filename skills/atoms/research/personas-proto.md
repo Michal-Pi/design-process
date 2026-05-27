@@ -48,7 +48,7 @@ instructed to regenerate.
 
 **2. Load persona format reference**
 
-Read `references/indi-young-thinking-styles.md` to ground the persona structure.
+Read `${CLAUDE_SKILL_DIR}/references/indi-young-thinking-styles.md` to ground the persona structure.
 Each persona requires three thinking-style fields:
 - `cognitiveSpace`: how they mentally organize and process their domain
 - `emotionalReactions`: feelings evoked by the problem space

@@ -93,6 +93,6 @@ In design-os Stage 2: every sitemap route label should pass the scent test — w
 
 ## Relationship to Other References
 
-- Complements @references/spencer-card-sort.md (hands-on card sorting process detail)
-- Complements @references/rosenfeld-ia.md (academic IA depth)
-- Stage 2 counterpart to @references/garrett-elements.md (Structure plane)
+- Complements @${CLAUDE_SKILL_DIR}/references/spencer-card-sort.md (hands-on card sorting process detail)
+- Complements @${CLAUDE_SKILL_DIR}/references/rosenfeld-ia.md (academic IA depth)
+- Stage 2 counterpart to @${CLAUDE_SKILL_DIR}/references/garrett-elements.md (Structure plane)

@@ -53,7 +53,7 @@ These slugs must appear in at least one node label across all sitemap variants.
 
 **2. Load LATCH reference**
 
-Read `references/rosenfeld-ia.md` for the five LATCH organizational schemes:
+Read `${CLAUDE_SKILL_DIR}/references/rosenfeld-ia.md` for the five LATCH organizational schemes:
 - **Location**: geography, physical space, or map-based grouping
 - **Alphabetical**: A-Z listing (works well when users know what they're looking for)
 - **Time**: chronological order, history, recent-first

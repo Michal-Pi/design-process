@@ -46,7 +46,7 @@ Read all files matching `design/research/personas/*.persona.json`. Extract:
 
 **2. Load OST format reference**
 
-Read `references/torres-ost.md` for the Opportunity Solution Tree structure:
+Read `${CLAUDE_SKILL_DIR}/references/torres-ost.md` for the Opportunity Solution Tree structure:
 - **Objective**: the desired outcome (user-goal level, not feature level)
 - **Strategy**: a general approach toward the objective (multiple per objective)
 - **Tactic**: a specific action or feature area enabling the strategy

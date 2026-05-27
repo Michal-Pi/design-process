@@ -56,7 +56,7 @@ Extract from the bundle:
 
 **2. Load LATCH reference**
 
-Read `references/rosenfeld-ia.md` for the LATCH taxonomy:
+Read `${CLAUDE_SKILL_DIR}/references/rosenfeld-ia.md` for the LATCH taxonomy:
 - **L**ocation, **A**lphabetical, **T**ime, **C**ategory, **H**ierarchy
 Each sitemap variant must use a different LATCH scheme. Consult this reference
 before generating to ensure schemes are grounded in Rosenfeld's definitions.

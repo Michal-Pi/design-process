@@ -46,7 +46,7 @@ Read `design/research/ost.mmd` if it exists — use the tactics as JTBD candidat
 
 **2. Load JTBD format reference**
 
-Read `references/klement-jtbd.md` for the Klement JTBD statement format:
+Read `${CLAUDE_SKILL_DIR}/references/klement-jtbd.md` for the Klement JTBD statement format:
 "When I [situation/context], I want to [motivation/goal], so I can [expected outcome]."
 
 **3. Derive JTBDs**

@@ -104,6 +104,6 @@ structural distance < 0.35. If rejected, the gate returns `failed_after_repair/3
 
 ## References
 
-- @references/sprint-crazy-eights.md — original Crazy 8s method (8 sketches, 8 minutes)
-- @references/buxton-sketching.md — low-cost exploration = high divergence rate
-- @references/shape-up-pitches.md — fat-marker sketches scope before investing
+- @${CLAUDE_SKILL_DIR}/references/sprint-crazy-eights.md — original Crazy 8s method (8 sketches, 8 minutes)
+- @${CLAUDE_SKILL_DIR}/references/buxton-sketching.md — low-cost exploration = high divergence rate
+- @${CLAUDE_SKILL_DIR}/references/shape-up-pitches.md — fat-marker sketches scope before investing

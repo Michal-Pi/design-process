@@ -70,8 +70,8 @@ Create design/components/<component-name>.md with wiring notes:
 
 ## Accessibility
 
-Pattern: @references/apg.md (button role, keyboard: Enter/Space activate)
-Touch target: ≥44×44px per Material 3 (@references/material-3.md)
+Pattern: @${CLAUDE_SKILL_DIR}/references/apg.md (button role, keyboard: Enter/Space activate)
+Touch target: ≥44×44px per Material 3 (@${CLAUDE_SKILL_DIR}/references/material-3.md)
 ```
 
 ### Step 4 — Emit Mermaid component state stub
@@ -95,4 +95,4 @@ Save to design/interactions/<component-name>.diagram.mmd.
 
 Only scaffold components that appear ≥3× in upstream wireframes and interaction specs. Gate will block if count < 3.
 
-Reference: @references/apg.md (accessibility patterns), @references/material-3.md (component anatomy)
+Reference: @${CLAUDE_SKILL_DIR}/references/apg.md (accessibility patterns), @${CLAUDE_SKILL_DIR}/references/material-3.md (component anatomy)

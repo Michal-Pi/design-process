@@ -11,9 +11,9 @@ allows-tools:
   - Read
   - Write
 references:
-  - "@references/tidwell-patterns.md"
-  - "@references/apg.md"
-  - "@references/material-3.md"
+  - "@${CLAUDE_SKILL_DIR}/references/tidwell-patterns.md"
+  - "@${CLAUDE_SKILL_DIR}/references/apg.md"
+  - "@${CLAUDE_SKILL_DIR}/references/material-3.md"
 ---
 
 # Atom: ixd/pattern-variants — ATOM-11

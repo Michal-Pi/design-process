@@ -12,7 +12,7 @@ allows-tools:
   - Write
   - Bash
 references:
-  - "@references/xstate-v5.md"
+  - "@${CLAUDE_SKILL_DIR}/references/xstate-v5.md"
 ---
 
 # Atom: ixd/state-machine — ATOM-10

@@ -57,7 +57,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    The systematize budget is p50 ≤40k tokens (D-49). This is an informational check only;
    it exits 0 and does not block at the pre-check step.
 
-3. **Load DESIGN.md reference.** Read `references/design-md.md` (Google DESIGN.md spec,
+3. **Load DESIGN.md reference.** Read `${CLAUDE_SKILL_DIR}/references/design-md.md` (Google DESIGN.md spec,
    April 2026). This defines required sections and frontmatter fields.
 
 3a. **`--depth` dispatch (F-07):**
@@ -152,7 +152,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    If validation fails:
    - Attempt one LLM repair cycle: re-read the error, fix the specific failing field(s), re-emit.
    - If repair fails a second time, halt: "DESIGN.md schema validation failed after 1 repair
-     attempt. Failing field(s): <errors>. Please review references/design-md.md for schema details."
+     attempt. Failing field(s): <errors>. Please review ${CLAUDE_SKILL_DIR}/references/design-md.md for schema details."
    - Maximum 1 repair cycle (D-52 trust posture: do not silently loop).
 
 8. **Update tokens.json component tier (if needed).** If user provided component names in

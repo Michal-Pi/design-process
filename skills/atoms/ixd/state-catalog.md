@@ -11,7 +11,7 @@ allows-tools:
   - Read
   - Write
 references:
-  - "@references/hax-18.md"
+  - "@${CLAUDE_SKILL_DIR}/references/hax-18.md"
 ---
 
 # Atom: ixd/state-catalog — ATOM-12
@@ -43,7 +43,7 @@ Given a screen name (kebab-case, e.g., `dashboard`, `checkout-flow`):
      (e.g., DONE → success vs DONE → error based on response).
 
 4. **HAX-18 note (asyncOperations:true screens only):**
-   If `asyncOperations: true`, read `@references/hax-18.md` and cite at least one relevant
+   If `asyncOperations: true`, read `@${CLAUDE_SKILL_DIR}/references/hax-18.md` and cite at least one relevant
    guideline in the spec body. Key guidelines:
    - G1: Make clear when the system uses AI features
    - G7: Support efficient invocation for AI features

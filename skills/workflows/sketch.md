@@ -55,7 +55,7 @@ Extract the list of screens and the chosen sitemap variant from
 
 **Step 2: Run the Crazy 8s atom — produce 8 skeleton IR variants**
 
-Follow `skills/atoms/lowfi/crazy-eights.md` (ATOM-08) to produce 8 skeleton IR objects,
+Follow `${CLAUDE_SKILL_DIR}/atoms/lowfi/crazy-eights.md` (ATOM-08) to produce 8 skeleton IR objects,
 each representing a structurally distinct layout approach for the target screen.
 
 Emit the skeleton IR to:
@@ -101,7 +101,7 @@ state before Step 5.
 
 **Step 5: Run the Converge atom — produce CHOICE.md**
 
-Follow `skills/atoms/lowfi/converge.md` (ATOM-09) to select one wireframe variant.
+Follow `${CLAUDE_SKILL_DIR}/atoms/lowfi/converge.md` (ATOM-09) to select one wireframe variant.
 
 Emit CHOICE.md to:
 
@@ -146,6 +146,6 @@ Do NOT write to `design/` until the user explicitly runs `--apply` (INVARIANT-02
 
 ## References
 
-- @references/buxton-sketching.md — low-fi sketching as ideation discipline
-- @references/sprint-crazy-eights.md — Crazy 8s rapid divergence method
-- @references/shape-up-pitches.md — fat-marker sketches as appetite-bounded scope
+- @${CLAUDE_SKILL_DIR}/references/buxton-sketching.md — low-fi sketching as ideation discipline
+- @${CLAUDE_SKILL_DIR}/references/sprint-crazy-eights.md — Crazy 8s rapid divergence method
+- @${CLAUDE_SKILL_DIR}/references/shape-up-pitches.md — fat-marker sketches as appetite-bounded scope
