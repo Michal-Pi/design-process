@@ -42,6 +42,23 @@ Phases 1-3 shipped the 5-stage pipeline + lite/full gate promotions + reverse-en
 
 ## Decisions
 
+### Distribution channel
+
+**D-80 [LOCKED] — npm `@beta` is the Phase 4 testing distribution channel; ship FIRST, optimize against it**
+
+Rather than running the 15-fixture acceptance suite, adversarial CI, and cross-host parity tests against the dev-machine clone, Phase 4 ships a published `design-os@2.0.0-beta.0` on npm as its **first** deliverable. All subsequent Phase 4 work (15-fixture suite, blind-review packet, cross-host parity, etc.) uses the npm install path (`npm i -g design-os@beta && design-os install`) — same path real users will take.
+
+Rationale:
+- **Multi-device testing becomes trivial.** Owner can `npm i -g design-os@beta` on any laptop/VM/host (Claude Code on macOS, Codex CLI on WSL2, Cursor on Linux) in 30 seconds versus 5-10 minutes of `git clone` + `npm ci` + `cp -R skills/`. Cross-host parity work (DIST-05/06) becomes far cheaper.
+- **The beta IS the SC-1 install path.** SC-1 (live LLM run on clean laptop) now exercises the exact install users will hit. Catches packaging bugs (wrong files in tarball, missing postinstall, broken `design-os install`) BEFORE they ship at `@latest`.
+- **Brad Frost / Cagan / private reviewers can install and try it in seconds.** Wave A "stealth-then-Frost" outreach packet (D-75) can include a one-line install instead of clone-and-build guidance.
+- **GA flip is a single command (`npm dist-tag add design-os@2.0.0 latest`).** Wave B (D-72) becomes a marketing event, not an engineering event — the binary that ships at GA is the same binary that's been tested for 1-2 weeks.
+
+Tradeoff acknowledged: npm beta exposes the work earlier than the original "stealth on GitHub" plan. Mitigation: `@beta` tag (not `@latest`) signals "do not depend on this yet"; the public-facing GTM-01 post is still Wave B and references the `@latest` install.
+
+- **Why:** Owner explicitly requested this ordering to simplify cross-device testing. Reordering puts the binary-that-users-will-install at the center of Phase 4 validation, rather than as a Wave-B afterthought.
+- **How to apply:** New Plan **04-00** lands first (npm beta dist + `design-os install` subcommand + smoke-test + owner-driven publish). All other Phase 4 plans gain `depends_on: ["04-00"]` where the npm install path is referenced. SC-1 verification plan is rewritten to use `npm i -g design-os@beta`. GA dist-tag flip (`npm dist-tag add design-os@2.0.0 latest`) moves into Plan 04-05 alongside the public-launch wave.
+
 ### Engineering / acceptance validation
 
 **D-71 [LOCKED] — Reviewer recruitment is owner-driven, parallel to engineering**
