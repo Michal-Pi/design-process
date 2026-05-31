@@ -157,7 +157,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
   4. The launch artifact ships: long-form post "The 5 design stages every AI tool skips — and why your prototype struggles past month 3" (softened hook per codex feedback, GTM-01), 90-second video showing 3 variants per stage (GTM-02), cross-post manifest executed on 8 marketplaces (GTM-03, DIST-07), named outreach to Brad Frost and Marty Cagan delivered (GTM-04, Cagan framed as intellectual heritage not endorsement claim), PR submitted to anthropics/skills#1008 for DESIGN.md consume/produce support (GTM-05), and the rapid-response GTM pivot plan to "interoperability with Claude Design" is documented and ready if Anthropic ships overlap during the launch window (GTM-07).
   5. Cost discipline holds at GA: full `design` workflow p50 ≤150k tokens / p95 ≤220k tokens on the 15-fixture suite (COST-07), wall-clock p50 ≤8 minutes for full 5 stages (COST-10) — both verified on the cross-host matrix with per-stage budgets continuing to hold from Phases 2-3.
 
-**Plans:** TBD — planned after Phase 3 completes
+**Plans:** 2/7 plans executed
 
 ## Progress
 
@@ -166,7 +166,7 @@ Each release is itself a horizontal infrastructure layer (versioned schemas + No
 | 1. v1.5 — Infrastructure & Determinism Foundation | 5/5 | Complete | 2026-05-25 |
 | 2. v2.0a — Skeleton (4 stages, lite Stage 5a/5b) | 5/5 | Complete   | 2026-05-25 |
 | 3. v2.0b — Full 5 Stages + Lovable Refugee Path | 5/5 | Complete   | 2026-05-26 |
-| 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 0/0 | Not started | - |
+| 4. v2.0 RC + GA — Acceptance, Cross-Host, Launch | 2/7 | In Progress|  |
 
 ## Coverage
 

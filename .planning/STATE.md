@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0 RC
 milestone_name: v2.0 RC — Acceptance, Cross-Host, Launch
 status: in_progress
-stopped_at: Phase 4 Plan 01 complete — 15-fixture acceptance corpus + 3 adversarial corpora
+stopped_at: Phase 4 Plan 02 complete — release-gate.mjs + axe-runner.mjs WCAG gate
 last_updated: "2026-05-31T00:00:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 20
-  completed_plans: 17
-  percent: 85
+  completed_plans: 18
+  percent: 90
 ---
 
 # State: design-os
@@ -21,7 +21,7 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 4 (v2.0 RC/GA) — Plans 00-01 complete. 04-00: npm @beta dist + design-os install CLI. 04-01: 15-fixture acceptance corpus (evals/acceptance/) + 3×100-case adversarial corpora (ACCEPT-02/03/04). ACCEPT-05 covered by existing fid-06-frost-recurrence harness. 1314 tests (1312 passing; 2 pre-existing stage-2-latch.test.ts flakes).
+- **Current focus:** Phase 4 (v2.0 RC/GA) — Plans 00-02 complete. 04-00: npm @beta dist + design-os install CLI. 04-01: 15-fixture acceptance corpus + 3×100-case adversarial corpora. 04-02: release-gate.mjs (ACCEPT-01/05/06/COST-07/10) + axe-runner.mjs (ACCEPT-09/D-78) + CI workflow. 1349 tests (1349 passing; 1 pre-existing stage-2-latch flake).
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -29,9 +29,9 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
-- **Plan:** 04-01 complete (Phase 4 Plan 01 delivered — 15-fixture acceptance corpus + 3×100-case adversarial corpora)
-- **Next plan:** Phase 04 Plan 02 (release-gate harness + axe-runner)
-- **Status:** Phase 04 Plans 00-01 complete. 17/20 plans delivered. 1314 tests (1312-1313 passing — 1-2 pre-existing stage-2-latch flakes).
+- **Plan:** 04-02 complete (Phase 4 Plan 02 delivered — release-gate.mjs orchestrator + axe-runner.mjs WCAG gate)
+- **Next plan:** Phase 04 Plan 03 (cross-host parity driver — Codex CLI + Cursor sampled)
+- **Status:** Phase 04 Plans 00-02 complete. 18/20 plans delivered. 1349 tests (1349 passing — 1 pre-existing stage-2-latch flake).
 
 **Progress:**
 
@@ -39,9 +39,9 @@ progress:
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
-Phase 4: [████      ] 40%  Plans 00-01 complete (npm beta dist + 15-fixture corpus + adversarial corpora)
+Phase 4: [██████    ] 60%  Plans 00-02 complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner)
 
-**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-01 complete; 17/20 plans delivered. 1314 tests (1312-1313 passing — 1-2 pre-existing stage-2-latch flakes).
+**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-02 complete; 18/20 plans delivered. 1349 tests (1349 passing — 1 pre-existing stage-2-latch flake).
 
 ## Performance Metrics
 
@@ -78,6 +78,7 @@ Phase 4: [████      ] 40%  Plans 00-01 complete (npm beta dist + 15-fixt
 | Phase 03 P05 | 45m | 3 tasks | 15 files | 14 tests added + 16 tests updated (983 total) |
 | Phase 04 P00 | — | 2 tasks | ~25 files | 23 tests added (1006 total; npm @beta install) |
 | Phase 04 P01 | — | 2 tasks | 35 files | 306 tests added (1312 total; 15-fixture corpus + 3 adversarial corpora) |
+| Phase 04 P02 | ~75m | 2 tasks | 10 files created + 4 modified | 36 tests added (1349 total; release-gate + axe-runner) |
 
 ## Accumulated Context
 
@@ -161,10 +162,15 @@ Phase 4: [████      ] 40%  Plans 00-01 complete (npm beta dist + 15-fixt
 - [Phase 04 Plan 01]: ACCEPT-05 covered by existing fid-06-frost-recurrence harness per 04-RESEARCH.md §Group B; README.md pointer only in accept-05/
 - [Phase 04 Plan 01]: ACCEPT-04 fixture distinctness: 3 variant strategies (absent/empty/non-spec interactions/) + PRODUCT_NAMES[100] + token group count (1..10) + non-spec file count (1..5) = 100 genuinely distinct fixtures
 - [Phase 04 Plan 01]: D-73 distribution verified: 5 B2B SaaS + 5 consumer + 3 dashboard + 2 marketing = 15; fixtures.manifest.json distribution field matches filter counts
+- [Phase 04 Plan 02]: Stage 2 wireframe gap findingId is '3-pr-choice-001' (stage-3-pr.mjs) — NOT a '2-pr-*' pattern; stage-2-pr.mjs does not exist
+- [Phase 04 Plan 02]: ACCEPT-06 uses inline mkdtemp fixture (no permanent on-disk SC-5 fixture); try/finally cleanup; asserts '4-pr-spec-missing-001' + '3-pr-choice-001'
+- [Phase 04 Plan 02]: Hard gate exit (process.exit(1)) happens AFTER writeFile(release-gate-results.json) — partial results always available for post-mortem
+- [Phase 04 Plan 02]: writeReleaseNotesDisclosure() called unconditionally (T-04-02-05 mitigation)
+- [Phase 04 Plan 02]: @playwright/test ^1.52.0 added as devDep alongside axe-core — required for headless Chromium; listed in CLAUDE.md tech stack as planned dependency
+- [Phase 04 Plan 02]: Sequential-fallback wall-clock caveat always written to RELEASE-NOTES.md (P8 trust posture + Pitfall 3)
 
 ### Todos (next session)
 
-- [ ] Phase 04 Plan 02 — release-gate harness + axe-runner CI gate + cost-discipline gate
 - [ ] Phase 04 Plan 03 — cross-host parity driver (Codex CLI + Cursor sampled)
 - [ ] User manual SC-1 verification (live LLM run of `design --route new-feature` on clean laptop with npm @beta install)
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA

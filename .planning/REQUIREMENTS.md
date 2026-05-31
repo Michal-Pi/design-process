@@ -204,15 +204,15 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Acceptance Criteria
 
-- [ ] **ACCEPT-01**: `design` end-to-end runs PRD → DESIGN.md + tokens on Next.js + Tailwind v4 + shadcn fixture with all 5 gates passing in ≥12 of 15 runs
+- [x] **ACCEPT-01**: `design` end-to-end runs PRD → DESIGN.md + tokens on Next.js + Tailwind v4 + shadcn fixture with all 5 gates passing in ≥12 of 15 runs
 - [ ] **ACCEPT-02**: Synthetic-only Stage 1 hard-blocks at 100% across 100 adversarial runs
 - [ ] **ACCEPT-03**: Stage 3 fidelity-cap rejects styled wireframes at 100% across 100 adversarial runs
 - [ ] **ACCEPT-04**: Stage 5a refuses to render hi-fi without complete state-maps at 100% across 100 adversarial runs
-- [ ] **ACCEPT-05**: Stage 5b ≥3× recurrence rule enforced and verifiable in fixture
-- [ ] **ACCEPT-06**: `audit --all-stages` correctly identifies gaps in a fixture project missing Stage 2 + Stage 4 work
+- [x] **ACCEPT-05**: Stage 5b ≥3× recurrence rule enforced and verifiable in fixture
+- [x] **ACCEPT-06**: `audit --all-stages` correctly identifies gaps in a fixture project missing Stage 2 + Stage 4 work
 - [ ] **ACCEPT-07**: Designer review (n≥5) — ≥4 of 5 rate output as "this is what doing it properly looks like, not Lovable shortcut"
 - [ ] **ACCEPT-08**: PM review (n≥5) — ≥4 of 5 rate PRD-to-design pipeline as "produces artifacts I'd actually share with engineering"
-- [ ] **ACCEPT-09**: A11y conformance on own examples — 100% pass WCAG 2.2 AA contrast via `axe-runner.mjs` CI
+- [x] **ACCEPT-09**: A11y conformance on own examples — 100% pass WCAG 2.2 AA contrast via `axe-runner.mjs` CI
 
 ### Cost Discipline
 
@@ -222,10 +222,10 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **COST-04**: `interact` p50 ≤30k tokens
 - [ ] **COST-05**: `style` p50 ≤55k tokens (preserves v1.0.1 budget)
 - [ ] **COST-06**: `systematize` p50 ≤40k tokens
-- [ ] **COST-07**: Full `design` workflow p50 ≤150k tokens; p95 ≤220k tokens
+- [x] **COST-07**: Full `design` workflow p50 ≤150k tokens; p95 ≤220k tokens
 - [x] **COST-08**: `new-feature` route p50 ≤60k tokens
 - [x] **COST-09**: `design-bug` route p50 ≤20k tokens
-- [ ] **COST-10**: Wall-clock p50 ≤8 min for full 5 stages
+- [x] **COST-10**: Wall-clock p50 ≤8 min for full 5 stages
 
 ### Versioned Schemas (v1.5 Prerequisite)
 
@@ -465,25 +465,25 @@ Populated by `gsd-roadmapper` on 2026-05-24 after ROADMAP.md creation.
 | MVPB-08 | Phase 3 | Complete |
 | MVPB-09 | Phase 3 | Pending |
 | MVPB-10 | Phase 3 | Complete |
-| ACCEPT-01 | Phase 4 | Pending |
+| ACCEPT-01 | Phase 4 | Complete |
 | ACCEPT-02 | Phase 4 | Pending |
 | ACCEPT-03 | Phase 4 | Pending |
 | ACCEPT-04 | Phase 4 | Pending |
-| ACCEPT-05 | Phase 4 | Pending |
-| ACCEPT-06 | Phase 4 | Pending |
+| ACCEPT-05 | Phase 4 | Complete |
+| ACCEPT-06 | Phase 4 | Complete |
 | ACCEPT-07 | Phase 4 | Pending |
 | ACCEPT-08 | Phase 4 | Pending |
-| ACCEPT-09 | Phase 4 | Pending |
+| ACCEPT-09 | Phase 4 | Complete |
 | COST-01 | Phase 2 | Pending |
 | COST-02 | Phase 2 | Pending |
 | COST-03 | Phase 3 | Complete |
 | COST-04 | Phase 3 | Complete |
 | COST-05 | Phase 2 | Pending |
 | COST-06 | Phase 2 | Pending |
-| COST-07 | Phase 4 | Pending |
+| COST-07 | Phase 4 | Complete |
 | COST-08 | Phase 2 | Complete |
 | COST-09 | Phase 2 | Complete |
-| COST-10 | Phase 4 | Pending |
+| COST-10 | Phase 4 | Complete |
 | SCHEMA-01 | Phase 1 | Complete |
 | SCHEMA-02 | Phase 1 | Complete |
 | SCHEMA-03 | Phase 1 | Complete |
