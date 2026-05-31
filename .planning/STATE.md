@@ -31,7 +31,7 @@ progress:
 - **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
 - **Plan:** 04-04 complete (Phase 4 Plan 04 delivered — Track R Wave A: outreach packet D-75, RAPID-RESPONSE.md D-79 triggers, MAINTAINERS.md fill-in, GTM-01 launch post draft)
 - **Next plan:** Phase 04 Plan 05 (Wave B — awaiting Wave A human checkpoint approval)
-- **Status:** Phase 04 Plans 00-04 complete. 20/20 plans delivered. 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake). Wave A checkpoint pending owner approval before 04-05.
+- **Status:** Phase 04 Plans 00-04 complete (5 of 6 Phase 4 plans done; Plan 04-05 pending Wave A approval). 20 of 21 total plans delivered. 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake). Wave A checkpoint pending owner approval before 04-05.
 
 **Progress:**
 
@@ -39,9 +39,9 @@ progress:
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
-Phase 4: [██████████] 100% Plans 00-04 complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner + TRIG-03 blocking + cross-host parity + Track R Wave A)
+Phase 4: [████████░░] 83% 5/6 plans complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner + TRIG-03 blocking + cross-host parity + Track R Wave A; Plan 04-05 pending)
 
-**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-04 complete; 20/20 plans delivered (Wave A checkpoint pending). 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake).
+**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-04 complete; 20 of 21 plans delivered (Phase 4 Plan 04-05 + verifier remaining; Wave A checkpoint pending). 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake).
 
 ## Performance Metrics
 
@@ -80,7 +80,7 @@ Phase 4: [██████████] 100% Plans 00-04 complete (npm beta di
 | Phase 04 P01 | — | 2 tasks | 35 files | 306 tests added (1312 total; 15-fixture corpus + 3 adversarial corpora) |
 | Phase 04 P02 | ~75m | 2 tasks | 10 files created + 4 modified | 36 tests added (1349 total; release-gate + axe-runner) |
 | Phase 04 P03 | ~90m | 2 tasks (Task 1: 3 file edits TRIG-03; Task 2 TDD: cross-host parity driver) | 27 tests added (1376 total; coexistence blocking gate + cross-host parity D-77 sampled driver) |
-| Phase 04 P04 | ~30m | 2 tasks (T1: outreach packet + RAPID-RESPONSE D-79 + MAINTAINERS fill-in; T2: GTM-01 launch post) | 0 tests added (docs-only; 1376 total) |
+| Phase 04 P04 | ~30m | 2 tasks (T1: outreach packet + RAPID-RESPONSE D-79 + MAINTAINERS fill-in; T2: GTM-01 launch post) | 0 tests added (docs-only; 1394 total — codex review added idempotency test) |
 
 ## Accumulated Context
 
@@ -220,7 +220,7 @@ None yet.
   - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-04-SUMMARY.md`
   - STATE.md updated: completed_plans 4 → 5; stopped_at updated
 - **Commits:** f34a31b (outreach packet) | 23ba7e5 (RAPID-RESPONSE D-79) | 29fecf2 (MAINTAINERS fill) | 14432b1 (launch post draft)
-- **Final state:** 1376 tests (1376 passing — unchanged, docs-only plan) | Wave A checkpoint PENDING
+- **Final state:** 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake; +18 from codex review fixes) | Wave A checkpoint PENDING
 
 ### Next Session
 
