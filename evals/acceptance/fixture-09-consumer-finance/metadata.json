@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-09-consumer-finance",
+  "route": "new-product",
+  "useCase": "consumer",
+  "stack": "Vite+TW4",
+  "budgetCeiling": 150000,
+  "seedLabel": "Ledger — personal finance clarity for the post-Mint generation",
+  "prdPath": "./PRD.md"
+}

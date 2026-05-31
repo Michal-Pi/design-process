@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-12-dashboard-admin",
+  "route": "new-product",
+  "useCase": "dashboard",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 150000,
+  "seedLabel": "Helm — internal operations dashboard consolidating provisioning, SLA, and approvals",
+  "prdPath": "./PRD.md"
+}

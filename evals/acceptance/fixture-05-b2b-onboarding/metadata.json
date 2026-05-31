@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-05-b2b-onboarding",
+  "route": "new-feature",
+  "useCase": "b2b-saas",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 60000,
+  "seedLabel": "Prism guided enterprise onboarding wizard — new feature on existing SaaS codebase",
+  "prdPath": "./PRD.md"
+}

@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-06-consumer-fitness",
+  "route": "new-product",
+  "useCase": "consumer",
+  "stack": "Vite+plain-css",
+  "budgetCeiling": 150000,
+  "seedLabel": "Kinetic — adaptive fitness tracking for recreational athletes",
+  "prdPath": "./PRD.md"
+}

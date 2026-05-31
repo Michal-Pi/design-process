@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-08-consumer-lovable",
+  "route": "mature-app-refactor",
+  "useCase": "consumer",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 45000,
+  "seedLabel": "Bloom habit tracker — mature-app-refactor migration from Lovable prototype to production",
+  "prdPath": "./PRD.md"
+}

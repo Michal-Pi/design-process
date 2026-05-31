@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-03-b2b-devtools",
+  "route": "new-product",
+  "useCase": "b2b-saas",
+  "stack": "Vite+plain-css",
+  "budgetCeiling": 150000,
+  "seedLabel": "Stackwatch — dependency health SaaS for engineering teams",
+  "prdPath": "./PRD.md"
+}

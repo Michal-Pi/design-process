@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-15-marketing-rebrand",
+  "route": "brand-refresh",
+  "useCase": "marketing",
+  "stack": "Vite+TW4",
+  "budgetCeiling": 55000,
+  "seedLabel": "Verdant — brand refresh token migration from Tailwind v3 hardcoded to DTCG v2025.10 system",
+  "prdPath": "./PRD.md"
+}

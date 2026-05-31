@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-02-b2b-crm",
+  "route": "new-product",
+  "useCase": "b2b-saas",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 150000,
+  "seedLabel": "Nexus CRM — relationship intelligence dashboard for sales teams",
+  "prdPath": "./PRD.md"
+}

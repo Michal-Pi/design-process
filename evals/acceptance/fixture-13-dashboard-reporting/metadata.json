@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-13-dashboard-reporting",
+  "route": "new-product",
+  "useCase": "dashboard",
+  "stack": "Next15+TW4+shadcn",
+  "budgetCeiling": 150000,
+  "seedLabel": "Pulse — customer-facing reporting and export dashboard for B2B analytics platform",
+  "prdPath": "./PRD.md"
+}

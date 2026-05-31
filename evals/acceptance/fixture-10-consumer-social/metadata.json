@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-10-consumer-social",
+  "route": "new-feature",
+  "useCase": "consumer",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 60000,
+  "seedLabel": "Ripple social reading highlights — new community feature on existing reading app",
+  "prdPath": "./PRD.md"
+}

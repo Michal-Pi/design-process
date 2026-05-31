@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-04-b2b-analytics",
+  "route": "new-product",
+  "useCase": "b2b-saas",
+  "stack": "Next15+TW4",
+  "budgetCeiling": 150000,
+  "seedLabel": "Meridian — internal analytics command center for B2B SaaS stakeholders",
+  "prdPath": "./PRD.md"
+}

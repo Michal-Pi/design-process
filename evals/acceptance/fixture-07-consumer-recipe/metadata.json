@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-07-consumer-recipe",
+  "route": "new-product",
+  "useCase": "consumer",
+  "stack": "Astro+plain-css",
+  "budgetCeiling": 150000,
+  "seedLabel": "Mise — weekly meal planning and pantry-aware recipe discovery",
+  "prdPath": "./PRD.md"
+}

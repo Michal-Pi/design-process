@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-14-marketing-landing",
+  "route": "new-product",
+  "useCase": "marketing",
+  "stack": "Astro+plain-css",
+  "budgetCeiling": 150000,
+  "seedLabel": "Orbit — modular landing page system for developer-tools company",
+  "prdPath": "./PRD.md"
+}

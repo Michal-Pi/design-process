@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-11-dashboard-ds-extraction",
+  "route": "DS-extraction",
+  "useCase": "dashboard",
+  "stack": "Next15+shadcn",
+  "budgetCeiling": 120000,
+  "seedLabel": "Atlas Admin — design system extraction from 12-screen Lovable prototype",
+  "prdPath": "./PRD.md"
+}

@@ -1,0 +1,131 @@
+{
+  "fixtureCount": 15,
+  "distribution": {
+    "b2bSaas": 5,
+    "consumer": 5,
+    "dashboard": 3,
+    "marketing": 2
+  },
+  "fixtures": [
+    {
+      "fixtureId": "fixture-01-b2b-taskflow",
+      "dir": "fixture-01-b2b-taskflow",
+      "route": "new-feature",
+      "useCase": "b2b-saas",
+      "stack": "Next15+TW4+shadcn",
+      "budgetCeiling": 60000
+    },
+    {
+      "fixtureId": "fixture-02-b2b-crm",
+      "dir": "fixture-02-b2b-crm",
+      "route": "new-product",
+      "useCase": "b2b-saas",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-03-b2b-devtools",
+      "dir": "fixture-03-b2b-devtools",
+      "route": "new-product",
+      "useCase": "b2b-saas",
+      "stack": "Vite+plain-css",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-04-b2b-analytics",
+      "dir": "fixture-04-b2b-analytics",
+      "route": "new-product",
+      "useCase": "b2b-saas",
+      "stack": "Next15+TW4",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-05-b2b-onboarding",
+      "dir": "fixture-05-b2b-onboarding",
+      "route": "new-feature",
+      "useCase": "b2b-saas",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 60000
+    },
+    {
+      "fixtureId": "fixture-06-consumer-fitness",
+      "dir": "fixture-06-consumer-fitness",
+      "route": "new-product",
+      "useCase": "consumer",
+      "stack": "Vite+plain-css",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-07-consumer-recipe",
+      "dir": "fixture-07-consumer-recipe",
+      "route": "new-product",
+      "useCase": "consumer",
+      "stack": "Astro+plain-css",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-08-consumer-lovable",
+      "dir": "fixture-08-consumer-lovable",
+      "route": "mature-app-refactor",
+      "useCase": "consumer",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 45000
+    },
+    {
+      "fixtureId": "fixture-09-consumer-finance",
+      "dir": "fixture-09-consumer-finance",
+      "route": "new-product",
+      "useCase": "consumer",
+      "stack": "Vite+TW4",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-10-consumer-social",
+      "dir": "fixture-10-consumer-social",
+      "route": "new-feature",
+      "useCase": "consumer",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 60000
+    },
+    {
+      "fixtureId": "fixture-11-dashboard-ds-extraction",
+      "dir": "fixture-11-dashboard-ds-extraction",
+      "route": "DS-extraction",
+      "useCase": "dashboard",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 120000
+    },
+    {
+      "fixtureId": "fixture-12-dashboard-admin",
+      "dir": "fixture-12-dashboard-admin",
+      "route": "new-product",
+      "useCase": "dashboard",
+      "stack": "Next15+shadcn",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-13-dashboard-reporting",
+      "dir": "fixture-13-dashboard-reporting",
+      "route": "new-product",
+      "useCase": "dashboard",
+      "stack": "Next15+TW4+shadcn",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-14-marketing-landing",
+      "dir": "fixture-14-marketing-landing",
+      "route": "new-product",
+      "useCase": "marketing",
+      "stack": "Astro+plain-css",
+      "budgetCeiling": 150000
+    },
+    {
+      "fixtureId": "fixture-15-marketing-rebrand",
+      "dir": "fixture-15-marketing-rebrand",
+      "route": "brand-refresh",
+      "useCase": "marketing",
+      "stack": "Vite+TW4",
+      "budgetCeiling": 55000
+    }
+  ]
+}

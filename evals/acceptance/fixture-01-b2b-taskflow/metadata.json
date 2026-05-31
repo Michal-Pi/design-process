@@ -1,0 +1,9 @@
+{
+  "fixtureId": "fixture-01-b2b-taskflow",
+  "route": "new-feature",
+  "useCase": "b2b-saas",
+  "stack": "Next15+TW4+shadcn",
+  "budgetCeiling": 60000,
+  "seedLabel": "TaskFlow — Team Task Management standup surfacing feature (Phase 2 regression fixture)",
+  "prdPath": "../../fixtures/e2e/next15-tailwind4-shadcn/PRD.md"
+}
