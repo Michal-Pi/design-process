@@ -28,6 +28,10 @@
       "path": "schemas/dist/persona.v1.json",
       "version": 1
     },
+    "release-gate-result": {
+      "path": "schemas/dist/release-gate-result.v1.json",
+      "version": 1
+    },
     "sitemap": {
       "path": "schemas/dist/sitemap.v1.json",
       "version": 1

@@ -61,6 +61,8 @@ async function loadSchemas() {
     // Plan 02 additions:
     { Finding },
     { ManifestLockEntry },
+    // Plan 04-02 addition:
+    { ReleaseGateResult },
   ] = await Promise.all([
     import("../../../schemas/src/persona.ts"),
     import("../../../schemas/src/sitemap.ts"),
@@ -70,6 +72,7 @@ async function loadSchemas() {
     import("../../../schemas/src/handoff-bundle.ts"),
     import("../../../schemas/src/finding.ts"),
     import("../../../schemas/src/manifest-lock-entry.ts"),
+    import("../../../schemas/src/release-gate-result.ts"),
   ]);
 
   return {
@@ -82,6 +85,8 @@ async function loadSchemas() {
     // Plan 02 additions:
     finding: { schema: Finding, version: 1 },
     "manifest-lock-entry": { schema: ManifestLockEntry, version: 1 },
+    // Plan 04-02 addition:
+    "release-gate-result": { schema: ReleaseGateResult, version: 1 },
   };
 }
 

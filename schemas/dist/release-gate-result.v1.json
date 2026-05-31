@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accept05Pass": {
+      "type": "boolean"
+    },
+    "accept06Pass": {
+      "type": "boolean"
+    },
+    "dryRun": {
+      "type": "boolean"
+    },
+    "failingFixtureIds": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "fixturePassCount": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "fixtureResults": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "fixtureId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "gateResults": {
+            "additionalProperties": {
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "pass",
+                    "pass_with_warnings",
+                    "failed_after_repair",
+                    "user_overridden",
+                    "not_runnable"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "type": "object"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "pass": {
+            "type": "boolean"
+          },
+          "tokensUsed": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "wallClockMs": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "fixtureId",
+          "pass",
+          "tokensUsed",
+          "wallClockMs",
+          "gateResults"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generatedAt": {
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$",
+      "type": "string"
+    },
+    "hardGatePassed": {
+      "type": "boolean"
+    },
+    "hardGateReason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "host": {
+      "enum": [
+        "claude-code",
+        "codex-cli",
+        "cursor"
+      ],
+      "type": "string"
+    },
+    "p50Tokens": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "p95Tokens": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "passingFixtureIds": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": 1,
+      "type": "number"
+    },
+    "softGateDisclosures": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "wallClockP50Ms": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "host",
+    "dryRun",
+    "fixtureResults",
+    "fixturePassCount",
+    "passingFixtureIds",
+    "failingFixtureIds",
+    "p50Tokens",
+    "p95Tokens",
+    "wallClockP50Ms",
+    "hardGatePassed",
+    "hardGateReason",
+    "softGateDisclosures",
+    "accept05Pass",
+    "accept06Pass"
+  ],
+  "type": "object"
+}
