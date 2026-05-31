@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0b
-milestone_name: v2.0b full 5-stage pipeline
-status: verifying
-stopped_at: Phase 4 context gathered
-last_updated: "2026-05-26T12:59:16.799Z"
+milestone: v2.0 RC
+milestone_name: v2.0 RC — Acceptance, Cross-Host, Launch
+status: in_progress
+stopped_at: Phase 4 Plan 01 complete — 15-fixture acceptance corpus + 3 adversarial corpora
+last_updated: "2026-05-31T00:00:00.000Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_plans: 20
+  completed_plans: 17
+  percent: 85
 ---
 
 # State: design-os
@@ -21,7 +21,7 @@ progress:
 
 - **Project:** design-os
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 3 (v2.0b) — VERIFIED COMPLETE 2026-05-26 by gsd-verifier (03-VERIFICATION.md PASS). All 5 plans shipped, all 5 SC structurally verified (SC-1 live LLM run deferred to user manual verification). 17 locked decisions D-54..D-70 honored. 5 open questions OQ-1..OQ-5 resolved. 7 lessons-forward upheld. No Phase 4 deliverables prematurely shipped. 999 tests total (996-997 passing; 2-3 pre-existing stage-2-latch.test.ts flakes from Phase 2, untouched by Phase 3).
+- **Current focus:** Phase 4 (v2.0 RC/GA) — Plans 00-01 complete. 04-00: npm @beta dist + design-os install CLI. 04-01: 15-fixture acceptance corpus (evals/acceptance/) + 3×100-case adversarial corpora (ACCEPT-02/03/04). ACCEPT-05 covered by existing fid-06-frost-recurrence harness. 1314 tests (1312 passing; 2 pre-existing stage-2-latch.test.ts flakes).
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -29,9 +29,9 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
-- **Plan:** 05 complete (Phase 3 Plan 5 delivered — route promotion D-66/D-67/ROUTE-06/OQ-3, audit --all-stages D-68, audit --new-feature D-69, SKILL.md v2.0b, trigger tuning, SC-1..SC-5 verified)
-- **Next plan:** Phase 04 Plan 01 (RC / GA preparation) — separately authorized by user; SC-1 manual end-to-end LLM verification on clean laptop pending before Phase 4 planning begins
-- **Status:** Phase 03 COMPLETE. All 15 plans delivered. 999 tests (996-997 passing — 2-3 pre-existing flakes only). Phase 3 SC-1..SC-5 all verified by gsd-verifier (03-VERIFICATION.md).
+- **Plan:** 04-01 complete (Phase 4 Plan 01 delivered — 15-fixture acceptance corpus + 3×100-case adversarial corpora)
+- **Next plan:** Phase 04 Plan 02 (release-gate harness + axe-runner)
+- **Status:** Phase 04 Plans 00-01 complete. 17/20 plans delivered. 1314 tests (1312-1313 passing — 1-2 pre-existing stage-2-latch flakes).
 
 **Progress:**
 
@@ -39,9 +39,9 @@ progress:
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
-Phase 4: [          ] 0%   Not started (RC / GA preparation)
+Phase 4: [████      ] 40%  Plans 00-01 complete (npm beta dist + 15-fixture corpus + adversarial corpora)
 
-**Overall:** Phase 1+2+3 complete; 15/15 plans delivered. 999 tests (996-997 passing).
+**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-01 complete; 17/20 plans delivered. 1314 tests (1312-1313 passing — 1-2 pre-existing stage-2-latch flakes).
 
 ## Performance Metrics
 
@@ -76,6 +76,8 @@ Phase 4: [          ] 0%   Not started (RC / GA preparation)
 | Phase 03 P03 | 75m | 3 tasks | 13 files | 16 tests added (916 total) |
 | Phase 03 P04 | 90m | 2 tasks | 17 files | 37 tests added (953 total) |
 | Phase 03 P05 | 45m | 3 tasks | 15 files | 14 tests added + 16 tests updated (983 total) |
+| Phase 04 P00 | — | 2 tasks | ~25 files | 23 tests added (1006 total; npm @beta install) |
+| Phase 04 P01 | — | 2 tasks | 35 files | 306 tests added (1312 total; 15-fixture corpus + 3 adversarial corpora) |
 
 ## Accumulated Context
 
@@ -154,13 +156,19 @@ Phase 4: [          ] 0%   Not started (RC / GA preparation)
 - [Phase 03 Plan 05]: sortFindingsByRank uses stageToNum() for '5a'→5.1 and '5b'→5.2; findSitemapNode uses string .includes() — no filesystem use of featureName (T-03-05-02 mitigated)
 - [Phase 03 Plan 05]: Phase 3 SC-1..SC-5 all PASS; 983 tests total; tsc clean; lint-determinism clean
 - [Phase 03 Verifier]: gsd-verifier PASS 2026-05-26 — 03-VERIFICATION.md created; all 17 locked decisions D-54..D-70 honored; all 5 OQs resolved; all 7 lessons-forward upheld; no Phase 4 scope creep; 999 tests (996-997 passing, 2-3 pre-existing stage-2-latch flakes); SC-1 live-LLM run deferred-by-design to user manual verification before Phase 4
+- [Phase 04 Plan 01]: checkId for synthetic-persona block finding is 'RED-01' (not '1-provenance-001' as stated in PLAN.md interfaces block); tests assert actual gate behavior
+- [Phase 04 Plan 01]: ACCEPT-02 run.test.ts identity assertion uses checkId === 'RED-01' matching actual stage-1 gate implementation
+- [Phase 04 Plan 01]: ACCEPT-05 covered by existing fid-06-frost-recurrence harness per 04-RESEARCH.md §Group B; README.md pointer only in accept-05/
+- [Phase 04 Plan 01]: ACCEPT-04 fixture distinctness: 3 variant strategies (absent/empty/non-spec interactions/) + PRODUCT_NAMES[100] + token group count (1..10) + non-spec file count (1..5) = 100 genuinely distinct fixtures
+- [Phase 04 Plan 01]: D-73 distribution verified: 5 B2B SaaS + 5 consumer + 3 dashboard + 2 marketing = 15; fixtures.manifest.json distribution field matches filter counts
 
 ### Todos (next session)
 
-- [ ] User manual SC-1 verification (live LLM run of `design --route new-feature` on Next.js 15 + Tailwind v4 + shadcn fixture) on clean laptop before Phase 4 planning begins
+- [ ] Phase 04 Plan 02 — release-gate harness + axe-runner CI gate + cost-discipline gate
+- [ ] Phase 04 Plan 03 — cross-host parity driver (Codex CLI + Cursor sampled)
+- [ ] User manual SC-1 verification (live LLM run of `design --route new-feature` on clean laptop with npm @beta install)
 - [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Run keyword-filter week-2 calibration based on first week's Anthropic watcher hits (Open Q4)
-- [ ] Phase 04 Plan 01 — RC / GA preparation (trigger eval, coexistence eval, axe runner, release packaging) — authorized but not yet started
+- [ ] Codex review of 04-01 changes (diff vs 99f8fa1)
 
 ### Blockers
 
@@ -178,14 +186,18 @@ None yet.
 
 ### Last Session
 
-- **Date:** 2026-05-26
-- **Activity:** gsd-verifier run on Phase 3 — goal-backward verification of all 5 ROADMAP success criteria, 17 locked decisions D-54..D-70, 5 open questions OQ-1..OQ-5, 7 lessons-forward (INVARIANTS.md), and Phase 4 scope guardrails. Spot-checked CLI flags via `--help` for audit (--all-stages, --new-feature, --reverse-engineer-stages), migrate (--from 2.0a --to 2.0b), and design (--route new-product/mature-app-refactor/DS-extraction). Ran full test suite (999 tests, 996-997 passing — 2-3 pre-existing stage-2-latch.test.ts flakes confirmed via git log to predate Phase 3). Ran tsc clean and lint:determinism clean. Verdict: PASS.
-- **Stopped at:** Phase 4 context gathered
+- **Date:** 2026-05-31
+- **Activity:** Phase 04 Plan 01 execution — 15-fixture acceptance corpus + 3×100-case adversarial corpora (ACCEPT-02/03/04). TDD: RED commit (failing tests) then GREEN commit (fixture-builders). ACCEPT-05 README pointer only. lint:determinism CLEAN, tsc CLEAN, 1314 tests (1312-1313 passing — 2 pre-existing flakes).
+- **Stopped at:** Phase 4 Plan 01 complete — Codex review next
 - **Artifacts produced:**
-  - `.planning/phases/03-v2-0b-full-5-stages-lovable-refugee-path/03-VERIFICATION.md`
-  - STATE.md updated: status `in_progress` → `completed`; completed_phases 2 → 3
-  - ROADMAP.md updated: Phase 3 entry reflects 5/5 plans shipped + 999 tests + verifier PASS
-- **Final state:** 999 tests (996-997 passing) | tsc clean | lint-determinism CLEAN | SC-1..SC-5 verified | 03-VERIFICATION.md PASS
+  - `evals/acceptance/` — 15 fixture dirs + fixtures.manifest.json
+  - `evals/adversarial/accept-02/` — fixture-builder.mjs + run.test.ts (100 cases)
+  - `evals/adversarial/accept-03/` — fixture-builder.mjs + run.test.ts (100 cases)
+  - `evals/adversarial/accept-04/` — fixture-builder.mjs + run.test.ts (100 cases)
+  - `evals/adversarial/accept-05/` — README.md pointer to fid-06-frost-recurrence
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-01-SUMMARY.md`
+  - STATE.md updated: completed_plans 15 → 17; Phase 4 progress updated
+- **Final state:** 1314 tests (1312-1313 passing) | tsc clean | lint-determinism CLEAN
 
 ### Next Session
 
