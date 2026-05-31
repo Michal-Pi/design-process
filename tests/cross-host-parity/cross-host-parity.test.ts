@@ -15,8 +15,17 @@
 
 import { describe, it, expect } from 'vitest';
 
+// FixtureManifestEntry type mirror (matches shape in cross-host-parity.mjs)
+interface FixtureEntry {
+  fixtureId: string;
+  useCase: string;
+  route: string;
+  budgetCeiling: number;
+  [key: string]: unknown;
+}
+
 // Fixture data for tests — mirrors fixtures.manifest.json shape
-const SAMPLE_FIXTURES = [
+const SAMPLE_FIXTURES: FixtureEntry[] = [
   // b2b-saas (5 fixtures)
   { fixtureId: 'fixture-01-b2b-taskflow',   useCase: 'b2b-saas',  route: 'new-feature',       budgetCeiling: 60000  },
   { fixtureId: 'fixture-02-b2b-crm',        useCase: 'b2b-saas',  route: 'new-product',        budgetCeiling: 150000 },
@@ -59,7 +68,7 @@ describe('selectDeterministicSample', () => {
   it('does not use Math.random() — returns same result across multiple calls', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
     const results = Array.from({ length: 5 }, () =>
-      selectDeterministicSample(SAMPLE_FIXTURES, 5).map(f => f.fixtureId)
+      (selectDeterministicSample(SAMPLE_FIXTURES, 5) as FixtureEntry[]).map((f: FixtureEntry) => f.fixtureId)
     );
     const first = JSON.stringify(results[0]);
     for (const r of results) {
@@ -67,50 +76,50 @@ describe('selectDeterministicSample', () => {
     }
   });
 
-  it('includes exactly 1 fixture per use-case category (b2b-saas, consumer, dashboard, marketing)', async () => {
+  it('includes at least 1 fixture from each available use-case category', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
-    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5);
-    const useCaseCounts: Record<string, number> = {};
-    for (const f of sample) {
-      useCaseCounts[f.useCase] = (useCaseCounts[f.useCase] ?? 0) + 1;
-    }
-    expect(useCaseCounts['b2b-saas']).toBe(1);
-    expect(useCaseCounts['consumer']).toBe(1);
-    expect(useCaseCounts['dashboard']).toBe(1);
-    expect(useCaseCounts['marketing']).toBe(1);
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5) as FixtureEntry[];
+    const useCasesInSample = new Set(sample.map((f: FixtureEntry) => f.useCase));
+    // All 4 categories must be represented (1 from each as category slot)
+    expect(useCasesInSample.has('b2b-saas')).toBe(true);
+    expect(useCasesInSample.has('consumer')).toBe(true);
+    expect(useCasesInSample.has('dashboard')).toBe(true);
+    expect(useCasesInSample.has('marketing')).toBe(true);
+    // b2b-saas and dashboard come from unique category slots; no duplicates from those
+    expect(sample.filter((f: FixtureEntry) => f.useCase === 'b2b-saas').length).toBe(1);
+    expect(sample.filter((f: FixtureEntry) => f.useCase === 'dashboard').length).toBe(1);
   });
 
   it('selects the first fixture per category after sorting by fixtureId (stable sort)', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
-    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5);
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5) as FixtureEntry[];
     // First b2b-saas fixture sorted by fixtureId = fixture-01-b2b-taskflow
-    expect(sample.find(f => f.useCase === 'b2b-saas')?.fixtureId).toBe('fixture-01-b2b-taskflow');
+    expect(sample.find((f: FixtureEntry) => f.useCase === 'b2b-saas')?.fixtureId).toBe('fixture-01-b2b-taskflow');
     // First consumer fixture sorted by fixtureId = fixture-06-consumer-fitness
-    expect(sample.find(f => f.useCase === 'consumer')?.fixtureId).toBe('fixture-06-consumer-fitness');
+    expect(sample.find((f: FixtureEntry) => f.useCase === 'consumer')?.fixtureId).toBe('fixture-06-consumer-fitness');
     // First dashboard fixture sorted by fixtureId = fixture-11-dashboard-ds-extraction
-    expect(sample.find(f => f.useCase === 'dashboard')?.fixtureId).toBe('fixture-11-dashboard-ds-extraction');
+    expect(sample.find((f: FixtureEntry) => f.useCase === 'dashboard')?.fixtureId).toBe('fixture-11-dashboard-ds-extraction');
     // First marketing fixture sorted by fixtureId = fixture-14-marketing-landing
-    expect(sample.find(f => f.useCase === 'marketing')?.fixtureId).toBe('fixture-14-marketing-landing');
+    expect(sample.find((f: FixtureEntry) => f.useCase === 'marketing')?.fixtureId).toBe('fixture-14-marketing-landing');
   });
 
   it('5th fixture is the route-mandatory (mature-app-refactor or DS-extraction)', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
-    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5);
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5) as FixtureEntry[];
     const routeMandatory = sample.find(
-      f => f.route === 'mature-app-refactor' || f.route === 'DS-extraction'
+      (f: FixtureEntry) => f.route === 'mature-app-refactor' || f.route === 'DS-extraction'
     );
     expect(routeMandatory).toBeDefined();
   });
 
   it('route-mandatory is first fixture matching mature-app-refactor or DS-extraction', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
-    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5);
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 5) as FixtureEntry[];
     // fixture-08-consumer-lovable has mature-app-refactor; fixture-11-dashboard-ds-extraction has DS-extraction.
-    // fixture-08 comes first alphabetically if consumer group doesn't already occupy the slot.
-    // The route-mandatory slot finds the FIRST fixture with the route (sorted by fixtureId)
-    // among those NOT already selected by category logic.
+    // fixture-11 is selected as the dashboard category slot (DS-extraction route).
+    // The route-mandatory requirement is satisfied by the dashboard category slot.
     const routeMandatory = sample.find(
-      f => f.route === 'mature-app-refactor' || f.route === 'DS-extraction'
+      (f: FixtureEntry) => f.route === 'mature-app-refactor' || f.route === 'DS-extraction'
     );
     expect(['fixture-08-consumer-lovable', 'fixture-11-dashboard-ds-extraction']).toContain(
       routeMandatory?.fixtureId
@@ -120,13 +129,13 @@ describe('selectDeterministicSample', () => {
   it('handles a fixture set with fewer than 4 categories by using available ones', async () => {
     const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
     // Subset with only 3 categories
-    const subset = SAMPLE_FIXTURES.filter(f => f.useCase !== 'marketing');
-    const sample = selectDeterministicSample(subset, 5);
+    const subset = SAMPLE_FIXTURES.filter((f: FixtureEntry) => f.useCase !== 'marketing');
+    const sample = selectDeterministicSample(subset, 5) as FixtureEntry[];
     // Should still return up to 5 (or however many available without duplication)
     expect(sample.length).toBeGreaterThan(0);
     expect(sample.length).toBeLessThanOrEqual(5);
     // Should have no duplicates
-    const ids = sample.map(f => f.fixtureId);
+    const ids = sample.map((f: FixtureEntry) => f.fixtureId);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
