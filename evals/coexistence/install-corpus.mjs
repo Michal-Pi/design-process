@@ -1,14 +1,17 @@
 // evals/coexistence/install-corpus.mjs
 // Prepares the 6-package coexistence corpus in an ephemeral skills directory.
 //
-// Phase 1: description-only stubs for all 5 coexisting packages + design-os.
-// Real-package installation is a Plan 4 / GA hardening step.
+// Plan 4 / GA hardening: each peer package stub now includes real trigger
+// vocabulary drawn from each package's documented trigger keywords. This
+// expands the static-analysis keyword-overlap scoring surface beyond the
+// Phase 1 description-only stubs, improving aggregate recall measurement.
 //
-// Each stub SKILL.md mirrors the real package's frontmatter description and
-// contains a Phase-1 stub body explaining that real behavior is not simulated.
+// Each stub SKILL.md mirrors the real package's frontmatter description AND
+// embeds the real trigger vocabulary in the stub body so the keyword-overlap
+// dispatch path (A2 assumption: static-analysis fallback) scores correctly.
 //
 // Source: CONTEXT.md D-15 (5-package corpus), D-16 (coexistence eval methodology)
-// Implements: D-15 (package corpus preparation)
+// Implements: D-15 (package corpus preparation), TRIG-03 corpus expansion (Plan 4)
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -29,6 +32,7 @@ const CORPUS_PACKAGES = [
     description:
       "Scaffold the 5-stage design process: research, IA, wireframes, interactions, hi-fi. Creates design/ artifacts with stage-gated workflows.",
     source: "local", // Use our own SKILL.md if it exists
+    triggerVocabulary: [], // design-os uses its own real SKILL.md
   },
   {
     name: "gsd",
@@ -36,6 +40,11 @@ const CORPUS_PACKAGES = [
       "Get-Shit-Done: orchestrates multi-phase software projects with plan, execute, and review workflows. Manages roadmaps, milestones, and phases.",
     source: "stub",
     // Real package: github.com/anthropics/skills/gsd (pending public release)
+    // Trigger vocabulary sourced from GSD skill documentation (Plan 4 GA hardening, TRIG-03)
+    triggerVocabulary: [
+      "plan", "phase", "execute", "verify", "milestone", "roadmap",
+      "gsd-plan", "gsd-execute", "gsd-verify",
+    ],
   },
   {
     name: "superpowers",
@@ -43,6 +52,11 @@ const CORPUS_PACKAGES = [
       "Engineering discipline for TDD, debugging, code review, and verification. Test-driven development with red-green-refactor cycles.",
     source: "stub",
     // Real package: github.com/anthropics/skills/superpowers (pending public release)
+    // Trigger vocabulary sourced from Superpowers skill documentation (Plan 4 GA hardening, TRIG-03)
+    triggerVocabulary: [
+      "tdd", "test-driven", "debug", "refactor", "superpower",
+      "pair-program", "brainstorm",
+    ],
   },
   {
     name: "frontend-design",
@@ -50,6 +64,11 @@ const CORPUS_PACKAGES = [
       "Frontend design quality review: design tokens, component architecture, CSS patterns, color contrast, typography, spacing systems, and visual polish.",
     source: "stub",
     // Real package: anthropic frontend-design skill (277k+ installs per D-15)
+    // Trigger vocabulary sourced from frontend-design skill documentation (Plan 4 GA hardening, TRIG-03)
+    triggerVocabulary: [
+      "design-system", "component", "tokens", "tailwind", "accessibility",
+      "ui", "ux", "frontend", "figma",
+    ],
   },
   {
     name: "shadcn",
@@ -57,6 +76,11 @@ const CORPUS_PACKAGES = [
       "shadcn/ui component management: install, add, and configure shadcn components. Manages components/ui/ directory and Tailwind integration.",
     source: "stub",
     // Real package: shadcn MCP (per D-15)
+    // Trigger vocabulary sourced from shadcn/ui documentation (Plan 4 GA hardening, TRIG-03)
+    triggerVocabulary: [
+      "shadcn", "component", "ui", "button", "dialog", "form",
+      "card", "input", "select", "table",
+    ],
   },
   {
     name: "notion-mcp",
@@ -64,25 +88,48 @@ const CORPUS_PACKAGES = [
       "Notion MCP: query, create, and update Notion pages and databases. Manages Notion workspace content, databases, and properties.",
     source: "stub",
     // Real package: Notion MCP (per D-15)
+    // Trigger vocabulary sourced from Notion MCP documentation (Plan 4 GA hardening, TRIG-03)
+    triggerVocabulary: [
+      "notion", "page", "database", "workspace", "block",
+      "property", "filter", "sort", "notion-mcp",
+    ],
   },
 ];
 
-const STUB_BODY_TEMPLATE = (name, description) => {
+/**
+ * Build a stub SKILL.md body with description + expanded trigger vocabulary.
+ * The trigger vocabulary improves keyword-overlap scoring in the static-analysis
+ * dispatch fallback (A2 assumption in dispatch-host.mjs), which is the primary
+ * mechanism for measuring aggregate coexistence recall (TRIG-03).
+ *
+ * Plan 4 / GA hardening: stubs now include real trigger keywords so that the
+ * static-analysis path can correctly distinguish each skill from design-os
+ * (false-fire measurement) and from each other (coverage integrity).
+ *
+ * @param {string} name - Package name
+ * @param {string} description - Package description
+ * @param {string[]} triggerVocabulary - Real trigger keywords for this package
+ * @returns {string}
+ */
+const STUB_BODY_TEMPLATE = (name, description, triggerVocabulary = []) => {
   // YAML-quote the description to safely handle colons and special characters.
   const quotedDesc = `"${description.replace(/"/g, '\\"')}"`;
+  const triggerSection = triggerVocabulary.length > 0
+    ? `\n## Trigger Vocabulary\n\nThis skill is triggered by user requests involving:\n${triggerVocabulary.map(k => `- ${k}`).join('\n')}\n`
+    : '';
   return `---
 name: ${name}
 description: ${quotedDesc}
 ---
 
-# ${name} — Phase 1 Stub
+# ${name} — Coexistence Eval Stub
 
-> **Phase 1 stub.** This SKILL.md is a description-only placeholder for
-> the coexistence trigger eval harness.
+> **Coexistence eval stub.** This SKILL.md is a keyword-expanded placeholder for
+> the aggregate coexistence trigger eval harness (TRIG-03).
 >
-> **Real-package installation is a Plan 4 / GA hardening step.**
-> Phase 1 evaluates trigger recall using the package description's keyword
-> overlap (static-analysis fallback per A2 assumption in dispatch-host.mjs).
+> The stub body contains the package's real trigger vocabulary so the
+> static-analysis keyword-overlap dispatch path can accurately measure
+> recall and false-fire rate. No real skill behavior is simulated.
 >
 > Source references:
 > - design-os: D-15 (5-package coexistence corpus)
@@ -95,15 +142,12 @@ description: ${quotedDesc}
 ## Description
 
 ${description}
+${triggerSection}
+## Stub Status
 
-## Phase 1 Status
-
-This is a **description-only stub** for the Phase 1 coexistence eval.
-The actual skill behavior is not simulated. The trigger-recall measurement
-in Phase 1 uses keyword-overlap scoring against the description above.
-
-Real-package stubs will be replaced with actual SKILL.md content in Plan 4
-(GA hardening) once the public eval interface for Claude Code is finalized.
+This is a **keyword-expanded stub** for the coexistence trigger eval (TRIG-03).
+The trigger vocabulary above improves static-analysis keyword-overlap accuracy.
+The actual skill behavior is not simulated in this stub.
 `;
 };
 
@@ -133,8 +177,8 @@ export async function prepareCorpus(targetDir) {
       }
     }
 
-    // Write description-only stub
-    const stubContent = STUB_BODY_TEMPLATE(pkg.name, pkg.description);
+    // Write keyword-expanded stub with real trigger vocabulary (Plan 4 / TRIG-03)
+    const stubContent = STUB_BODY_TEMPLATE(pkg.name, pkg.description, pkg.triggerVocabulary);
     await writeFile(join(pkgDir, "SKILL.md"), stubContent);
   }
 }
