@@ -60,6 +60,8 @@ export const ReleaseGateResult = z.object({
   // Gate outcomes
   hardGatePassed: z.boolean(),
   hardGateReason: z.string().nullable(),
+  // Multi-reason array populated when accept05Pass or accept06Pass also failed (FIX 4)
+  hardGateReasons: z.array(z.string()).optional(),
   softGateDisclosures: z.array(z.string()),
 
   // ACCEPT-05: fid-06-frost-recurrence adversarial harness

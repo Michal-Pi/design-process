@@ -98,6 +98,12 @@
         }
       ]
     },
+    "hardGateReasons": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
     "host": {
       "enum": [
         "claude-code",
