@@ -5,8 +5,8 @@
 The Anthropic-Labs watcher monitors `anthropics/skills` releases, the Anthropic blog RSS,
 and Claude Design release notes daily for competitive-watch keywords.
 
-- **Primary:** @TBD (project owner to fill in before GA)
-- **Backup:** @TBD
+- **Primary:** Michal Pilawski ([@Michal-Pi](https://github.com/Michal-Pi) · michal.pilawski@gmail.com)
+- **Backup:** @Michal-Pi (same maintainer until a backup is designated)
 - **Weekly review cadence:** Friday
 - **Review checklist:**
   - Open `[competitive-watch]` issues created by the watcher
@@ -15,8 +15,7 @@ and Claude Design release notes daily for competitive-watch keywords.
   - If no overlap, close the issue with a short note explaining why
   - Mark the `Anthropic Watcher: Status Tracker` issue with your review date
 
-**Note:** The `@TBD` placeholder is intentional for Phase 1. The project owner fills this in
-before v2.0 GA (see STATE.md todos). The watcher GitHub Actions cron is live from week 1
+**Note:** Owner contact filled in as part of Plan 04-04 (v2.0 RC). The watcher GitHub Actions cron is live from week 1
 per D-30 and GTM-06 (Phase 1 success criterion).
 
 ## Schemas + Migrations
@@ -32,6 +31,6 @@ The CI `schema-migration-guard.yml` workflow enforces this automatically.
 All user-visible copy changes require a copy review pass against the
 [copy review checklist](COPY-REVIEW-CHECKLIST.md).
 
-- **Copy reviewer:** @TBD (project owner)
+- **Copy reviewer:** Michal Pilawski ([@Michal-Pi](https://github.com/Michal-Pi))
 - **See:** [docs/COPY-REVIEW-CHECKLIST.md](COPY-REVIEW-CHECKLIST.md)
 - **See also:** [docs/TRUST-POSTURE.md](TRUST-POSTURE.md) for the full trust posture binding
