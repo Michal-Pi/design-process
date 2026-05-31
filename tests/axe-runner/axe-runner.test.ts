@@ -16,7 +16,10 @@
 // Source: 04-02-PLAN.md Task 2; INVARIANTS.md Lessons 2, 5, 7
 // Implements: ACCEPT-09, D-78
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 // ============================================================
 // buildTokenScaffold tests
@@ -192,5 +195,49 @@ describe('AxeRunnerResult shape', () => {
       { fixtureId: 'f2', pass: false, violations: [{ id: 'color-contrast', nodes: [] }] },
     ];
     expect(buildAxeRunnerResult(oneFail).pass).toBe(false);
+  });
+});
+
+// ============================================================
+// FIX 3: runAxeOnFixture fails when fixture output absent
+// ============================================================
+
+describe('runAxeOnFixture absent-output failure (FIX 3)', () => {
+  let tmpDir: string;
+
+  beforeEach(async () => {
+    tmpDir = await mkdtemp(join(tmpdir(), 'axe-fix3-test-'));
+  });
+
+  afterEach(async () => {
+    await rm(tmpDir, { recursive: true, force: true });
+  });
+
+  it('returns pass=false and fixture-output-absent violation when tokens.json missing', async () => {
+    const { runAxeOnFixture } = await import('../../assets/scripts/axe-runner.mjs');
+
+    // fixtureDir has no expected/tokens.json
+    const fixtureDir = tmpDir;
+    const result = await runAxeOnFixture(fixtureDir);
+
+    expect(result.pass).toBe(false);
+    expect(Array.isArray(result.violations)).toBe(true);
+    expect(result.violations.length).toBeGreaterThan(0);
+    const violation = result.violations[0] as { id: string; impact: string; description: string };
+    expect(violation.id).toBe('fixture-output-absent');
+    expect(violation.impact).toBe('critical');
+    expect(violation.description).toContain('tokens.json');
+  });
+
+  it('does NOT return note field when output is absent (it returns a failure, not a skip)', async () => {
+    const { runAxeOnFixture } = await import('../../assets/scripts/axe-runner.mjs');
+
+    const fixtureDir = tmpDir;
+    const result = await runAxeOnFixture(fixtureDir);
+
+    // pass must be false — this is a hard failure, not a soft skip
+    expect(result.pass).toBe(false);
+    // note field should NOT be set (that was the old "skipped" behavior)
+    expect((result as { note?: string }).note).toBeUndefined();
   });
 });

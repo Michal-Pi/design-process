@@ -179,29 +179,38 @@ export function buildAxeRunnerResult(results) {
 /**
  * Run axe-core WCAG 2.2 AA contrast check on a single fixture.
  *
- * 1. Load fixtureDir/expected/tokens.json (skip gracefully if absent)
- * 2. Build HTML scaffold via buildTokenScaffold
- * 3. Launch Playwright chromium headless browser
- * 4. Set page content to scaffold HTML
- * 5. Inject axe-core via page.addScriptTag({ content: axeSource })
- * 6. Run axe.run({ runOnly: { type: 'tag', values: ['wcag2aa'] } })
- * 7. Filter for 'color-contrast' violations
- * 8. Close browser after each fixture (no shared instance — avoid test isolation bleed)
+ * 1. Load tokens.json from tokensPath (defaults to fixtureDir/expected/tokens.json,
+ *    overridable via outputDir — see runAxeRunner opts.outputDir)
+ * 2. FAIL the fixture if tokens.json is absent (D-78 hard block — absent output IS a failure)
+ * 3. Build HTML scaffold via buildTokenScaffold
+ * 4. Launch Playwright chromium headless browser
+ * 5. Set page content to scaffold HTML
+ * 6. Inject axe-core via page.addScriptTag({ content: axeSource })
+ * 7. Run axe.run({ runOnly: { type: 'tag', values: ['wcag2aa'] } })
+ * 8. Filter for 'color-contrast' violations
+ * 9. Close browser after each fixture (no shared instance — avoid test isolation bleed)
  *
  * @param {string} fixtureDir - Absolute path to the fixture directory
+ * @param {string} [tokensOverridePath] - Optional override path for tokens.json
  * @returns {Promise<{fixtureId: string, pass: boolean, violations: unknown[], contrastValues: Record<string, string>, note?: string}>}
  */
-export async function runAxeOnFixture(fixtureDir) {
+export async function runAxeOnFixture(fixtureDir, tokensOverridePath) {
   const fixtureId = fixtureDir.split('/').pop() ?? fixtureDir;
-  const tokensPath = join(fixtureDir, 'expected', 'tokens.json');
+  const tokensPath = tokensOverridePath ?? join(fixtureDir, 'expected', 'tokens.json');
 
   if (!existsSync(tokensPath)) {
+    // FIX 3: absent output is a FAILURE, not a skip.
+    // D-78: axe-runner gate hard block; no soft tolerance.
+    // axe-runner requires generated output — run release-gate first, or this fixture is not ready.
     return {
       fixtureId,
-      pass: true,
-      violations: [],
+      pass: false,
+      violations: [{
+        id: 'fixture-output-absent',
+        impact: 'critical',
+        description: `No tokens.json found at ${tokensPath}. axe-runner requires generated output to check contrast. Run \`design-os design --route <route> --apply\` first, or this fixture is not yet ready for the accessibility gate.`,
+      }],
       contrastValues: {},
-      note: 'no tokens.json in expected/ — skipped',
     };
   }
 
@@ -210,12 +219,16 @@ export async function runAxeOnFixture(fixtureDir) {
     const raw = await readFile(tokensPath, 'utf8');
     tokens = JSON.parse(raw);
   } catch (err) {
+    // FIX 3: unparsable tokens.json is also a failure
     return {
       fixtureId,
-      pass: true,
-      violations: [],
+      pass: false,
+      violations: [{
+        id: 'fixture-output-unparsable',
+        impact: 'critical',
+        description: `tokens.json at ${tokensPath} could not be parsed: ${err.message}`,
+      }],
       contrastValues: {},
-      note: `tokens.json parse error: ${err.message} — skipped`,
     };
   }
 
@@ -274,6 +287,8 @@ export async function runAxeOnFixture(fixtureDir) {
  * @param {object} opts
  * @param {string} [opts.fixturesDir='evals/acceptance'] - Path to acceptance fixtures
  * @param {string} [opts.output] - Path to write axe-results.json
+ * @param {string} [opts.outputDir] - If set, read tokens.json from <outputDir>/<fixtureId>/tokens.json
+ *   instead of <fixtureDir>/expected/tokens.json. Use after release-gate produces staged outputs.
  * @param {boolean} [opts.failFast=false] - Stop after first failure
  * @returns {Promise<void>}
  */
@@ -281,6 +296,7 @@ export async function runAxeRunner(opts = {}) {
   const {
     fixturesDir = 'evals/acceptance',
     output,
+    outputDir,
     failFast = false,
   } = opts;
 
@@ -314,7 +330,12 @@ export async function runAxeRunner(opts = {}) {
     const fixtureDir = join(resolvedFixturesDir, fixture.dir);
     console.log(`[axe-runner] Checking: ${fixture.fixtureId}`);
 
-    const result = await runAxeOnFixture(fixtureDir);
+    // If --output-dir provided, read staged tokens from there instead of expected/
+    const tokensOverridePath = outputDir
+      ? join(resolve(outputDir), fixture.fixtureId, 'tokens.json')
+      : undefined;
+
+    const result = await runAxeOnFixture(fixtureDir, tokensOverridePath);
     results.push(result);
 
     if (result.note) {

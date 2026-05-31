@@ -31,6 +31,10 @@ function builder(cmd) {
       'Path to write axe-results.json'
     )
     .option(
+      '--output-dir <path>',
+      'Read tokens.json from <output-dir>/<fixtureId>/tokens.json instead of <fixtureDir>/expected/tokens.json. Use after release-gate has produced staged outputs.'
+    )
+    .option(
       '--fail-fast',
       'Stop after first fixture failure',
       false
