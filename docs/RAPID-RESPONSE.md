@@ -34,16 +34,11 @@ AND ≥1 of the following distribution characteristics:
 
 ---
 
-## Trigger
+## Trigger (legacy — defers to D-79 above)
 
-A `[competitive-watch]` issue lands AND the linked release/post describes a feature overlap
-of ≥3 of:
-- Research synthesis
-- Information architecture
-- Low-fidelity wireframing
-- Interaction design
-- Token generation / design system extraction
-- Stage-gated workflow enforcement
+The original simple trigger ("[competitive-watch] issue with ≥3 stage overlap") has been REFINED by D-79 above into Severity 1/2/3 conditions. **Use the D-79 framework for all trigger assessments.** Severity 1 (interop pivot) requires BOTH ≥3 stage capabilities AND ≥1 distribution characteristic (Apache-2.0 / MIT, DESIGN.md consumer, or SKILL.md package). Severity 2 and 3 do not trigger the 72-hour pivot.
+
+The 72-hour response plan below applies ONLY to Severity 1 invocations per D-79.
 
 The maintainer named in [MAINTAINERS.md](MAINTAINERS.md) owns the call to invoke this plan.
 
