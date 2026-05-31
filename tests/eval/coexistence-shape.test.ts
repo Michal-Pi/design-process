@@ -112,6 +112,56 @@ describe("coexistence: aggregate eval output shape", () => {
   }, 60000);
 });
 
+describe("coexistence: install-corpus description budget (FIX 3)", () => {
+  // The scorer reads String(data.description).slice(0, 200) — descriptions that
+  // exceed 200 chars will have keywords silently truncated.
+  const PEER_PACKAGE_KEYWORDS: Record<string, string[]> = {
+    gsd: ["plan", "gsd-plan"],
+    superpowers: ["tdd", "brainstorm"],
+    "frontend-design": ["design-system", "figma"],
+    shadcn: ["shadcn", "shadcn"],
+    "notion-mcp": ["notion", "notion-mcp"],
+  };
+
+  it("all peer package descriptions are ≤200 chars", async () => {
+    const mod = await import("../../evals/coexistence/install-corpus.mjs") as { prepareCorpus: (dir: string) => Promise<void> };
+    expect(typeof mod.prepareCorpus).toBe("function");
+
+    // Read the source directly to check description lengths without running prepareCorpus
+    const src = await readFile(
+      join(ROOT, "evals/coexistence/install-corpus.mjs"),
+      "utf8"
+    );
+    // Extract description strings from the source
+    const descMatches = [...src.matchAll(/description:\s*\n?\s*"([^"\\]*(\\.[^"\\]*)*)"/g)];
+    expect(descMatches.length).toBeGreaterThanOrEqual(5); // at least 5 peer packages
+    for (const m of descMatches) {
+      const raw: string = m[1] ?? "";
+      const desc = raw.replace(/\\"/g, '"');
+      expect(desc.length).toBeLessThanOrEqual(200);
+    }
+  });
+
+  for (const [pkg, keywords] of Object.entries(PEER_PACKAGE_KEYWORDS)) {
+    it(`${pkg} description contains expected keywords`, async () => {
+      const src = await readFile(
+        join(ROOT, "evals/coexistence/install-corpus.mjs"),
+        "utf8"
+      );
+      // Find the CORPUS_PACKAGES entry for this pkg and extract its description
+      // Pattern: look for name: "pkg" followed by description
+      const pkgBlockMatch = src.match(
+        new RegExp(`name:\\s*"${pkg}",[\\s\\S]*?description:\\s*\\n?\\s*"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"`)
+      );
+      expect(pkgBlockMatch).not.toBeNull();
+      const desc = (pkgBlockMatch?.[1] ?? "").replace(/\\"/g, '"').toLowerCase();
+      for (const kw of keywords) {
+        expect(desc).toContain(kw.toLowerCase());
+      }
+    });
+  }
+});
+
 describe("coexistence: contingency document", () => {
   it("docs/CONTINGENCY-TRIG-04.md exists", () => {
     expect(existsSync(join(ROOT, "docs/CONTINGENCY-TRIG-04.md"))).toBe(true);
