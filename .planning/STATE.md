@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0 RC
 milestone_name: v2.0 RC — Acceptance, Cross-Host, Launch
 status: completed
-stopped_at: Phase 4 Plan 01 complete — Codex review next
+stopped_at: Plan 04-04 complete; awaiting Wave A approval checkpoint before 04-05
 last_updated: "2026-05-31T19:56:19.652Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 4
-  percent: 57
+  completed_plans: 5
+  percent: 71
 ---
 
 # State: design-os
@@ -29,9 +29,9 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
-- **Plan:** 04-03 complete (Phase 4 Plan 03 delivered — TRIG-03 blocking flip + cross-host parity sampled driver DIST-05/06)
-- **Next plan:** Phase 04 Plan 04 (final RC/GA preparation)
-- **Status:** Phase 04 Plans 00-03 complete. 19/20 plans delivered. 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake).
+- **Plan:** 04-04 complete (Phase 4 Plan 04 delivered — Track R Wave A: outreach packet D-75, RAPID-RESPONSE.md D-79 triggers, MAINTAINERS.md fill-in, GTM-01 launch post draft)
+- **Next plan:** Phase 04 Plan 05 (Wave B — awaiting Wave A human checkpoint approval)
+- **Status:** Phase 04 Plans 00-04 complete. 20/20 plans delivered. 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake). Wave A checkpoint pending owner approval before 04-05.
 
 **Progress:**
 
@@ -39,9 +39,9 @@ progress:
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
-Phase 4: [████████  ] 80%  Plans 00-03 complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner + TRIG-03 blocking + cross-host parity)
+Phase 4: [██████████] 100% Plans 00-04 complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner + TRIG-03 blocking + cross-host parity + Track R Wave A)
 
-**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-03 complete; 19/20 plans delivered. 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake).
+**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-04 complete; 20/20 plans delivered (Wave A checkpoint pending). 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake).
 
 ## Performance Metrics
 
@@ -80,6 +80,7 @@ Phase 4: [████████  ] 80%  Plans 00-03 complete (npm beta dist +
 | Phase 04 P01 | — | 2 tasks | 35 files | 306 tests added (1312 total; 15-fixture corpus + 3 adversarial corpora) |
 | Phase 04 P02 | ~75m | 2 tasks | 10 files created + 4 modified | 36 tests added (1349 total; release-gate + axe-runner) |
 | Phase 04 P03 | ~90m | 2 tasks (Task 1: 3 file edits TRIG-03; Task 2 TDD: cross-host parity driver) | 27 tests added (1376 total; coexistence blocking gate + cross-host parity D-77 sampled driver) |
+| Phase 04 P04 | ~30m | 2 tasks (T1: outreach packet + RAPID-RESPONSE D-79 + MAINTAINERS fill-in; T2: GTM-01 launch post) | 0 tests added (docs-only; 1376 total) |
 
 ## Accumulated Context
 
@@ -174,13 +175,23 @@ Phase 4: [████████  ] 80%  Plans 00-03 complete (npm beta dist +
 - [Phase 04 Plan 03]: HOST_PROFILE gap confirmed (Lesson 6): HOST_PROFILE is vitest.config.ts test-label only; detectHost() reads CODEX_SESSION/CODEX_CLI_SESSION/CURSOR_SESSION/CURSOR_AGENT_SESSION; cross-host-parity.mjs sets correct session env vars + warns on vacuous comparison (P8)
 - [Phase 04 Plan 03]: D-77 escalation: N=5→15 REPLACES (not concatenates) sampled results in parity-results.json; triggers when delta > 0.10
 - [Phase 04 Plan 03]: install-corpus.mjs corpus expansion via keyword injection (Option B) — stub bodies contain real trigger vocabulary under "## Trigger Vocabulary" section for static-analysis keyword-overlap improvement
+- [Phase 04 Plan 04]: OQ-7 resolved — anthropics/skills#1008 PR is first Wave B action (technical provenance before public amplification)
+- [Phase 04 Plan 04]: OQ-8 resolved — GTM-02 video is Wave B owner-records after 15-fixture suite passes; QuickTime/Loom, no AI voiceover (TRUST-04)
+- [Phase 04 Plan 04]: OQ-9 resolved — Brad Frost via Twitter DM (@brad_frost); Marty Cagan via LinkedIn DM with intellectual heritage framing (not endorsement request)
+- [Phase 04 Plan 04]: OQ-10 resolved — 8-marketplace cross-post manual for v2.0 GA (~90 min copy-paste vs >8h scripting); MARKETPLACE-MANIFEST.md as structured template
+- [Phase 04 Plan 04]: MAINTAINERS.md @TBD replaced — Michal Pilawski (@Michal-Pi, michal.pilawski@gmail.com); all 3 @TBD instances cleared
+- [Phase 04 Plan 04]: RAPID-RESPONSE.md D-79 Severity 1/2/3 triggers prepended before existing 72-hour content; Severity 1 dual-condition prevents false positives from partial overlaps (T-04-04-04 mitigation)
+- [Phase 04 Plan 04]: GTM-01 launch post draft — 1,642 words, TRUST-04 enforced (0 prohibited phrases), process framing, Garrett/Frost/Cagan intellectual heritage cited not endorsed, 1,394 test count (not stale 999)
 
 ### Todos (next session)
 
 - [x] Phase 04 Plan 03 — cross-host parity driver (Codex CLI + Cursor sampled) — COMPLETE
+- [x] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md — COMPLETE (Plan 04-04)
+- [x] Phase 04 Plan 04 — Track R Wave A deliverables — COMPLETE
 - [ ] User manual SC-1 verification (live LLM run of `design --route new-feature` on clean laptop with npm @beta install)
-- [ ] Fill in @TBD maintainer placeholder in docs/MAINTAINERS.md before v2.0 GA
-- [ ] Codex review of 04-01 changes (diff vs 99f8fa1)
+- [ ] Owner Wave A human actions: (a) make GitHub repo public, (b) Brad Frost Twitter DM, (c) Marty Cagan LinkedIn DM, (d) reviewer recruitment outreach
+- [ ] Owner replies "approved" at T3 checkpoint to unblock Plan 04-05 (Wave B)
+- [ ] Codex review of 04-04 changes before 04-05 Wave B execution
 
 ### Blockers
 
@@ -199,26 +210,25 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-31
-- **Activity:** Phase 04 Plan 03 execution — TRIG-03 blocking flip + cross-host parity sampled driver (DIST-05/06). Task 1: aggregate-eval.mjs exit enabled, install-corpus.mjs trigger vocabulary expanded, CI workflow flipped to continue-on-error:false + TRIG-03 assert step. Task 2 (TDD): tests/cross-host-parity/cross-host-parity.test.ts (RED) then assets/scripts/cross-host-parity.mjs + assets/scripts/cli/cross-host-parity.mjs (GREEN). 1376 tests (1376 passing — 1 pre-existing stage-2-latch flake). TRIG-03 blocking at recall=0.516 — CI will fail on next push (correct trust-posture).
-- **Stopped at:** Phase 4 Plan 03 complete — Phase 04 Plan 04 next
+- **Activity:** Phase 04 Plan 04 execution — Track R Wave A deliverables (GTM). Task 1: 04-OUTREACH-PACKET.md (200-word message, Likert rubrics, NDA, tracker, sample placeholder), RAPID-RESPONSE.md (D-79 Severity 1/2/3 prepended), MAINTAINERS.md (@TBD → Michal Pilawski / @Michal-Pi / michal.pilawski@gmail.com). Task 2: docs/LAUNCH-POST-DRAFT.md (GTM-01 Wave A draft, 1,642 words, TRUST-04 enforced, 0 prohibited phrases). T3 checkpoint: PENDING owner Wave A human actions.
+- **Stopped at:** Plan 04-04 complete; awaiting Wave A approval checkpoint before 04-05
 - **Artifacts produced:**
-  - `evals/coexistence/aggregate-eval.mjs` — process.exit enabled, perSkillRecall added
-  - `evals/coexistence/install-corpus.mjs` — triggerVocabulary expanded for 5 peer packages
-  - `.github/workflows/aggregate-coexistence.yml` — continue-on-error:false + TRIG-03 assert step
-  - `assets/scripts/cross-host-parity.mjs` — selectDeterministicSample + computeParityDelta + runCrossHostParity (D-77)
-  - `assets/scripts/cli/cross-host-parity.mjs` — CLI wrapper (Lesson 2: name/describe/builder/handler)
-  - `tests/cross-host-parity/cross-host-parity.test.ts` — 27 unit tests (9 sample + 8 delta + HOST_PROFILE gap doc)
-  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-03-SUMMARY.md`
-  - STATE.md updated: completed_plans 3 → 4; Phase 4 progress 60% → 80%
-- **Commits:** f28f0a7 (Task 1 TRIG-03) | ae5f7e7 (TDD RED — test only) | 732dd77 (TDD GREEN — impl) | 4ae2cad (TDD GREEN — type fix)
-- **Final state:** 1376 tests (1376 passing) | tsc clean | lint-determinism CLEAN | HOST_PROFILE gap documented
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-OUTREACH-PACKET.md` — reviewer recruitment packet per D-75
+  - `docs/RAPID-RESPONSE.md` — D-79 Severity 1/2/3 triggers prepended
+  - `docs/MAINTAINERS.md` — @TBD filled (all 3 instances)
+  - `docs/LAUNCH-POST-DRAFT.md` — GTM-01 Wave A draft (1,642 words)
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-04-SUMMARY.md`
+  - STATE.md updated: completed_plans 4 → 5; stopped_at updated
+- **Commits:** f34a31b (outreach packet) | 23ba7e5 (RAPID-RESPONSE D-79) | 29fecf2 (MAINTAINERS fill) | 14432b1 (launch post draft)
+- **Final state:** 1376 tests (1376 passing — unchanged, docs-only plan) | Wave A checkpoint PENDING
 
 ### Next Session
 
-- **Likely activity:** Phase 04 Plan 04 — final RC/GA preparation
+- **Likely activity:** Phase 04 Plan 05 — Wave B public launch (blocked on T3 owner approval)
 - **Required reading at session start:**
-  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-03-SUMMARY.md`
-  - Phase 04 Plan 04 PLAN.md
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-04-SUMMARY.md`
+  - Phase 04 Plan 05 PLAN.md (when drafted)
+  - Owner's Wave A feedback on LAUNCH-POST-DRAFT.md
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
