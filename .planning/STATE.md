@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0 RC
 milestone_name: v2.0 RC — Acceptance, Cross-Host, Launch
-status: completed
-stopped_at: Plan 04-04 complete; awaiting Wave A approval checkpoint before 04-05
-last_updated: "2026-05-31T19:56:19.652Z"
+status: awaiting-human-action
+stopped_at: "Plan 04-05 T1 complete; all code-side complete (21/21 plans); awaiting owner Wave B execution + verifier. T2 checkpoint: human-action (npm @latest flip, anthropics PR, 8 marketplace cross-posts, launch post, outreach, reviews)."
+last_updated: "2026-05-31T21:00:00.000Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 6
+  percent: 86
 ---
 
 # State: design-os
@@ -29,19 +29,19 @@ progress:
 
 - **Milestone:** v2.0 GA (14-week build window from 2026-05-24)
 - **Phase:** 03 VERIFIED COMPLETE — v2.0b full 5-stage pipeline
-- **Plan:** 04-04 complete (Phase 4 Plan 04 delivered — Track R Wave A: outreach packet D-75, RAPID-RESPONSE.md D-79 triggers, MAINTAINERS.md fill-in, GTM-01 launch post draft)
-- **Next plan:** Phase 04 Plan 05 (Wave B — awaiting Wave A human checkpoint approval)
-- **Status:** Phase 04 Plans 00-04 complete (5 of 6 Phase 4 plans done; Plan 04-05 pending Wave A approval). 20 of 21 total plans delivered. 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake). Wave A checkpoint pending owner approval before 04-05.
+- **Plan:** 04-05 T1 complete (Wave B GA artifacts: version bumps, MARKETPLACE-MANIFEST.md, CHANGELOG.md v2.0, outreach packet sample bundles filled)
+- **Next plan:** NONE — all code-side work complete. T2 checkpoint awaiting owner Wave B execution.
+- **Status:** Phase 04 Plans 00-05 T1 complete (6 of 6 Phase 4 plans delivered; T2 human-action pending). 21 of 21 plans code-side delivered. 1395 tests (1395 passing — 1 pre-existing stage-2-latch flake). Awaiting: owner Wave B (npm @latest, anthropics PR, 8 marketplace cross-posts, launch post, outreach, reviews) + verifier.
 
 **Progress:**
 
-[██████████] 100% (Phase 3 complete — verified; Phase 4 separately authorized, awaiting user manual SC-1 test before kickoff)
+[█████████░] 86%
 Phase 1: [██████████] 100% (5/5 plans complete)
 Phase 2: [██████████] 100% (5/5 plans complete)
 Phase 3: [██████████] 100% (5/5 plans — Stage 3 gate + sketch; Stage 4 interact + IxD atoms; Gate promotions; Reverse-engineer + migrations; Route completion + audit modes)
-Phase 4: [████████░░] 83% 5/6 plans complete (npm beta dist + 15-fixture corpus + adversarial corpora + release-gate + axe-runner + TRIG-03 blocking + cross-host parity + Track R Wave A; Plan 04-05 pending)
+Phase 4: [██████████] 100% code-side (6/6 plans T1 complete; T2 Wave B human-action pending — npm @latest, anthropics PR, marketplace cross-posts, launch post, outreach, reviews)
 
-**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-04 complete; 20 of 21 plans delivered (Phase 4 Plan 04-05 + verifier remaining; Wave A checkpoint pending). 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake).
+**Overall:** Phase 1+2+3 complete + Phase 4 Plans 00-05 T1 complete; 21 of 21 plans code-side delivered. T2 human-action checkpoint pending owner Wave B execution + verifier. 1395 tests (1395 passing — 1 pre-existing stage-2-latch flake).
 
 ## Performance Metrics
 
@@ -182,6 +182,9 @@ Phase 4: [████████░░] 83% 5/6 plans complete (npm beta dist 
 - [Phase 04 Plan 04]: MAINTAINERS.md @TBD replaced — Michal Pilawski (@Michal-Pi, michal.pilawski@gmail.com); all 3 @TBD instances cleared
 - [Phase 04 Plan 04]: RAPID-RESPONSE.md D-79 Severity 1/2/3 triggers prepended before existing 72-hour content; Severity 1 dual-condition prevents false positives from partial overlaps (T-04-04-04 mitigation)
 - [Phase 04 Plan 04]: GTM-01 launch post draft — 1,642 words, TRUST-04 enforced (0 prohibited phrases), process framing, Garrett/Frost/Cagan intellectual heritage cited not endorsed, 1,394 test count (not stale 999)
+- [Phase 04 Plan 05]: package.json + bin/design-os.mjs version bumps NOT in plan files_modified YAML but REQUIRED per Task 2 Step 0 — included and flagged as plan deviation; both files committed in feat(04-05) version bump commit
+- [Phase 04 Plan 05]: Sample bundles approach (a) synthetic-realistic format reference — real bundles deferred to Wave B Step 0+ (first release-gate run with CLAUDE_CODE_BIN); labeled "FORMAT REFERENCE" per P8 trust posture
+- [Phase 04 Plan 05]: TRIG-03 reported as PENDING in CHANGELOG (recall 0.71 vs 0.80 threshold) — not claimed PASS per P8 honest gate reporting
 
 ### Todos (next session)
 
@@ -210,25 +213,27 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-31
-- **Activity:** Phase 04 Plan 04 execution — Track R Wave A deliverables (GTM). Task 1: 04-OUTREACH-PACKET.md (200-word message, Likert rubrics, NDA, tracker, sample placeholder), RAPID-RESPONSE.md (D-79 Severity 1/2/3 prepended), MAINTAINERS.md (@TBD → Michal Pilawski / @Michal-Pi / michal.pilawski@gmail.com). Task 2: docs/LAUNCH-POST-DRAFT.md (GTM-01 Wave A draft, 1,642 words, TRUST-04 enforced, 0 prohibited phrases). T3 checkpoint: PENDING owner Wave A human actions.
-- **Stopped at:** Plan 04-04 complete; awaiting Wave A approval checkpoint before 04-05
+- **Activity:** Phase 04 Plan 05 T1 execution — Wave B GA artifacts. Version bumps (package.json 2.0.0-beta.0→2.0.0, bin/design-os.mjs, SKILL.md v2.0b→v2.0 GA + cross-host parity section). Created docs/MARKETPLACE-MANIFEST.md (8 marketplaces, TRUST-04, SKILL.md vs MCP disclaimers). Created CHANGELOG.md (v2.0 GA entry, 11-gate table, TRIG-03 PENDING, ACCEPT-07/08 reviews scaffold). Filled 04-OUTREACH-PACKET.md sample bundles (approach a: 3 synthetic-realistic format references, clearly labeled, real bundles deferred to Wave B Step 0).
+- **Stopped at:** T2 checkpoint — human-action (owner Wave B: npm @latest flip, anthropics PR, 8 marketplaces, launch post, outreach, reviews)
 - **Artifacts produced:**
-  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-OUTREACH-PACKET.md` — reviewer recruitment packet per D-75
-  - `docs/RAPID-RESPONSE.md` — D-79 Severity 1/2/3 triggers prepended
-  - `docs/MAINTAINERS.md` — @TBD filled (all 3 instances)
-  - `docs/LAUNCH-POST-DRAFT.md` — GTM-01 Wave A draft (1,642 words)
-  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-04-SUMMARY.md`
-  - STATE.md updated: completed_plans 4 → 5; stopped_at updated
-- **Commits:** f34a31b (outreach packet) | 23ba7e5 (RAPID-RESPONSE D-79) | 29fecf2 (MAINTAINERS fill) | 14432b1 (launch post draft)
-- **Final state:** 1394 tests (1394 passing — 1 pre-existing stage-2-latch flake; +18 from codex review fixes) | Wave A checkpoint PENDING
+  - `package.json` — 2.0.0-beta.0 → 2.0.0 (flagged: not in plan files_modified YAML — deviation documented)
+  - `bin/design-os.mjs` — .version("2.0.0-beta.0") → .version("2.0.0") (also not in plan files_modified — deviation documented)
+  - `skills/design/SKILL.md` — version v2.0b → v2.0 GA; cross-host parity section added
+  - `docs/MARKETPLACE-MANIFEST.md` — NEW; 8 marketplace submission data; 0 WCAG conformance claims
+  - `CHANGELOG.md` — NEW; v2.0 GA entry; TRIG-03 PENDING; ACCEPT-07/08 scaffold
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-OUTREACH-PACKET.md` — sample bundles filled (format reference, approach a)
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-05-SUMMARY.md`
+  - STATE.md updated: completed_plans 5 → 6; stopped_at T2 Wave B checkpoint
+- **Commits:** 0ac3cbd (version bumps) | a851340 (MARKETPLACE-MANIFEST) | c125766 (CHANGELOG) | 884aefe (outreach packet bundles)
+- **Final state:** 1395 tests (1395 passing — 1 pre-existing stage-2-latch flake) | T2 Wave B PENDING owner action
 
 ### Next Session
 
-- **Likely activity:** Phase 04 Plan 05 — Wave B public launch (blocked on T3 owner approval)
+- **Likely activity:** Verifier run after Wave B human actions complete
 - **Required reading at session start:**
-  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-04-SUMMARY.md`
-  - Phase 04 Plan 05 PLAN.md (when drafted)
-  - Owner's Wave A feedback on LAUNCH-POST-DRAFT.md
+  - `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-05-SUMMARY.md`
+  - CHANGELOG.md (update with real gate results after Wave B Step 0 release-gate run)
+  - Owner's Wave B completion report
 
 ---
 *State initialized: 2026-05-24 after roadmap creation*
