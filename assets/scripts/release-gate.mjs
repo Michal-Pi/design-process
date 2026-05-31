@@ -145,6 +145,10 @@ export function computeSoftGateDisclosures({ p95Tokens, wallClockP50Ms }) {
  * Always called regardless of hard gate outcome (T-04-02-05 mitigation).
  * Never overwrites existing content — appends only.
  *
+ * IDEMPOTENT: If the exact block content (same findings text) already exists in the
+ * file, the append is skipped to prevent duplicate disclosure blocks from accumulating
+ * across multiple dry-run or re-run invocations.
+ *
  * @param {string[]} findings - Array of disclosure strings
  * @param {string} [notesPath] - Override path for RELEASE-NOTES.md (used in tests)
  * @returns {Promise<void>}
@@ -175,6 +179,13 @@ export async function writeReleaseNotesDisclosure(findings, notesPath) {
     'real inference measurement requires manual SC-1 verification on a machine with CLAUDE_CODE_BIN set.',
     '',
   ].join('\n');
+
+  // Idempotency guard: skip append if this exact findings content already exists.
+  // Match on the finding lines content (date-independent) to avoid re-appending the
+  // same disclosure when release-gate.mjs is run multiple times in the same session.
+  if (existing.includes(findingLines)) {
+    return;
+  }
 
   await writeFile(targetPath, existing + block, 'utf8');
 }

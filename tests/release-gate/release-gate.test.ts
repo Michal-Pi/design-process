@@ -279,6 +279,22 @@ describe('writeReleaseNotesDisclosure', () => {
     const content = await readFile(notesPath, 'utf8');
     expect(content).toContain('## v2.0 Cost Behavior');
   });
+
+  it('writeReleaseNotesDisclosure is idempotent: same disclosure twice produces single block', async () => {
+    // setup: empty tmp RELEASE-NOTES.md
+    await writeFile(notesPath, '# design-os v2.0 Release Notes\n\n', 'utf8');
+    const { writeReleaseNotesDisclosure } = await import('../../assets/scripts/release-gate.mjs');
+    const msg1 = 'wall-clock measured with sequential-fallback dispatch only; real inference measurement requires manual SC-1 verification';
+    // call writeReleaseNotesDisclosure([msg1])
+    await writeReleaseNotesDisclosure([msg1], notesPath);
+    // call writeReleaseNotesDisclosure([msg1]) again
+    await writeReleaseNotesDisclosure([msg1], notesPath);
+    // assert: file contains exactly ONE block matching msg1
+    const content = await readFile(notesPath, 'utf8');
+    const blockCount = (content.match(/^## v2\.0 Cost Behavior/gm) ?? []).length;
+    expect(blockCount).toBe(1);
+    expect(content).toContain(msg1);
+  });
 });
 
 // ============================================================
