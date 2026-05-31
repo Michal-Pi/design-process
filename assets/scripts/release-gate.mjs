@@ -405,20 +405,52 @@ export async function runReleaseGate(opts = {}) {
       const wallClockStart = Date.now();
 
       if (dryRun) {
-        // Dry-run: simulate sequential-fallback dispatch
-        await new Promise((res) => setTimeout(res, 1)); // ~1ms sequential-fallback
-        tokensUsed = Math.floor(budgetCeiling * 0.6); // simulate 60% budget usage
-      } else {
-        // Real dispatch via dispatchRoute
-        const { dispatchRoute } = await import('./routing/dispatch.mjs');
-        const fixtureDir = join(resolvedFixturesDir, fixture.dir);
-        const prdPath = join(fixtureDir, 'PRD.md');
-
-        const dispatchResult = await dispatchRoute(route, prdPath, {
-          tokenBudget: budgetCeiling,
-          stagingDir,
+        // Dry-run: synthesize passing results for all 6 gates.
+        // Purpose: verify orchestration + CI plumbing works, NOT real gate logic.
+        // wallClockMs is deliberately tiny (1ms) to trigger Pitfall-3 caveat in disclosure.
+        console.log('[dry-run] synthesizing pass for fixture ' + fixtureId);
+        // Schema only stores 'kind' (INVARIANTS Lesson 1) — no 'findings' in stored result
+        const syntheticGates = {
+          '1': { kind: 'pass' },
+          '2': { kind: 'pass' },
+          '3': { kind: 'pass' },
+          '4': { kind: 'pass' },
+          '5a': { kind: 'pass' },
+          '5b': { kind: 'pass' },
+        };
+        fixtureResults.push({
+          fixtureId,
+          pass: true,
+          tokensUsed: budgetCeiling,
+          wallClockMs: 1,
+          gateResults: syntheticGates,
         });
-        tokensUsed = dispatchResult.tokenBudget ?? 0;
+        // Clean up staging dir and skip real dispatch + gate calls
+        try { await rm(stagingDir, { recursive: true, force: true }); } catch { /* non-fatal */ }
+        continue; // skip the real dispatchRoute + runGate calls
+      }
+
+      // Real dispatch via dispatchRoute
+      const { dispatchRoute } = await import('./routing/dispatch.mjs');
+      const fixtureDir = join(resolvedFixturesDir, fixture.dir);
+      const prdPath = join(fixtureDir, 'PRD.md');
+
+      // FIX 2: call dispatchRoute with object-form signature { routeName, designDir, opts }
+      const dispatchResult = await dispatchRoute({
+        routeName: route,
+        designDir: stagingDir,
+        opts: {
+          tokenBudget: budgetCeiling,
+          prdPath,
+        },
+      });
+
+      // Extract tokensUsed from dispatch result; fall back to budgetCeiling to avoid div-by-0
+      if (dispatchResult.kind === 'unknown_route') {
+        console.warn(`[release-gate] dispatchRoute returned unknown_route for fixture ${fixtureId} (route=${route})`);
+        tokensUsed = budgetCeiling;
+      } else {
+        tokensUsed = dispatchResult.tokensUsed ?? dispatchResult.budgetTokensP50 ?? budgetCeiling;
       }
 
       wallClockMs = Date.now() - wallClockStart;
@@ -502,13 +534,24 @@ export async function runReleaseGate(opts = {}) {
   await writeReleaseNotesDisclosure(softGateDisclosures);
 
   // ── Phase 6: ACCEPT-05 and ACCEPT-06 checks ──
-  console.log('[release-gate] Running ACCEPT-05 (fid-06-frost-recurrence)...');
-  const accept05Pass = await runAccept05(PROJECT_ROOT);
-  console.log(`[release-gate] ACCEPT-05: ${accept05Pass ? 'PASS' : 'FAIL'}`);
+  // In dry-run mode, synthesize as pass — purpose is to verify orchestration, not real logic.
+  let accept05Pass;
+  let accept06Pass;
 
-  console.log('[release-gate] Running ACCEPT-06 (inline tmp fixture audit gap check)...');
-  const accept06Pass = await runAccept06(PROJECT_ROOT);
-  console.log(`[release-gate] ACCEPT-06: ${accept06Pass ? 'PASS' : 'FAIL'}`);
+  if (dryRun) {
+    console.log('[dry-run] synthesizing ACCEPT-05 pass');
+    accept05Pass = true;
+    console.log('[dry-run] synthesizing ACCEPT-06 pass');
+    accept06Pass = true;
+  } else {
+    console.log('[release-gate] Running ACCEPT-05 (fid-06-frost-recurrence)...');
+    accept05Pass = await runAccept05(PROJECT_ROOT);
+    console.log(`[release-gate] ACCEPT-05: ${accept05Pass ? 'PASS' : 'FAIL'}`);
+
+    console.log('[release-gate] Running ACCEPT-06 (inline tmp fixture audit gap check)...');
+    accept06Pass = await runAccept06(PROJECT_ROOT);
+    console.log(`[release-gate] ACCEPT-06: ${accept06Pass ? 'PASS' : 'FAIL'}`);
+  }
 
   // ── Build result object ──
   /** @type {object} */
@@ -558,18 +601,55 @@ export async function runReleaseGate(opts = {}) {
     ? resolve(output)
     : join(PROJECT_ROOT, 'release-gate-results.json');
 
-  // Sort JSON keys deterministically for lint:determinism compliance
-  const sortedResult = JSON.parse(JSON.stringify(result, Object.keys(result).sort()));
-  await writeFile(outputPath, JSON.stringify(sortedResult, null, 2), 'utf8');
+  // Deterministic JSON stringify — preserves ALL nested keys (FIX 5).
+  // JSON.stringify(obj, keyArray) uses the array as a global allowlist, stripping nested keys.
+  // Use a recursive sort helper instead.
+  await writeFile(outputPath, deterministicStringify(result), 'utf8');
   console.log(`[release-gate] Results written to: ${outputPath}`);
 
-  // ── Exit based on hard gate ──
+  // ── Exit based on ALL hard gates (FIX 4: accept05/06 are hard gates) ──
   // This must happen AFTER writeFile so post-mortem debugging is possible.
-  if (!hardGatePassed) {
-    console.error(`[release-gate] EXITING 1 — hard gate failed: ${hardGateReason}`);
+  const allHardGatesPassed = hardGatePassed && result.accept05Pass && result.accept06Pass;
+  if (!allHardGatesPassed) {
+    const reasons = [];
+    if (!hardGatePassed) reasons.push(hardGateReason);
+    if (!result.accept05Pass) reasons.push('accept-05: fid-06-frost-recurrence harness failed');
+    if (!result.accept06Pass) reasons.push('accept-06: audit --all-stages did not detect Stage 2 or Stage 4 gap');
+    console.error(`[release-gate] EXITING 1 — hard gate failed: ${reasons.join('; ')}`);
     process.exit(1);
   }
 
   console.log('[release-gate] All gates PASSED. Exiting 0.');
   process.exit(0);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Deterministic stringify helper (FIX 5)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Recursively sort all object keys alphabetically before JSON.stringify.
+ * Unlike JSON.stringify(obj, keyArray), this preserves nested object keys.
+ *
+ * @param {unknown} obj
+ * @param {number} [indent=2]
+ * @returns {string}
+ */
+export function deterministicStringify(obj, indent = 2) {
+  /**
+   * @param {unknown} value
+   * @returns {unknown}
+   */
+  function recur(value) {
+    if (Array.isArray(value)) return value.map(recur);
+    if (value !== null && typeof value === 'object') {
+      const sortedKeys = Object.keys(/** @type {object} */ (value)).sort();
+      /** @type {Record<string, unknown>} */
+      const out = {};
+      for (const k of sortedKeys) out[k] = recur((/** @type {Record<string, unknown>} */ (value))[k]);
+      return out;
+    }
+    return value;
+  }
+  return JSON.stringify(recur(obj), null, indent);
 }

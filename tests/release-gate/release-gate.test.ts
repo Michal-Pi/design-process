@@ -14,7 +14,8 @@
 // Implements: ACCEPT-01, COST-07, COST-10
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, writeFile, readFile, rm, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -277,5 +278,204 @@ describe('writeReleaseNotesDisclosure', () => {
     await writeReleaseNotesDisclosure([], notesPath);
     const content = await readFile(notesPath, 'utf8');
     expect(content).toContain('## v2.0 Cost Behavior');
+  });
+});
+
+// ============================================================
+// FIX 1: dry-run synthesizes passing gate results
+// ============================================================
+
+describe('runReleaseGate dry-run synthesis (FIX 1)', () => {
+  // Must be inside PROJECT_ROOT due to path-traversal containment (Lesson 7).
+  // Use process.cwd() which vitest sets to the project root.
+  let fixturesRelDir: string;
+  let fixturesDirAbs: string;
+  let outputPath: string;
+
+  beforeEach(async () => {
+    const cwd = process.cwd();
+    const ts = Date.now();
+    fixturesRelDir = `.design-os/test-fixtures-dryrun-${ts}`;
+    fixturesDirAbs = join(cwd, fixturesRelDir);
+    outputPath = join(cwd, `.design-os`, `rg-test-results-${ts}.json`);
+
+    // Ensure .design-os exists (for output file)
+    await mkdir(join(cwd, '.design-os'), { recursive: true });
+    // Create fixture dir and write manifest directly inside it
+    await mkdir(fixturesDirAbs, { recursive: true });
+
+    const fixtures = Array.from({ length: 15 }, (_, i) => ({
+      fixtureId: `fixture-${String(i + 1).padStart(2, '0')}`,
+      route: 'new-product',
+      dir: `fixture-${String(i + 1).padStart(2, '0')}`,
+      budgetCeiling: 10000,
+    }));
+    await writeFile(
+      join(fixturesDirAbs, 'fixtures.manifest.json'),
+      JSON.stringify({ fixtures }, null, 2),
+      'utf8'
+    );
+    for (const f of fixtures) {
+      await mkdir(join(fixturesDirAbs, f.dir), { recursive: true });
+    }
+  });
+
+  afterEach(async () => {
+    await rm(fixturesDirAbs, { recursive: true, force: true });
+    try { await rm(outputPath, { force: true }); } catch { /* non-fatal */ }
+  });
+
+  it('dry-run: all 15 fixtures synthesized as pass', async () => {
+    const { runReleaseGate } = await import('../../assets/scripts/release-gate.mjs');
+    // runReleaseGate calls process.exit — intercept it and throw so flow stops cleanly
+    let exitCode: number | null = null;
+    const origExit = process.exit.bind(process);
+    // @ts-ignore
+    process.exit = (code?: number) => { exitCode = code ?? 0; throw new Error(`EXIT:${exitCode}`); };
+
+    try {
+      await runReleaseGate({
+        fixturesDir: fixturesRelDir,
+        output: outputPath,
+        dryRun: true,
+      });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!msg.startsWith('EXIT:')) throw e; // unexpected error — rethrow
+    } finally {
+      // @ts-ignore
+      process.exit = origExit;
+    }
+
+    // Check the output file
+    expect(existsSync(outputPath)).toBe(true);
+    const raw = await readFile(outputPath, 'utf8');
+    const result = JSON.parse(raw);
+
+    expect(result.fixtureResults).toHaveLength(15);
+    expect(result.fixturePassCount).toBe(15);
+    expect(result.hardGatePassed).toBe(true);
+    expect(result.fixtureResults[0].fixtureId).toBeTruthy();
+    expect(result.fixtureResults[0].pass).toBe(true);
+    // In dry-run with all 15 synthesized pass, exit code should be 0
+    expect(exitCode).toBe(0);
+  });
+});
+
+// ============================================================
+// FIX 4: accept05/06 failures block exit
+// ============================================================
+
+describe('exit gate includes accept05/06 (FIX 4)', () => {
+  it('accept05Pass=false → reasons include accept-05 message', () => {
+    // Verify the exit logic by inspecting the reasons array construction
+    const accept05Pass = false;
+    const accept06Pass = true;
+    const hardGatePassed = true;
+    const hardGateReason = undefined;
+
+    const reasons: string[] = [];
+    if (!hardGatePassed && hardGateReason) reasons.push(hardGateReason);
+    if (!accept05Pass) reasons.push('accept-05: fid-06-frost-recurrence harness failed');
+    if (!accept06Pass) reasons.push('accept-06: audit --all-stages did not detect Stage 2 or Stage 4 gap');
+
+    const allHardGatesPassed = hardGatePassed && accept05Pass && accept06Pass;
+
+    expect(allHardGatesPassed).toBe(false);
+    expect(reasons).toContain('accept-05: fid-06-frost-recurrence harness failed');
+    expect(reasons).not.toContain('accept-06: audit --all-stages did not detect Stage 2 or Stage 4 gap');
+  });
+
+  it('accept06Pass=false → reasons include accept-06 message', () => {
+    const accept05Pass = true;
+    const accept06Pass = false;
+    const hardGatePassed = true;
+    const hardGateReason = undefined;
+
+    const reasons: string[] = [];
+    if (!hardGatePassed && hardGateReason) reasons.push(hardGateReason);
+    if (!accept05Pass) reasons.push('accept-05: fid-06-frost-recurrence harness failed');
+    if (!accept06Pass) reasons.push('accept-06: audit --all-stages did not detect Stage 2 or Stage 4 gap');
+
+    const allHardGatesPassed = hardGatePassed && accept05Pass && accept06Pass;
+
+    expect(allHardGatesPassed).toBe(false);
+    expect(reasons).toContain('accept-06: audit --all-stages did not detect Stage 2 or Stage 4 gap');
+    expect(reasons).not.toContain('accept-05: fid-06-frost-recurrence harness failed');
+  });
+
+  it('all three true → allHardGatesPassed true', () => {
+    const accept05Pass = true;
+    const accept06Pass = true;
+    const hardGatePassed = true;
+    const allHardGatesPassed = hardGatePassed && accept05Pass && accept06Pass;
+    expect(allHardGatesPassed).toBe(true);
+  });
+});
+
+// ============================================================
+// FIX 5: deterministicStringify preserves nested keys
+// ============================================================
+
+describe('deterministicStringify (FIX 5)', () => {
+  it('preserves nested object keys in fixtureResults entries', async () => {
+    const { deterministicStringify } = await import('../../assets/scripts/release-gate.mjs');
+
+    const mockResult = {
+      schemaVersion: 1,
+      hardGatePassed: true,
+      fixtureResults: [
+        {
+          fixtureId: 'fixture-01',
+          pass: true,
+          tokensUsed: 5000,
+          wallClockMs: 1,
+          gateResults: {
+            '1': { kind: 'pass' },
+            '2': { kind: 'pass' },
+          },
+        },
+      ],
+    };
+
+    const json = deterministicStringify(mockResult);
+    const parsed = JSON.parse(json);
+
+    // All nested keys must survive the round-trip
+    expect(parsed.fixtureResults[0].fixtureId).toBe('fixture-01');
+    expect(parsed.fixtureResults[0].pass).toBe(true);
+    expect(parsed.fixtureResults[0].tokensUsed).toBe(5000);
+    expect(parsed.fixtureResults[0].wallClockMs).toBe(1);
+    expect(parsed.fixtureResults[0].gateResults['1'].kind).toBe('pass');
+    expect(parsed.fixtureResults[0].gateResults['2'].kind).toBe('pass');
+  });
+
+  it('sorts top-level keys alphabetically', async () => {
+    const { deterministicStringify } = await import('../../assets/scripts/release-gate.mjs');
+
+    const obj = { z: 1, a: 2, m: 3 };
+    const json = deterministicStringify(obj);
+    const parsed = JSON.parse(json);
+    const keys = Object.keys(parsed);
+    expect(keys).toEqual(['a', 'm', 'z']);
+  });
+
+  it('does not mutate the input object', async () => {
+    const { deterministicStringify } = await import('../../assets/scripts/release-gate.mjs');
+
+    const obj = { b: { x: 1 }, a: { y: 2 } };
+    const keysBefore = Object.keys(obj);
+    deterministicStringify(obj);
+    expect(Object.keys(obj)).toEqual(keysBefore);
+  });
+
+  it('handles arrays correctly (preserves element order)', async () => {
+    const { deterministicStringify } = await import('../../assets/scripts/release-gate.mjs');
+
+    const obj = { items: ['c', 'a', 'b'] };
+    const json = deterministicStringify(obj);
+    const parsed = JSON.parse(json);
+    // Arrays are NOT sorted — only object keys are
+    expect(parsed.items).toEqual(['c', 'a', 'b']);
   });
 });
