@@ -30,7 +30,7 @@ program
   .description(
     "5-stage design process operationalized as an agent-loop workflow"
   )
-  .version("2.0.0-beta.0");
+  .version("2.0.0");
 
 /**
  * Auto-discover all CLI subcommand modules under assets/scripts/cli/.

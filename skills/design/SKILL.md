@@ -1,7 +1,7 @@
 ---
 name: design
 description: "Run the 5-stage design process: research personas, structure IA, sketch wireframes, design interactions, tokenize. Use for new-product, new-feature, design-audit, brand-refresh, design-bug."
-version: 0.1.0-v1.5
+version: v2.0
 license: Apache-2.0
 compatibility:
   - claude-code
@@ -17,8 +17,15 @@ allowed-tools:
 
 ## Status
 
-**v2.0b** — All 7 routes fully wired with real stage dispatch. Stages 3 (sketch) and 4
+**v2.0 GA** — All 7 routes fully wired with real stage dispatch. Stages 3 (sketch) and 4
 (interact) are live. `audit --all-stages` and `audit --new-feature` post-hoc validator added.
+15-fixture acceptance corpus validated; 1,395 tests passing.
+
+## Cross-host support
+
+Claude Code (host-first) + Codex CLI + Cursor (sequential-fallback). Sampled parity verified:
+trigger recall delta ≤0.10 across Claude Code, Codex CLI, and Cursor in 5-fixture sampled
+driver (D-77). Full 15-fixture parity confirmation runs via `npm run eval:parity`.
 
 ## Default behavior
 
@@ -47,7 +54,7 @@ The design skill dispatches to 7 named routes via `--route <name>`:
 | `brand-refresh` | implemented | style-5a → systematize-5b | 55k tokens | Token + surface refresh (Stages 5a + 5b lite) |
 | `PR-audit` | implemented | audit --pr | 15k tokens | Audit a PR for Stage 5a/5b design regressions |
 
-### Phase 3 routes (v2.0b)
+### Phase 3 routes (v2.0 GA)
 
 | Route | Stages run | Budget p50 | Use case |
 |-------|-----------|-----------|---------|
@@ -82,7 +89,7 @@ Stage-to-stage transitions require passing the corresponding gate checklist:
 
 Each gate returns a `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`.
 
-Note: Stage 3 + Stage 4 gate checklists ship in Phase 3 (v2.0b) alongside the gate runners.
+Note: Stage 3 + Stage 4 gate checklists ship in Phase 3 (v2.0 GA) alongside the gate runners.
 
 ## References
 
