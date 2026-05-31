@@ -4,10 +4,10 @@
 
 Stop jumping straight to hi-fi. design-os walks through Research → IA → Low-Fi → Interaction → Hi-Fi + Design System, with stage-typed artifacts and validation gates between every step — so your prototypes do not break at production scale.
 
-[![npm version](https://img.shields.io/npm/v/design-os/beta.svg)](https://www.npmjs.com/package/design-os/v/2.0.0-beta.0)
+[![npm version](https://img.shields.io/npm/v/design-os.svg)](https://www.npmjs.com/package/design-os)
 [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-green)](https://nodejs.org)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
-[![Status: BETA](https://img.shields.io/badge/status-beta-orange)](https://www.npmjs.com/package/design-os)
+[![Status: GA](https://img.shields.io/badge/status-GA-brightgreen)](https://www.npmjs.com/package/design-os)
 
 ---
 
@@ -17,15 +17,15 @@ design-os is a [SKILL.md](https://agentskills.io/specification) package for Clau
 
 The key difference from Lovable, v0, Bolt, Subframe, Figma Make, and Claude Design: those tools start at the surface (hi-fi generation). design-os starts at the strategy layer and does not let you skip. Prototypes built this way hold up when the design system team, the PM, and the accessibility reviewer all look at the same artifact.
 
-This is version 2.0.0-beta.0. All 5 stages are implemented. The beta tag means we are collecting cross-device and cross-host feedback before promoting to `@latest`.
+This is version 2.0.0 (GA). All 5 stages are implemented and gate-verified across the acceptance corpus.
 
 ---
 
 ## Quick start
 
 ```bash
-# 1. Install design-os globally from the @beta channel
-npm i -g design-os@beta
+# 1. Install design-os globally
+npm i -g design-os
 
 # 2. Copy the SKILL.md package into your Claude Code skills directory
 design-os install
@@ -70,12 +70,12 @@ design-os never claims WCAG conformance — it reports measured contrast ratios.
 
 ## Status
 
-**BETA — v2.0.0-beta.0**
+**GA — v2.0.0**
 
 - All 5 pipeline stages implemented and gate-verified.
-- 999 tests passing (tsc clean; lint-determinism clean).
-- SC-1 live-LLM acceptance testing on a clean laptop in progress.
-- v2.0 GA is expected within approximately 2 weeks of the beta publication date.
+- 1395 tests passing (tsc clean; lint-determinism clean).
+- Coexistence eval calibration ongoing toward the 0.80 GA threshold.
+- Released after 4 internal phases + multi-pass code review.
 
 See [ROADMAP.md](.planning/ROADMAP.md) for the full Phase 4 plan.
 
