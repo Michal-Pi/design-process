@@ -148,6 +148,131 @@ describe('selectDeterministicSample', () => {
     // Second call should not reflect mutation
     expect((sample2[0] as Record<string, unknown>)['_mutated']).toBeUndefined();
   });
+
+  // FIX 1 (P1) — escalation full-corpus tests
+  it('selectDeterministicSample(fixtures, 15) returns 15 fixtures', async () => {
+    const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 15);
+    expect(sample).toHaveLength(15);
+  });
+
+  it('selectDeterministicSample(fixtures, 15) returns ALL fixtureIds present in the manifest', async () => {
+    const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const sample = selectDeterministicSample(SAMPLE_FIXTURES, 15) as FixtureEntry[];
+    const sampleIds = new Set(sample.map((f: FixtureEntry) => f.fixtureId));
+    const allIds = new Set(SAMPLE_FIXTURES.map((f: FixtureEntry) => f.fixtureId));
+    // Every fixture in the manifest must be present in the full-corpus sample
+    for (const id of allIds) {
+      expect(sampleIds.has(id)).toBe(true);
+    }
+  });
+
+  it('selectDeterministicSample(fixtures, 7) returns exactly 7 fixtures, deterministic across calls', async () => {
+    const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const sample1 = selectDeterministicSample(SAMPLE_FIXTURES, 7) as FixtureEntry[];
+    const sample2 = selectDeterministicSample(SAMPLE_FIXTURES, 7) as FixtureEntry[];
+    expect(sample1).toHaveLength(7);
+    expect(JSON.stringify(sample1.map((f: FixtureEntry) => f.fixtureId))).toBe(
+      JSON.stringify(sample2.map((f: FixtureEntry) => f.fixtureId))
+    );
+  });
+
+  it('is monotone: sample(6) ⊆ sample(7) ⊆ sample(15)', async () => {
+    const { selectDeterministicSample } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const s6 = new Set((selectDeterministicSample(SAMPLE_FIXTURES, 6) as FixtureEntry[]).map((f: FixtureEntry) => f.fixtureId));
+    const s7 = new Set((selectDeterministicSample(SAMPLE_FIXTURES, 7) as FixtureEntry[]).map((f: FixtureEntry) => f.fixtureId));
+    const s15 = new Set((selectDeterministicSample(SAMPLE_FIXTURES, 15) as FixtureEntry[]).map((f: FixtureEntry) => f.fixtureId));
+    // s6 ⊆ s7
+    for (const id of s6) {
+      expect(s7.has(id)).toBe(true);
+    }
+    // s7 ⊆ s15
+    for (const id of s7) {
+      expect(s15.has(id)).toBe(true);
+    }
+  });
+});
+
+// ============================================================
+// FIX 2 (P2): vacuousComparison keyed on BIN env vars, not SESSION vars
+// ============================================================
+
+describe('HOST_BIN_VAR and isRealHostDispatchConfigured', () => {
+  it('HOST_BIN_VAR maps claude-code → CLAUDE_CODE_BIN', async () => {
+    const { HOST_BIN_VAR } = await import('../../assets/scripts/cross-host-parity.mjs');
+    expect(HOST_BIN_VAR['claude-code']).toBe('CLAUDE_CODE_BIN');
+  });
+
+  it('HOST_BIN_VAR maps codex-cli → CODEX_CLI_BIN', async () => {
+    const { HOST_BIN_VAR } = await import('../../assets/scripts/cross-host-parity.mjs');
+    expect(HOST_BIN_VAR['codex-cli']).toBe('CODEX_CLI_BIN');
+  });
+
+  it('HOST_BIN_VAR maps cursor → CURSOR_BIN', async () => {
+    const { HOST_BIN_VAR } = await import('../../assets/scripts/cross-host-parity.mjs');
+    expect(HOST_BIN_VAR['cursor']).toBe('CURSOR_BIN');
+  });
+
+  it('isRealHostDispatchConfigured returns false when CODEX_CLI_BIN is unset', async () => {
+    const { isRealHostDispatchConfigured } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const saved = process.env['CODEX_CLI_BIN'];
+    delete process.env['CODEX_CLI_BIN'];
+    try {
+      expect(isRealHostDispatchConfigured('codex-cli')).toBe(false);
+    } finally {
+      if (saved !== undefined) process.env['CODEX_CLI_BIN'] = saved;
+    }
+  });
+
+  it('isRealHostDispatchConfigured returns true when CODEX_CLI_BIN is set', async () => {
+    const { isRealHostDispatchConfigured } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const saved = process.env['CODEX_CLI_BIN'];
+    process.env['CODEX_CLI_BIN'] = '/usr/local/bin/codex';
+    try {
+      expect(isRealHostDispatchConfigured('codex-cli')).toBe(true);
+    } finally {
+      if (saved !== undefined) process.env['CODEX_CLI_BIN'] = saved;
+      else delete process.env['CODEX_CLI_BIN'];
+    }
+  });
+
+  it('isRealHostDispatchConfigured returns false when CODEX_SESSION is set but CODEX_CLI_BIN is unset (session vars do NOT count)', async () => {
+    const { isRealHostDispatchConfigured } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const savedBin = process.env['CODEX_CLI_BIN'];
+    const savedSession = process.env['CODEX_SESSION'];
+    delete process.env['CODEX_CLI_BIN'];
+    process.env['CODEX_SESSION'] = 'some-session-id';
+    try {
+      // Session env var alone must NOT make vacuousComparison false
+      expect(isRealHostDispatchConfigured('codex-cli')).toBe(false);
+    } finally {
+      if (savedBin !== undefined) process.env['CODEX_CLI_BIN'] = savedBin;
+      if (savedSession !== undefined) process.env['CODEX_SESSION'] = savedSession;
+      else delete process.env['CODEX_SESSION'];
+    }
+  });
+
+  it('isRealHostDispatchConfigured returns false when CURSOR_BIN is unset', async () => {
+    const { isRealHostDispatchConfigured } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const saved = process.env['CURSOR_BIN'];
+    delete process.env['CURSOR_BIN'];
+    try {
+      expect(isRealHostDispatchConfigured('cursor')).toBe(false);
+    } finally {
+      if (saved !== undefined) process.env['CURSOR_BIN'] = saved;
+    }
+  });
+
+  it('isRealHostDispatchConfigured returns false when CLAUDE_CODE_BIN is unset', async () => {
+    const { isRealHostDispatchConfigured } = await import('../../assets/scripts/cross-host-parity.mjs');
+    const saved = process.env['CLAUDE_CODE_BIN'];
+    delete process.env['CLAUDE_CODE_BIN'];
+    try {
+      expect(isRealHostDispatchConfigured('claude-code')).toBe(false);
+    } finally {
+      if (saved !== undefined) process.env['CLAUDE_CODE_BIN'] = saved;
+    }
+  });
 });
 
 // ============================================================

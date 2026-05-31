@@ -99,14 +99,21 @@ function validatePathSandbox(suppliedPath, label) {
  * Select a deterministic sample of fixtures for cross-host parity testing (D-77).
  *
  * Algorithm:
- *   1. For each use-case category (b2b-saas, consumer, dashboard, marketing):
- *      - Filter fixtures by that category.
- *      - Sort by fixtureId (locale-insensitive, alphabetical — no locale-sensitive sort).
- *      - Take fixture[0] (first after sort).
- *   2. 5th fixture: first fixture NOT already selected where
- *      route === 'mature-app-refactor' || route === 'DS-extraction'.
- *      (Sorted by fixtureId for stability. If none exist, skip the 5th slot.)
- *   3. Return deduplicated array of up to sampleSize fixtures.
+ *   1. Stable-sort all fixtures by fixtureId (locale 'en', no Math.random()).
+ *   2. If sampleSize >= fixtures.length: return ALL fixtures in sorted order (full corpus).
+ *   3. Otherwise build base sample (5 slots):
+ *      a. For each use-case category (b2b-saas, consumer, dashboard, marketing):
+ *         - Filter fixtures by that category.
+ *         - Sort by fixtureId for stability.
+ *         - Take fixture[0] (first after sort).
+ *      b. 5th slot: first fixture NOT already selected where
+ *         route === 'mature-app-refactor' || route === 'DS-extraction'.
+ *         (Sorted by fixtureId for stability. If none exist, skip the 5th slot.)
+ *   4. For sampleSize between 6 and (fixtures.length-1): extend base sample monotonically
+ *      by appending fixtures from the sorted list (skipping already-selected ones) until
+ *      the requested sampleSize is reached. This makes the function monotone:
+ *      selectDeterministicSample(f, N+1) ⊇ selectDeterministicSample(f, N).
+ *   5. Return deduplicated array of exactly sampleSize fixtures (or all if fewer available).
  *
  * No Math.random(), no Date.now(), no locale-sensitive sort.
  * Same inputs → same output (required by D-77 determinism guarantee).
@@ -116,6 +123,17 @@ function validatePathSandbox(suppliedPath, label) {
  * @returns {FixtureManifestEntry[]} Deterministic sample (up to sampleSize fixtures).
  */
 export function selectDeterministicSample(fixtures, sampleSize = DEFAULT_SAMPLE_SIZE) {
+  // Stable sort all fixtures by fixtureId for deterministic ordering.
+  const sorted = [...fixtures].sort(
+    (a, b) => a.fixtureId.localeCompare(b.fixtureId, 'en', { sensitivity: 'variant' })
+  );
+
+  // If caller wants the full corpus (or more), return all fixtures in deterministic order.
+  if (sampleSize >= sorted.length) {
+    return sorted.map(f => ({ ...f }));
+  }
+
+  // Build base sample: 4 category slots + 1 route-mandatory slot.
   const selected = [];
   const selectedIds = new Set();
 
@@ -123,12 +141,7 @@ export function selectDeterministicSample(fixtures, sampleSize = DEFAULT_SAMPLE_
   for (const category of USE_CASE_CATEGORIES) {
     if (selected.length >= sampleSize) break;
 
-    const categoryFixtures = fixtures
-      .filter(f => f.useCase === category)
-      // Sort by fixtureId using localeCompare with explicit locale 'en' and sensitivity 'variant'
-      // to avoid locale-sensitive sort behavior (D-77 stability requirement).
-      .sort((a, b) => a.fixtureId.localeCompare(b.fixtureId, 'en', { sensitivity: 'variant' }));
-
+    const categoryFixtures = sorted.filter(f => f.useCase === category);
     if (categoryFixtures.length > 0 && categoryFixtures[0] !== undefined) {
       const first = categoryFixtures[0];
       selected.push(first);
@@ -148,9 +161,9 @@ export function selectDeterministicSample(fixtures, sampleSize = DEFAULT_SAMPLE_
   // This is acceptable: the 5-fixture mandate (D-77) takes priority over strict
   // useCase-per-slot uniqueness.
   if (selected.length < sampleSize) {
-    const routeMandatoryFixtures = fixtures
-      .filter(f => ROUTE_MANDATORY.includes(f.route) && !selectedIds.has(f.fixtureId))
-      .sort((a, b) => a.fixtureId.localeCompare(b.fixtureId, 'en', { sensitivity: 'variant' }));
+    const routeMandatoryFixtures = sorted.filter(
+      f => ROUTE_MANDATORY.includes(f.route) && !selectedIds.has(f.fixtureId)
+    );
 
     if (routeMandatoryFixtures.length > 0 && routeMandatoryFixtures[0] !== undefined) {
       const first = routeMandatoryFixtures[0];
@@ -158,8 +171,20 @@ export function selectDeterministicSample(fixtures, sampleSize = DEFAULT_SAMPLE_
       selectedIds.add(first.fixtureId);
     }
     // If all route-mandatory fixtures are already in the selected set (e.g., because
-    // a category-slot fixture has a route-mandatory route), the sample size will be < 5.
+    // a category-slot fixture has a route-mandatory route), the sample size stays < 5.
     // This is correct: we never add duplicate fixtures to pad the sample.
+  }
+
+  // Step 3 (extension): For sampleSize > base sample, extend monotonically from sorted list.
+  // This ensures selectDeterministicSample(f, N+1) ⊇ selectDeterministicSample(f, N).
+  if (selected.length < sampleSize) {
+    for (const fx of sorted) {
+      if (selected.length >= sampleSize) break;
+      if (!selectedIds.has(fx.fixtureId)) {
+        selected.push(fx);
+        selectedIds.add(fx.fixtureId);
+      }
+    }
   }
 
   // Return shallow copies of the selected fixtures to prevent mutation aliasing.
@@ -181,24 +206,37 @@ export function computeParityDelta(hostPassRate, baselinePassRate) {
 }
 
 /**
- * Check whether any real host dispatch env vars are set for the given host.
- * Returns false if dispatch will return sequential-fallback (no real LLM invoked).
+ * Per-host BIN environment variable that gates REAL host CLI dispatch.
+ * Session env vars (CODEX_SESSION, CURSOR_SESSION, etc.) indicate WHERE we are running,
+ * NOT whether real dispatch will happen. Only BIN vars actually wire real dispatch to
+ * a host CLI binary. (Lesson 6 / Codex P2 finding)
+ *
+ * Exported for testing: allows tests to verify the correct BIN var is keyed per host.
+ */
+export const HOST_BIN_VAR = /** @type {Record<string, string>} */ ({
+  'claude-code': 'CLAUDE_CODE_BIN',
+  'codex-cli': 'CODEX_CLI_BIN',
+  'cursor': 'CURSOR_BIN',
+});
+
+/**
+ * Check whether real host dispatch is configured for the given host.
+ * Returns true only when the per-host BIN env var is set (i.e., a real CLI binary
+ * has been wired). Session env vars (CODEX_SESSION etc.) are NOT checked here —
+ * they indicate the running environment, not whether real dispatch will happen.
  *
  * Lesson 6: HOST_PROFILE is NOT read by detectHost(). The actual dispatch path
- * depends on CODEX_CLI_SESSION / CURSOR_SESSION env vars (for host detection)
- * and CODEX_CLI_BIN / CURSOR_BIN / CLAUDE_CODE_BIN (for actual dispatch).
+ * depends on BIN env vars (CLAUDE_CODE_BIN / CODEX_CLI_BIN / CURSOR_BIN).
+ * Without a BIN var, dispatch returns sequential-fallback (~1ms, no real LLM).
  *
- * @param {'codex-cli' | 'cursor'} host - Target host identifier.
- * @returns {boolean} True if at least one dispatch env var is set for this host.
+ * Exported for testing.
+ *
+ * @param {string} host - Target host identifier ('claude-code' | 'codex-cli' | 'cursor').
+ * @returns {boolean} True if the host BIN env var is set (real dispatch configured).
  */
-function hasRealHostDispatch(host) {
-  if (host === 'codex-cli') {
-    return !!(process.env.CODEX_CLI_SESSION || process.env.CODEX_SESSION || process.env.CODEX_CLI_BIN);
-  }
-  if (host === 'cursor') {
-    return !!(process.env.CURSOR_SESSION || process.env.CURSOR_AGENT_SESSION || process.env.CURSOR_BIN);
-  }
-  return false;
+export function isRealHostDispatchConfigured(host) {
+  const binVar = HOST_BIN_VAR[host];
+  return Boolean(binVar && process.env[binVar]);
 }
 
 /**
@@ -226,7 +264,7 @@ function setHostEnv(host) {
   delete process.env.CLAUDE_CODE_SESSION;
   // Also clear CLAUDE_CODE_BIN to force sequential-fallback path for host simulation
   // (unless the user explicitly has CODEX_CLI_BIN / CURSOR_BIN set for real dispatch)
-  if (!hasRealHostDispatch(host)) {
+  if (!isRealHostDispatchConfigured(host)) {
     delete process.env.CLAUDE_CODE_BIN;
   }
 
@@ -346,7 +384,7 @@ async function runSample(sample, host, fixturesDir) {
  *   delta: number,
  *   escalated: boolean,
  *   pass: boolean,
- *   warningVacuousComparison?: boolean,
+ *   warningVacuousComparison: boolean,
  *   warningMessage?: string
  * }} ParityResult
  */
@@ -366,27 +404,26 @@ export async function runCrossHostParity(opts) {
     output: outputRaw,
   } = opts;
 
-  // P8 trust-posture + Lesson 6: warn if no real host dispatch configured.
-  // Setting HOST_PROFILE or session env vars without a real CLI binary means
-  // dispatch returns sequential-fallback (~1ms). The comparison is vacuous
-  // (schema/gate checks run but no real LLM trigger recall is measured).
-  const hasRealDispatch = hasRealHostDispatch(host);
-  const vacuousComparison = !hasRealDispatch;
+  // P8 trust-posture + Lesson 6: vacuous comparison is keyed on BIN env var presence,
+  // NOT session env vars. Session vars (CODEX_SESSION etc.) indicate WHERE we are running,
+  // not whether real dispatch will happen. Only the BIN var wires a real CLI binary.
+  // Without a BIN var, dispatch returns sequential-fallback (~1ms, no real LLM).
+  // (Codex P2 finding: session vars made vacuousComparison false inside Codex/Cursor sessions
+  //  even though no real LLM dispatch occurred.)
+  const vacuousComparison = !isRealHostDispatchConfigured(host);
+  const binVar = HOST_BIN_VAR[host] ?? `${host.toUpperCase().replace(/-/g, '_')}_BIN`;
 
   if (vacuousComparison) {
     console.warn(
-      `\n[cross-host-parity] WARNING: No real ${host} dispatch configured.`
+      `\n[cross-host-parity] WARNING: ${binVar} not set. ` +
+      `dispatchSubagent will use sequential-fallback (no real ${host} CLI invocation).`
     );
     console.warn(
-      `  HOST_PROFILE env var (test-only label) is NOT read by detectHost().`
+      `  Parity-results.json will be marked warningVacuousComparison=true.`
     );
-    if (host === 'codex-cli') {
-      console.warn(`  Required: CODEX_CLI_SESSION or CODEX_CLI_BIN env var.`);
-    } else {
-      console.warn(`  Required: CURSOR_SESSION or CURSOR_BIN env var.`);
-    }
-    console.warn(`  Without these, dispatch returns sequential-fallback (~1ms, no real LLM).`);
-    console.warn(`  Comparison will measure schema/gate correctness only, NOT trigger recall.`);
+    console.warn(
+      `  For a real cross-host measurement, set ${binVar} to a path to the host binary.`
+    );
     console.warn(`  Per D-77: true parity testing requires manual invocation with host CLI installed.\n`);
   }
 
@@ -442,12 +479,13 @@ export async function runCrossHostParity(opts) {
   let finalSampleSize = initialSample.length;
   let finalSampledFixtureIds = initialFixtureIds;
 
-  // Escalation: if delta > 0.10 and initial sample < 15, re-run with full 15 fixtures (D-77).
-  if (delta > DELTA_THRESHOLD && sampleSize < ESCALATION_SAMPLE_SIZE) {
-    console.log(`[cross-host-parity] Delta ${delta.toFixed(3)} > ${DELTA_THRESHOLD}. Escalating to full N=${ESCALATION_SAMPLE_SIZE} run...`);
+  // Escalation: if delta > 0.10 and initial sample < full corpus, re-run with all fixtures (D-77).
+  // Use allFixtures.length (not hardcoded 15) so this future-proofs against 16+ fixture corpora.
+  if (delta > DELTA_THRESHOLD && sampleSize < allFixtures.length) {
+    console.log(`[cross-host-parity] Delta ${delta.toFixed(3)} > ${DELTA_THRESHOLD}. Escalating to full N=${allFixtures.length} run...`);
     escalated = true;
 
-    const fullSample = selectDeterministicSample(allFixtures, Math.min(ESCALATION_SAMPLE_SIZE, allFixtures.length));
+    const fullSample = selectDeterministicSample(allFixtures, allFixtures.length);
     const { passCount: fullPassCount, sampledFixtureIds: fullFixtureIds } =
       await runSample(fullSample, host, fixturesDirResolved);
 
@@ -463,6 +501,8 @@ export async function runCrossHostParity(opts) {
   const pass = delta <= DELTA_THRESHOLD;
 
   // Build parity result — Lesson 5: both count (hostPassRate) AND identity (sampledFixtures).
+  // warningVacuousComparison is ALWAYS present (true/false) so downstream consumers can
+  // filter parity-results.json by trustworthiness without parsing prose warnings.
   /** @type {ParityResult} */
   const parityResult = {
     host,
@@ -473,9 +513,9 @@ export async function runCrossHostParity(opts) {
     delta,
     escalated,
     pass,
+    warningVacuousComparison: vacuousComparison,
     ...(vacuousComparison ? {
-      warningVacuousComparison: true,
-      warningMessage: `No real ${host} dispatch configured (missing session env vars). ` +
+      warningMessage: `${binVar} not set — dispatchSubagent uses sequential-fallback. ` +
         `Schema/gate checks run but LLM trigger recall NOT measured. ` +
         `Per D-77: true parity requires manual invocation with ${host} CLI installed.`,
     } : {}),
