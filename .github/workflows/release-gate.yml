@@ -1,0 +1,75 @@
+# .github/workflows/release-gate.yml
+# CI workflow: Release gate — runs adversarial corpora + axe-runner + release-gate.
+#
+# Triggers:
+#   - workflow_dispatch (manual — for pre-GA verification)
+#   - push to v* tags (release tag triggers full gate)
+#   - push to main with changes in skills/, evals/, or assets/scripts/
+#
+# Jobs:
+#   release-gate: Runs all three layers of the GA hard gate.
+#
+# Note on CLAUDE_CODE_BIN:
+#   Real LLM dispatch requires CLAUDE_CODE_BIN set to a real claude binary.
+#   In CI without it, release-gate runs in --dry-run mode (sequential-fallback dispatch only,
+#   ~1ms latency). Real inference measurement requires manual SC-1 verification on a
+#   developer machine with CLAUDE_CODE_BIN set. See RELEASE-NOTES.md for disclosure caveat.
+#
+# Source: 04-02-PLAN.md Task 2; CONTEXT.md D-74, D-78; INVARIANTS.md
+# Implements: ACCEPT-01, ACCEPT-09, COST-07, COST-10 (CI enforcement)
+
+name: Release Gate
+
+on:
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+    paths:
+      - 'skills/**'
+      - 'evals/**'
+      - 'assets/scripts/**'
+
+jobs:
+  release-gate:
+    name: Release Gate (adversarial + axe-runner + cost gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Emit schemas
+        run: npm run schemas:emit
+
+      - name: Run ACCEPT-02/03/04 adversarial corpora
+        run: npx vitest run evals/adversarial/accept-02/run.test.ts evals/adversarial/accept-03/run.test.ts evals/adversarial/accept-04/run.test.ts
+
+      - name: Run axe-runner accessibility gate (ACCEPT-09 D-78)
+        run: node bin/design-os.mjs axe-runner --fixtures-dir evals/acceptance --output release-gate-axe-results.json
+
+      - name: Run release-gate in dry-run mode (no CLAUDE_CODE_BIN in CI)
+        run: node bin/design-os.mjs release-gate --dry-run --fixtures-dir evals/acceptance --output release-gate-results.json
+
+      - name: Upload gate results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-results
+          path: '*results.json'
+          if-no-files-found: warn
