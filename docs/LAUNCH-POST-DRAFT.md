@@ -102,7 +102,7 @@ design-os v2.0-beta.0 is available today.
 - 100/100 adversarial block rate on hi-fi-without-state-maps Stage 5a gate bypass
 - axe-runner CI measures WCAG 2.2 AA contrast on all 15 acceptance fixture outputs
 - Frost ≥3× recurrence enforced as a gate finding in Stage 5b
-- Aggregate coexistence eval: design-os triggers correctly alongside 5 other popular Claude Code skill packages
+- Aggregate coexistence eval (TRIG-03 release gate) is wired and blocking; calibration ongoing through Wave A — current measured recall 0.71, threshold 0.80
 - PR submitted to anthropics/skills#1008 for DESIGN.md consume/produce support — connecting the design contract to Google's emerging DESIGN.md standard
 
 None of this is vaporware. Every gate behavior described above is in the codebase, covered by tests, and enforced in CI.
