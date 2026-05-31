@@ -1,5 +1,39 @@
 # Rapid-Response Plan: Anthropic 5-Stage Equivalent Ships During Build Window
 
+## Anthropic-Labs Watcher Trigger Conditions (D-79)
+
+Weekly check during Phase 4; bi-daily during Wave B public launch window.
+Check signals: `.design-os/watcher/anthropic-labs-*.json` (from Phase 1 GTM-06 watcher cron).
+
+### Severity 1 — Interop Pivot (invoke within 72 hours of detection)
+
+**Trigger:** Anthropic Labs ships a tool with ≥3 of the following capabilities:
+- Stage 2 sitemap generation
+- Stage 3 wireframe generation (structured, not hi-fi)
+- Stage 4 state machine / interaction spec generation
+- Stage 5b DTCG design token emission
+
+AND ≥1 of the following distribution characteristics:
+- Open-source under Apache-2.0 or MIT
+- DESIGN.md spec consumer or producer
+- Distributed as a `.claude/skills/` SKILL.md package (runs in Claude Code)
+
+**Action:** Invoke 72-hour pivot plan (below). Reposition design-os as "the bridge between Claude Design and DESIGN.md spec consumers" — interop-first messaging replaces the current standalone-spine framing.
+
+### Severity 2 — No Pivot Needed
+
+**Trigger:** Anthropic ships a tool with Stage 5b token emission only (DTCG overlap), but NOT ≥3 of the Severity 1 capabilities.
+
+**Action:** Continue as planned. Update marketplace copy to note "complements Anthropic's token tools with the full 5-stage design process."
+
+### Severity 3 — Out of Scope (No Change)
+
+**Trigger:** Anthropic ships a hi-fi-only generator (current Claude Design state as of May 2026: image generation → UI mockup, no Garrett spine).
+
+**Action:** None. Claude Design is positioned at Stage 5a hi-fi; design-os covers Stages 1-4 that precede it. Complementary framing holds.
+
+---
+
 ## Trigger
 
 A `[competitive-watch]` issue lands AND the linked release/post describes a feature overlap
