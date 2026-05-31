@@ -2,15 +2,14 @@
 # CI workflow: Run aggregate coexistence eval on schedule + dispatch.
 # Reports design-os recall with 5 peer packages installed.
 #
-# Open Q3 disposition:
-#   Phase 1 reports the recall number even if it doesn't pass (≥0.80 threshold).
-#   CI does NOT block on Phase 1 failures (continue-on-error: true).
-#   v2.0 GA enables blocking once threshold is empirically calibrated.
-#   See: CONTINGENCY-TRIG-04.md for the core/atoms split lever if recall <0.80.
+# TRIG-03 GA gate disposition (Plan 4 hardening):
+#   Blocking is now enabled (continue-on-error: false). Current recall = 0.516 (below ≥0.80).
+#   The corpus expansion (real trigger vocabulary per peer package) has been applied.
+#   CI WILL fail on next push until live-LLM calibration raises recall above 0.80.
+#   This is the correct trust-posture call: honest signal > false confidence (P8).
+#   See: CONTINGENCY-TRIG-04.md for the core/atoms split lever if recall remains <0.80.
 #
 # HEARTBEAT: Job summary always posts recall number per Pitfall E.
-#
-# TODO: enable blocking once threshold calibrated per Open Q3.
 
 name: aggregate-coexistence
 
@@ -31,9 +30,11 @@ jobs:
   aggregate-coexistence:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # TODO: enable blocking once threshold calibrated per Open Q3
-    # continue-on-error: false  # DISABLED in Phase 1; enable for GA
-    continue-on-error: true  # Phase 1: report number, do not block
+    # TRIG-03 GA gate: blocking enabled in Plan 4 (continue-on-error: false).
+    # Current recall = 0.516 (below ≥0.80 threshold) — CI WILL fail on next push.
+    # This is the correct trust-posture call: honest signal > false confidence.
+    # Full calibration requires live-LLM trigger eval (deferred post-GA per D-77).
+    continue-on-error: false
 
     steps:
       - name: Checkout
@@ -61,6 +62,21 @@ jobs:
             echo "last-run.json not found"
           fi
 
+      # Assert recall gate — belt-and-suspenders check on top of process.exit in aggregate-eval.mjs.
+      # TRIG-03: recall must be >= 0.80 for GA release gate.
+      - name: Assert recall gate (TRIG-03)
+        run: |
+          node -e "
+            const r = JSON.parse(require('fs').readFileSync('evals/coexistence/last-run.json', 'utf8'));
+            if (!r.pass) {
+              console.error('TRIG-03 FAILED: recall=' + r.recall.toFixed(3) + ' (threshold 0.80)');
+              console.error('false-fire rate=' + r.falseFireRate.toFixed(3) + ' (threshold 0.15)');
+              console.error('Corpus expansion applied in Plan 4; live-LLM calibration deferred post-GA.');
+              process.exit(1);
+            }
+            console.log('TRIG-03 PASS: recall=' + r.recall.toFixed(3));
+          "
+
       # Heartbeat — post recall number as job summary per Pitfall E
       - name: Heartbeat — aggregate-coexistence summary
         if: always()
@@ -76,7 +92,7 @@ jobs:
               const data = JSON.parse(fs.readFileSync('evals/coexistence/last-run.json', 'utf8'));
               recall = data.recall?.toFixed(3) ?? 'N/A';
               falseFireRate = data.falseFireRate?.toFixed(3) ?? 'N/A';
-              pass = data.pass ? 'PASS' : 'FAIL (calibration phase — non-blocking in Phase 1)';
+              pass = data.pass ? 'PASS' : 'FAIL — TRIG-03 blocking gate active (continue-on-error: false)';
             } catch (e) {
               pass = 'ERROR: ' + e.message;
             }
@@ -87,9 +103,9 @@ jobs:
                 [{ data: 'Metric', header: true }, { data: 'Value', header: true }],
                 ['design-os recall', recall],
                 ['design-os false-fire rate', falseFireRate],
-                ['pass (≥0.80)', pass],
+                ['pass (≥0.80 recall + ≤0.15 false-fire)', pass],
               ])
-              .addRaw('\n**Open Q3:** Phase 1 reports the number; blocking enabled at v2.0 GA.\n')
+              .addRaw('\n**TRIG-03:** Blocking gate active since Plan 4 GA hardening. Current recall ~0.516 (below threshold). CI will fail until live-LLM calibration raises recall above 0.80.\n')
               .write();
 
             console.log('aggregate-coexistence: recall=' + recall + ' falseFireRate=' + falseFireRate + ' pass=' + pass);

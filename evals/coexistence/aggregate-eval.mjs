@@ -88,7 +88,8 @@ async function loadShouldFirePrompts(pkg) {
  *   designOsHits: number,
  *   designOsTotal: number,
  *   designOsFalseFires: number,
- *   peerTotal: number
+ *   peerTotal: number,
+ *   perSkillRecall: Record<string, number>
  * }>}
  */
 export async function runAggregateCoexistenceEval() {
@@ -101,6 +102,7 @@ export async function runAggregateCoexistenceEval() {
     const designOsPrompts = await loadShouldFirePrompts("design-os");
 
     // Measure RECALL: how often does design-os fire on its own shouldFire prompts?
+    // Track per-skill recall (Lesson 5 identity — both count AND identity required).
     let designOsHits = 0;
 
     for (const prompt of designOsPrompts) {
@@ -117,13 +119,23 @@ export async function runAggregateCoexistenceEval() {
       designOsPrompts.length > 0 ? designOsHits / designOsPrompts.length : 0;
 
     // Measure FALSE-FIRE RATE: how often does design-os fire on peer package prompts?
+    // Also measure per-skill false-fire rate for Lesson 5 identity tracking.
     let peerTotal = 0;
     let designOsFalseFires = 0;
+
+    // perSkillRecall: for each peer package, track how often design-os fires on
+    // its prompts (this is the per-skill false-fire identity per Lesson 5).
+    // Also track design-os's own recall as 'design-os' key.
+    /** @type {Record<string, number>} */
+    const perSkillRecall = {
+      "design-os": recall,
+    };
 
     for (const pkg of PEER_PACKAGES) {
       const peerPrompts = await loadShouldFirePrompts(pkg);
       peerTotal += peerPrompts.length;
 
+      let pkgFalseFires = 0;
       for (const prompt of peerPrompts) {
         const { firedSkill } = await dispatchToHost({
           prompt,
@@ -131,28 +143,39 @@ export async function runAggregateCoexistenceEval() {
         });
         if (firedSkill === "design-os") {
           designOsFalseFires++;
+          pkgFalseFires++;
         }
       }
+
+      // Per-skill false-fire rate: what fraction of this peer's prompts
+      // incorrectly fire design-os? (Lower is better; ≤0.15 globally.)
+      perSkillRecall[pkg] = peerPrompts.length > 0
+        ? pkgFalseFires / peerPrompts.length
+        : 0;
     }
 
     const falseFireRate = peerTotal > 0 ? designOsFalseFires / peerTotal : 0;
     const pass =
       recall >= RECALL_THRESHOLD && falseFireRate <= FALSE_FIRE_THRESHOLD;
 
-    // Build result
+    // Build result — includes perSkillRecall for Lesson 5 identity tracking.
+    // TRIG-03 status: recall=0.516 at Plan 4 GA flip. Corpus expansion improves
+    // this somewhat; full calibration requires live-LLM trigger eval (deferred post-GA).
     const result = {
       calibrationNote: pass
         ? undefined
-        : "Per Open Q3, threshold ≥0.80 is aggressive for Phase 1 (static-analysis fallback only). " +
-          "Phase 1 reports the number even if not yet passing. " +
-          "v2.0 GA enables blocking once threshold is empirically calibrated. " +
-          "TRIG-04 contingency: split into design-os-core + design-os-atoms if aggregate recall <0.80 after 2 tuning rounds.",
+        : "TRIG-03 gate FAILED: recall below ≥0.80 threshold. " +
+          "Plan 4 corpus expansion (real trigger vocabulary) has been applied. " +
+          "Current recall reflects static-analysis fallback accuracy. " +
+          "Full calibration with live-LLM trigger eval is deferred to post-GA. " +
+          "This gate is now blocking (continue-on-error: false) — CI will fail on next push.",
       designOsFalseFires,
       designOsHits,
       designOsTotal: designOsPrompts.length,
       falseFireRate,
       pass,
       peerTotal,
+      perSkillRecall,
       recall,
     };
 
@@ -187,8 +210,9 @@ if (isMain) {
 
   console.log(`\nResults written to: ${LAST_RUN_PATH}`);
 
-  // Per D-16 + Open Q3: Phase 1 does NOT block CI on pass/fail.
-  // The aggregate-coexistence.yml workflow uses continue-on-error: true.
-  // process.exit(result.pass ? 0 : 1) — DISABLED in Phase 1
-  process.exit(0);
+  // TRIG-03 GA gate: exit 1 when recall < 0.80 (blocking enabled in Plan 4).
+  // The aggregate-coexistence.yml workflow now uses continue-on-error: false.
+  // Current recall (Plan 4 corpus expansion baseline) = 0.516 — gate WILL fail.
+  // This is the correct trust-posture call: honest signal > false confidence.
+  process.exit(result.pass ? 0 : 1);
 }
