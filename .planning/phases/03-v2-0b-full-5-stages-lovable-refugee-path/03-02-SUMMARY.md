@@ -16,7 +16,7 @@ dependency_graph:
   requires:
     - 03-01 (stage-3.mjs, excalidraw-render.mjs, mermaid-render.mjs base)
     - 02-05 (verify-golden.mjs, lint-determinism.mjs, globby 14.x, base gate infrastructure)
-    - 01-03 (bin/design-os.mjs auto-discovery dispatcher, mermaid-render.mjs Phase 1 base)
+    - 01-03 (bin/complete-design.mjs auto-discovery dispatcher, mermaid-render.mjs Phase 1 base)
     - 01-01 (interaction-spec.v1.json schema, schemas/validate.mjs ajv validator)
   provides:
     - assets/scripts/state-machine-emit.mjs (emitMermaid, emitXState, emitFromSpec, needsXState, emitToFiles)
@@ -216,14 +216,14 @@ All 4 findings accepted and fixed as atomic commits. Tests: 904 total (up from 9
 **Commit:** `2d993f9`
 **Files:** `assets/scripts/cli/state-machine-emit.mjs`
 
-**Problem:** Module exported `{ name, description, options, action }`. The dispatcher at `bin/design-os.mjs` requires `{ name, describe, builder, handler }`. The wrong shape caused `error: unknown option '--spec'` at runtime — Commander never registered the options.
+**Problem:** Module exported `{ name, description, options, action }`. The dispatcher at `bin/complete-design.mjs` requires `{ name, describe, builder, handler }`. The wrong shape caused `error: unknown option '--spec'` at runtime — Commander never registered the options.
 
 **Fix:** Rewrote the CLI module to use the canonical Commander contract exported by all sibling CLI modules (`excalidraw-render.mjs`, `gate.mjs`). Preserved: security check (T-03-02-01 `..` path traversal guard), `emitToFiles()` call, exit-code-2 repair signaling.
 
 **Verification:**
 ```
-$ node bin/design-os.mjs state-machine-emit --help
-Usage: design-os state-machine-emit [options]
+$ node bin/complete-design.mjs state-machine-emit --help
+Usage: complete-design state-machine-emit [options]
 
 Emit Mermaid stateDiagram-v2 and conditional XState v5 machine from a .spec.md file.
 
@@ -293,7 +293,7 @@ Reference template: `gates/stage-3.mjs`.
 
 | Check | Result |
 |-------|--------|
-| `node bin/design-os.mjs state-machine-emit --help` | PASS — `--spec` and `--output` appear in option list |
+| `node bin/complete-design.mjs state-machine-emit --help` | PASS — `--spec` and `--output` appear in option list |
 | `npm test` (full suite) | PASS — 904 tests (up from 900), 1-2 pre-existing stage-2-latch flakes only |
 | `npx tsc --noEmit` | PASS — clean |
 | `npm run lint:determinism` | PASS — CLEAN |

@@ -1,5 +1,5 @@
 ---
-name: "design-os/discover"
+name: "complete-design/discover"
 description: "Design research: generate proto-personas, synthesize job stories and OST from PRD, run Stage 1 provenance gate"
 stage: 1
 gate: "gate/stage-1-complete"
@@ -48,7 +48,7 @@ All synthetic-persona output is labeled `provenance: generated` and `evidence: p
 
 Read `design/.handoff/stage-0-bundle.md`. If absent, check for `design/PRD.md`
 directly. If neither exists, halt with message:
-"Run design-os ingest first (or create design/PRD.md with your product requirements)."
+"Run complete-design ingest first (or create design/PRD.md with your product requirements)."
 
 **2. Load reference files**
 
@@ -91,7 +91,7 @@ Using the intake answers and `${CLAUDE_SKILL_DIR}/references/indi-young-thinking
   provenance: generated
   worstProvenance: generated
   generated: <ISO datetime>
-  owner: <from intake or 'design-os/discover'>
+  owner: <from intake or 'complete-design/discover'>
   ```
 - Write `design/ASSUMPTIONS.md` listing every specific claim made about each persona
   as a numbered item to validate with real users.
@@ -143,7 +143,7 @@ If the script is absent (ships in Plan 02-05), skip with warning:
 **8. Run Stage 1 gate**
 
 ```bash
-node bin/design-os.mjs gate --stage 1 --design-dir design/
+node bin/complete-design.mjs gate --stage 1 --design-dir design/
 ```
 
 - If `result.kind === 'not_runnable'`: halt with message and list what is missing.
@@ -182,7 +182,7 @@ to finalize the artifacts.
 For Codex CLI / Cursor (no subagent dispatch — sequential single-context execution):
 
 Run steps 1-11 sequentially in a single context window. Replace step 8 Bash invocation
-with direct execution: `node bin/design-os.mjs gate --stage 1 --design-dir design/`
+with direct execution: `node bin/complete-design.mjs gate --stage 1 --design-dir design/`
 (no parallel execution). The sub-agent dispatch in step 4-6 is inline in this context.
 Ensure the context window is not exceeded; if persona generation causes context bloat,
 truncate persona descriptions to 3 bullet points each and continue.

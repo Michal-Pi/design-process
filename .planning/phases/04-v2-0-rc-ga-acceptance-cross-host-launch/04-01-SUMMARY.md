@@ -9,7 +9,7 @@ tags:
   - tdd
 dependency_graph:
   requires:
-    - 04-00 (npm @beta dist — design-os install path)
+    - 04-00 (npm @beta dist — complete-design install path)
     - Phase 2 evals/fixtures/e2e/next15-tailwind4-shadcn/ (fixture-01 regression link)
   provides:
     - evals/acceptance/fixtures.manifest.json (consumed by 04-02 release-gate.mjs)

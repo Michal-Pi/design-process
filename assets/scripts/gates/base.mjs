@@ -2,7 +2,7 @@
 // Base gate runner: runGate(stage, designDir, config) → GateResult
 // Dispatches to per-stage gate implementations.
 // Validates the result via ajv before returning.
-// Appends a hash-chain entry to .design-os/manifest.lock on every run.
+// Appends a hash-chain entry to .complete-design/manifest.lock on every run.
 //
 // Source: CONTEXT.md D-09, D-10, D-11; PLAN.md Task 1 action
 // Implements: GATE-01..07
@@ -36,7 +36,7 @@ const STAGE_GATES = {
 
 /**
  * Recursively collect all file paths under a directory in sorted order.
- * Skips hidden files and .design-os/ to avoid self-hashing.
+ * Skips hidden files and .complete-design/ to avoid self-hashing.
  *
  * @param {string} dir - Root directory
  * @param {string} [base] - Base path for relative path computation
@@ -51,8 +51,8 @@ async function collectFiles(dir, base = dir) {
   const files = [];
 
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-    // Skip .design-os directory to avoid recursive self-hashing
-    if (entry.name === ".design-os") continue;
+    // Skip .complete-design directory to avoid recursive self-hashing
+    if (entry.name === ".complete-design") continue;
     // Skip hidden files
     if (entry.name.startsWith(".")) continue;
 
@@ -98,7 +98,7 @@ export async function hashDirectory(dir) {
  *    the actual gate check (D-11).
  * 2. Otherwise dispatch to the per-stage gate function.
  * 3. Validate result via the Plan 01 ajv helper.
- * 4. Append entry to .design-os/manifest.lock in designDir's parent .design-os dir.
+ * 4. Append entry to .complete-design/manifest.lock in designDir's parent .complete-design dir.
  *
  * @param {string} stage - Gate stage identifier ('1','2','3','4','5a','5b')
  * @param {string} designDir - Path to the design directory being gated
@@ -127,11 +127,11 @@ export async function runGate(stage, designDir, config = {}) {
   // Compute sourceHash of designDir content
   const sourceHash = await hashDirectory(designDir);
 
-  // Append entry to .design-os/manifest.lock
-  // .design-os/ lives alongside the designDir (or inside it — use designDir directly
+  // Append entry to .complete-design/manifest.lock
+  // .complete-design/ lives alongside the designDir (or inside it — use designDir directly
   // when designDir is the project root; use parent when it's a stage subdirectory).
-  // For Phase 1: treat designDir as the repo root scope; .design-os/ is at designDir/.design-os/
-  const designOsDir = join(designDir, ".design-os");
+  // For Phase 1: treat designDir as the repo root scope; .complete-design/ is at designDir/.complete-design/
+  const designOsDir = join(designDir, ".complete-design");
 
   try {
     await appendManifestLockEntry(designOsDir, {

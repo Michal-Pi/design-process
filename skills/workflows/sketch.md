@@ -1,5 +1,5 @@
 ---
-name: "design-os/sketch"
+name: "complete-design/sketch"
 description: "Stage 3: Generate ≥8 divergent wireframe concepts via Crazy 8s, converge on 1 with CHOICE.md. Excalidraw JSON emitted by script — never hand-built."
 type: workflow
 stage: 3
@@ -13,11 +13,11 @@ allows-tools:
   - Bash
 artifacts:
   reads:
-    - ".design-os/preview/<run-id>/stage-2-bundle.md"
+    - ".complete-design/preview/<run-id>/stage-2-bundle.md"
   writes:
-    - ".design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json"
-    - ".design-os/preview/<run-id>/wireframes/<screen>/v1.excalidraw"
-    - ".design-os/preview/<run-id>/wireframes/<screen>/CHOICE.md"
+    - ".complete-design/preview/<run-id>/wireframes/<screen>/skeleton-ir.json"
+    - ".complete-design/preview/<run-id>/wireframes/<screen>/v1.excalidraw"
+    - ".complete-design/preview/<run-id>/wireframes/<screen>/CHOICE.md"
 cost:
   token_budget_p50: 25000
   token_budget_p95: 40000
@@ -35,7 +35,7 @@ other than Virgil (fontFamily: 1), no styling. The Excalidraw emitter enforces t
 **Script discipline (INVARIANT-05):** The LLM never writes raw Excalidraw element JSON.
 Wireframes are described as skeleton IR objects and converted by `excalidraw-render.mjs`.
 
-**Staged path (INVARIANT-01):** All outputs go to `.design-os/preview/<run-id>/` first.
+**Staged path (INVARIANT-01):** All outputs go to `.complete-design/preview/<run-id>/` first.
 The user explicitly runs `--apply` to commit to `design/`.
 
 ---
@@ -47,7 +47,7 @@ The user explicitly runs `--apply` to commit to `design/`.
 Read the Stage 2 → 3 handoff bundle from the staged path:
 
 ```
-.design-os/preview/<run-id>/stage-2-bundle.md
+.complete-design/preview/<run-id>/stage-2-bundle.md
 ```
 
 Extract the list of screens and the chosen sitemap variant from
@@ -61,7 +61,7 @@ each representing a structurally distinct layout approach for the target screen.
 Emit the skeleton IR to:
 
 ```
-.design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json
+.complete-design/preview/<run-id>/wireframes/<screen>/skeleton-ir.json
 ```
 
 The IR array must contain exactly 8 objects. Each must use a distinct layout axis
@@ -70,21 +70,21 @@ The IR array must contain exactly 8 objects. Each must use a distinct layout axi
 **Step 3: Emit Excalidraw files from skeleton IR**
 
 ```bash
-node bin/design-os.mjs excalidraw-render \
-  --input .design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json \
-  --output .design-os/preview/<run-id>/wireframes/ \
+node bin/complete-design.mjs excalidraw-render \
+  --input .complete-design/preview/<run-id>/wireframes/<screen>/skeleton-ir.json \
+  --output .complete-design/preview/<run-id>/wireframes/ \
   --screen <screen>
 ```
 
 The renderer appends `<screen>` to `--output`, writing to
-`.design-os/preview/<run-id>/wireframes/<screen>/v1.excalidraw` through `v8.excalidraw`.
+`.complete-design/preview/<run-id>/wireframes/<screen>/v1.excalidraw` through `v8.excalidraw`.
 Do NOT pass the `<screen>` segment in `--output` — that would produce a double-nested
 path (`wireframes/<screen>/<screen>/v1.excalidraw`).
 
 **Step 4: Run Stage 3 gate (first pass — FID-03 + diversity check)**
 
 ```bash
-node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
+node bin/complete-design.mjs gate --stage 3 --design-dir .complete-design/preview/<run-id>/
 ```
 
 Expected outcomes:
@@ -106,13 +106,13 @@ Follow `${CLAUDE_SKILL_DIR}/atoms/lowfi/converge.md` (ATOM-09) to select one wir
 Emit CHOICE.md to:
 
 ```
-.design-os/preview/<run-id>/wireframes/<screen>/CHOICE.md
+.complete-design/preview/<run-id>/wireframes/<screen>/CHOICE.md
 ```
 
 **Step 6: Re-run Stage 3 gate to confirm CHOICE.md present**
 
 ```bash
-node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
+node bin/complete-design.mjs gate --stage 3 --design-dir .complete-design/preview/<run-id>/
 ```
 
 Expected outcome: `pass`. If still `failed_after_repair/3-choice-001`, verify the
@@ -121,10 +121,10 @@ CHOICE.md path matches `wireframes/<screen>/CHOICE.md`.
 **Step 7: Build Stage 3 → 4 handoff bundle**
 
 ```bash
-node bin/design-os.mjs handoff-bundle \
+node bin/complete-design.mjs handoff-bundle \
   --from 3 --to 4 \
-  --design-dir .design-os/preview/<run-id>/ \
-  --body-file .design-os/preview/<run-id>/stage-3-summary.md
+  --design-dir .complete-design/preview/<run-id>/ \
+  --body-file .complete-design/preview/<run-id>/stage-3-summary.md
 ```
 
 **Step 8: Surface diff and await user `--apply`**
@@ -136,7 +136,7 @@ Do NOT write to `design/` until the user explicitly runs `--apply` (INVARIANT-02
 
 ## INVARIANTS
 
-- **INVARIANT-01:** Gate always runs against `.design-os/preview/<run-id>/`.
+- **INVARIANT-01:** Gate always runs against `.complete-design/preview/<run-id>/`.
   Never run `gate --stage 3 --dir design/` — that gates AFTER the fact.
 - **INVARIANT-02:** `--apply` is required. Auto-publishing to `design/` is forbidden.
 - **INVARIANT-04:** This SKILL.md description is ≤200 characters (enforced by skillgrade CI).

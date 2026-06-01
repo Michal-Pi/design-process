@@ -1,13 +1,13 @@
 // assets/scripts/cli/verify.mjs
-// CLI subcommand: design-os verify --golden
-// Auto-discovered by bin/design-os.mjs dispatcher (Plan 01 contract).
-// Plan 03 does NOT modify bin/design-os.mjs.
+// CLI subcommand: complete-design verify --golden
+// Auto-discovered by bin/complete-design.mjs dispatcher (Plan 01 contract).
+// Plan 03 does NOT modify bin/complete-design.mjs.
 //
-// Source: PLAN.md Task 1 action; bin/design-os.mjs dispatcher contract
+// Source: PLAN.md Task 1 action; bin/complete-design.mjs dispatcher contract
 // Implements: PREV-03 (CLI entry point for golden CI gate)
 //
 // Gap-closure note (Phase 1 re-verification):
-// bin/design-os.mjs runs under plain node (no tsx loader). verify-golden.mjs
+// bin/complete-design.mjs runs under plain node (no tsx loader). verify-golden.mjs
 // calls emitSchemas() which dynamically imports schemas/src/*.ts files — those
 // require tsx to resolve. Without the loader, node looks for the .js equivalent
 // and fails with ERR_MODULE_NOT_FOUND. Fix: spawn verify-golden.mjs as a child
@@ -58,8 +58,8 @@ export const command = {
       const code = result.status ?? 1;
       if (code !== 0) process.exit(code);
     } else {
-      console.log("design-os verify: specify --golden to run determinism gate");
-      console.log("  design-os verify --golden");
+      console.log("complete-design verify: specify --golden to run determinism gate");
+      console.log("  complete-design verify --golden");
     }
   },
 };

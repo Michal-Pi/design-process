@@ -587,7 +587,7 @@ async function inferStage1(sourceDir, outputDir) {
     goals: ["Goals inferred from application purpose — requires validation"],
     thinkingStyle: "analytical",
     worstProvenance: "generated",
-    owner: "design-os/reverse-engineer",
+    owner: "complete-design/reverse-engineer",
     lastReviewedAt: new Date().toISOString(),
     sourceHash: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
   };

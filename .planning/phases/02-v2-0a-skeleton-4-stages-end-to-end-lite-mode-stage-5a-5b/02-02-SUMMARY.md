@@ -105,9 +105,9 @@ All 21 tests pass. lint-determinism CLEAN on gates/. tsc clean.
   budget pre-check with absent-script fallback (F-09), depth dispatch (F-07),
   TRUST-05 intake (3 questions, standard/full only), ATOM-05 sitemap generation,
   required user selection checkpoint, preview staging (D-52), ATOM-06 Mermaid generation,
-  2-cycle repair loop, gate invocation via `node bin/design-os.mjs gate --stage 2`,
+  2-cycle repair loop, gate invocation via `node bin/complete-design.mjs gate --stage 2`,
   handoff bundle build, manifest reconcile, diff-and-await-apply
-- Dispatcher pattern: all CLI calls use `node bin/design-os.mjs <subcommand>` (Codex review lesson)
+- Dispatcher pattern: all CLI calls use `node bin/complete-design.mjs <subcommand>` (Codex review lesson)
 - Host fallback section for Codex/Cursor (D-53)
 
 **skills/atoms/ia/sitemap-variants.md** (ATOM-05):
@@ -179,7 +179,7 @@ Applied after Codex review session 019e5faa-b2ea-7161-9949-84e5c09767c9.
 
 **Finding 1 (P1 BLOCKING): Structure workflow bypasses Stage 2 gate**
 - **Issue:** Step 9 ran the gate against `design/` which is empty before `--apply`, so `not_runnable` was returned and execution continued unchecked.
-- **Fix:** Step 9 now runs against `.design-os/preview/run-<timestamp>/` — the actual staged path. Clarified `not_runnable` means something went wrong in steps 6-8, not expected behavior.
+- **Fix:** Step 9 now runs against `.complete-design/preview/run-<timestamp>/` — the actual staged path. Clarified `not_runnable` means something went wrong in steps 6-8, not expected behavior.
 - **Files modified:** `skills/workflows/structure.md`
 - **Commit:** `17e9cc7`
 

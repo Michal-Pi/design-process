@@ -1,5 +1,5 @@
 // schemas/src/manifest-lock-entry.ts
-// ManifestLockEntry schema — one hash-chain entry in .design-os/manifest.lock.
+// ManifestLockEntry schema — one hash-chain entry in .complete-design/manifest.lock.
 // Source: PLAN.md interfaces_introduced_here; CONTEXT.md Pattern 5; PERSIST-01..04
 // Downstream consumers: Plans 03, 04
 
@@ -10,7 +10,7 @@ import { GateResult } from "./gate-result.js";
 const Sha256Hash = z.string().regex(/^sha256:[0-9a-f]{64}$/);
 
 /**
- * A single entry in the .design-os/manifest.lock append-only hash chain.
+ * A single entry in the .complete-design/manifest.lock append-only hash chain.
  * Each gate run appends one entry; entries form a SHA-256 hash chain where
  * each entry's prevHash matches the previous entry's entryHash.
  *
@@ -48,9 +48,9 @@ export const ManifestLockEntry = z.object({
    */
   entryHash: Sha256Hash,
 }).meta({
-  $id: "https://design-os.dev/schemas/manifest-lock-entry.v1.json",
+  $id: "https://complete-design.dev/schemas/manifest-lock-entry.v1.json",
   title: "Manifest Lock Entry",
-  description: "One hash-chain entry in the .design-os/manifest.lock append-only audit log",
+  description: "One hash-chain entry in the .complete-design/manifest.lock append-only audit log",
 });
 
 export type ManifestLockEntryType = z.infer<typeof ManifestLockEntry>;

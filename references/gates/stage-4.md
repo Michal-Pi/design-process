@@ -1,7 +1,7 @@
 # Stage 4 Gate Checklist
 
 Checks performed by `gate-stage-4.mjs` (D-59). All checks run against the **staged** path
-(`.design-os/preview/<run-id>/`) per INVARIANT-01 — never against `design/` directly.
+(`.complete-design/preview/<run-id>/`) per INVARIANT-01 — never against `design/` directly.
 
 | Check | Required for PASS | Required for VALIDATED | Citation |
 |-------|-------------------|------------------------|----------|

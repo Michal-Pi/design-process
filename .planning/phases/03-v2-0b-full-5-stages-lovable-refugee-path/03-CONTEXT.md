@@ -7,7 +7,7 @@
 <domain>
 ## Phase Boundary
 
-Complete the full 5-stage design-os pipeline by adding Stage 3 (Sketch/Low-Fi) and Stage 4 (Interact/IxD), promoting Stage 5a/5b from lite-mode to fully runnable gates, adding the `audit --reverse-engineer-stages` Lovable-refugee path, and implementing the `new-product` + `mature-app-refactor` + `DS-extraction` routes. This is the milestone that makes the package independently distributable as a genuine end-to-end tool — not just a skeleton — and fulfills the primary "Lovable refugee" persona need that was the raison d'être for moving the reverse-engineer feature from v2.1 to v2.0b.
+Complete the full 5-stage complete-design pipeline by adding Stage 3 (Sketch/Low-Fi) and Stage 4 (Interact/IxD), promoting Stage 5a/5b from lite-mode to fully runnable gates, adding the `audit --reverse-engineer-stages` Lovable-refugee path, and implementing the `new-product` + `mature-app-refactor` + `DS-extraction` routes. This is the milestone that makes the package independently distributable as a genuine end-to-end tool — not just a skeleton — and fulfills the primary "Lovable refugee" persona need that was the raison d'être for moving the reverse-engineer feature from v2.1 to v2.0b.
 
 **In scope (Phase 3 delivers):**
 
@@ -21,7 +21,7 @@ Complete the full 5-stage design-os pipeline by adding Stage 3 (Sketch/Low-Fi) a
 
 5. **`audit --reverse-engineer-stages`**: Accept cloned-repo path or live URL as input; normalize to filesystem; infer Stages 4→3→2→1 (reverse order, deepest signals first); emit every artifact with `provenance: inferred` + INFERRED disclaimer banners; surface gaps as ranked actionable list.
 
-6. **Schema migration v2.0a → v2.0b**: Idempotent `design-os migrate --from 2.0a --to 2.0b`; upgrades `sitemap.json` (adds Stage 3 cross-refs), `persona.json` (adds Stage 4 interaction needs), `MANIFEST.md` (registers new artifact types); dry-run by default, `--apply` to commit.
+6. **Schema migration v2.0a → v2.0b**: Idempotent `complete-design migrate --from 2.0a --to 2.0b`; upgrades `sitemap.json` (adds Stage 3 cross-refs), `persona.json` (adds Stage 4 interaction needs), `MANIFEST.md` (registers new artifact types); dry-run by default, `--apply` to commit.
 
 7. **`audit --all-stages`**: Unified ranked finding list across all 6 stage detectors (blocker DESC, stage ASC); supplies the Phase 3 ROADMAP Success Criterion 5 report.
 
@@ -38,12 +38,12 @@ Complete the full 5-stage design-os pipeline by adding Stage 3 (Sketch/Low-Fi) a
 - `axe-runner.mjs` WCAG run as a Phase 4 release blocker (Phase 4, COST-10).
 - Aggregate coexistence ≥0.80 release gate (Phase 4, TRIG-03).
 - Designer and PM blind reviews (Phase 4).
-- `design-os-bridges` companion — Material Web, Vue, Svelte adapters (v2.1+).
+- `complete-design-bridges` companion — Material Web, Vue, Svelte adapters (v2.1+).
 - Notion / Linear / Google Doc PRD ingestion (v2.1+, §13 Q3).
 - Voice → PRD interview mode (v2.2+, §13 Q6).
 
 **Out of scope full stop (PROJECT.md constraints — not any phase):**
-- React/Next/Vue inside design-os itself.
+- React/Next/Vue inside complete-design itself.
 - Vector DB / knowledge graph for `references/`.
 - Hosted SaaS / dashboard.
 - Figma DTCG export ingestion.
@@ -95,11 +95,11 @@ Complete the full 5-stage design-os pipeline by adding Stage 3 (Sketch/Low-Fi) a
 
 ### INFERRED artifact trust posture (D-64)
 
-- **D-64: Every artifact emitted by `audit --reverse-engineer-stages` carries BOTH a YAML frontmatter field AND a visible Markdown banner.** (1) YAML frontmatter: `provenance: "inferred"`, `inferredDisclaimer: "INFERRED — validate before treating as ground truth"`, `evidence: "INFERRED"`. (2) First line of every artifact body: `> ⚠️ **INFERRED** — This artifact was reverse-engineered from an existing prototype. Treat all content as a starting hypothesis requiring validation. Do not merge into \`design/\` without reviewing and amending each section.` The `frontmatter-validate.mjs` (Phase 1) is extended to enforce: any file in `design/inferred/` with `provenance: "inferred"` must have both the frontmatter field and the Markdown banner; any attempt to copy a `design/inferred/` file into `design/` without removing `provenance: "inferred"` is blocked by a new CLI subcommand `design-os promote-inferred`. Rationale: MRD §6 "loud disclaimer on every output"; AUDIT-07; PITFALLS.md Pitfall 12 "all artifacts must carry `provenance: inferred`"; MRD §9.2 "loud disclaimer on every output"; trust posture P15.
+- **D-64: Every artifact emitted by `audit --reverse-engineer-stages` carries BOTH a YAML frontmatter field AND a visible Markdown banner.** (1) YAML frontmatter: `provenance: "inferred"`, `inferredDisclaimer: "INFERRED — validate before treating as ground truth"`, `evidence: "INFERRED"`. (2) First line of every artifact body: `> ⚠️ **INFERRED** — This artifact was reverse-engineered from an existing prototype. Treat all content as a starting hypothesis requiring validation. Do not merge into \`design/\` without reviewing and amending each section.` The `frontmatter-validate.mjs` (Phase 1) is extended to enforce: any file in `design/inferred/` with `provenance: "inferred"` must have both the frontmatter field and the Markdown banner; any attempt to copy a `design/inferred/` file into `design/` without removing `provenance: "inferred"` is blocked by a new CLI subcommand `complete-design promote-inferred`. Rationale: MRD §6 "loud disclaimer on every output"; AUDIT-07; PITFALLS.md Pitfall 12 "all artifacts must carry `provenance: inferred`"; MRD §9.2 "loud disclaimer on every output"; trust posture P15.
 
 ### v2.0a → v2.0b migration strategy (D-65)
 
-- **D-65: `design-os migrate --from 2.0a --to 2.0b` is idempotent and dry-run by default.** The migration script reads each artifact's `schemaVersion` frontmatter field. If the artifact is already at v2.0b schema, it is skipped with no changes. If it is at v2.0a schema, only the specific delta fields are added: (a) `sitemap.json` gains a `wireframeRefs` array field per route node (Stage 3 cross-ref, initially empty `[]`); (b) `persona.json` gains an `interactionNeeds` array field (Stage 4 interaction behaviors, initially empty `[]`); (c) `MANIFEST.md` front matter gains `stage3artifacts` and `stage4artifacts` enumeration sections (initially empty). Without `--apply`, the script prints a diff of what would change. With `--apply`, it writes in-place and appends a `manifest.lock` entry via `appendManifestLockEntry`. Rationale: PERSIST-03; MVPB-10; Pitfall 8 ("schema migration without story — breaking the design/ contract for existing users"); Phase 2 D-65 is the Phase 3 implementation of the migration path noted in Phase 2 CONTEXT.md `<deferred>`.
+- **D-65: `complete-design migrate --from 2.0a --to 2.0b` is idempotent and dry-run by default.** The migration script reads each artifact's `schemaVersion` frontmatter field. If the artifact is already at v2.0b schema, it is skipped with no changes. If it is at v2.0a schema, only the specific delta fields are added: (a) `sitemap.json` gains a `wireframeRefs` array field per route node (Stage 3 cross-ref, initially empty `[]`); (b) `persona.json` gains an `interactionNeeds` array field (Stage 4 interaction behaviors, initially empty `[]`); (c) `MANIFEST.md` front matter gains `stage3artifacts` and `stage4artifacts` enumeration sections (initially empty). Without `--apply`, the script prints a diff of what would change. With `--apply`, it writes in-place and appends a `manifest.lock` entry via `appendManifestLockEntry`. Rationale: PERSIST-03; MVPB-10; Pitfall 8 ("schema migration without story — breaking the design/ contract for existing users"); Phase 2 D-65 is the Phase 3 implementation of the migration path noted in Phase 2 CONTEXT.md `<deferred>`.
 
 ### new-product full-route token budget allocation (D-66)
 
@@ -169,15 +169,15 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 - `.planning/phases/02-v2-0a-skeleton-4-stages-end-to-end-lite-mode-stage-5a-5b/02-VERIFICATION.md` — PASS-WITH-CONCERNS; 815 tests passing; GATE-07/08 `not_runnable` enforcement confirmed; Phase 3 must update CI assertion to allow full-runnable behavior per D-60
 
 ### MRD (specific sections — mandatory for Stage 3+4 implementation)
-- `design-os-mrd-v2.md` §3.7 W3 (sketch) — Crazy 8s procedure, Decider convergence, Excalidraw output format
-- `design-os-mrd-v2.md` §3.7 W4 (interact) — state catalog, pattern variants, XState conditional emit, HAX-18
-- `design-os-mrd-v2.md` §3.22 — Stage 3 gate (≥3 alternatives, structural diversity, fidelity cap, walkthrough complete); Stage 4 gate (complete state set, XState only for async + ≥3 states + conditional, Mermaid canonical)
-- `design-os-mrd-v2.md` §3.23 — FID-03 (Stage 3 no color/type/styling), FID-04 (Stage 4 Mermaid only, no hi-fi), FID-06 (Stage 5b Frost ≥3× recurrence)
-- `design-os-mrd-v2.md` §3.10 — Stage 3+4 mandatory references (buxton-sketching, sprint-crazy-eights, shape-up-pitches, saffer-microinteractions, tidwell-patterns, head-motion, hax-18, xstate-v5, apg, material-3)
-- `design-os-mrd-v2.md` §6 — `audit --reverse-engineer` full semantics; stage-specific detector logic per mode
-- `design-os-mrd-v2.md` §9.2 — v2.0b full scope, XState scope discipline, references +12, `audit --reverse-engineer-stages` moved from v2.1 to v2.0b
-- `design-os-mrd-v2.md` §9.3 — GA acceptance criteria including "Stage 3 hard-blocks if LLM emits color/type/styling" (named acceptance test); "Stage 5a refuses without Stage 4 inputs"
-- `design-os-mrd-v2.md` §16 — Codex acceptance record; key findings: Crazy 8s quality (Risk 6 → structural diversity eval); XState not primary designer artifact; Lovable refugee as primary persona (moved to v2.0b); Stage 3 risk-triggered not mandatory
+- `complete-design-mrd-v2.md` §3.7 W3 (sketch) — Crazy 8s procedure, Decider convergence, Excalidraw output format
+- `complete-design-mrd-v2.md` §3.7 W4 (interact) — state catalog, pattern variants, XState conditional emit, HAX-18
+- `complete-design-mrd-v2.md` §3.22 — Stage 3 gate (≥3 alternatives, structural diversity, fidelity cap, walkthrough complete); Stage 4 gate (complete state set, XState only for async + ≥3 states + conditional, Mermaid canonical)
+- `complete-design-mrd-v2.md` §3.23 — FID-03 (Stage 3 no color/type/styling), FID-04 (Stage 4 Mermaid only, no hi-fi), FID-06 (Stage 5b Frost ≥3× recurrence)
+- `complete-design-mrd-v2.md` §3.10 — Stage 3+4 mandatory references (buxton-sketching, sprint-crazy-eights, shape-up-pitches, saffer-microinteractions, tidwell-patterns, head-motion, hax-18, xstate-v5, apg, material-3)
+- `complete-design-mrd-v2.md` §6 — `audit --reverse-engineer` full semantics; stage-specific detector logic per mode
+- `complete-design-mrd-v2.md` §9.2 — v2.0b full scope, XState scope discipline, references +12, `audit --reverse-engineer-stages` moved from v2.1 to v2.0b
+- `complete-design-mrd-v2.md` §9.3 — GA acceptance criteria including "Stage 3 hard-blocks if LLM emits color/type/styling" (named acceptance test); "Stage 5a refuses without Stage 4 inputs"
+- `complete-design-mrd-v2.md` §16 — Codex acceptance record; key findings: Crazy 8s quality (Risk 6 → structural diversity eval); XState not primary designer artifact; Lovable refugee as primary persona (moved to v2.0b); Stage 3 risk-triggered not mandatory
 
 ### External specifications
 - Excalidraw JSON schema + `convertToExcalidrawElements()` — https://docs.excalidraw.com/docs/codebase/json-schema (pin `@excalidraw/excalidraw` 0.18+ in package.json; do not read `latest` at runtime)
@@ -203,11 +203,11 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 ### What Phase 1 provides (do not re-implement)
 
 **From Plan 01-01 (Schemas Foundation):**
-- `bin/design-os.mjs` — auto-discovery dispatcher; Phase 3 adds subcommands by dropping `.mjs` under `assets/scripts/cli/` only
+- `bin/complete-design.mjs` — auto-discovery dispatcher; Phase 3 adds subcommands by dropping `.mjs` under `assets/scripts/cli/` only
 - `assets/scripts/schemas/validate.mjs` — `validateArtifact(schema, data)` at every workflow boundary; use for `interaction-spec.v1.json` validation
 - `assets/scripts/schemas/migrate.mjs` — `migrateArtifact()` chain; Phase 3 adds `sitemap-v2.0a-to-v2.0b.mjs` and `persona-v2.0a-to-v2.0b.mjs` migration scripts
 - `assets/scripts/design-md-validate.mjs` — `validateDesignMd(path)` — unchanged in Phase 3
-- `assets/scripts/frontmatter-validate.mjs` — Phase 3 extends to enforce `provenance: inferred` + INFERRED banner in `design/inferred/`; also adds `design-os promote-inferred` CLI subcommand
+- `assets/scripts/frontmatter-validate.mjs` — Phase 3 extends to enforce `provenance: inferred` + INFERRED banner in `design/inferred/`; also adds `complete-design promote-inferred` CLI subcommand
 
 **From Plan 01-02 (Gate Runner + Handoff Bundle):**
 - `assets/scripts/gates/base.mjs` — `runGate(stage, designDir, config) → GateResult`; Phase 3 fills in `stage-3.mjs` and `stage-4.mjs` checklists from skeletons
@@ -237,7 +237,7 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 **From Phase 2 Plans 01-05:**
 - `skills/workflows/ingest.md`, `discover.md`, `structure.md`, `style.md`, `systematize.md`, `audit.md` — all 6 workflow SKILL.md files; Phase 3 adds `sketch.md` and `interact.md`, and extends `audit.md` body with `--reverse-engineer-stages` section
 - `assets/scripts/audit/slop-tells.mjs`, `stage-5a-pr.mjs`, `stage-5b-pr.mjs` — slop-tell and Stage 5 PR detectors; Phase 3 adds `stage-3-pr.mjs` and `stage-4-pr.mjs`
-- `assets/scripts/cli/apply.mjs` — diff-by-default copy from `.design-os/preview/` to `design/`; Phase 3 extends to handle `design/inferred/` → `design/` promotion via `design-os promote-inferred` command
+- `assets/scripts/cli/apply.mjs` — diff-by-default copy from `.complete-design/preview/` to `design/`; Phase 3 extends to handle `design/inferred/` → `design/` promotion via `complete-design promote-inferred` command
 - `assets/scripts/tokens-project.mjs` — DTCG emit; unchanged in Phase 3
 - 15 budget fixtures in `evals/fixtures/budgets/` — Phase 3 adds `new-product-full.fixture.json` (150k ceiling), `mature-app-refactor.fixture.json` (45k ceiling), `ds-extraction.fixture.json` (60k ceiling)
 - `INVARIANTS.md` (Phase 2 Plan 05 deliverable) — 6 cross-cutting invariants; Phase 3 implementation must not violate any invariant, especially "gate-against-staged-path footgun"
@@ -265,7 +265,7 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 - `assets/scripts/gates/stage-4.mjs` — state completeness + XState trigger + Mermaid present gate
 - `assets/scripts/audit/stage-3-pr.mjs` — detects new screens without CHOICE.md; significant layout drift
 - `assets/scripts/audit/stage-4-pr.mjs` — detects new components without state catalog; async without loading/error; HAX-18 regressions
-- `assets/scripts/cli/reverse-engineer.mjs` — `design-os audit --reverse-engineer-stages` CLI subcommand
+- `assets/scripts/cli/reverse-engineer.mjs` — `complete-design audit --reverse-engineer-stages` CLI subcommand
 - `assets/scripts/cli/promote-inferred.mjs` — validates + moves `design/inferred/<X>` → `design/<X>` after user amends `provenance`
 
 **Migration scripts:**
@@ -297,7 +297,7 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 <specifics>
 ## Specific Ideas
 
-- **The `audit --reverse-engineer-stages` "loud disclaimer" is the North Star for the Lovable refugee path.** Every artifact in `design/inferred/` must carry both the frontmatter field and the Markdown blockquote. A user running `design-os audit --reverse-engineer-stages --source ./my-lovable-app` should feel "this is clearly labeled as a starting hypothesis" — not "this is the authoritative design record." The trust posture is P15 from the MRD.
+- **The `audit --reverse-engineer-stages` "loud disclaimer" is the North Star for the Lovable refugee path.** Every artifact in `design/inferred/` must carry both the frontmatter field and the Markdown blockquote. A user running `complete-design audit --reverse-engineer-stages --source ./my-lovable-app` should feel "this is clearly labeled as a starting hypothesis" — not "this is the authoritative design record." The trust posture is P15 from the MRD.
 
 - **`excalidraw-render.mjs` must be the only path that produces `.excalidraw` files.** No workflow body should ever instruct the LLM to write raw Excalidraw JSON directly. The SKILL.md body for `sketch` must say: "emit the 8 wireframe skeletons as skeleton IR objects, then invoke `node assets/scripts/excalidraw-render.mjs --input skeleton-ir.json --output design/wireframes/<screen>/`." This maintains the Pattern 1 ("LLM picks, scripts emit") discipline from Phases 1+2.
 
@@ -309,7 +309,7 @@ The following lower-stakes implementation decisions are left to the Phase 3 plan
 
 - **The three new routes (`new-product`, `mature-app-refactor`, `DS-extraction`) must not break the four Phase 2 routes.** The Phase 3 planner must run the existing Phase 2 route regression suite before declaring Phase 3 complete.
 
-- **Schema migration `--from 2.0a --to 2.0b` dry-run is the onboarding story for existing users.** Per Pitfall 8 ("schema migration without story"), any user who ran v2.0a must be able to run `design-os migrate --from 2.0a --to 2.0b` and see exactly what will change before any files are touched.
+- **Schema migration `--from 2.0a --to 2.0b` dry-run is the onboarding story for existing users.** Per Pitfall 8 ("schema migration without story"), any user who ran v2.0a must be able to run `complete-design migrate --from 2.0a --to 2.0b` and see exactly what will change before any files are touched.
 
 </specifics>
 
@@ -333,7 +333,7 @@ These appeared during Phase 3 context gathering but belong in Phase 4 or v2.1+:
 - Tree-test CSV ingestion from Optimal Workshop (§13 Q8).
 - Tokens Studio Figma export ingestion (§13 Q9).
 - i18n / RTL / CJK handling (§10 roadmap, dedicated atom per v1.0.1 plan).
-- `design-os-bridges` companion — Material Web, Vue, Svelte adapters (MRD §3.15, MRD §10).
+- `complete-design-bridges` companion — Material Web, Vue, Svelte adapters (MRD §3.15, MRD §10).
 - `@excalidraw/mermaid-to-excalidraw` Stage 3 seed from Mermaid — the `lowfi/from-mermaid` atom (STACK.md supporting libraries; v2.1+).
 - Cross-host parity hardening below the current 0.10 scaffold floor — full parity engineering for Cursor + Codex (DIST-06/07).
 

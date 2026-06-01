@@ -56,8 +56,8 @@ describe("systematize.md SKILL.md frontmatter (agentskills.io v1 spec)", () => {
     expect(parsed.data.name.length).toBeGreaterThan(0);
   });
 
-  it("name is 'design-os/systematize'", () => {
-    expect(parsed.data.name).toBe("design-os/systematize");
+  it("name is 'complete-design/systematize'", () => {
+    expect(parsed.data.name).toBe("complete-design/systematize");
   });
 
   it("has required 'description' field", () => {
@@ -151,16 +151,16 @@ describe("systematize.md procedure body content", () => {
     expect(body).toMatch(/frostNote|Frost.*3.*not.*verified|Frost.*deferred/i);
   });
 
-  it("has $extensions.design-os block in emitted DESIGN.md (MRD §15)", () => {
-    expect(body).toMatch(/\$extensions.*design-os|design-os.*\$extensions/is);
+  it("has $extensions.complete-design block in emitted DESIGN.md (MRD §15)", () => {
+    expect(body).toMatch(/\$extensions.*complete-design|complete-design.*\$extensions/is);
   });
 
   it("has stage: '5b-lite' in emitted DESIGN.md frontmatter", () => {
     expect(body).toMatch(/stage.*5b-lite|5b-lite.*stage/i);
   });
 
-  it("has generatedBy: 'design-os/systematize' in emitted DESIGN.md", () => {
-    expect(body).toMatch(/generatedBy.*design-os\/systematize/i);
+  it("has generatedBy: 'complete-design/systematize' in emitted DESIGN.md", () => {
+    expect(body).toMatch(/generatedBy.*complete-design\/systematize/i);
   });
 
   it("documents TRUST-05 intake with 2 questions (standard/full depth)", () => {
@@ -175,20 +175,20 @@ describe("systematize.md procedure body content", () => {
     expect(body).toMatch(/--depth.*standard|depth.*standard/i);
   });
 
-  it("has gate invocation using correct CLI form: node bin/design-os.mjs gate --stage 5b", () => {
-    // Lesson 2 from codex review: must use node bin/design-os.mjs, not cli/*.mjs directly
-    expect(body).toMatch(/node bin\/design-os\.mjs gate.*--stage 5b/i);
+  it("has gate invocation using correct CLI form: node bin/complete-design.mjs gate --stage 5b", () => {
+    // Lesson 2 from codex review: must use node bin/complete-design.mjs, not cli/*.mjs directly
+    expect(body).toMatch(/node bin\/complete-design\.mjs gate.*--stage 5b/i);
   });
 
   it("has budget-check invocation using correct CLI form (pre and post)", () => {
-    expect(body).toMatch(/node bin\/design-os\.mjs budget-check.*--stage systematize.*--check pre/i);
-    expect(body).toMatch(/node bin\/design-os\.mjs budget-check.*--stage systematize.*--check post/i);
+    expect(body).toMatch(/node bin\/complete-design\.mjs budget-check.*--stage systematize.*--check pre/i);
+    expect(body).toMatch(/node bin\/complete-design\.mjs budget-check.*--stage systematize.*--check post/i);
   });
 
   it("has handoff-bundle invocation using correct CLI form (--from, --to, --design-dir, --body-file)", () => {
     // Lesson from 02-03 codex review finding 4: must use --from, --to, --design-dir, --body-file
     // These options may appear on separate lines in the multi-line bash block.
-    expect(body).toMatch(/node bin\/design-os\.mjs handoff-bundle/i);
+    expect(body).toMatch(/node bin\/complete-design\.mjs handoff-bundle/i);
     expect(body).toMatch(/--from/i);
     expect(body).toMatch(/--to/i);
     expect(body).toMatch(/--design-dir/i);
@@ -196,8 +196,8 @@ describe("systematize.md procedure body content", () => {
   });
 
   it("has design-md-validate invocation using correct CLI form", () => {
-    // Correct form: node bin/design-os.mjs design-md-validate --file <path>
-    expect(body).toMatch(/node bin\/design-os\.mjs design-md-validate.*--file/i);
+    // Correct form: node bin/complete-design.mjs design-md-validate --file <path>
+    expect(body).toMatch(/node bin\/complete-design\.mjs design-md-validate.*--file/i);
   });
 
   it("has honest lite-mode messaging about pass_with_warnings expected result", () => {
@@ -231,7 +231,7 @@ describe("systematize.md procedure body content", () => {
 const gate5b: any = await import("../../assets/scripts/gates/stage-5b.mjs");
 
 describe("gate-stage-5b.mjs integration — DESIGN.md evidence enforcement (D-51)", () => {
-  it("rejects DESIGN.md with evidence:proto in $extensions.design-os (must be INFERRED)", async () => {
+  it("rejects DESIGN.md with evidence:proto in $extensions.complete-design (must be INFERRED)", async () => {
     const tmpDir = await mkdtemp(join(tmpdir(), "systematize-emit-test-"));
     try {
       const tokensJson = `---
@@ -251,7 +251,7 @@ name: "Test"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "proto"
     stage: "5b-lite"
 ---
@@ -294,10 +294,10 @@ name: "Test Product"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "INFERRED"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
     componentCount: 1
 ---
 

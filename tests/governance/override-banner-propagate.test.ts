@@ -23,14 +23,14 @@ describe("propagateOverrideBanners", () => {
 
   beforeEach(async () => {
     // Create a temp copy of the fixture dir to avoid mutating the committed fixture
-    tmpDir = await mkdtemp(join(os.tmpdir(), "design-os-override-test-"));
+    tmpDir = await mkdtemp(join(os.tmpdir(), "complete-design-override-test-"));
 
     // Copy manifest.lock
     const { mkdir } = await import("node:fs/promises");
-    await mkdir(join(tmpDir, ".design-os"), { recursive: true });
+    await mkdir(join(tmpDir, ".complete-design"), { recursive: true });
     await copyFile(
-      join(FIXTURE_DIR, ".design-os/manifest.lock"),
-      join(tmpDir, ".design-os/manifest.lock")
+      join(FIXTURE_DIR, ".complete-design/manifest.lock"),
+      join(tmpDir, ".complete-design/manifest.lock")
     );
 
     // Copy persona (no overrideBanner yet)

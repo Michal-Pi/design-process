@@ -3,13 +3,13 @@
 // Discovers and migrates sitemap.json, all persona.json files, and MANIFEST.md
 // from a design directory.
 //
-// Used by the design-os CLI migrate subcommand when --from 2.0a --to 2.0b is specified.
+// Used by the complete-design CLI migrate subcommand when --from 2.0a --to 2.0b is specified.
 //
 // Dry-run by default (prints diffs without writing).
 // --apply writes migrated artifacts in place and calls appendManifestLockEntry().
 //
 // Source: PLAN.md T-03-04-B action block; CONTEXT.md D-65
-// Implements: D-65, design-os migrate --from 2.0a --to 2.0b
+// Implements: D-65, complete-design migrate --from 2.0a --to 2.0b
 
 import { existsSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -35,7 +35,7 @@ import { migrate as migrateManifest, runMigrationApply as applyManifest } from "
  */
 export async function runV20aMigration({ designDir = "design/", apply = false, verbose = true } = {}) {
   const absDesignDir = resolve(designDir);
-  const designOsDir = join(absDesignDir, "..", ".design-os");
+  const designOsDir = join(absDesignDir, "..", ".complete-design");
 
   if (!existsSync(absDesignDir)) {
     throw new Error(`Design directory not found: ${absDesignDir}`);

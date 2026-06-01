@@ -48,11 +48,11 @@ function canDependOn(from, to) {
 export async function lintSpineLinearity(designDir) {
   const absDir = resolve(designDir);
 
-  // Discover all Markdown files (exclude .design-os/ and .handoff/)
+  // Discover all Markdown files (exclude .complete-design/ and .handoff/)
   const files = await globby(["**/*.md"], {
     cwd: absDir,
     absolute: true,
-    ignore: [".design-os/**", ".handoff/**", "node_modules/**"],
+    ignore: [".complete-design/**", ".handoff/**", "node_modules/**"],
   });
 
   // First pass: build a map from relative path → stage

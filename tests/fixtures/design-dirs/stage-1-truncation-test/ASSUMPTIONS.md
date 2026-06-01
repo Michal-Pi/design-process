@@ -3,7 +3,7 @@ artifact: assumptions
 stage: 1
 generated: "2025-01-01T00:00:00Z"
 provenance: generated
-owner: design-os
+owner: complete-design
 lastReviewedAt: "2025-01-01T00:00:00Z"
 ---
 

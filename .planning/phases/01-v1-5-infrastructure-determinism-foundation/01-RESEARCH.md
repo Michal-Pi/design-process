@@ -6,7 +6,7 @@
 
 ## Summary
 
-Phase 1 is greenfield infrastructure for a Markdown + Node 22 LTS ESM package — **no React/Next/Vue** ships in this phase. The package boundary is `.claude/skills/`-installable; build-time deps live in the design-os repo only. Phase 1 lands 13 deliverables in 4 weeks: versioned JSON Schemas (6 artifact types), gate-runner machinery with `not-runnable` terminal state, handoff-bundle script + sufficiency eval, determinism golden CI, aggregate coexistence eval harness, PII scanner, host-compatibility matrix CI scaffold, routing-matrix scaffolding for all 7 routes, references corpus for Stages 0+1+2+5, preview harness (port manager + security sandbox + Playwright readiness + Vite/Next/Astro adapter scaffolds), schema migration tooling, Anthropic-Labs watcher (weekly + daily cron), frontmatter validator + `.gitignore`/`.gitattributes` defaults + manifest reconciler + recovery prompts.
+Phase 1 is greenfield infrastructure for a Markdown + Node 22 LTS ESM package — **no React/Next/Vue** ships in this phase. The package boundary is `.claude/skills/`-installable; build-time deps live in the complete-design repo only. Phase 1 lands 13 deliverables in 4 weeks: versioned JSON Schemas (6 artifact types), gate-runner machinery with `not-runnable` terminal state, handoff-bundle script + sufficiency eval, determinism golden CI, aggregate coexistence eval harness, PII scanner, host-compatibility matrix CI scaffold, routing-matrix scaffolding for all 7 routes, references corpus for Stages 0+1+2+5, preview harness (port manager + security sandbox + Playwright readiness + Vite/Next/Astro adapter scaffolds), schema migration tooling, Anthropic-Labs watcher (weekly + daily cron), frontmatter validator + `.gitignore`/`.gitattributes` defaults + manifest reconciler + recovery prompts.
 
 Every decision across 11 areas is **locked in CONTEXT.md** — research drives *how* to implement, not *what* to choose. The four research flags that came in (bundle-sufficiency eval methodology, aggregate coexistence eval methodology, `skillgrade`-style harness, Excalidraw schema pinning) are addressed in concrete patterns below. One critical surprise emerged: **`zod-to-json-schema` (the package named in D-01) was deprecated November 2025 — Zod 4 has built-in `z.toJSONSchema()` that the planner should use instead.** This is a non-blocking adjustment to a locked decision (D-01's *intent* — Zod-first single source emitting versioned JSON Schemas — is preserved; only the *implementation library* changes).
 
@@ -35,25 +35,25 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 - **D-11:** Override path. `USER_OVERRIDDEN` requires `--override-reason "<text>"` flag at CLI invocation; reason is persisted in `manifest.lock` AND surfaces as a banner in every downstream artifact (`overrideBanner: "..."` frontmatter).
 
 **Determinism CI gate (D-12 to D-14):**
-- **D-12:** Scope. `design-os verify --golden` runs every script in `assets/scripts/` whose path matches `(emit|lint|validate|build|gate)` AND that has a sibling `*.golden.json` fixture. 5× byte-identical output. LLM-touched paths explicitly excluded.
+- **D-12:** Scope. `complete-design verify --golden` runs every script in `assets/scripts/` whose path matches `(emit|lint|validate|build|gate)` AND that has a sibling `*.golden.json` fixture. 5× byte-identical output. LLM-touched paths explicitly excluded.
 - **D-13:** Architecture lint. A separate `assets/scripts/lint-determinism.mjs` walks `assets/scripts/` and rejects any import path matching `(anthropic|openai|langchain|llamaindex|@anthropic-ai|@openai)`. Runs in CI as a hard gate.
 - **D-14:** Golden fixture management. Fixtures live in `evals/fixtures/golden/<script>/`. Regenerating requires explicit `npm run regen-golden -- --script <name> --reason "<text>"`; reason committed alongside fixture diff (audit trail).
 
 **Aggregate coexistence eval (D-15 to D-17):**
-- **D-15:** 5-package corpus. The aggregate eval installs design-os alongside: GSD (`get-shit-done`), Superpowers (`superpowers`), `frontend-design` (Anthropic, 277k+ installs), `shadcn` MCP, Notion MCP.
-- **D-16:** Eval methodology. A `triggers.yaml` corpus holds ≥30 should-fire prompts for design-os' own skills and ≥30 should-fire prompts for the 5 coexisting packages. Recall threshold: ≥0.80 with all 5 packages installed.
+- **D-15:** 5-package corpus. The aggregate eval installs complete-design alongside: GSD (`get-shit-done`), Superpowers (`superpowers`), `frontend-design` (Anthropic, 277k+ installs), `shadcn` MCP, Notion MCP.
+- **D-16:** Eval methodology. A `triggers.yaml` corpus holds ≥30 should-fire prompts for complete-design' own skills and ≥30 should-fire prompts for the 5 coexisting packages. Recall threshold: ≥0.80 with all 5 packages installed.
 - **D-17:** Per-skill `skillgrade`-style harness. In-tree, plug-compatible with Anthropic's skill-creator pattern. Each skill ships `triggers.yaml` with ≥10 should-fire + ≥10 should-not-fire prompts × 3 trials. CI gates: recall ≥0.85, false-fire ≤0.15.
 
 **PII scanner (D-18 to D-20):**
 - **D-18:** Regex-based, not ML. Pattern set: email addresses (RFC 5322 subset), US/E.164 phone numbers, SSN, credit-card numbers (Luhn-validated), IPv4 addresses, common name patterns inside transcript-style headers (`Interviewer:`, `Participant:`, `User:`).
-- **D-19:** Pre-commit hook + CLI. Hook installed via `npm run install-hooks` (opt-in). Standalone CLI `design-os scan --pii [path]`. Default scans `design/research/interviews/` and any `transcript*.md` matched by glob.
-- **D-20:** Allowlist. Users mark a file safe via `.design-os/pii-allowlist.json` (file-path + content-hash). Hook re-scans and rejects if hash drifts.
+- **D-19:** Pre-commit hook + CLI. Hook installed via `npm run install-hooks` (opt-in). Standalone CLI `complete-design scan --pii [path]`. Default scans `design/research/interviews/` and any `transcript*.md` matched by glob.
+- **D-20:** Allowlist. Users mark a file safe via `.complete-design/pii-allowlist.json` (file-path + content-hash). Hook re-scans and rejects if hash drifts.
 
 **Routing-matrix scaffolding (D-21):** All 7 routes wired, 4 implemented in v2.0a. Phase 1 ships route registry + dispatcher; route bodies for `mature-app-refactor`, `DS-extraction`, full `new-product` are stub functions that exit cleanly with `ROUTE_NOT_YET_IMPLEMENTED — ships in v2.0b`.
 
 **Host-compatibility matrix CI (D-22 to D-23):**
 - **D-22:** In-repo `vitest` workspaces, three host profiles. `evals/hosts/claude-code/` (full subagent dispatch), `evals/hosts/codex-cli/` (sequential-fallback stub), `evals/hosts/cursor/` (sequential-fallback stub). Targets within 0.10 of host-first pass rate.
-- **D-23:** Sub-agent dispatch shim. `design-os run-subagent <prompt>` helper detects host at runtime — uses native Task dispatch on Claude Code, falls back to sequential script execution on Codex/Cursor. v1.5 ships the helper + Claude Code path; sequential fallback gets minimum-viable implementation.
+- **D-23:** Sub-agent dispatch shim. `complete-design run-subagent <prompt>` helper detects host at runtime — uses native Task dispatch on Claude Code, falls back to sequential script execution on Codex/Cursor. v1.5 ships the helper + Claude Code path; sequential fallback gets minimum-viable implementation.
 
 **Reference corpus (D-24 to D-26):**
 - **D-24:** Condensed Markdown with canon citations (not full quotes). Each reference file in `references/` is ≤2k tokens; citation pointers (`Garrett §4.1, p.62`) replace verbatim quotes.
@@ -61,9 +61,9 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 - **D-26:** `references/gates/` checklist format. Each gate checklist is a Markdown table with columns `Check`, `Required for PASS`, `Required for VALIDATED grade`, `Citation`. Gate-runner reads the relevant table at runtime.
 
 **Schema migration & frontmatter validation (D-27 to D-29):**
-- **D-27:** Per-script migrations. `schemas/migrations/v0-to-v1.mjs` style; one script per major version transition per artifact type. `design-os migrate --from <v> --to <v> [--path <design-dir>]` invokes the appropriate chain.
-- **D-28:** Frontmatter validator strictness. Strict for canonical artifacts in `design/` (reject if any required field missing or unknown field present); lenient for `.design-os/private/` (warn only). Strict mode is the default; opt-out via `--lenient` flag.
-- **D-29:** `.gitignore` / `.gitattributes` defaults shipped as `assets/templates/gitignore-design-os.txt` + `gitattributes-design-os.txt` pair. `design-os init` writes them into the user's repo (or appends to existing); CI ensures the design-os repo uses them.
+- **D-27:** Per-script migrations. `schemas/migrations/v0-to-v1.mjs` style; one script per major version transition per artifact type. `complete-design migrate --from <v> --to <v> [--path <design-dir>]` invokes the appropriate chain.
+- **D-28:** Frontmatter validator strictness. Strict for canonical artifacts in `design/` (reject if any required field missing or unknown field present); lenient for `.complete-design/private/` (warn only). Strict mode is the default; opt-out via `--lenient` flag.
+- **D-29:** `.gitignore` / `.gitattributes` defaults shipped as `assets/templates/gitignore-complete-design.txt` + `gitattributes-complete-design.txt` pair. `complete-design init` writes them into the user's repo (or appends to existing); CI ensures the complete-design repo uses them.
 
 **Anthropic-Labs watcher (D-30 to D-31):**
 - **D-30:** Hybrid: weekly manual review + GitHub Actions cron. Maintainer named in `MAINTAINERS.md`. GitHub Actions workflow runs daily, polls `anthropics/skills` GitHub release feed + Anthropic blog RSS + Claude Design release notes, opens an issue tagged `competitive-watch` if novel keywords (`5-stage`, `design process`, `IA`, `wireframe`, `state machine`, `audit`) appear in titles.
@@ -73,7 +73,7 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 
 - Exact directory tree under `assets/scripts/` (e.g., should gates be `scripts/gates/` or top-level `scripts/`).
 - Choice of `pino` vs `winston` vs raw `console.error` for structured logging — defer to Phase 1 planner per existing Node 22 LTS norms.
-- Whether to use `pnpm` workspaces or `npm` workspaces for `evals/` host profiles — defer to planner. **Recommended: `npm` workspaces** (see Architecture Patterns: Project Structure rationale below). Rationale: Phase 1 has only 3 workspace projects (`evals/hosts/{claude-code,codex-cli,cursor}/`), well below pnpm's break-even point (10+ packages). npm workspaces ship with Node 22 LTS — zero extra install for users. The design-os repo is the only place workspaces are used; users never see them.
+- Whether to use `pnpm` workspaces or `npm` workspaces for `evals/` host profiles — defer to planner. **Recommended: `npm` workspaces** (see Architecture Patterns: Project Structure rationale below). Rationale: Phase 1 has only 3 workspace projects (`evals/hosts/{claude-code,codex-cli,cursor}/`), well below pnpm's break-even point (10+ packages). npm workspaces ship with Node 22 LTS — zero extra install for users. The complete-design repo is the only place workspaces are used; users never see them.
 - Whether the `schemas/dist/` directory commits to git (consistent regen) or is `.gitignore`'d with a CI build (cleaner diff) — planner decides per CI cost. **Recommended: commit `schemas/dist/`** so the package can be installed without a build step on the user's machine. CI verifies regen-determinism via golden test.
 - Test framework: `vitest` 2 confirmed (STACK.md HIGH confidence; vitest 2 has stable workspace/projects config — note: workspace renamed to `projects` in vitest 3.2, planner may use either).
 
@@ -84,7 +84,7 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 - Dovetail / Notably interview-transcript ingestion — v2.2
 - Notion / Linear / Google Doc PRD ingestion — v2.1
 - Voice → PRD interview mode (Whisper) — v2.2
-- `design-os-bridges` (Material Web / Vue / Svelte adapters) — v2.1
+- `complete-design-bridges` (Material Web / Vue / Svelte adapters) — v2.1
 - Storybook MCP via Chromatic — v2.1
 - Enterprise design-process-compliance SKU — year-2+
 - VS Code Copilot host parity — v2.1+
@@ -106,7 +106,7 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 | DIST-02 | 22 triggerable skills total trigger metadata ≤5k chars | Architecture Pattern: Trigger Discipline; eval harness in Plan 3 |
 | DIST-03 | Per-skill description ≤200 chars, 5+ trigger phrases, keywords in first 100 chars | Eval harness validates; see Skillgrade-Style Harness pattern |
 | SPINE-01..04 | Garrett 5-plane spine; `stage:` frontmatter; 6 architectural patterns; linear forward data flow | Architecture Patterns 1-6 below |
-| ART-01..07 | `design/` substrate + per-file commit policy + frontmatter + .gitattributes + PII scanner + `.design-os/` + MANIFEST.md | `design/`-governance plan (Plan 4) |
+| ART-01..07 | `design/` substrate + per-file commit policy + frontmatter + .gitattributes + PII scanner + `.complete-design/` + MANIFEST.md | `design/`-governance plan (Plan 4) |
 | GATE-01..07 | 6 stage gates as Node ESM checklists; `(terminal-state, evidence-grade)` tuple persisted in `manifest.lock`; 4 terminal states; 4 evidence grades; `USER_OVERRIDDEN` + `--override-reason` + downstream banner; `audit --ci` blocks on severities; `not-runnable` from day one | Gate-and-handoff-runner plan (Plan 2); Code Examples below |
 | HAND-01..04 | `design/.handoff/stage-N-bundle.md` ~5-15k tokens; versioned JSON Schema; next-stage reads only bundle; bundle-sufficiency eval | Handoff-bundle pattern below; Bundle-Sufficiency Eval Methodology (Research Flag #1) |
 | FORMAT-01..07 | PRD = MD + YAML 1.2; Personas = JSON; sitemap custom `$type`; flows = Mermaid; Wireframes = Excalidraw JSON (pinned); IxD = MD + XState v5; Tokens = DTCG v2025.10; DESIGN.md per Google spec; `design-md-validate.mjs` supports schema version pinning | Standard Stack table + Format pinning |
@@ -114,7 +114,7 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 | PREV-01..05 | Preview harness preserved from v1.0.1 — port manager, security sandbox, Playwright 1.60 readiness probe, headless screenshot; Vite 6 / Next 15 / Astro 5 adapter scaffolds; determinism CI gate; CI linter rejects LLM imports; variant-distance metric (6-axis preserved) | Preview-harness plan (Plan 5); Code Examples (Port Manager, Playwright Readiness) |
 | TRUST-01..05 | Never claim WCAG conformance; diff-by-default + `--apply`; cite canon; avoid "AI design" framing; 3-5 question intake | Architecture pattern: Trust Posture; copy review checklist in Plan 4 |
 | TRIG-01, TRIG-02, TRIG-04 | Per-skill `skillgrade` eval; recall ≥0.85, false-trigger ≤0.15; contingency split lever | Skillgrade-Style Harness pattern; eval CI plan |
-| PERSIST-01..04 | `design/` vs `.design-os/` split; decision log + hash chain + manual-override capture preserved from v1.0.1; schema migration tooling; recovery semantics (confirm-before-regenerate) | Plan 4 + manifest.lock hash-chain pattern in Code Examples |
+| PERSIST-01..04 | `design/` vs `.complete-design/` split; decision log + hash chain + manual-override capture preserved from v1.0.1; schema migration tooling; recovery semantics (confirm-before-regenerate) | Plan 4 + manifest.lock hash-chain pattern in Code Examples |
 | ROUTE-08 | Default ≠ all 5 stages; orchestrator suggests route from repo signals or asks confirmation | Routing-matrix scaffold plan (Plan 5) |
 | SCHEMA-01..07 | 6 versioned JSON Schemas + runtime validation via ajv 8 + ajv-formats | Plan 1 schemas-foundation |
 | RECOV-01..03 | Interrupt-after-any-stage; resume-from-any-boundary; 100% scripted-test pass | Plan 4: recovery prompts + sourceHash mismatch detection |
@@ -123,7 +123,7 @@ Every decision across 11 areas is **locked in CONTEXT.md** — research drives *
 
 ## Architectural Responsibility Map
 
-design-os is a Markdown + Node ESM package that runs inside a host agent. It has no traditional client/server tiers. The "tier" model below is adapted to its actual layers:
+complete-design is a Markdown + Node ESM package that runs inside a host agent. It has no traditional client/server tiers. The "tier" model below is adapted to its actual layers:
 
 | Capability | Primary Tier | Secondary Tier | Rationale |
 |------------|-------------|----------------|-----------|
@@ -132,11 +132,11 @@ design-os is a Markdown + Node ESM package that runs inside a host agent. It has
 | Gate-runner execution | Package scripts (Node ESM) | — | Pure Node; no LLM calls in `assets/scripts/`; enforced by lint-determinism.mjs |
 | LLM-summarized bundle bodies | Host agent (LLM) | Package scripts (frame) | LLM picks salient content (D-05); script enforces deterministic frame + token budget |
 | `design/` artifact persistence | User repo (git-tracked) | — | Committed cross-stage IR; designer- and AI-readable |
-| `.design-os/` package state | User repo (selective git) | — | manifest.lock committed; private/ gitignored per v1.0.1 |
+| `.complete-design/` package state | User repo (selective git) | — | manifest.lock committed; private/ gitignored per v1.0.1 |
 | Preview dev-server spawn | User repo runtime | Package scripts (orchestration) | Vite/Next/Astro run in user's repo; Node script manages lifecycle |
 | Trigger metadata (SKILL.md) | Host agent (skill index) | — | Host owns trigger dispatch; package supplies frontmatter |
 | Subagent dispatch | Host agent (Claude Code) | Package scripts (fallback shim) | Claude Code native Task; Codex/Cursor get sequential-fallback shim |
-| Eval harness | Package CI (GitHub Actions) | — | Runs in design-os's own CI, not user's repo |
+| Eval harness | Package CI (GitHub Actions) | — | Runs in complete-design's own CI, not user's repo |
 | Anthropic-Labs watcher | Package CI (GitHub Actions cron) | Maintainer (human) | Daily automated polling + weekly human review per D-30 |
 | PII scanner pre-commit hook | User repo (git hook) | Package scripts (logic) | Hook installed opt-in; logic shipped in package |
 
@@ -164,7 +164,7 @@ design-os is a Markdown + Node ESM package that runs inside a host agent. It has
 | tsx | 4.x | Run TS during dev (`tsx schemas/src/...`) | [CITED: STACK.md HIGH] |
 | axe-core | 4.11.x | A11y CI gate (Phase 1: installed but exercised in Phase 2+ workflows) | [VERIFIED: npm 4.11.4 current] |
 | commander | 12.x | CLI parsing for `assets/scripts/*.mjs` | [CITED: STACK.md] |
-| pino | 9.x | Structured logging to `.design-os/private/run-log.jsonl` (D-claude-discretion; recommended) | [CITED: STACK.md] |
+| pino | 9.x | Structured logging to `.complete-design/private/run-log.jsonl` (D-claude-discretion; recommended) | [CITED: STACK.md] |
 | globby | 14.x | File discovery for `design/` walking | [CITED: STACK.md] |
 | semver | 7.x | `schemaVersion` comparison | [CITED: STACK.md] |
 | get-port | 7.x | TCP port allocation for preview harness | [VERIFIED: sindresorhus/get-port; built-in in-process locking 15-30s; `reserve` option for long lifetimes] |
@@ -189,13 +189,13 @@ design-os is a Markdown + Node ESM package that runs inside a host agent. It has
 | Zod 4 `z.toJSONSchema()` | `@alcyone-labs/zod-to-json-schema` fork (still maintained) | Fork preserves D-01 implementation literally; Zod-native is forward-compatible and zero-dep. Recommend Zod-native. |
 | `get-port` | `portfinder` | `portfinder` is older and lacks the in-process lock that prevents EADDRINUSE races during parallel preview spawns. `get-port` (sindresorhus) is the modern choice. |
 | `vm2` for security sandbox | `isolated-vm`, Docker, or **no untrusted code execution** | [VERIFIED: vm2 has had a "steady stream of sandbox escapes" — CVE-2026-22709 + 11 advisories in early 2026; project maintainer recommends migration]. **Recommendation: Phase 1 security sandbox should NOT execute arbitrary user code at all.** The "sandbox" is a permission boundary (forbid reads outside allowed paths, forbid network calls during preview boot). See Security Sandbox Threat Model below. |
-| npm workspaces | pnpm workspaces | pnpm faster + better filtering, but pnpm requires users install pnpm; design-os already uses npm. With only 3 workspace projects in Phase 1, npm wins on zero-extra-install. Revisit at Phase 4 if eval matrix grows. |
+| npm workspaces | pnpm workspaces | pnpm faster + better filtering, but pnpm requires users install pnpm; complete-design already uses npm. With only 3 workspace projects in Phase 1, npm wins on zero-extra-install. Revisit at Phase 4 if eval matrix grows. |
 | `husky` | `simple-git-hooks` | husky is more popular; simple-git-hooks is zero-dep. Either works; husky's broader docs win for OSS adoption. |
 
 **Installation (one block — verified versions; Phase 1 build-time only):**
 
 ```bash
-# In the design-os repo, after Phase 1 init:
+# In the complete-design repo, after Phase 1 init:
 
 # Core
 npm install -E zod@^4.4 ajv@^8 ajv-formats@^3 gray-matter@^4 yaml@^2 \
@@ -233,7 +233,7 @@ npx husky init
                                 │ matches SKILL.md frontmatter trigger
                                 ↓
 ┌───────────────────────────────────────────────────────────────────────┐
-│  design-os PACKAGE (installed into .claude/skills/ or host equivalent)│
+│  complete-design PACKAGE (installed into .claude/skills/ or host equivalent)│
 │                                                                        │
 │  skills/             (Phase 1: design.md orchestrator stub only;       │
 │   ├ design.md         workflows ship Phase 2+)                         │
@@ -253,10 +253,10 @@ npx husky init
 │   ├ handoff-bundle-build.mjs ← deterministic frame; LLM body in        │
 │   │                            bundle.body field; tiktoken budget      │
 │   ├ frontmatter-validate.mjs ← strict for design/, lenient for         │
-│   │                            .design-os/private/                     │
+│   │                            .complete-design/private/                     │
 │   ├ manifest-reconcile.mjs   ← MANIFEST.md ↔ filesystem state          │
 │   ├ pii-scan.mjs             ← regex set + Luhn + allowlist            │
-│   ├ port-manager.mjs         ← wraps get-port + .design-os/preview/    │
+│   ├ port-manager.mjs         ← wraps get-port + .complete-design/preview/    │
 │   │                            run-<id>/port.lock                      │
 │   ├ playwright-runner.mjs    ← readiness probe via Playwright          │
 │   │                            webServer pattern                       │
@@ -313,8 +313,8 @@ npx husky init
 │      └ skillgrade.mjs        ← per-skill harness                       │
 │                                                                        │
 │  assets/templates/                                                     │
-│   ├ gitignore-design-os.txt                                            │
-│   └ gitattributes-design-os.txt                                        │
+│   ├ gitignore-complete-design.txt                                            │
+│   └ gitattributes-complete-design.txt                                        │
 │                                                                        │
 │  docs/                                                                 │
 │   ├ MAINTAINERS.md           ← watcher owner per D-30                  │
@@ -338,7 +338,7 @@ npx husky init
 │   ├ PRD.md, research/, ia/, …                                          │
 │   └ .handoff/stage-N-bundle.md                                         │
 │                                                                        │
-│  .design-os/                                                           │
+│  .complete-design/                                                           │
 │   ├ manifest.lock            (hash chain)                              │
 │   ├ manual-overrides.json                                              │
 │   ├ pii-allowlist.json       (D-20)                                    │
@@ -417,7 +417,7 @@ export const PersonaV1 = z.object({
   // RED-04 carrier
   worstProvenance: z.enum(['generated', 'validated', 'inferred', 'missing']).optional()
 }).meta({
-  $id: 'https://design-os.dev/schemas/persona.v1.json',
+  $id: 'https://complete-design.dev/schemas/persona.v1.json',
   title: 'Persona (Stage 1)',
   description: 'Indi-Young thinking-style format with NN/g provenance gating'
 });
@@ -562,7 +562,7 @@ export async function buildHandoffBundle({
 
 ### Pattern 5: manifest.lock as Append-Only Hash Chain
 
-**What:** Every gate run appends a JSON line to `.design-os/manifest.lock`. Each entry contains `prevHash` of the previous entry + `entryHash` of this entry's canonical-serialized content. Tampering is detectable via `design-os verify --golden`.
+**What:** Every gate run appends a JSON line to `.complete-design/manifest.lock`. Each entry contains `prevHash` of the previous entry + `entryHash` of this entry's canonical-serialized content. Tampering is detectable via `complete-design verify --golden`.
 
 **Example entry (one line per gate run):**
 ```json
@@ -629,7 +629,7 @@ export async function dispatchSubagent({ prompt, tools, context }) {
 | Aggregate coexistence eval | Single-package CI | In-tree corpus that installs 5 packages, runs trigger recall | No off-the-shelf tool exists (research flag #2 below); novel methodology |
 | `manifest.lock` integrity | Trust file contents | Hash chain (sha256 prev → curr) | Detects tampering; v1.0.1 pattern preserved |
 
-**Key insight:** design-os has 13 categories of "don't hand-roll" because it's an unusual domain — token counting, port allocation, hash chains, RSS polling all have battle-tested libraries that beat a one-evening implementation. The combined library load (≈25 deps) is modest because all are Node ESM and tree-shake cleanly.
+**Key insight:** complete-design has 13 categories of "don't hand-roll" because it's an unusual domain — token counting, port allocation, hash chains, RSS polling all have battle-tested libraries that beat a one-evening implementation. The combined library load (≈25 deps) is modest because all are Node ESM and tree-shake cleanly.
 
 ## Common Pitfalls
 
@@ -721,7 +721,7 @@ import { mkdirSync } from 'node:fs';
 
 const PREFERRED = [5173, 3000, 4321]; // Vite, Next, Astro defaults
 
-export async function allocatePort(runId, designOsDir = '.design-os') {
+export async function allocatePort(runId, designOsDir = '.complete-design') {
   const runDir = `${designOsDir}/preview/run-${runId}`;
   mkdirSync(runDir, { recursive: true });
   const lockPath = `${runDir}/port.lock`;
@@ -767,8 +767,8 @@ export async function spawnAndProbe({ command, args, cwd, env, port, readyUrl, t
 // for spawned dev servers, (3) network restriction during preview boot.
 import { resolve, relative } from 'node:path';
 
-const READ_ALLOWLIST = ['design/', 'design/.handoff/', '.design-os/', 'PRD.md'];
-const WRITE_ALLOWLIST = ['design/', '.design-os/'];
+const READ_ALLOWLIST = ['design/', 'design/.handoff/', '.complete-design/', 'PRD.md'];
+const WRITE_ALLOWLIST = ['design/', '.complete-design/'];
 
 export function isPathAllowed(absPath, mode /* 'read' | 'write' */, projectRoot) {
   const rel = relative(projectRoot, resolve(absPath));
@@ -876,7 +876,7 @@ The methodology is novel — no off-the-shelf tool tests trigger recall in multi
 //
 // Step 1: Install corpus
 //   In a clean ephemeral skill directory (.test-skills/), install:
-//     - design-os (this package, fresh build)
+//     - complete-design (this package, fresh build)
 //     - GSD (get-shit-done)
 //     - Superpowers
 //     - frontend-design (Anthropic)
@@ -888,7 +888,7 @@ The methodology is novel — no off-the-shelf tool tests trigger recall in multi
 //   - Run host (Claude Code) headlessly via the host's eval mode (or Anthropic
 //     skill-creator's eval sub-agent pattern adapted for this purpose)
 //   - Record: which skill (if any) fired
-// Step 4: Score recall on design-os's own should-fire prompts:
+// Step 4: Score recall on complete-design's own should-fire prompts:
 //   recall = correct_design_os_fires / total_design_os_should_fire
 //   Threshold: ≥0.80 (D-16)
 // Step 5: Score precision on should-not-fire prompts targeting other packages:
@@ -901,7 +901,7 @@ The methodology is novel — no off-the-shelf tool tests trigger recall in multi
 // ~46% recall that prose-only optimization can't break. The ≥0.80 threshold
 // in D-16 is therefore aggressive — calibrate during Phase 1; if empirics
 // show systemic miss patterns, the contingency (TRIG-04: split into
-// design-os-core + design-os-atoms) is the planned lever.
+// complete-design-core + complete-design-atoms) is the planned lever.
 ```
 
 ### Bundle-Sufficiency Eval Methodology (Research Flag #1)
@@ -1003,7 +1003,7 @@ export async function runSkillgrade(skillName, triggersPath) {
 |---|-------|---------|---------------|
 | A1 | Codex 2% trigger metadata cap is still ~5k chars in May 2026 | Standard Stack + Eval methodology | MEDIUM — if cap tightened, contingency lever (TRIG-04 core/atoms split) is in scope; calibrate at Phase 1 kickoff per MRD §11 |
 | A2 | Anthropic's skill-creator harness has NOT shipped as a standalone OSS package by Phase 1 kickoff | Skillgrade-Style Harness pattern | LOW — if it has shipped, adopt it; our harness is plug-compatible by design |
-| A3 | Google DESIGN.md schema is stable for the 14-week build window | FORMAT-06 + design-md-validate.mjs design | MEDIUM — `$extensions.design-os` namespace is the fallback if schema drifts (per MRD §3.6) |
+| A3 | Google DESIGN.md schema is stable for the 14-week build window | FORMAT-06 + design-md-validate.mjs design | MEDIUM — `$extensions.complete-design` namespace is the fallback if schema drifts (per MRD §3.6) |
 | A4 | BERTScore is implementable in CI without heavy model bundling, OR the structural-equivalence metric is sufficient alone | Bundle-Sufficiency Eval Methodology | MEDIUM — structural-equivalence is the cheap baseline; semantic similarity is the calibration step. Plan 2 should treat this as a 1-week design+prototype work-stream, not "drop-in metric" |
 | A5 | `tiktoken` (cl100k_base) is close enough to Claude's tokenizer that 10% safety margin is sufficient | Pattern 4 + Pitfall B | LOW — Anthropic publishes no exact tokenizer; if drift is high, the truncationWarning surfaces it before bundle hits the host |
 | A6 | The 4-week budget is sufficient for 5 plans of work | Recommended Decomposition | MEDIUM — CONTEXT.md explicitly authorizes pushback; if the plan implies >4 weeks, descope (don't slip) |
@@ -1035,7 +1035,7 @@ export async function runSkillgrade(skillName, triggersPath) {
 
 5. **`design-md-validate.mjs` schema version pinning concrete contract (FORMAT-07)**
    - What we know: FORMAT-07 says "supports schema version pinning to survive Google spec drift."
-   - What's unclear: Whether design-os pins to one DESIGN.md version per package release, or supports a range (CLI flag `--design-md-version`).
+   - What's unclear: Whether complete-design pins to one DESIGN.md version per package release, or supports a range (CLI flag `--design-md-version`).
    - Recommendation: Phase 1 pins one version (the version at v1.5 GA — likely April 2026 release as named in PROJECT.md key decisions); Plan 1 leaves a `--design-md-version <semver>` flag in the CLI signature for forward-compat but only the pinned version is implemented.
 
 ## Environment Availability
@@ -1069,8 +1069,8 @@ Phase 1 has no external service dependencies beyond standard Node.js toolchain a
 | V4 Access Control | yes (limited) | `security-sandbox.mjs` enforces path allow-list for reads/writes into user repo (PERSIST-01 + PREV-01) |
 | V5 Input Validation | yes | Every `design/` artifact validated against versioned JSON Schema via ajv 8 (SCHEMA-07) |
 | V6 Cryptography | yes (limited) | manifest.lock uses SHA-256 hash chain (Pattern 5); no key management; no encryption (artifacts are committed cleartext by design) |
-| V7 Errors & Logging | yes | pino structured logging to `.design-os/private/run-log.jsonl`; secret redaction filter masks `*_KEY`, `*_SECRET`, `*_TOKEN` patterns (PITFALLS Security Mistakes) |
-| V8 Data Protection | yes | PII scanner (D-18); pre-commit hook (D-19); allowlist (D-20); `.gitignore` defaults (D-29) for `research/interviews/` and `.design-os/private/` |
+| V7 Errors & Logging | yes | pino structured logging to `.complete-design/private/run-log.jsonl`; secret redaction filter masks `*_KEY`, `*_SECRET`, `*_TOKEN` patterns (PITFALLS Security Mistakes) |
+| V8 Data Protection | yes | PII scanner (D-18); pre-commit hook (D-19); allowlist (D-20); `.gitignore` defaults (D-29) for `research/interviews/` and `.complete-design/private/` |
 | V9 Communication | no | Phase 1 makes no outbound network calls except (a) GitHub Actions cron polling RSS/release feeds, (b) `npm install` build-time |
 | V10 Malicious Code | yes (critical) | D-13 lint-determinism.mjs rejects LLM client imports inside `assets/scripts/`; CI gate is a hard fail. Prevents accidental introduction of remote-code-fetch patterns. |
 
@@ -1081,7 +1081,7 @@ Phase 1 has no external service dependencies beyond standard Node.js toolchain a
 | PII leak via committed transcript | Information Disclosure | `.gitignore` defaults + PII scanner pre-commit hook (D-18/D-19) |
 | Supply-chain attack via dep update | Tampering | Package-lock committed; `npm ci` in CI; consider Snyk / Dependabot for OSS hygiene |
 | Determinism drift (LLM call sneaks into emit script) | Tampering / Repudiation | `lint-determinism.mjs` rejects LLM imports inside `assets/scripts/`; CI hard gate (D-13) |
-| Manifest tampering | Tampering | SHA-256 hash chain in manifest.lock; `design-os verify --golden` validates chain |
+| Manifest tampering | Tampering | SHA-256 hash chain in manifest.lock; `complete-design verify --golden` validates chain |
 | User-repo data exfiltration via preview spawn | Information Disclosure | `security-sandbox.mjs` scrubs env (strips `*_KEY` etc.) before spawning Vite/Next/Astro |
 | Sandbox-escape via `vm2` | Elevation of Privilege | **Don't use vm2.** Phase 1's "sandbox" is permission boundary only. (Pitfalls research + vm2 CVE record) |
 | Token-budget overrun → host context truncation | Denial of Service | tiktoken-based pre-check + 10% safety margin + `truncationWarning` frontmatter (Pitfall B) |
@@ -1116,7 +1116,7 @@ Each plan is ~1 week. Total: 4 weeks (Plans 3 + 4 overlap mid-W3, supported by p
 - `.planning/ROADMAP.md` Phase 1 detail — success criteria
 - `.planning/STATE.md` — v1.5 = 4-week decision rationale
 - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-CONTEXT.md` — 31 D-IDs across 11 areas
-- `design-os-mrd-v2.md` §3.6, §3.9, §3.10, §3.16, §3.19, §3.22, §9.1, §10, §16
+- `complete-design-mrd-v2.md` §3.6, §3.9, §3.10, §3.16, §3.19, §3.22, §9.1, §10, §16
 - [Zod v4 JSON Schema docs](https://zod.dev/json-schema) — `z.toJSONSchema()`, Draft 2020-12 default target
 - [npm: zod-to-json-schema](https://www.npmjs.com/package/zod-to-json-schema) — EOL announcement November 2025
 - [Ajv JSON Schema validator](https://ajv.js.org/) — Draft 2020-12 support
@@ -1161,5 +1161,5 @@ Each plan is ~1 week. Total: 4 weeks (Plans 3 + 4 overlap mid-W3, supported by p
 **Valid until:** 2026-06-23 (30 days for stable infrastructure deps; 7 days for `tiktoken` / Excalidraw / shadcn / Anthropic skill-creator which move faster)
 
 ---
-*Phase 1 research for: design-os v1.5 Infrastructure & Determinism Foundation*
+*Phase 1 research for: complete-design v1.5 Infrastructure & Determinism Foundation*
 *Researched: 2026-05-24*

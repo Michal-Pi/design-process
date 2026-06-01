@@ -3,7 +3,7 @@
 //
 // Problem: gate-stage-5b.mjs calls countComponentRecurrences(designDir) which globs
 // wireframes/**/*.excalidraw and interactions/*.spec.md under designDir. When the gate
-// runs against the STAGED preview path (.design-os/preview/<run-id>/), only tokens.json
+// runs against the STAGED preview path (.complete-design/preview/<run-id>/), only tokens.json
 // and DESIGN.md are staged — wireframes/ and interactions/ do NOT exist there.
 // countComponentRecurrences() returns 0 for every component, causing a false-positive
 // frost-recurrence-not-met BLOCKER even when the source design/ has ample upstream evidence.
@@ -65,10 +65,10 @@ name: "Test Product"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "INFERRED"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
     componentCount: 1
 ---
 

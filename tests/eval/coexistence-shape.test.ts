@@ -31,7 +31,7 @@ describe("coexistence: harness files exist", () => {
 
 describe("coexistence: trigger YAMLs", () => {
   const packages = [
-    "design-os",
+    "complete-design",
     "gsd",
     "superpowers",
     "frontend-design",
@@ -172,6 +172,6 @@ describe("coexistence: contingency document", () => {
       join(ROOT, "docs/CONTINGENCY-TRIG-04.md"),
       "utf8"
     );
-    expect(content).toMatch(/design-os-core|design-os-atoms|split/i);
+    expect(content).toMatch(/complete-design-core|complete-design-atoms|split/i);
   });
 });

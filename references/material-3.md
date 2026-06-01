@@ -33,7 +33,7 @@ M3 introduces `colorScheme` generation from a source color (user wallpaper or br
 - `error` / `onError` — semantic error state color pair
 - `surface` / `onSurface` — neutral backgrounds + content
 
-**For design-os Stage 4:** Use semantic color token names, never raw hex. The DTCG token layer
+**For complete-design Stage 4:** Use semantic color token names, never raw hex. The DTCG token layer
 (Stage 5b) maps these semantic names to actual color values.
 
 ## Motion Tokens

@@ -1,0 +1,5 @@
+# >>> complete-design defaults
+design/*.json merge=ours
+*.md text eol=lf
+*.json text eol=lf
+# <<< complete-design defaults

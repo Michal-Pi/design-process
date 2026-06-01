@@ -1,6 +1,6 @@
 # Information Architecture for the World Wide Web — Rosenfeld, Morville & Arango
 
-<!-- design-os reference: rosenfeld-ia -->
+<!-- complete-design reference: rosenfeld-ia -->
 
 ## Purpose
 
@@ -20,9 +20,9 @@ Stage 2 IA checklist are grounded in this vocabulary.
 - Ch.7, p.107: Navigation systems — global, local, contextual, supplemental. Sitemap nodes include
   `navType` for global/local classification.
 - Ch.9, p.143: Controlled vocabularies — the index terms that connect content. DTCG token names
-  (semantic tier) are the design-os controlled vocabulary for the Surface plane.
+  (semantic tier) are the complete-design controlled vocabulary for the Surface plane.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 2 sitemap.json: `nodeType`, `navType`, and `labelRationale` fields reflect Ch.4/5/7.
 - Gate-2 checklist: label vocabulary reviewed against Stage 1 mental model data (§Ch.5).

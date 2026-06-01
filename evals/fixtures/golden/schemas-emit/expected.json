@@ -1,5 +1,5 @@
 {
-  "$id": "https://design-os.dev/schemas/persona.v1.json",
+  "$id": "https://complete-design.dev/schemas/persona.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "Indi Young thinking-style format with NN/g provenance gating (RED-04 carrier)",

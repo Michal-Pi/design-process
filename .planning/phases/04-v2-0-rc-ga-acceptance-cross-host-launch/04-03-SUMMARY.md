@@ -69,7 +69,7 @@ metrics:
 **aggregate-eval.mjs:**
 - Uncommented `process.exit(result.pass ? 0 : 1)` (was disabled since Phase 1 per comment "DISABLED in Phase 1")
 - Removed placeholder `process.exit(0)` below it
-- Added `perSkillRecall: Record<string, number>` to result (Lesson 5 identity — per-skill false-fire rate per peer package + design-os own recall)
+- Added `perSkillRecall: Record<string, number>` to result (Lesson 5 identity — per-skill false-fire rate per peer package + complete-design own recall)
 - Updated `calibrationNote` to document TRIG-03 shortfall honestly
 
 **install-corpus.mjs:**
@@ -123,7 +123,7 @@ Exported functions:
 ## Verification Results
 
 ```
-node bin/design-os.mjs cross-host-parity --help
+node bin/complete-design.mjs cross-host-parity --help
   PASS: shows --host, --sample, --baseline, --output, --fixtures-dir
 
 grep "continue-on-error: false" .github/workflows/aggregate-coexistence.yml

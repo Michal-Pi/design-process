@@ -1,9 +1,9 @@
 // assets/scripts/preview/astro-adapter.mjs
-// Astro 5 preview adapter for the design-os preview harness.
+// Astro 5 preview adapter for the complete-design preview harness.
 // Implements PREV-02: prepare(repoRoot) → { command, args, env, port, readyUrl }
 //
 // Sources: CONTEXT.md PREV-02, PLAN.md Task 1 behavior block,
-//          STACK.md (Astro 5.x), design-os-mrd-v2.md §3.11
+//          STACK.md (Astro 5.x), complete-design-mrd-v2.md §3.11
 
 import { allocatePort } from '../port-manager.mjs';
 import { scrubEnvForPreview } from '../security-sandbox.mjs';
@@ -16,7 +16,7 @@ import { scrubEnvForPreview } from '../security-sandbox.mjs';
  * @returns { command, args, env, port, readyUrl, runId, releasePort }
  */
 export async function prepare(repoRoot, { runId = Date.now().toString() } = {}) {
-  const { port, release: releasePort } = await allocatePort(runId, repoRoot + '/.design-os');
+  const { port, release: releasePort } = await allocatePort(runId, repoRoot + '/.complete-design');
 
   const command = 'npx';
   const args = ['astro', 'dev', '--port', String(port), '--host', '127.0.0.1'];

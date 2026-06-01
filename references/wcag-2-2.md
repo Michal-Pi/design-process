@@ -1,6 +1,6 @@
 # Web Content Accessibility Guidelines 2.2
 
-<!-- design-os reference: wcag-2-2 -->
+<!-- complete-design reference: wcag-2-2 -->
 
 ## Purpose
 
@@ -18,10 +18,10 @@ accessible UI. Design-os reports measured contrast ratios but never claims WCAG 
   Stage 5a gate includes a non-text contrast check citation.
 - SC 2.4.12 (Level AAA): Focus appearance (minimum visible focus indicator). Mentioned in
   Stage 5a checklist as best-practice advisory only (AAA not required for AA).
-- APCA: The Accessible Perceptual Contrast Algorithm is the proposed WCAG 3.0 method; design-os
+- APCA: The Accessible Perceptual Contrast Algorithm is the proposed WCAG 3.0 method; complete-design
   reports APCA alongside WCAG 2.2 ratios but treats WCAG 2.2 as the authoritative gate.
 
-## How design-os uses it
+## How complete-design uses it
 
 - `contrast.mjs`: measures WCAG 2.2 AA ratios (4.5:1 / 3:1 thresholds) + APCA Lc values.
   Output format: "WCAG 2.2 AA contrast 4.7 (pass)" — never "WCAG-compliant" (TRUST-01).
@@ -31,5 +31,5 @@ accessible UI. Design-os reports measured contrast ratios but never claims WCAG 
 ## Drift watch
 
 **Stability: HIGH** — WCAG 2.2 is a W3C Recommendation (stable). WCAG 3.0 (Silver) is in
-Working Draft; design-os will not adopt WCAG 3.0 requirements until they reach Recommendation
+Working Draft; complete-design will not adopt WCAG 3.0 requirements until they reach Recommendation
 status. APCA measurement is supplementary only.

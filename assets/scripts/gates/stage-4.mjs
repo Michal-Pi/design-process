@@ -2,7 +2,7 @@
 // Stage 4 (Interaction Design / State Maps) gate — full D-59 business logic.
 //
 // INVARIANT-01: Gate MUST run against staged path (not design/).
-//   The caller passes .design-os/preview/<run-id>/ as designDir.
+//   The caller passes .complete-design/preview/<run-id>/ as designDir.
 //
 // D-59 Three conditions:
 //   (a) Sitemap coverage: every route in sitemap.json has a .spec.md in interactions/

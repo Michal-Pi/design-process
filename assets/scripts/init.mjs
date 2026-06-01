@@ -1,6 +1,6 @@
 // assets/scripts/init.mjs
-// design-os init: writes/appends gitignore + gitattributes templates into
-// a target repo using guarded blocks, creates design/ + .design-os/ dirs,
+// complete-design init: writes/appends gitignore + gitattributes templates into
+// a target repo using guarded blocks, creates design/ + .complete-design/ dirs,
 // and writes a minimal design/MANIFEST.md.
 //
 // Requires --apply to actually write (TRUST-02: diff-by-default per CLAUDE.md).
@@ -17,8 +17,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = resolve(__dirname, "../templates");
 
-const GUARD_OPEN = "# >>> design-os defaults";
-const GUARD_CLOSE = "# <<< design-os defaults";
+const GUARD_OPEN = "# >>> complete-design defaults";
+const GUARD_CLOSE = "# <<< complete-design defaults";
 
 /**
  * Read a template file from assets/templates/.
@@ -79,7 +79,7 @@ function simpleDiff(before, after) {
 }
 
 /**
- * Run design-os init.
+ * Run complete-design init.
  *
  * @param {{ target?: string, apply?: boolean }} opts
  * @returns {Promise<void>}
@@ -88,8 +88,8 @@ export async function runInit({ target = process.cwd(), apply = false } = {}) {
   const targetDir = resolve(target);
 
   // Load templates
-  const gitignoreTemplate = await readTemplate("gitignore-design-os.txt");
-  const gitattributesTemplate = await readTemplate("gitattributes-design-os.txt");
+  const gitignoreTemplate = await readTemplate("gitignore-complete-design.txt");
+  const gitattributesTemplate = await readTemplate("gitattributes-complete-design.txt");
 
   // Compute new content for .gitignore
   const gitignorePath = join(targetDir, ".gitignore");
@@ -130,11 +130,11 @@ export async function runInit({ target = process.cwd(), apply = false } = {}) {
   // Create design/ directory
   await mkdir(join(targetDir, "design"), { recursive: true });
 
-  // Create .design-os/ directory and the private/ subdir that apply.mjs writes run-log.jsonl into.
+  // Create .complete-design/ directory and the private/ subdir that apply.mjs writes run-log.jsonl into.
   // apply.mjs guards itself with a mkdir({ recursive: true }) call, but creating the expected
   // tree here makes the filesystem contract explicit and avoids ENOENT in the common path.
-  await mkdir(join(targetDir, ".design-os"), { recursive: true });
-  await mkdir(join(targetDir, ".design-os", "private"), { recursive: true });
+  await mkdir(join(targetDir, ".complete-design"), { recursive: true });
+  await mkdir(join(targetDir, ".complete-design", "private"), { recursive: true });
 
   // Write minimal design/MANIFEST.md if it doesn't exist
   const manifestPath = join(targetDir, "design", "MANIFEST.md");
@@ -146,11 +146,11 @@ export async function runInit({ target = process.cwd(), apply = false } = {}) {
     );
   }
 
-  console.log(`✓ Initialized design-os in ${targetDir}`);
-  console.log("  - .gitignore updated with design-os defaults");
-  console.log("  - .gitattributes updated with design-os defaults");
+  console.log(`✓ Initialized complete-design in ${targetDir}`);
+  console.log("  - .gitignore updated with complete-design defaults");
+  console.log("  - .gitattributes updated with complete-design defaults");
   console.log("  - design/ directory created");
-  console.log("  - .design-os/ directory created");
-  console.log("  - .design-os/private/ directory created");
+  console.log("  - .complete-design/ directory created");
+  console.log("  - .complete-design/private/ directory created");
   console.log("  - design/MANIFEST.md created");
 }

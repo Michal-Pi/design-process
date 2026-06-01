@@ -1,5 +1,5 @@
 // tests/cli/migrate-v2.0a-to-v2.0b-integration.test.ts
-// Integration test: `design-os migrate --from 2.0a --to 2.0b` CLI routing.
+// Integration test: `complete-design migrate --from 2.0a --to 2.0b` CLI routing.
 //
 // Finding 2 fix verification:
 //   - migrate --help shows --design-dir, --apply, and string-friendly --from/--to flags
@@ -23,10 +23,10 @@ import { dirname } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
-const BIN = join(ROOT, 'bin', 'design-os.mjs');
+const BIN = join(ROOT, 'bin', 'complete-design.mjs');
 const FIXTURE_DIR = join(ROOT, 'evals', 'fixtures', 'migration', 'v2.0a-to-v2.0b');
 
-/** Spawn design-os with given args and return { stdout, stderr, status } */
+/** Spawn complete-design with given args and return { stdout, stderr, status } */
 function runDesignOs(args: string[]): { stdout: string; stderr: string; status: number } {
   const result = spawnSync(process.execPath, [BIN, ...args], {
     cwd: ROOT,

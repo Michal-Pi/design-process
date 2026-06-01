@@ -1,10 +1,10 @@
 // assets/scripts/cli/design.mjs
 // CLI module for the `design` command.
-// Auto-discovered by bin/design-os.mjs; no modification to bin/ required.
+// Auto-discovered by bin/complete-design.mjs; no modification to bin/ required.
 //
 // Usage:
-//   design-os design --route <name> --design-dir <path>
-//   design-os design --design-dir <path>  [no --route → ROUTE-08 prompt + exit 0]
+//   complete-design design --route <name> --design-dir <path>
+//   complete-design design --design-dir <path>  [no --route → ROUTE-08 prompt + exit 0]
 //
 // Sources: PLAN.md Task 2 action + notes, CONTEXT.md D-21, ROUTE-08.
 
@@ -12,7 +12,7 @@ import { dispatchRoute, suggestRoute, formatRoute08Prompt } from '../routing/dis
 
 export const command = {
   name: 'design',
-  describe: 'Run a design route (see `design-os design --help` for routes)',
+  describe: 'Run a design route (see `complete-design design --help` for routes)',
 
   /** @param {import("commander").Command} cmd */
   builder(cmd) {

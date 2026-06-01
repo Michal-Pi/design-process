@@ -156,10 +156,10 @@ name: "FID-06 Adversarial Fixture"
 tokens: 1000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "INFERRED"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
 ---
 
 ## Typography rationale

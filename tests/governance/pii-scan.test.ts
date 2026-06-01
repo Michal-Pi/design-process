@@ -123,7 +123,7 @@ describe("allowlist: suppress and drift detection", () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    tmpDir = await mkdtemp(join(os.tmpdir(), "design-os-pii-allowlist-"));
+    tmpDir = await mkdtemp(join(os.tmpdir(), "complete-design-pii-allowlist-"));
   });
 
   afterEach(async () => {

@@ -12,7 +12,7 @@ Jesse James Garrett named the problem in 2000. In *The Elements of User Experien
 
 Lovable, v0, Bolt, and Claude Design are all excellent at what they do: generating Stage 5 surfaces from a brief description. They are optimized for the demo moment. The cost of skipping Stages 1-4 is not visible at hour one. It is visible at month 3, when you discover that your interaction patterns don't cohere, your design tokens have no semantic tier, and your research consists of three made-up user personas that nobody validated.
 
-**design-os is the other four stages.**
+**complete-design is the other four stages.**
 
 ---
 
@@ -20,7 +20,7 @@ Lovable, v0, Bolt, and Claude Design are all excellent at what they do: generati
 
 ### Stage 1: Research and Discovery
 
-Before any interface decision, design-os runs a structured research phase. It generates thinking-style personas in Indi Young's format — each with a provenance grade. If the personas are synthesized without real interview data, the provenance is `PROTO`, not `VALIDATED`. Stage 1 hard-blocks the `VALIDATED` grade when only synthetic personas are present. This is not a warning. It is a gate that will not open until the persona provenance is resolved.
+Before any interface decision, complete-design runs a structured research phase. It generates thinking-style personas in Indi Young's format — each with a provenance grade. If the personas are synthesized without real interview data, the provenance is `PROTO`, not `VALIDATED`. Stage 1 hard-blocks the `VALIDATED` grade when only synthetic personas are present. This is not a warning. It is a gate that will not open until the persona provenance is resolved.
 
 The stage also generates Jobs-to-Be-Done in Torres OST format and an ASSUMPTIONS.md that makes every design hypothesis explicit. Competitive landscape is captured as structured evidence, not prose. The goal is: no wireframe is drawn until the strategy is grounded in something real.
 
@@ -56,7 +56,7 @@ Stage 5a generates three visual variants with a 6-axis distance metric — ensur
 
 Stage 5b generates W3C DTCG v2025.10 design tokens across primitive, semantic, and component tiers. The Frost rule — named for Brad Frost's Atomic Design principle — requires a component to appear in upstream wireframes at least three times before it is promoted to the design system. Frost ≥3× recurrence is enforced as a gate finding, not a recommendation. A component that appears twice stays at the component level. Three appearances promote it.
 
-The stage also emits Google DESIGN.md format with `$extensions.design-os` metadata — a structured contract for engineering consumption that carries token references, composition rationale, and source provenance in a single file.
+The stage also emits Google DESIGN.md format with `$extensions.complete-design` metadata — a structured contract for engineering consumption that carries token references, composition rationale, and source provenance in a single file.
 
 **What tools that skip this produce:** A design system with components that exist because they looked good, not because they recur across real user flows.
 
@@ -68,17 +68,17 @@ Garrett's insight was that user experience is not about what a product looks lik
 
 When you skip Strategy and Scope, you do not save time. You borrow time from month 3, with interest.
 
-Brad Frost's Atomic Design (2013) extended this to design systems: components are not designed in isolation. They emerge from recurrence in real flows. A component that appears once is a one-off. A component that appears three times is a pattern. Patterns belong in the system. This is the intellectual heritage design-os implements as a gate.
+Brad Frost's Atomic Design (2013) extended this to design systems: components are not designed in isolation. They emerge from recurrence in real flows. A component that appears once is a one-off. A component that appears three times is a pattern. Patterns belong in the system. This is the intellectual heritage complete-design implements as a gate.
 
-Marty Cagan's INSPIRED framing for product teams is the same idea at the product level: build to discover, not to ship a predetermined answer. design-os operationalizes the discovery-then-validate sequence with scaffolded AI output and explicit evidence grades at every stage.
+Marty Cagan's INSPIRED framing for product teams is the same idea at the product level: build to discover, not to ship a predetermined answer. complete-design operationalizes the discovery-then-validate sequence with scaffolded AI output and explicit evidence grades at every stage.
 
-These three bodies of work — Garrett, Frost, Cagan — are intellectual heritage, not endorsement. None of them have reviewed design-os. Their frameworks are cited because design-os implements the principles they described.
+These three bodies of work — Garrett, Frost, Cagan — are intellectual heritage, not endorsement. None of them have reviewed complete-design. Their frameworks are cited because complete-design implements the principles they described.
 
 ---
 
 ## The trust posture
 
-design-os is built for designers who have been burned by tools that claim more than they deliver.
+complete-design is built for designers who have been burned by tools that claim more than they deliver.
 
 Every output carries an evidence grade: `VALIDATED` means grounded in real data. `PROTO` means generated from synthetic input. `INFERRED` means reverse-engineered from existing artifacts. `MISSING` means the artifact does not exist. These grades are not cosmetic — they propagate downstream. A `PROTO`-grade persona produces a `PROTO`-grade sitemap. The system does not silently launder synthetic research into validated design decisions.
 
@@ -92,7 +92,7 @@ The package never claims WCAG conformance. It reports measured contrast values. 
 
 ## What shipped
 
-design-os v2.0-beta.0 is available today.
+complete-design v2.0-beta.0 is available today.
 
 **The evidence:**
 
@@ -112,8 +112,8 @@ None of this is vaporware. Every gate behavior described above is in the codebas
 ## Try it
 
 ```bash
-npm i -g design-os@beta
-design-os install
+npm i -g @pm-musketeers/complete-design@beta
+complete-design install
 ```
 
 The install drops skills into `.claude/skills/` (Claude Code) or the equivalent for Codex CLI or Cursor. Start with:
@@ -134,4 +134,4 @@ After Wave A feedback, we'll publish broadly and cross-post to the community. Th
 
 ---
 
-*design-os is an open-source SKILL.md package. It does not replace the designer. It scaffolds the process that makes the designer's judgment legible to the agent.*
+*complete-design is an open-source SKILL.md package. It does not replace the designer. It scaffolds the process that makes the designer's judgment legible to the agent.*

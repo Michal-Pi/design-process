@@ -1,5 +1,5 @@
 ---
-name: "design-os/system/scaffold-component"
+name: "complete-design/system/scaffold-component"
 description: "Stage 5b: Scaffold a component that recurs ≥3× — creates DTCG token entry, Mermaid diagram stub, and wiring notes."
 type: atom
 stage: 5b
@@ -25,7 +25,7 @@ Scaffold a component into the design system. Only scaffold components that appea
 Verify the target component passes gate-stage-5b Frost recurrence check (≥3× in wireframes + interactions combined). Run:
 
 ```
-node bin/design-os.mjs gate --stage 5b --design-dir .design-os/preview/<run-id>/
+node bin/complete-design.mjs gate --stage 5b --design-dir .complete-design/preview/<run-id>/
 ```
 
 If the gate returns `failed_after_repair` with `reason: frost-recurrence-not-met`, the component does not yet appear ≥3×. Do not proceed — add the component to more wireframes or interaction specs first.

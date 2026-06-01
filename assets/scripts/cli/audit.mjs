@@ -1,14 +1,14 @@
 // assets/scripts/cli/audit.mjs
 // CLI module for the `audit` command.
-// Auto-discovered by bin/design-os.mjs; no modification to bin/ required.
+// Auto-discovered by bin/complete-design.mjs; no modification to bin/ required.
 //
 // Usage:
-//   design-os audit --slop-tells [--scan-dir .] [--output design/AUDIT-REPORT.md]
-//   design-os audit --pr [--design-dir design/] [--output design/AUDIT-REPORT.md]
-//   design-os audit --slop-tells --pr [--continue-anyway]
-//   design-os audit --reverse-engineer-stages --source <path|url> [--output-dir design/inferred/] [--apply]
-//   design-os audit --all-stages [--design-dir design/] [--output design/AUDIT-REPORT.md]
-//   design-os audit --new-feature --feature <name> [--design-dir design/] [--output design/AUDIT-REPORT.md]
+//   complete-design audit --slop-tells [--scan-dir .] [--output design/AUDIT-REPORT.md]
+//   complete-design audit --pr [--design-dir design/] [--output design/AUDIT-REPORT.md]
+//   complete-design audit --slop-tells --pr [--continue-anyway]
+//   complete-design audit --reverse-engineer-stages --source <path|url> [--output-dir design/inferred/] [--apply]
+//   complete-design audit --all-stages [--design-dir design/] [--output design/AUDIT-REPORT.md]
+//   complete-design audit --new-feature --feature <name> [--design-dir design/] [--output design/AUDIT-REPORT.md]
 //
 // Modes:
 //   --slop-tells: regex scan CSS/TSX files for 5 slop-tell patterns
@@ -70,12 +70,12 @@ function severityCmp(a, b) {
 }
 
 /**
- * Load audit suppressions from .design-os/audit-suppressions.json if present.
+ * Load audit suppressions from .complete-design/audit-suppressions.json if present.
  * @param {string} projectRoot
  * @returns {Promise<Set<string>>} Set of suppressed findingIds
  */
 async function loadSuppressions(projectRoot) {
-  const suppressPath = join(projectRoot, '.design-os', 'audit-suppressions.json');
+  const suppressPath = join(projectRoot, '.complete-design', 'audit-suppressions.json');
   if (!existsSync(suppressPath)) return new Set();
   try {
     const raw = await readFile(suppressPath, 'utf8');
@@ -139,7 +139,7 @@ function buildAuditReport(findings, opts) {
     generated,
     sourceHash: `sha256:${hash}`,
     provenance: 'generated',
-    owner: 'design-os/audit',
+    owner: 'complete-design/audit',
     lastReviewedAt: generated,
     findings: normalizedFindings.map(f => ({
       findingId: f.id,
@@ -359,7 +359,7 @@ export async function runAudit({ slopTells, pr, scanDir, designDir, output, bloc
   return { findings: allFindings, blocked, outputPath };
 }
 
-/** CLI module descriptor for auto-discovery by bin/design-os.mjs */
+/** CLI module descriptor for auto-discovery by bin/complete-design.mjs */
 export const command = {
   name: 'audit',
   describe: 'Audit design artifacts for slop patterns (--slop-tells), PR regressions (--pr), or reverse-engineer stages (--reverse-engineer-stages)',
@@ -401,8 +401,8 @@ export const command = {
       if (!source) {
         console.error(
           'audit --reverse-engineer-stages: --source <path-or-url> is required.\n' +
-          '  Local: design-os audit --reverse-engineer-stages --source ./my-app\n' +
-          '  URL:   design-os audit --reverse-engineer-stages --source https://my-app.vercel.app'
+          '  Local: complete-design audit --reverse-engineer-stages --source ./my-app\n' +
+          '  URL:   complete-design audit --reverse-engineer-stages --source https://my-app.vercel.app'
         );
         process.exit(1);
       }
@@ -410,7 +410,7 @@ export const command = {
       const { runReverseEngineer } = await import('../audit/reverse-engineer.mjs');
 
       if (!apply) {
-        console.log(`[DRY RUN] design-os audit --reverse-engineer-stages --source ${source} --output-dir ${outputDir}`);
+        console.log(`[DRY RUN] complete-design audit --reverse-engineer-stages --source ${source} --output-dir ${outputDir}`);
         console.log('  Would create artifacts in design/inferred/ with two-layer INFERRED enforcement:');
         console.log('    1. YAML frontmatter: provenance:inferred + inferredDisclaimer + evidence:INFERRED');
         console.log('    2. Body banner: > **INFERRED** — This artifact was reverse-engineered...');
@@ -422,7 +422,7 @@ export const command = {
         console.log('    Stage 1: Personas/JTBDs (from copy, onboarding text)');
         console.log('');
         console.log('  Use --apply to write artifacts.');
-        console.log('  After reviewing, use: design-os promote-inferred --file <path>');
+        console.log('  After reviewing, use: complete-design promote-inferred --file <path>');
         return;
       }
 
@@ -449,7 +449,7 @@ export const command = {
         console.log('');
         console.log('IMPORTANT: Review each artifact in design/inferred/ and remove the');
         console.log("  'provenance: inferred' frontmatter AND the > **INFERRED** banner before promoting.");
-        console.log('  Then use: design-os promote-inferred --file <path>');
+        console.log('  Then use: complete-design promote-inferred --file <path>');
       } catch (err) {
         console.error(`[audit --reverse-engineer-stages] Error: ${err instanceof Error ? err.message : String(err)}`);
         process.exit(1);
@@ -471,7 +471,7 @@ export const command = {
       if (newFeatureMode && !featureName) {
         console.error(
           'audit --new-feature: --feature <name> is required.\n' +
-          '  Example: design-os audit --new-feature --feature checkout'
+          '  Example: complete-design audit --new-feature --feature checkout'
         );
         process.exit(1);
       }

@@ -2,7 +2,7 @@
 // Validates YAML frontmatter of design/ artifacts against their versioned JSON Schemas.
 // Phase 2 extension: --check-worst-provenance mode (D-38, OF-02).
 //
-// Source: CONTEXT.md D-28 (strict for design/, lenient for .design-os/private/)
+// Source: CONTEXT.md D-28 (strict for design/, lenient for .complete-design/private/)
 //         CONTEXT.md D-38 (worstProvenance propagation enforcement)
 // Implements: D-28, D-38, PERSIST-01, OF-02
 
@@ -14,14 +14,14 @@ import { validate } from "./schemas/validate.mjs";
 
 /**
  * Determine whether the given file path is in "lenient" mode.
- * D-28: lenient for .design-os/private/, strict (default) for all others.
+ * D-28: lenient for .complete-design/private/, strict (default) for all others.
  *
  * @param {string} filePath - Absolute or relative path to the file
  * @returns {boolean} true = lenient mode (warn-only); false = strict mode (reject)
  */
 function isLenientPath(filePath) {
   const normalized = resolve(filePath).replace(/\\/g, "/");
-  return normalized.includes("/.design-os/private/");
+  return normalized.includes("/.complete-design/private/");
 }
 
 /**
@@ -180,7 +180,7 @@ function checkInferredEnforcementRules(filePath, parsed) {
       message:
         "File in design/ (outside design/inferred/) has provenance:inferred. " +
         "Inferred artifacts must live in design/inferred/ only (D-64 Rule B — Pitfall D bleed prevention). " +
-        "Use 'design-os promote-inferred' to move this file after removing the INFERRED markers.",
+        "Use 'complete-design promote-inferred' to move this file after removing the INFERRED markers.",
     });
   }
 
@@ -193,7 +193,7 @@ function checkInferredEnforcementRules(filePath, parsed) {
  * STRICT mode (default — files in design/):
  *   Exits 1 on any validation error; prints full error list to stderr.
  *
- * LENIENT mode (files in .design-os/private/):
+ * LENIENT mode (files in .complete-design/private/):
  *   Prints warnings to stderr but exits 0 (non-blocking).
  *
  * Phase 3 extension (D-64 — do NOT remove):

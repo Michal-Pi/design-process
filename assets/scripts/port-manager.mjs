@@ -16,10 +16,10 @@ const PREFERRED_PORTS = [5173, 3000, 4321];
  * Allocate a non-colliding port for a preview run.
  *
  * @param runId    Unique run identifier (e.g. Date.now().toString())
- * @param designOsDir  Root directory for .design-os state (defaults to '.design-os')
+ * @param designOsDir  Root directory for .complete-design state (defaults to '.complete-design')
  * @returns { port, release } — call release() when the dev server process exits
  */
-export async function allocatePort(runId, designOsDir = '.design-os') {
+export async function allocatePort(runId, designOsDir = '.complete-design') {
   const lockDir = join(designOsDir, 'preview', `run-${runId}`);
   await mkdir(lockDir, { recursive: true });
 

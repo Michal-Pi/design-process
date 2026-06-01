@@ -1,6 +1,6 @@
 // schemas/src/interaction-spec.ts
 // Zod source for IxD spec — Markdown body + optional XState v5 machine.
-// Source: CONTEXT.md D-01; design-os-mrd-v2.md §3.22; PLAN.md <interfaces>.
+// Source: CONTEXT.md D-01; complete-design-mrd-v2.md §3.22; PLAN.md <interfaces>.
 // Implements: SCHEMA-04, FORMAT-05, ART-03
 //
 // Note: XState v5 machine is optional — required only for async + ≥3 states +
@@ -41,7 +41,7 @@ const InteractionState = z.object({
 /**
  * InteractionSpec v1 schema.
  * Extends FrontmatterCommon with IxD spec content.
- * $id: https://design-os.dev/schemas/interaction-spec.v1.json
+ * $id: https://complete-design.dev/schemas/interaction-spec.v1.json
  */
 export const InteractionSpecV1 = FrontmatterCommon.extend({
   artifact: z.literal("interaction-spec"),
@@ -65,7 +65,7 @@ export const InteractionSpecV1 = FrontmatterCommon.extend({
    */
   xstateMachine: z.string().optional(),
 }).meta({
-  $id: "https://design-os.dev/schemas/interaction-spec.v1.json",
+  $id: "https://complete-design.dev/schemas/interaction-spec.v1.json",
   title: "Interaction Spec (Stage 4)",
   description:
     "IxD specification with Mermaid stateDiagram-v2 (canonical) + optional XState v5 machine",

@@ -1,9 +1,9 @@
 // assets/scripts/cli/gate.mjs
 // Auto-discovered CLI subcommand for the 'gate' command.
-// Registered by bin/design-os.mjs's auto-discovery dispatcher.
+// Registered by bin/complete-design.mjs's auto-discovery dispatcher.
 //
 // Usage:
-//   tsx bin/design-os.mjs gate --stage <N> --design-dir <path> [--override-reason <text>] [--ci]
+//   tsx bin/complete-design.mjs gate --stage <N> --design-dir <path> [--override-reason <text>] [--ci]
 //
 // Source: CONTEXT.md D-09, D-11; PLAN.md Task 1 action
 // Implements: GATE-01..07 (CLI entry point)
@@ -12,7 +12,7 @@ import { runGate } from "../gates/base.mjs";
 
 /**
  * Auto-discovered command object per the Plan 01 dispatcher contract.
- * bin/design-os.mjs globs cli/*.mjs and registers each module's `command` export.
+ * bin/complete-design.mjs globs cli/*.mjs and registers each module's `command` export.
  */
 export const command = {
   name: "gate",

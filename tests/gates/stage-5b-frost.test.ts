@@ -52,10 +52,10 @@ name: "Test Design"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "INFERRED"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
 ---
 
 ## Typography rationale

@@ -1,13 +1,13 @@
 // assets/scripts/cli/preview.mjs
 // CLI module for the `preview` command group.
-// Auto-discovered by bin/design-os.mjs; no modification to bin/ required.
+// Auto-discovered by bin/complete-design.mjs; no modification to bin/ required.
 //
 // Subcommands:
-//   design-os preview spawn --framework <vite|next|astro> --repo-root <path>
-//   design-os preview release-port --run-id <id>
+//   complete-design preview spawn --framework <vite|next|astro> --repo-root <path>
+//   complete-design preview release-port --run-id <id>
 //
 // Sources: PLAN.md Task 1 action + notes (Plan 05 contributes this module;
-//          bin/design-os.mjs auto-discovers it via globby).
+//          bin/complete-design.mjs auto-discovers it via globby).
 //          CONTEXT.md PREV-01, PREV-02.
 
 import { createRequire } from 'node:module';
@@ -78,7 +78,7 @@ export const command = {
           const { allocatePort } = await import('../port-manager.mjs');
           // release-port is idempotent — just ensure the lock is gone
           const runId = args['run-id'];
-          const lockDir = resolve(`.design-os/preview/run-${runId}`);
+          const lockDir = resolve(`.complete-design/preview/run-${runId}`);
           const { rm } = await import('node:fs/promises');
           try {
             await rm(`${lockDir}/port.lock`, { force: true });

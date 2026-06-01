@@ -145,10 +145,10 @@ Commander flags: `--fixtures-dir`, `--output`, `--fail-fast`
 ## Verification Results
 
 ```
-node bin/design-os.mjs release-gate --help
+node bin/complete-design.mjs release-gate --help
   PASS: shows 15-fixture + fixtures-dir + dry-run + host options
 
-node bin/design-os.mjs axe-runner --help
+node bin/complete-design.mjs axe-runner --help
   PASS: shows contrast in description + fixtures-dir + output + fail-fast
 
 npx vitest run tests/release-gate/release-gate.test.ts

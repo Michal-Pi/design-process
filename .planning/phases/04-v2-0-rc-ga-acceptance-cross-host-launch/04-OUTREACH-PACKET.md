@@ -1,4 +1,4 @@
-# design-os v2.0 — Reviewer Outreach Packet
+# complete-design v2.0 — Reviewer Outreach Packet
 
 Prepared: 2026-05-31 | Confidential — reviewer eyes only
 
@@ -8,7 +8,7 @@ Prepared: 2026-05-31 | Confidential — reviewer eyes only
 
 [Personalized intro slot]
 
-I'm the author of design-os — an open-source SKILL.md package that scaffolds the full Garrett 5-stage design process inside Claude Code (the coding agent). It generates research personas, IA sitemaps, Excalidraw wireframes, Mermaid state diagrams, and W3C DTCG design tokens — with stage validation gates between each stage, so the AI doesn't jump straight to hi-fi.
+I'm the author of complete-design — an open-source SKILL.md package that scaffolds the full Garrett 5-stage design process inside Claude Code (the coding agent). It generates research personas, IA sitemaps, Excalidraw wireframes, Mermaid state diagrams, and W3C DTCG design tokens — with stage validation gates between each stage, so the AI doesn't jump straight to hi-fi.
 
 I'm looking for [designers / product managers] who can give me 60-90 minutes of honest feedback on the outputs. This is a blind review — you'll see the generated DESIGN.md and tokens from a realistic PRD, without knowing which AI created it.
 
@@ -64,7 +64,7 @@ Reply to accept a review slot. I'll send 3 anonymized DESIGN.md + tokens.json bu
 
 ## Lightweight NDA Template (CC BY 4.0, no exclusivity)
 
-**design-os v2.0 Reviewer Confidentiality Agreement**
+**complete-design v2.0 Reviewer Confidentiality Agreement**
 
 By accepting a review assignment, you agree to:
 
@@ -123,7 +123,7 @@ Track `n_designers` and `n_pms` progress toward n≥5 each. GA ships only when b
 ---
 version: "2026-04"
 $extensions:
-  design-os:
+  complete-design:
     generatedAt: "2026-05-31T00:00:00.000Z"
     schemaVersion: "2.0b"
     provenance: "validated"
@@ -236,7 +236,7 @@ Data density: table-first; cards reserved for relationship detail views.
     }
   },
   "$extensions": {
-    "design-os": {
+    "complete-design": {
       "generatedAt": "2026-05-31T00:00:00.000Z",
       "schemaVersion": "2.0b",
       "provenance": "validated",
@@ -265,7 +265,7 @@ Data density: table-first; cards reserved for relationship detail views.
 ---
 version: "2026-04"
 $extensions:
-  design-os:
+  complete-design:
     generatedAt: "2026-05-31T00:00:00.000Z"
     schemaVersion: "2.0b"
     provenance: "validated"
@@ -328,7 +328,7 @@ Activity cards with motion feedback (XState machine handles start/pause/complete
 ---
 version: "2026-04"
 $extensions:
-  design-os:
+  complete-design:
     generatedAt: "2026-05-31T00:00:00.000Z"
     schemaVersion: "2.0b"
     provenance: "validated"
@@ -382,7 +382,7 @@ Approval workflow uses multi-step state machine (pending → review → approved
 > **Attachment instructions for reviewers:**
 > When real bundles are ready, replace the "format reference" code blocks above with the
 > actual `DESIGN.md` and `tokens.json` files attached as separate files (not inline code blocks).
-> Send as a zip: `design-os-review-bundle-[A|B|C].zip` containing:
+> Send as a zip: `complete-design-review-bundle-[A|B|C].zip` containing:
 > - `DESIGN.md`
 > - `tokens.json`
 > - `SCORING-RUBRIC.md` (copy from this packet's rubric section)

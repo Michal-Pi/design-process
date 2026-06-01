@@ -1,7 +1,7 @@
 # Copy Review Checklist
 
 Use this checklist before publishing any copy: SKILL.md descriptions, README sections,
-release notes, blog posts, landing page copy, or any text a user will read about design-os.
+release notes, blog posts, landing page copy, or any text a user will read about complete-design.
 
 ---
 
@@ -46,7 +46,7 @@ For accessibility-related copy, always use this format:
 
 For product description copy, use:
 
-> "design-os walks the 5-stage Garrett design process — research, IA, low-fi, interaction,
+> "complete-design walks the 5-stage Garrett design process — research, IA, low-fi, interaction,
 > hi-fi/tokens — with validation gates between stages, inside the coding agent you already use."
 
 ---

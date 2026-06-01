@@ -253,11 +253,11 @@ describe('writeReleaseNotesDisclosure', () => {
   });
 
   it('appends to existing file without overwriting header', async () => {
-    await writeFile(notesPath, '# design-os v2.0 Release Notes\n\nInitial stub.\n', 'utf8');
+    await writeFile(notesPath, '# complete-design v2.0 Release Notes\n\nInitial stub.\n', 'utf8');
     const { writeReleaseNotesDisclosure } = await import('../../assets/scripts/release-gate.mjs');
     await writeReleaseNotesDisclosure(['wall-clock disclosure'], notesPath);
     const content = await readFile(notesPath, 'utf8');
-    expect(content).toContain('# design-os v2.0 Release Notes');
+    expect(content).toContain('# complete-design v2.0 Release Notes');
     expect(content).toContain('Initial stub.');
     expect(content).toContain('## v2.0 Cost Behavior');
     expect(content).toContain('wall-clock disclosure');
@@ -282,7 +282,7 @@ describe('writeReleaseNotesDisclosure', () => {
 
   it('writeReleaseNotesDisclosure is idempotent: same disclosure twice produces single block', async () => {
     // setup: empty tmp RELEASE-NOTES.md
-    await writeFile(notesPath, '# design-os v2.0 Release Notes\n\n', 'utf8');
+    await writeFile(notesPath, '# complete-design v2.0 Release Notes\n\n', 'utf8');
     const { writeReleaseNotesDisclosure } = await import('../../assets/scripts/release-gate.mjs');
     const msg1 = 'wall-clock measured with sequential-fallback dispatch only; real inference measurement requires manual SC-1 verification';
     // call writeReleaseNotesDisclosure([msg1])
@@ -311,12 +311,12 @@ describe('runReleaseGate dry-run synthesis (FIX 1)', () => {
   beforeEach(async () => {
     const cwd = process.cwd();
     const ts = Date.now();
-    fixturesRelDir = `.design-os/test-fixtures-dryrun-${ts}`;
+    fixturesRelDir = `.complete-design/test-fixtures-dryrun-${ts}`;
     fixturesDirAbs = join(cwd, fixturesRelDir);
-    outputPath = join(cwd, `.design-os`, `rg-test-results-${ts}.json`);
+    outputPath = join(cwd, `.complete-design`, `rg-test-results-${ts}.json`);
 
-    // Ensure .design-os exists (for output file)
-    await mkdir(join(cwd, '.design-os'), { recursive: true });
+    // Ensure .complete-design exists (for output file)
+    await mkdir(join(cwd, '.complete-design'), { recursive: true });
     // Create fixture dir and write manifest directly inside it
     await mkdir(fixturesDirAbs, { recursive: true });
 

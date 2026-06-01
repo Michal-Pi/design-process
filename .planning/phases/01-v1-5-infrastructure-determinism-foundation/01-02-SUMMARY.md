@@ -34,7 +34,7 @@ tech_stack:
     - Discriminated union GateResult with 5 kinds — TS exhaustiveness enforced by Plan 03
     - SHA-256 append-only hash chain (JSONL, canonical key-sorted JSON)
     - Section-aware truncation with priority ordering (optional sections dropped first)
-    - Auto-discovery CLI dispatcher (Plan 01 contract, no bin/design-os.mjs modification)
+    - Auto-discovery CLI dispatcher (Plan 01 contract, no bin/complete-design.mjs modification)
 key_files:
   created:
     - assets/scripts/gates/base.mjs
@@ -91,7 +91,7 @@ key_files:
     - schemas/dist/index.json           # added finding + manifest-lock-entry entries
     - schemas/dist/finding.v1.json      # new dist schema (emitted)
     - schemas/dist/manifest-lock-entry.v1.json  # new dist schema (emitted)
-    - .gitignore                        # added test fixture .design-os/ and eval last-run.json
+    - .gitignore                        # added test fixture .complete-design/ and eval last-run.json
 decisions:
   - "GATE-07+08: stage-5a hardcoded not_runnable from day one (codex §16 BLOCKER; never returns pass/fail for empty interactions/)"
   - "Open Q2 closed for Phase 1: structural-equivalence is the baseline; semantic similarity deferred to Phase 4 calibration"
@@ -175,7 +175,7 @@ The 5-kind GateResult discriminated union (`pass | pass_with_warnings | failed_a
 
 1. **ESLint `@typescript-eslint/switch-exhaustiveness-check`** — required before real gate business logic in Phase 2 (Pitfall F mitigation)
 2. **CI schema-migration-guard rule** — PRs touching `schemas/src/` must touch `schemas/migrations/`, with a carve-out for net-new schemas (no v0 predecessor; `finding` and `manifest-lock-entry` are net-new v1 schemas and require no migration)
-3. **`design-os verify --golden` CI gate** — Plan 03 runs this against gate + handoff-bundle scripts to enforce determinism
+3. **`complete-design verify --golden` CI gate** — Plan 03 runs this against gate + handoff-bundle scripts to enforce determinism
 
 ## Outstanding Items for Plan 04
 

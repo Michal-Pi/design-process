@@ -42,7 +42,7 @@
 **Options presented:**
 - Option A — **Auto-detect via Phase 1 routing registry; fall back to interview if PRD absent or effectively empty (<50 tokens of structured content)** — transparent to user; produces a 3-line summary of what was found.
 - Option B — **Always prompt the user first ("Do you have a PRD or should I interview you?")** — explicit user choice every time; slightly more friction.
-- Option C — **Always require an explicit `--prd <path>` flag; interview mode only via `--interview` flag; no auto-detection** — maximum explicitness; breaks the "start a session and design-os figures it out" UX.
+- Option C — **Always require an explicit `--prd <path>` flag; interview mode only via `--interview` flag; no auto-detection** — maximum explicitness; breaks the "start a session and complete-design figures it out" UX.
 
 **Auto-selected:** Option A — auto-detect with fallback.
 
@@ -61,7 +61,7 @@
 
 **Auto-selected:** Option A — script enforcement only.
 
-**Rationale:** Options B and C both rely on LLM judgment for a rule the MRD explicitly calls out as requiring deterministic enforcement (ARCHITECTURE.md Anti-Pattern 3, Pitfall 2, RED-01, RED-05, RED-06). LLMs are sycophantic — the NN/g 2024 and ACM Interactions 2026 papers are precisely the literature design-os honors. Phase 1 Plan 02 already ships `gate-stage-1.mjs` skeleton with the provenance-check shape. Option A is the only path consistent with MRD §3.22 + the adversarial CI requirement (100/100 block rate for RED-05).
+**Rationale:** Options B and C both rely on LLM judgment for a rule the MRD explicitly calls out as requiring deterministic enforcement (ARCHITECTURE.md Anti-Pattern 3, Pitfall 2, RED-01, RED-05, RED-06). LLMs are sycophantic — the NN/g 2024 and ACM Interactions 2026 papers are precisely the literature complete-design honors. Phase 1 Plan 02 already ships `gate-stage-1.mjs` skeleton with the provenance-check shape. Option A is the only path consistent with MRD §3.22 + the adversarial CI requirement (100/100 block rate for RED-05).
 
 ---
 
@@ -130,7 +130,7 @@
 **Question:** How should the `AUDIT-REPORT.md` finding ID schema, fix-recipe shape, and suppression file be structured?
 
 **Options presented:**
-- Option A — **Finding ID: `<stage>-<type>-<seq>` (e.g., `5a-slop-001`); fix-recipe: `{ title, evidence, severity: 'BLOCKER'|'ERROR'|'WARNING'|'INFO', fixRecipe, suppressWith }`; suppression: `.design-os/audit-suppressions.json` with `{ findingId, reason, suppressedAt, suppressedBy }`; output validated against Phase 1 `schemas/dist/audit-report.v1.json`** — versioned schema already shipped; consistent with Phase 1 gate result shape.
+- Option A — **Finding ID: `<stage>-<type>-<seq>` (e.g., `5a-slop-001`); fix-recipe: `{ title, evidence, severity: 'BLOCKER'|'ERROR'|'WARNING'|'INFO', fixRecipe, suppressWith }`; suppression: `.complete-design/audit-suppressions.json` with `{ findingId, reason, suppressedAt, suppressedBy }`; output validated against Phase 1 `schemas/dist/audit-report.v1.json`** — versioned schema already shipped; consistent with Phase 1 gate result shape.
 - Option B — **Custom YAML report format with free-form notes per finding; no schema validation** — flexible; harder to parse programmatically.
 - Option C — **GitHub annotations format (inline PR comments) as the primary report surface** — better UX in GitHub; loses the local `AUDIT-REPORT.md` artifact that other tools (e.g., CI, manifest reconciler) depend on.
 
@@ -147,7 +147,7 @@
 **Options presented:**
 - Option A — **Use Phase 1 `registry.mjs` heuristics (detect Next.js via `next.config.*`, Tailwind v4 via `@import "tailwindcss"` or `@theme` in CSS, shadcn via `components/ui/`); if detected, use the matching adapter; if not, fall back to plain-CSS adapter without error; `--adapter <name>` flag overrides detection** — automatic with fallback; uses existing Phase 1 machinery.
 - Option B — **Require explicit `--adapter <name>` on every run; no auto-detection** — maximally explicit; breaks UX for the primary fixture target (Next 15 + Tailwind v4 + shadcn).
-- Option C — **Detect stack once during `ingest` and write detected adapter to `.design-os/config.json`; subsequent stages read that config** — caches the detection; adds a config-file maintenance burden.
+- Option C — **Detect stack once during `ingest` and write detected adapter to `.complete-design/config.json`; subsequent stages read that config** — caches the detection; adds a config-file maintenance burden.
 
 **Auto-selected:** Option A — Phase 1 registry heuristics with plain-CSS fallback.
 
@@ -205,13 +205,13 @@
 **Question:** How should Phase 2 workflows write to the user's `design/` directory — via a staging area, directly, or via a dry-run diff?
 
 **Options presented:**
-- Option A — **All workflow writes stage into `.design-os/preview/run-<id>/` first; diff is surfaced to the user; `--apply` flag required to copy staged artifacts to `design/`; `assets/scripts/cli/apply.mjs` handles the copy and triggers `manifest-reconcile.mjs`** — extends Phase 1 TRUST-02 pattern to all Phase 2 workflows.
+- Option A — **All workflow writes stage into `.complete-design/preview/run-<id>/` first; diff is surfaced to the user; `--apply` flag required to copy staged artifacts to `design/`; `assets/scripts/cli/apply.mjs` handles the copy and triggers `manifest-reconcile.mjs`** — extends Phase 1 TRUST-02 pattern to all Phase 2 workflows.
 - Option B — **Workflows write directly to `design/` but produce a `git diff` for review before the user commits** — simpler for the LLM to author; relies on user running `git diff`; bypasses the staging area established in Phase 1.
-- Option C — **Dry-run mode by default (nothing written); separate `design-os apply` command the user runs after review** — maximum safety; breaks the "preview + apply in one step" UX from Phase 1.
+- Option C — **Dry-run mode by default (nothing written); separate `complete-design apply` command the user runs after review** — maximum safety; breaks the "preview + apply in one step" UX from Phase 1.
 
-**Auto-selected:** Option A — `.design-os/preview/` staging + `--apply` flag.
+**Auto-selected:** Option A — `.complete-design/preview/` staging + `--apply` flag.
 
-**Rationale:** TRUST-02 ("diff-by-default; `--apply` flag required to write into the user's working tree") and PROJECT.md Trust posture constraint ("never auto-publish to git tree") are non-negotiable. Phase 1 Phase 1 Plan 05 ships the preview harness with `.design-os/preview/run-<id>/` staging already. Option B relies on the user knowing to `git diff` before committing. Option C separates the apply step from the preview in a confusing way. MRD §3.6 per-file commit policy, TRUST-02.
+**Rationale:** TRUST-02 ("diff-by-default; `--apply` flag required to write into the user's working tree") and PROJECT.md Trust posture constraint ("never auto-publish to git tree") are non-negotiable. Phase 1 Phase 1 Plan 05 ships the preview harness with `.complete-design/preview/run-<id>/` staging already. Option B relies on the user knowing to `git diff` before committing. Option C separates the apply step from the preview in a confusing way. MRD §3.6 per-file commit policy, TRUST-02.
 
 ---
 

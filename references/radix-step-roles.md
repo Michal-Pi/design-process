@@ -1,10 +1,10 @@
 # Radix UI — Step / Wizard Roles for Component Scaffolding
 
-<!-- design-os reference: radix-step-roles -->
+<!-- complete-design reference: radix-step-roles -->
 
 ## Purpose
 
-Radix UI's primitive role taxonomy (specifically step/wizard roles) informs how design-os
+Radix UI's primitive role taxonomy (specifically step/wizard roles) informs how complete-design
 generates accessible component scaffolds for multi-step flows in Stage 5a. The Radix
 pattern is the canonical reference for `role="group"`, `aria-current="step"`, and
 linear step navigation.
@@ -22,7 +22,7 @@ linear step navigation.
 - Progress bar vs. step indicator: `role="progressbar"` (numeric progress) vs.
   `role="list"` / `role="listitem"` (step indicator). Design-os defaults to `role="list"`.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 5a component scaffolds: multi-step flows use Radix step-role patterns.
 - Stage 4 IxD machines: focus management transitions cite this reference.

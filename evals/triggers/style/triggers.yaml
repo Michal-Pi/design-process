@@ -1,9 +1,9 @@
 # evals/triggers/style/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/style' skill.
+# Per-skill trigger eval corpus for the 'complete-design/style' skill.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/style
+skill: complete-design/style
 description: >
   Style Stage 5a: DTCG token generation, palette selection, shadcn/Tailwind v4
   adapter projection, variant preview.

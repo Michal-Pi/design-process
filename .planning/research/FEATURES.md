@@ -6,7 +6,7 @@
 
 ## Scope and Method
 
-This research validates the feature categorization for `design-os` — a SKILL.md package that operationalizes the canonical 5-stage design process (Research → IA → Low-Fi → Interaction → Hi-Fi+DS) inside Claude Code / Cursor / Codex. The MRD already enumerates 22 triggerable skills (7 workflows + 15 atoms) plus 6 stage gates, fidelity caps, evidence grading, and the `design/` directory convention. This document does NOT re-invent the feature list — it categorizes each MRD-defined feature against the 2026 market and tags it with complexity, MVP version, and dependencies.
+This research validates the feature categorization for `complete-design` — a SKILL.md package that operationalizes the canonical 5-stage design process (Research → IA → Low-Fi → Interaction → Hi-Fi+DS) inside Claude Code / Cursor / Codex. The MRD already enumerates 22 triggerable skills (7 workflows + 15 atoms) plus 6 stage gates, fidelity caps, evidence grading, and the `design/` directory convention. This document does NOT re-invent the feature list — it categorizes each MRD-defined feature against the 2026 market and tags it with complexity, MVP version, and dependencies.
 
 **Categorization frame:**
 - **Table stakes** = users (indie devs, Lovable refugees, PMs, designers) will not adopt without this; competitors already have it; missing it makes the product feel broken
@@ -20,14 +20,14 @@ This research validates the feature categorization for `design-os` — a SKILL.m
 
 ### Table Stakes (Users Expect These)
 
-Features any serious 2026 AI design/dev tool must ship. Missing any of these makes design-os look amateurish next to `frontend-design`, Lovable, v0, or Knapsack.
+Features any serious 2026 AI design/dev tool must ship. Missing any of these makes complete-design look amateurish next to `frontend-design`, Lovable, v0, or Knapsack.
 
 | Feature | Why Expected | Complexity | MVP | Notes |
 |---------|--------------|------------|-----|-------|
 | **SKILL.md package per agentskills.io v1 spec** | Standard distribution unit since Dec 2025; cross-host portability table stakes for any agent-resident tool | M | v2.0a | R1; per-skill `compatibility:` frontmatter; metadata under Codex 2% cap |
 | **PRD ingestion (Markdown + YAML frontmatter)** | 30-40% better LLM extraction than prose; spec-driven dev cohort (GitHub Spec Kit, Amazon Kiro) made Markdown PRDs the default substrate | S | v2.0a | W0 `ingest`; also pasted text + interview-mode fallback |
 | **DTCG v2025.10 token emit** | First stable W3C token spec (Oct 2025); Tokens Studio + Storybook MCP + Style Dictionary all converged on DTCG; emitting anything else looks ignorant | M | v2.0a | `tokens/emit` atom; primitive→semantic→component tiers per Curtis canon |
-| **DESIGN.md (Google spec) compliance** | Released April 2026 as the open contract format; Anthropic skills#1008 explicitly requests support; competing on Stage 5 without it is suicidal | M | v2.0a | `$extensions.design-os` namespace per MRD §3.6 |
+| **DESIGN.md (Google spec) compliance** | Released April 2026 as the open contract format; Anthropic skills#1008 explicitly requests support; competing on Stage 5 without it is suicidal | M | v2.0a | `$extensions.complete-design` namespace per MRD §3.6 |
 | **WCAG 2.2 AA contrast measurement** | Designer/dev expectation since 2024; never claim *conformance*, just measure contrast (Frontend Masters critique) | S | v2.0a | `contrast.mjs` script per R13; output measured number not pass/fail label |
 | **Slop detection (`audit --slop-tells`)** | v1.0.1 invented this; community now expects it from any agent-design tool post-2025 vibe-coding backlash; rainbow gradients/Inter-default/glass-stack catalogs are common knowledge | M | v2.0a | Heuristics in `references/slop-tells/heuristics.md` |
 | **Diff-by-default (`--apply` required)** | Gatekeeper-bypass fear is universal in 2026; every credible agent-resident tool requires explicit apply | S | v2.0a | Trust posture P-line; no auto-commit |
@@ -47,12 +47,12 @@ Features that constitute the structural moat. Per MRD §2.5 stage-coverage matri
 
 | Feature | Value Proposition | Complexity | MVP | Notes |
 |---------|-------------------|------------|-----|-------|
-| **Garrett's 5-plane spine operationalized 1:1 to user's 5 stages** | The frameworks (IDEO, d.school, Double Diamond, Sprint, Lean UX) exist as books not software; design-os is first to ship the canonical spine as a tool | L | v2.0a (skeleton) + v2.0b (full) | R2; every skill declares `stage:` frontmatter |
+| **Garrett's 5-plane spine operationalized 1:1 to user's 5 stages** | The frameworks (IDEO, d.school, Double Diamond, Sprint, Lean UX) exist as books not software; complete-design is first to ship the canonical spine as a tool | L | v2.0a (skeleton) + v2.0b (full) | R2; every skill declares `stage:` frontmatter |
 | **Six first-class stage gates with terminal states (PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN)** | The most under-documented part of canon — practitioners know intuitively, literature is scattered; formalizing checklists is the package's biggest single contribution | L | v2.0a (gates 1,2,5a,5b) + v2.0b (gates 3,4) | R4 + §3.22; runnable by workflow or `audit --stage N` |
 | **Evidence-grading per gate (VALIDATED / PROTO / INFERRED / MISSING)** | Honestly handles solo-indie reality (no real users yet) without abandoning discipline; competitors either ignore rigor or force enterprise-grade research | M | v2.0a | R4 + §3.22; resolves §2.4 synthetic-persona policy without self-contradiction |
 | **Per-stage fidelity caps (Buxton discipline) — Stage 3 refuses styled UI; Stage 4 refuses hi-fi without state-maps; Stage 5a refuses to render without Stage 4 inputs** | THE counter-cultural choice; every other AI design tool eagerly renders hi-fi; the discipline IS the product | M | v2.0a (cap 5a) + v2.0b (caps 3, 4) | R5 + §3.23; if LLM emits color/type at Stage 3, reject and regenerate |
 | **Synthetic-persona red line (Stage 1 hard-blocks `VALIDATED` with synthetic-only data)** | NN/g 2024 + ACM Interactions 2026 + arXiv 63-paper review converged on this; competitors either ignore it or generate personas as primary research | M | v2.0a | R6 + §3.22 |
-| **`design/` directory as cross-stage artifact substrate** | The "intermediate representation" that makes the pipeline reproducible; competitors keep state in app DBs or never commit; design-os makes design-as-code | L | v2.0a | R3 + §3.6; stage-typed file conventions + commit policy + frontmatter |
+| **`design/` directory as cross-stage artifact substrate** | The "intermediate representation" that makes the pipeline reproducible; competitors keep state in app DBs or never commit; complete-design makes design-as-code | L | v2.0a | R3 + §3.6; stage-typed file conventions + commit policy + frontmatter |
 | **Compact stage-handoff bundles (`design/.handoff/stage-N-bundle.md` ~5-15k tokens each)** | Bounds context regardless of `design/` size; competitors blow context windows when "read all upstream" hits 5+ stages | M | v2.0a | R10; addresses the v2.0 codex-review HIGH finding on context survival |
 | **Job-routing matrix — 7 named routes; default is NOT all 5 stages** | The on-ramp for process-averse indie devs and degradation path for mature-app work; competitors are either always-full or always-skip | M | v2.0a | R9 + §3.4a; routes: new-product, new-feature, mature-app-refactor, design-bug, brand-refresh, DS-extraction, PR-audit |
 | **Per-route token budgets enforced (e.g., design-bug ≤20k, new-feature ≤60k, full new-product ≤150k p50 / ≤220k p95)** | Indie devs are cost-sensitive; 2026 discourse explicitly fears LLM bill blowouts; bounded budgets signal seriousness | M | v2.0a | R23; per-stage subagent dispatch with stitched context |
@@ -63,9 +63,9 @@ Features that constitute the structural moat. Per MRD §2.5 stage-coverage matri
 | **Microsoft HAX 18 audit (AI products only) at Stage 4** | AI-product designers in 2026 expect HAX-18 reviewed; no AI-design tool ships this | M | v2.0b | Stage-4 gate component; per §3.22 |
 | **Promote-to-system rule (component recur ≥3× before becoming system component)** | Frost rule of thumb operationalized; competitors over-systematize from one-offs | S | v2.0a (style-lite) + v2.0b (full) | R5; Stage 5b discipline |
 | **Variant-distance metric (≥0.5 visual diversity) preserved from v1.0.1, extended to IA + Low-fi + IxD** | Variants that look the same are theater; the v1.0.1 metric is now applied at multiple stages | M | v2.0a | Stage 2 sitemap variants, Stage 3 wireframes, Stage 4 patterns, Stage 5a visuals |
-| **Polyglot stack adapters (Tailwind v4, shadcn, plain CSS in core; Material/Vue/Svelte in `design-os-bridges` v2.1+)** | Most AI design tools lock to React + Tailwind; design-os emits what the user's stack consumes | M | v2.0a (core 3) + v2.1 (bridges) | R19 |
-| **Interview mode (Lenny 1-pager) when PRD is empty** | Indie devs often start with an idea, not a doc; design-os converts via 5-7 question intake; competitors require pre-existing spec | S | v2.0a | W0 step 1; per §4 |
-| **Aggregate coexistence eval (≥0.80 trigger recall with 5+ skill packages installed)** | Codex 2% cap math doesn't model real-world ecosystems; competitors test in isolation; design-os tests in coexistence | M | v2.0a (v1.5 infra) | R15 + §11 codex-review addition |
+| **Polyglot stack adapters (Tailwind v4, shadcn, plain CSS in core; Material/Vue/Svelte in `complete-design-bridges` v2.1+)** | Most AI design tools lock to React + Tailwind; complete-design emits what the user's stack consumes | M | v2.0a (core 3) + v2.1 (bridges) | R19 |
+| **Interview mode (Lenny 1-pager) when PRD is empty** | Indie devs often start with an idea, not a doc; complete-design converts via 5-7 question intake; competitors require pre-existing spec | S | v2.0a | W0 step 1; per §4 |
+| **Aggregate coexistence eval (≥0.80 trigger recall with 5+ skill packages installed)** | Codex 2% cap math doesn't model real-world ecosystems; competitors test in isolation; complete-design tests in coexistence | M | v2.0a (v1.5 infra) | R15 + §11 codex-review addition |
 | **`audit --reverse-engineer` for Lovable refugees with backfill into stages 1-4** | The primary persona that the entire v2.0b roadmap targets; closing this loop = product-market fit signal | L | v2.0b | Same as `audit --reverse-engineer-stages` line above — listed twice in MRD; track as one feature |
 
 ### Anti-Features (Deliberately NOT Building)
@@ -74,12 +74,12 @@ Per MRD §14 explicit cessions. These are NOT "we'd build if we had time" — th
 
 | Anti-Feature | Why It Looks Appealing | Why We Refuse | Alternative We Provide |
 |--------------|------------------------|---------------|------------------------|
-| **Prompt → fully-shipped UI from scratch** | The market sees Lovable/v0/Bolt at $700M+ ARR and assumes that's the prize | Three of the dominant players already own this; we are *complementary*, not competitive; the 80/20 wall discourse proves the prize isn't where the market thinks | We integrate — design-os outputs DESIGN.md that v0/Lovable/Bolt prompts can consume |
+| **Prompt → fully-shipped UI from scratch** | The market sees Lovable/v0/Bolt at $700M+ ARR and assumes that's the prize | Three of the dominant players already own this; we are *complementary*, not competitive; the 80/20 wall discourse proves the prize isn't where the market thinks | We integrate — complete-design outputs DESIGN.md that v0/Lovable/Bolt prompts can consume |
 | **Visual canvas editing** | Subframe + Figma Make make this look fun and viral | Wrong runtime — we live in the agent loop, not a browser canvas; building this duplicates Subframe and abandons our positioning | `design/wireframes/*.excalidraw` is git-diffable and AI-readable, no canvas needed |
 | **Hosting / deploy** | Bundling deploy makes "complete workflow" easier to sell | Orthogonal to design process; the user owns runtime; conflates concerns and creates support burden | Output is files in the user's repo — they deploy however they already do |
 | **Hosted SaaS (year-1)** | Recurring revenue, dashboards, user accounts | Trust gap; designer/dev community 2026 sentiment heavily favors OSS-in-your-repo; SaaS doubles the cost of distribution | OSS Apache-2.0; enterprise dashboard is a separate sibling product (year-2+) |
 | **Synthetic personas as primary research** | "AI generates personas" is a real demand from solo founders with no users | NN/g 2024 red line; ACM Interactions 2026 + arXiv 63-paper review; trust collapse if violated; "AI replaces research" is a documented failure mode | `proto-mode` with `ASSUMPTIONS.md` flagged loudly; `PROTO` grade never `VALIDATED` without real evidence |
-| **Authoring the DESIGN.md spec itself** | Owning the format is leverage | Google owns; competing on spec authorship is a 5-year political slog; adopting is faster | We emit per Google's spec + `$extensions.design-os` namespace |
+| **Authoring the DESIGN.md spec itself** | Owning the format is leverage | Google owns; competing on spec authorship is a 5-year political slog; adopting is faster | We emit per Google's spec + `$extensions.complete-design` namespace |
 | **Authoring the DTCG spec** | Same reasoning | W3C owns; same argument as above | We emit DTCG v2025.10 |
 | **A figure-recognition vision generator (sketch→hi-fi from a photo)** | Demo-friendly; UIzard markets this hard | Vision pipelines are expensive, brittle, and not where the design-process gap lives; deferred indefinitely | Excalidraw JSON is the canonical sketch format; we work from structured input not pixels |
 | **Replacing Dovetail / Maze / Optimal Workshop research repositories** | "All-in-one" sounds attractive | We don't have the R&D bandwidth, the network effects, or the data; doing this badly burns trust | Read their exports (Optimal Workshop CSV in v2.1; Dovetail/Notably transcripts in v2.2); never replace |
@@ -217,7 +217,7 @@ Each defer reason is in the MRD; reproduced for roadmap completeness.
 - [ ] **Notion / Linear / Google Doc PRD ingestion** — API-fragile; ship when stable (Notion only in Gaia Logic scope per CLAUDE.md)
 - [ ] **Optimal Workshop tree-test CSV ingestion** — nice-to-have; not blocking
 - [ ] **Tokens Studio Figma export ingestion** — bridge to designer Figma workflow
-- [ ] **`design-os-bridges` (Material Web, Vue, Svelte adapters)** — broaden stack coverage
+- [ ] **`complete-design-bridges` (Material Web, Vue, Svelte adapters)** — broaden stack coverage
 - [ ] **Broader hosts (Junie, Copilot, etc.)** — host churn; ship after host APIs stabilize
 - [ ] **Dovetail / Notably transcript ingestion** (v2.2) — research-tool integration
 - [ ] **Voice → PRD interview mode** (v2.2) — Whisper integration; non-MVP-blocking
@@ -253,7 +253,7 @@ Priorities reflect both market need and MVP scope decision. P1 = ship in v2.0a; 
 | `audit --reverse-engineer-stages` (Lovable refugee path) | HIGH | HIGH | P2 |
 | Excalidraw / Mermaid / XState renderers | MEDIUM | MEDIUM | P2 |
 | Notion / Linear / Google Doc PRD ingestion | MEDIUM | MEDIUM | P3 |
-| `design-os-bridges` (Material/Vue/Svelte) | MEDIUM | MEDIUM | P3 |
+| `complete-design-bridges` (Material/Vue/Svelte) | MEDIUM | MEDIUM | P3 |
 | Optimal Workshop CSV + Tokens Studio import | LOW | LOW | P3 |
 | Voice → PRD interview mode | LOW | MEDIUM | P3 |
 | i18n / RTL / CJK atom | MEDIUM | MEDIUM | P3 |
@@ -271,7 +271,7 @@ Validated against MRD §2.5 stage-coverage matrix. Key insight: no competitor co
 | Fidelity caps | None — eagerly hi-fi | Canvas-driven | Hi-fi default | Component-system focus | N/A | Hard caps Stage 3 → 5a; Buxton discipline |
 | Synthetic personas | Default behavior | N/A | N/A | N/A | Maze allows | Hard-blocks `VALIDATED`; `PROTO` only |
 | Cross-stage artifacts in git | App state, not artifacts | Canvas exports | None standardized | Component manifests | SaaS silos | `design/` directory convention; stage-typed files committed |
-| DESIGN.md compliance | No | No | No (per anthropics/skills#1008) | No | No | Emit per Google spec + `$extensions.design-os` |
+| DESIGN.md compliance | No | No | No (per anthropics/skills#1008) | No | No | Emit per Google spec + `$extensions.complete-design` |
 | DTCG v2025.10 emit | Partial (some emit Tailwind tokens) | Partial | Partial | Full | N/A | Full primitive→semantic→component tier emit |
 | Slop detection | None | None | Partial | None | N/A | First-class `audit --slop-tells` from v1.0.1 |
 | Lovable refugee reverse-engineer | N/A (they ARE Lovable) | Partial via canvas | Could but not designed for it | N/A | N/A | `audit --reverse-engineer-stages` (v2.0b) — primary persona feature |
@@ -293,7 +293,7 @@ Validated against MRD §2.5 stage-coverage matrix. Key insight: no competitor co
 ## Sources
 
 Primary:
-- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/design-os-mrd-v2.md` — MRD v2.0 (§§2.5, 3.4a, 3.7, 3.8, 3.22, 3.23, 9, 14, 16) — authoritative for feature inventory and categorization
+- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/complete-design-mrd-v2.md` — MRD v2.0 (§§2.5, 3.4a, 3.7, 3.8, 3.22, 3.23, 9, 14, 16) — authoritative for feature inventory and categorization
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/.planning/PROJECT.md` — Active requirements (R1-R26)
 
 Market validation (cited in MRD §2.1, §2.5):
@@ -316,5 +316,5 @@ Trust-posture sources (cited in MRD §2.4):
 - van Schneider, Frontend Masters critique (AI-framing rejection signals)
 
 ---
-*Feature research for: design-os v2.0 — 5-stage design-process facilitator SKILL.md package*
+*Feature research for: complete-design v2.0 — 5-stage design-process facilitator SKILL.md package*
 *Researched: 2026-05-24*

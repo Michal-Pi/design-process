@@ -1,11 +1,11 @@
 // assets/scripts/cli/axe-runner.mjs
 // CLI wrapper for the axe-runner WCAG 2.2 AA contrast gate.
-// Auto-discovered by bin/design-os.mjs via glob of assets/scripts/cli/*.mjs.
+// Auto-discovered by bin/complete-design.mjs via glob of assets/scripts/cli/*.mjs.
 //
 // Usage:
-//   node bin/design-os.mjs axe-runner [options]
-//   node bin/design-os.mjs axe-runner --help
-//   node bin/design-os.mjs axe-runner --fixtures-dir evals/acceptance --output axe-results.json
+//   node bin/complete-design.mjs axe-runner [options]
+//   node bin/complete-design.mjs axe-runner --help
+//   node bin/complete-design.mjs axe-runner --fixtures-dir evals/acceptance --output axe-results.json
 //
 // Passes lint-determinism.mjs (INVARIANT-05): no LLM imports — handler lazy-imports
 // the core runner which uses axe-core + Playwright + culori only.

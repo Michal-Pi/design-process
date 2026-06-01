@@ -1,4 +1,4 @@
-# TRIG-04 Contingency: design-os-core / design-os-atoms Split
+# TRIG-04 Contingency: complete-design-core / complete-design-atoms Split
 
 **Status:** Contingency document — do NOT execute unless trigger criteria are met.
 **Owner:** Named maintainer in MAINTAINERS.md (weekly Anthropic-Labs watcher per D-30).
@@ -10,11 +10,11 @@
 ## Overview
 
 The TRIG-04 contingency is the fallback plan if aggregate coexistence recall falls below
-≥0.80 after 2 rounds of trigger-corpus tuning. It splits the single `design-os` package
+≥0.80 after 2 rounds of trigger-corpus tuning. It splits the single `complete-design` package
 into two separately-published packages:
 
-- **`design-os-core`**: the 5 primary workflow skills (design, audit, handoff, + 2 TBD)
-- **`design-os-atoms`**: the 15+ stage-specific atom skills shipping in Phase 2+
+- **`complete-design-core`**: the 5 primary workflow skills (design, audit, handoff, + 2 TBD)
+- **`complete-design-atoms`**: the 15+ stage-specific atom skills shipping in Phase 2+
 
 This reduces the trigger metadata footprint per package, staying safely below the
 Codex 2% trigger-metadata cap (Pitfall 9: ~5k chars threshold per skill package).
@@ -29,7 +29,7 @@ Execute this split if **ALL** of the following conditions are met:
    in the `evals/coexistence/last-run.json` output.
 
 2. **Two rounds of trigger-corpus tuning** have been attempted:
-   - Round 1: tuned trigger keywords in `evals/coexistence/triggers/design-os.yaml`
+   - Round 1: tuned trigger keywords in `evals/coexistence/triggers/complete-design.yaml`
      and re-ran the eval.
    - Round 2: tuned per-skill `evals/triggers/{design,audit,handoff}/triggers.yaml`
      and re-ran the eval.
@@ -45,54 +45,54 @@ No unilateral split without the maintainer's explicit sign-off.
 
 ## Mechanical Split Procedure
 
-### Step 1: Create design-os-core package
+### Step 1: Create complete-design-core package
 
 ```bash
-# Create a new package directory (sibling to design-os repo)
-mkdir design-os-core
-cd design-os-core
+# Create a new package directory (sibling to complete-design repo)
+mkdir complete-design-core
+cd complete-design-core
 npm init -y
 
 # Copy core skills only
-cp -r ../design-os/skills/design ./skills/design
-cp -r ../design-os/skills/audit ./skills/audit
-cp -r ../design-os/skills/handoff ./skills/handoff
+cp -r ../complete-design/skills/design ./skills/design
+cp -r ../complete-design/skills/audit ./skills/audit
+cp -r ../complete-design/skills/handoff ./skills/handoff
 ```
 
-**`design-os-core` SKILL.md frontmatter:**
+**`complete-design-core` SKILL.md frontmatter:**
 
 ```yaml
 ---
-name: design-os-core
+name: complete-design-core
 description: >
   5-stage design process core skills: research, IA, wireframes, interactions,
-  hi-fi. Stage-gated workflows. Excludes atom skills — see design-os-atoms.
+  hi-fi. Stage-gated workflows. Excludes atom skills — see complete-design-atoms.
 compatibility: [claude-code, codex-cli, cursor]
 ---
 ```
 
 **Trigger budget:** ≤2.5k chars in description across all core skills.
 
-### Step 2: Create design-os-atoms package
+### Step 2: Create complete-design-atoms package
 
 ```bash
 # Create atoms package directory
-mkdir design-os-atoms
-cd design-os-atoms
+mkdir complete-design-atoms
+cd complete-design-atoms
 npm init -y
 
 # Copy atom skills only (Phase 2+ skills)
 # 15 atom skills TBD in Phase 2 planning
 ```
 
-**`design-os-atoms` SKILL.md frontmatter:**
+**`complete-design-atoms` SKILL.md frontmatter:**
 
 ```yaml
 ---
-name: design-os-atoms
+name: complete-design-atoms
 description: >
-  design-os atom skills: individual stage commands for research, IA, wireframes,
-  interactions, hi-fi. Install alongside design-os-core for full workflow.
+  complete-design atom skills: individual stage commands for research, IA, wireframes,
+  interactions, hi-fi. Install alongside complete-design-core for full workflow.
 compatibility: [claude-code, codex-cli, cursor]
 ---
 ```
@@ -105,10 +105,10 @@ Both packages are published to npm independently:
 
 ```json
 {
-  "name": "design-os-core",
+  "name": "complete-design-core",
   "version": "2.0.0",
   "peerDependencies": {
-    "design-os-atoms": "^2.0"
+    "complete-design-atoms": "^2.0"
   }
 }
 ```
@@ -126,11 +126,11 @@ After the split, the trigger budget is distributed:
 
 | Package | Max description chars | Max total trigger chars |
 |---------|----------------------|------------------------|
-| design-os-core | ≤2,500 | ≤2,500 |
-| design-os-atoms | ≤2,500 | ≤2,500 |
+| complete-design-core | ≤2,500 | ≤2,500 |
+| complete-design-atoms | ≤2,500 | ≤2,500 |
 | **Total** | **≤5,000** | **≤5,000** |
 
-This preserves the combined budget of a single design-os package (≤5k chars per
+This preserves the combined budget of a single complete-design package (≤5k chars per
 the Codex 2% cap) while halving the per-package trigger footprint, giving each
 package room to add trigger keywords without competing for the shared budget.
 
@@ -161,7 +161,7 @@ If the split reduces recall further (expected if trigger-budget was not the root
 
 - `evals/coexistence/last-run.json` — current aggregate recall number
 - `evals/coexistence/aggregate-eval.mjs` — harness that produces last-run.json
-- `evals/coexistence/triggers/design-os.yaml` — the corpus that informs the recall measurement
+- `evals/coexistence/triggers/complete-design.yaml` — the corpus that informs the recall measurement
 - `.github/workflows/aggregate-coexistence.yml` — CI that runs the eval weekly
 - `REQUIREMENTS.md` — TRIG-04 requirement: contingency lever documented in Plan 03
 - `CONTEXT.md` D-15, D-16 — coexistence eval methodology

@@ -210,11 +210,11 @@ describe("gate-stage-3.mjs: count and diversity checks", () => {
 });
 
 describe("gate-stage-3.mjs: INVARIANT-01 compliance", () => {
-  it("Test 8: gate accepts a --staged .design-os/preview/<run-id>/ path (not design/)", async () => {
+  it("Test 8: gate accepts a --staged .complete-design/preview/<run-id>/ path (not design/)", async () => {
     // This test verifies the gate works with the staged preview path pattern
     // per INVARIANT-01 (gate against staged path, never live design/)
     const runId = `run-${Date.now()}`;
-    const stagedDir = await mkdtemp(join(tmpdir(), `design-os-preview-${runId}-`));
+    const stagedDir = await mkdtemp(join(tmpdir(), `complete-design-preview-${runId}-`));
 
     try {
       const wireDir = join(stagedDir, "wireframes", "main-flow");

@@ -1,6 +1,6 @@
 // schemas/src/manifest.ts
 // Zod source for MANIFEST.md frontmatter + per-artifact entry index.
-// Source: CONTEXT.md D-01, D-04; design-os-mrd-v2.md §3.6.
+// Source: CONTEXT.md D-01, D-04; complete-design-mrd-v2.md §3.6.
 // Implements: SCHEMA-03, ART-03, PERSIST-01
 
 import { z } from "zod";
@@ -32,7 +32,7 @@ const ManifestEntry = z.object({
 /**
  * Manifest v1 schema.
  * Extends FrontmatterCommon with a flat entry-list index.
- * $id: https://design-os.dev/schemas/manifest.v1.json
+ * $id: https://complete-design.dev/schemas/manifest.v1.json
  */
 export const ManifestV1 = FrontmatterCommon.extend({
   artifact: z.literal("manifest"),
@@ -41,7 +41,7 @@ export const ManifestV1 = FrontmatterCommon.extend({
   /** Ordered list of all tracked design artifacts. */
   entries: z.array(ManifestEntry),
 }).meta({
-  $id: "https://design-os.dev/schemas/manifest.v1.json",
+  $id: "https://complete-design.dev/schemas/manifest.v1.json",
   title: "Manifest (cross-stage)",
   description:
     "MANIFEST.md frontmatter + per-artifact entry index; consumed by manifest-reconcile.mjs",

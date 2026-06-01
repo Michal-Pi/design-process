@@ -50,15 +50,15 @@ key_files:
     - assets/scripts/lint-determinism.mjs     # LLM-import architecture lint
     - assets/scripts/mermaid-render.mjs       # Headless Mermaid renderer
     - assets/scripts/recover.mjs              # Recovery semantics machinery
-    - assets/scripts/cli/verify.mjs           # design-os verify --golden subcommand
-    - assets/scripts/cli/eval-skillgrade.mjs  # design-os eval skillgrade subcommand
-    - assets/scripts/cli/eval-coexistence.mjs # design-os eval coexistence subcommand
-    - assets/scripts/cli/recover.mjs          # design-os recover subcommand
+    - assets/scripts/cli/verify.mjs           # complete-design verify --golden subcommand
+    - assets/scripts/cli/eval-skillgrade.mjs  # complete-design eval skillgrade subcommand
+    - assets/scripts/cli/eval-coexistence.mjs # complete-design eval coexistence subcommand
+    - assets/scripts/cli/recover.mjs          # complete-design recover subcommand
     - evals/runners/dispatch-host.mjs         # A2 static-analysis fallback host
     - evals/runners/skillgrade.mjs            # Per-skill harness (TRIALS=3, recall≥0.85)
     - evals/coexistence/aggregate-eval.mjs    # 6-package coexistence eval
     - evals/coexistence/install-corpus.mjs    # Stub corpus preparator
-    - evals/coexistence/triggers/design-os.yaml   # 32 design-os shouldFire prompts
+    - evals/coexistence/triggers/complete-design.yaml   # 32 complete-design shouldFire prompts
     - evals/coexistence/triggers/gsd.yaml         # 32 GSD shouldFire prompts
     - evals/coexistence/triggers/superpowers.yaml # 32 superpowers shouldFire prompts
     - evals/coexistence/triggers/frontend-design.yaml # 32 frontend-design prompts
@@ -90,13 +90,13 @@ key_files:
   modified:
     - assets/scripts/handoff-bundle-build.mjs # Added generatedAt? param for golden tests
     - package.json                            # 5 new scripts + 4 new deps
-    - .gitignore                              # .handoff/ + recovery fixture .design-os/ carveout
+    - .gitignore                              # .handoff/ + recovery fixture .complete-design/ carveout
 
 decisions:
   - "A2 assumption: dispatchToHost uses static-analysis keyword-overlap fallback (no public Claude Code headless eval API as of May 2026); DIST-03 first-100-chars 2× weight"
   - "Open Q3: aggregate coexistence recall threshold ≥0.80 calibrated empirically; Phase 1 reports number without blocking CI (continue-on-error: true)"
   - "Phase 1 skillgrade baseline: design recall=0.786, aggregate coexistence recall=0.581 — below thresholds but acceptable; real dispatch will improve"
-  - "TRIG-04 contingency documented not executed: split into design-os-core + design-os-atoms fires only if recall <0.80 after 2 tuning rounds"
+  - "TRIG-04 contingency documented not executed: split into complete-design-core + complete-design-atoms fires only if recall <0.80 after 2 tuning rounds"
   - "schema-migration-guard uses --diff-filter=M (MODIFIED only, not ADDED) — fresh-v1 schemas exempt from migration requirement"
   - "handoff-bundle generatedAt optional param: golden tests use fixed 2026-05-25T00:00:00.000Z timestamp for byte-identical determinism"
   - "YAML-quoted descriptions in SKILL.md stubs: descriptions containing colons must be wrapped in double-quotes to avoid gray-matter parse errors"
@@ -121,7 +121,7 @@ metrics:
 
 - **`assets/scripts/verify-golden.mjs`** — Runs each fixture runner 5× and asserts byte-identical SHA-256 hashes across all runs AND match against the committed `expected.*` fixture. Fixtures: schemas-emit, handoff-bundle (3013 tokens, fixed timestamp), gate-stage-5a (both states), mermaid-render.
 - **`assets/scripts/lint-determinism.mjs`** — Walks `assets/scripts/**/*.{mjs,ts}`, scans ES import statements (line-anchored regex to exclude comments), rejects paths matching `/(anthropic|openai|langchain|llamaindex|@anthropic-ai|@openai)/`. Supports `--scope <dir>` for test isolation.
-- **`assets/scripts/mermaid-render.mjs`** — Headless Mermaid render via `@mermaid-js/mermaid-cli` with `deterministicIds: true, deterministicIDSeed: 'design-os'`; strips HTML date comments post-process; produces byte-identical SVG across runs.
+- **`assets/scripts/mermaid-render.mjs`** — Headless Mermaid render via `@mermaid-js/mermaid-cli` with `deterministicIds: true, deterministicIDSeed: 'complete-design'`; strips HTML date comments post-process; produces byte-identical SVG across runs.
 - **`.eslintrc.cjs`** — `@typescript-eslint/switch-exhaustiveness-check: 'error'` (Pitfall F) + `no-restricted-imports` blocking LLM SDKs (defense in depth).
 - **3 CI workflows**: `verify-golden.yml` (with Playwright chromium), `lint-determinism.yml`, `schema-migration-guard.yml` (`--diff-filter=M` for MODIFIED-only; fresh-v1 schemas exempt).
 
@@ -131,7 +131,7 @@ metrics:
 
 - **`evals/runners/dispatch-host.mjs`** — A2 static-analysis fallback: loads SKILL.md files via gray-matter, scores keyword overlap with DIST-03 first-100-chars 2× weighting. CLAUDE_CODE_BIN detection for future real headless eval.
 - **`evals/runners/skillgrade.mjs`** — `TRIALS=3` per-skill harness; any 1-of-3 fire counts as hit/false-fire; emits `{ recall, falseFireRate, pass }`.
-- **9 trigger YAMLs**: 3 per design-os skill (design: 14+12, audit: 12+12, handoff: 12+12) + 6 coexistence package aggregates (32 shouldFire each).
+- **9 trigger YAMLs**: 3 per complete-design skill (design: 14+12, audit: 12+12, handoff: 12+12) + 6 coexistence package aggregates (32 shouldFire each).
 - **`evals/coexistence/aggregate-eval.mjs`** — 6-package corpus evaluation with deterministic `last-run.json` output; exits 0 regardless of pass/fail (Open Q3).
 - **`docs/CONTINGENCY-TRIG-04.md`** — Core/atoms split lever: fires only if aggregate recall < 0.80 after 2 tuning rounds.
 - **2 CI workflows**: `host-matrix.yml` (D-22: [claude-code, codex-cli, cursor] matrix, fail-fast: false), `aggregate-coexistence.yml` (weekly + PR, continue-on-error: true Phase 1).
@@ -140,8 +140,8 @@ metrics:
 
 ### Task 3: Recovery Semantics (RECOV-01..03)
 
-- **`assets/scripts/recover.mjs`** — Reads `.design-os/manifest.lock`, parses last entry, maps stage → next stage via `NEXT_STAGE` sequence (1→2→3→4→5a→5b), checks stage-specific artifact presence. Returns `{ resumeFrom, lastGate }` or `{ requiresConfirmation: true, reason }` when artifacts missing.
-- **`assets/scripts/cli/recover.mjs`** — `design-os recover --design-dir <path> --resume` CLI subcommand.
+- **`assets/scripts/recover.mjs`** — Reads `.complete-design/manifest.lock`, parses last entry, maps stage → next stage via `NEXT_STAGE` sequence (1→2→3→4→5a→5b), checks stage-specific artifact presence. Returns `{ resumeFrom, lastGate }` or `{ requiresConfirmation: true, reason }` when artifacts missing.
+- **`assets/scripts/cli/recover.mjs`** — `complete-design recover --design-dir <path> --resume` CLI subcommand.
 - **3 recovery fixtures**: `design-dir-after-stage-{1,2,4}/` with valid JSONL hash-chain `manifest.lock` files (pre-computed using same algorithm as `appendManifestLockEntry`).
 - **19 test assertions**: structural checks, resumeFrom detection (interrupt after 1/2/4), confirm-before-regenerate (RECOV-01), equivalent end-state via truncation + resume (RECOV-02).
 
@@ -171,7 +171,7 @@ Both below thresholds — expected. The static-analysis fallback is a baseline; 
 ## Outstanding Items for Plan 05 (Host Profiles + Route Registry)
 
 - Host profile dirs `evals/hosts/{claude-code,codex-cli,cursor}/` complete the D-22 matrix scaffolded in `host-matrix.yml`.
-- Route registry registers the 3 design-os skill names (`design`, `audit`, `handoff`) so skillgrade and coexistence eval can dispatch against real SKILL.md frontmatter instead of stubs.
+- Route registry registers the 3 complete-design skill names (`design`, `audit`, `handoff`) so skillgrade and coexistence eval can dispatch against real SKILL.md frontmatter instead of stubs.
 - Real-package installation in `install-corpus.mjs` (currently description-only stubs — Plan 4/GA hardening step).
 
 ## Deviations from Plan
@@ -197,8 +197,8 @@ Both below thresholds — expected. The static-analysis fallback is a baseline; 
 - **Files modified:** `evals/runners/skillgrade.mjs`, `evals/coexistence/install-corpus.mjs`
 
 **4. [Rule 2 - Missing] .gitignore carve-outs for generated runtime files**
-- **Found during:** Task 2 completion — `evals/fixtures/golden/handoff-bundle/input/design-dir/.handoff/` untracked; Task 3 — recovery fixture `.design-os/manifest.lock` files blocked by `tests/fixtures/**/.design-os/` gitignore rule.
-- **Fix:** Added `.handoff/` pattern; added `!tests/fixtures/recovery/**/.design-os/` exception.
+- **Found during:** Task 2 completion — `evals/fixtures/golden/handoff-bundle/input/design-dir/.handoff/` untracked; Task 3 — recovery fixture `.complete-design/manifest.lock` files blocked by `tests/fixtures/**/.complete-design/` gitignore rule.
+- **Fix:** Added `.handoff/` pattern; added `!tests/fixtures/recovery/**/.complete-design/` exception.
 - **Files modified:** `.gitignore`
 
 ## Threat Flags

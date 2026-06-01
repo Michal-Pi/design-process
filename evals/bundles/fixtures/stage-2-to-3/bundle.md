@@ -4,7 +4,7 @@ schemaVersion: 1
 stage: "2 → 3"
 generated: "2025-01-20T15:00:00Z"
 provenance: generated
-owner: design-os
+owner: complete-design
 lastReviewedAt: "2025-01-20T15:00:00Z"
 sourceHash: sha256:458fcf82474d58d38d2b56140e11acb72e379f98ce2d205f4e623c3382413afd
 tokenCount: 3700
@@ -35,7 +35,7 @@ artifactsInventory:
 pointersToVerify:
   - "Two sitemap variants exist (LATCH requirement); tree-test must run before Stage 3 gates"
   - "Mermaid flow in v1-category variant should be validated via mermaid-cli before Stage 3"
-  - "Stage 3 wireframes are emitted to .design-os/preview/<run-id>/wireframes/<screen>/ per sketch.md workflow"
+  - "Stage 3 wireframes are emitted to .complete-design/preview/<run-id>/wireframes/<screen>/ per sketch.md workflow"
 ---
 
 ## Goal & scope

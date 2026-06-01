@@ -4,7 +4,7 @@
 // Assertions:
 //   (a) findings in severity-descending order (BLOCKER > WARN > INFO)
 //   (b) AUDIT-REPORT.md frontmatter validates against audit-report.v1.json
-//   (c) suppression: findingId in .design-os/audit-suppressions.json → excluded
+//   (c) suppression: findingId in .complete-design/audit-suppressions.json → excluded
 //   (d) codex-review Finding 1: rainbow-gradient (ERROR heuristic) → BLOCKER in output; report validates
 //   (e) codex-review Finding 2: clean audit emits findings:[] not findings: null
 //   (f) codex-review Finding 4: audit --pr with multi-commit range uses merge-base diff
@@ -181,7 +181,7 @@ describe('runAudit: AUDIT-REPORT.md emit', () => {
       await writeFile(join(scanDir, 'ui.css'), cssContent, 'utf8');
 
       // Create suppression file suppressing 5a-slop-002 (Inter-default)
-      const suppressDir = join(dir, '.design-os');
+      const suppressDir = join(dir, '.complete-design');
       await mkdir(suppressDir, { recursive: true });
       await writeFile(
         join(suppressDir, 'audit-suppressions.json'),

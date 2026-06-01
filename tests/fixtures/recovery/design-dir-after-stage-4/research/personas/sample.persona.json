@@ -1,11 +1,11 @@
 {
-  "$schema": "https://design-os.dev/schemas/persona.v1.json",
+  "$schema": "https://complete-design.dev/schemas/persona.v1.json",
   "schemaVersion": 1,
   "artifact": "persona",
   "stage": "1",
   "generated": "2026-05-25T00:00:00.000Z",
   "provenance": "generated",
-  "owner": "design-os-eval",
+  "owner": "complete-design-eval",
   "lastReviewedAt": "2026-05-25T00:00:00.000Z",
   "id": "sample",
   "name": "Sam Rivera",

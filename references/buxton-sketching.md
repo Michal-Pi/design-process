@@ -27,7 +27,7 @@ collaborative improvement. Lo-fi fidelity is a deliberate communication signal.
 If the question is "which layout serves this task?", the sketch should only answer that
 question — not color, not typography, not component choice.
 
-## Application to design-os Stage 3
+## Application to complete-design Stage 3
 
 Stage 3 wireframes implement these principles:
 - Excalidraw's hand-drawn rendering style signals "sketch" not "spec"

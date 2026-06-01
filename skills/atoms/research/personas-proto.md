@@ -1,5 +1,5 @@
 ---
-name: "design-os/research/personas-proto"
+name: "complete-design/research/personas-proto"
 description: "Generate 2-3 proto-personas using Indi Young thinking-style format; always provenance:generated; ASSUMPTIONS.md required"
 stage: 1
 mvp: true
@@ -74,7 +74,7 @@ schemaVersion: 1
 provenance: generated
 worstProvenance: generated
 generated: <ISO datetime>
-owner: <project owner or 'design-os/discover'>
+owner: <project owner or 'complete-design/discover'>
 lastReviewedAt: <ISO datetime>
 sourceHash: sha256:<hash of content>
 ---

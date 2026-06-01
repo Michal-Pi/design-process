@@ -1,5 +1,5 @@
 {
-  "$id": "https://design-os.dev/schemas/audit-report.v1.json",
+  "$id": "https://complete-design.dev/schemas/audit-report.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "AUDIT-REPORT.md with findingId, severity, evidence pointer, fix recipe, and suppression option",

@@ -1,11 +1,11 @@
 // assets/scripts/cli/release-gate.mjs
 // CLI wrapper for the release-gate orchestrator.
-// Auto-discovered by bin/design-os.mjs via glob of assets/scripts/cli/*.mjs.
+// Auto-discovered by bin/complete-design.mjs via glob of assets/scripts/cli/*.mjs.
 //
 // Usage:
-//   node bin/design-os.mjs release-gate [options]
-//   node bin/design-os.mjs release-gate --help
-//   node bin/design-os.mjs release-gate --dry-run --fixtures-dir evals/acceptance
+//   node bin/complete-design.mjs release-gate [options]
+//   node bin/complete-design.mjs release-gate --help
+//   node bin/complete-design.mjs release-gate --dry-run --fixtures-dir evals/acceptance
 //
 // Passes lint-determinism.mjs (INVARIANT-05): no LLM imports — handler lazy-imports
 // the core orchestrator which itself uses dispatchSubagent shim only.

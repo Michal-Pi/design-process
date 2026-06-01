@@ -1,5 +1,5 @@
 {
-  "name": "design-os",
+  "name": "@pm-musketeers/complete-design",
   "version": "2.0.0",
   "description": "5-stage design process, operationalized as an agent-loop workflow",
   "type": "module",
@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "bin": {
-    "design-os": "./bin/design-os.mjs"
+    "complete-design": "./bin/complete-design.mjs"
   },
   "files": [
     "bin/",
@@ -47,7 +47,7 @@
   "scripts": {
     "schemas:emit": "tsx assets/scripts/schemas/emit.mjs",
     "test": "vitest run",
-    "validate": "tsx bin/design-os.mjs validate",
+    "validate": "tsx bin/complete-design.mjs validate",
     "test:schemas": "vitest run tests/schemas/",
     "tsc": "tsc --noEmit",
     "verify:golden": "tsx assets/scripts/verify-golden.mjs",

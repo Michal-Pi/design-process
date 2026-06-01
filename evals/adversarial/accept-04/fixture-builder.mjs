@@ -88,7 +88,7 @@ schemaVersion: 1
 provenance: generated
 evidence: proto
 generated: "2026-05-31T00:00:00.000Z"
-owner: design-os/accept-04-adversarial
+owner: complete-design/accept-04-adversarial
 product: ${productName}
 ---
 `;
@@ -110,7 +110,7 @@ schemaVersion: 1
 provenance: generated
 evidence: proto
 generated: "2026-05-31T00:00:00.000Z"
-owner: design-os/accept-04-adversarial
+owner: complete-design/accept-04-adversarial
 product: ${productName}
 version: ${version}
 ---

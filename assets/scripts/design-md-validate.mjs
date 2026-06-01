@@ -30,7 +30,7 @@ const PINNED_VERSION = "2026.04";
  *   - version: string (DESIGN.md schema version)
  *
  * Optional frontmatter:
- *   - $extensions.design-os: object (design-os structured metadata per MRD §15)
+ *   - $extensions.complete-design: object (complete-design structured metadata per MRD §15)
  *
  * Body: free Markdown (not validated structurally in v1.5).
  *
@@ -38,7 +38,7 @@ const PINNED_VERSION = "2026.04";
  */
 const DESIGN_MD_SCHEMA_2026_04 = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
-  $id: "https://design-os.dev/schemas/design-md.2026.04.json",
+  $id: "https://complete-design.dev/schemas/design-md.2026.04.json",
   title: "Google DESIGN.md (April 2026)",
   description:
     "DESIGN.md frontmatter schema — pinned to Google DESIGN.md April 2026 OSS release",
@@ -62,9 +62,9 @@ const DESIGN_MD_SCHEMA_2026_04 = {
       type: "object",
       description: "Optional extensions namespace",
       properties: {
-        "design-os": {
+        "complete-design": {
           type: "object",
-          description: "design-os structured metadata (MRD §15)",
+          description: "complete-design structured metadata (MRD §15)",
         },
       },
     },

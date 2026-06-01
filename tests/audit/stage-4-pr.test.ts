@@ -34,7 +34,7 @@ hasConditionalTransitions: true
 sourceHash: sha256:${'b'.repeat(64)}
 generated: "2026-05-26T10:00:00.000Z"
 provenance: generated
-owner: design-os
+owner: complete-design
 lastReviewedAt: "2026-05-26T10:00:00.000Z"
 mermaidStateDiagram: "placeholder"
 states:

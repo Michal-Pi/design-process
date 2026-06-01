@@ -46,7 +46,7 @@ Test Files  63 passed (63)
 | SC-2 | Stage 1 gate hard-blocks evidence:VALIDATED 100/100 synthetic-only (RED-05); prompt-injection canary asserts bypass impossible (RED-06); worstProvenance propagates from cited personas | VERIFIED | RED-05: 100/100 tests pass (evals/adversarial/red-05-synthetic-block). RED-06: 10/10 tests pass (prompts 001-010). worstProvenance: 5/5 tests pass. checkWorstProvenance export enforced via frontmatter-validate.mjs. |
 | SC-3 | design-bug ≤20k, brand-refresh ≤55k, PR-audit ≤15k token budgets verified by eval harness on 15-fixture run | PARTIAL | budget-check.mjs enforcement mechanism verified (tests pass, CLI working). 15 budget fixtures exist (p50 ~259 tokens per PRD — appropriate scope). Formal p50 verification on live runs requires LLM. Per ROADMAP: p50/p95 validation at Phase 4 GA. |
 | SC-4 | `audit --pr` emits severity-ranked AUDIT-REPORT.md validated against audit-report.v1.json with findingId, evidence pointer, fix recipe, suppression; `audit --slop-tells` flags rainbow gradients / Inter-default / glass-stack / three-column-grid | VERIFIED | audit --pr: emits valid AUDIT-REPORT.md with findings:[] on clean repo (schema validated with Ajv2020). audit --slop-tells on seeded fixture: 5 findings (BLOCKER, 3x WARN, INFO) for rainbow-gradient, Inter-default, glass-stack, 3+ stop gradient, three-column-grid. Schema validation passes. |
-| SC-5 | design-os triggers fire with recall ≥0.85 against in-tree should-fire suite on Claude Code; Codex CLI + Cursor scaffold within 0.10 of host-first | VERIFIED | Phase 2 skillgrade: 37/37 tests pass. All 6 Phase 2 SKILL.md files (ingest, discover, structure, style, systematize, audit) achieve recall ≥1.0 via static-analysis A2 fallback (≥0.85 threshold met). Trigger YAML: 6 files with ≥12 shouldFire + ≥12 shouldNotFire each. Codex CLI + Cursor sequential-fallback wired via run-subagent.mjs (host-profile workspaces scaffolded). |
+| SC-5 | complete-design triggers fire with recall ≥0.85 against in-tree should-fire suite on Claude Code; Codex CLI + Cursor scaffold within 0.10 of host-first | VERIFIED | Phase 2 skillgrade: 37/37 tests pass. All 6 Phase 2 SKILL.md files (ingest, discover, structure, style, systematize, audit) achieve recall ≥1.0 via static-analysis A2 fallback (≥0.85 threshold met). Trigger YAML: 6 files with ≥12 shouldFire + ≥12 shouldNotFire each. Codex CLI + Cursor sequential-fallback wired via run-subagent.mjs (host-profile workspaces scaffolded). |
 
 **Score:** 4/5 — SC-1 and SC-3 partial pending LLM dispatch; SC-2, SC-4, SC-5 fully verified.
 
@@ -74,7 +74,7 @@ Test Files  63 passed (63)
 | D-49 | Per-stage token budgets: soft-warn at p50, hard-stop at 2× p50 | VERIFIED | budget-check.mjs implements 7-stage table; --continue-anyway flag; CLI tests pass |
 | D-50 | Three adversarial CI suites: RED-05 (100 seeds), RED-06 (10 canary), worstProvenance | VERIFIED | 115/115 adversarial tests pass; CI extended with adversarial job |
 | D-51 | evidence:INFERRED only valid for Stage 5a/5b in v2.0a; enforced by script | VERIFIED | gate-stage-5b.mjs BLOCKER on evidence!=INFERRED; 5b-evidence-001/002 findings |
-| D-52 | Diff-by-default; all writes stage to .design-os/preview/; --apply required | VERIFIED | apply.mjs ships; all workflow SKILL.md files include diff+--apply step; tested |
+| D-52 | Diff-by-default; all writes stage to .complete-design/preview/; --apply required | VERIFIED | apply.mjs ships; all workflow SKILL.md files include diff+--apply step; tested |
 | D-53 | Claude Code host-first; Codex CLI + Cursor sequential-fallback scaffolded | VERIFIED (WARNING) | run-subagent.mjs detects host; each workflow has ## Host fallback section. Host-profile workspace tests fail from workspace subdir due to CWD issue — files exist at correct paths (confirmed). Not a runtime gap. |
 
 ## Required Artifacts
@@ -89,7 +89,7 @@ Test Files  63 passed (63)
 | `assets/scripts/audit/slop-tells.mjs` | Regex slop detector (D-46) | VERIFIED | 5 patterns from heuristics.md; 8 tests |
 | `assets/scripts/audit/stage-5a-pr.mjs` | Stage 5a PR diff detector | VERIFIED | Flags raw hex + hardcoded Tailwind classes; 7 tests |
 | `assets/scripts/audit/stage-5b-pr.mjs` | Stage 5b PR diff detector | VERIFIED | Flags DTCG evidence tampering; 5 tests |
-| `assets/scripts/cli/apply.mjs` | Copy staging to design/ (D-52) | VERIFIED | applyStaging API; mkdir for .design-os/private/; 4 tests |
+| `assets/scripts/cli/apply.mjs` | Copy staging to design/ (D-52) | VERIFIED | applyStaging API; mkdir for .complete-design/private/; 4 tests |
 | `assets/scripts/cli/audit.mjs` | runAudit orchestration (D-47) | VERIFIED | --slop-tells + --pr + suppression + schema validate |
 | `assets/scripts/cli/budget-check.mjs` | Per-stage budget enforcement (D-49) | VERIFIED | 7-stage table; hard-stop at 2x p50 |
 | `skills/workflows/ingest.md` | WF-01 ingest workflow | VERIFIED | frontmatter valid; ≤200 chars; stage:0 |
@@ -120,13 +120,13 @@ Test Files  63 passed (63)
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| skills/workflows/discover.md | bin/design-os.mjs gate --stage 1 | dispatcher invocation (codex fix 08a9e50) | WIRED | Fixed from direct cli/gate.mjs to dispatcher |
-| skills/workflows/structure.md | .design-os/preview/run-<id>/ | gate against staged path (codex fix 17e9cc7) | WIRED | Gate runs against staged path, not design/ |
+| skills/workflows/discover.md | bin/complete-design.mjs gate --stage 1 | dispatcher invocation (codex fix 08a9e50) | WIRED | Fixed from direct cli/gate.mjs to dispatcher |
+| skills/workflows/structure.md | .complete-design/preview/run-<id>/ | gate against staged path (codex fix 17e9cc7) | WIRED | Gate runs against staged path, not design/ |
 | skills/workflows/style.md | tokens-project.mjs | ATOM-14 inline step 6 | WIRED | real CLI invocation documented in step |
-| skills/workflows/systematize.md | .design-os/preview/run-<id>/ | gate against staged path (codex fix 44d7c21) | WIRED | Same pattern as structure + style |
+| skills/workflows/systematize.md | .complete-design/preview/run-<id>/ | gate against staged path (codex fix 44d7c21) | WIRED | Same pattern as structure + style |
 | assets/scripts/routing/dispatch.mjs | dispatchSubagent(4 routes) | real runSubagent calls replacing stubs | WIRED | 44/44 routing tests pass; 3 unimplemented routes return route_not_yet_implemented |
 | assets/scripts/cli/audit.mjs | slop-tells.mjs + stage-5a-pr.mjs + stage-5b-pr.mjs | runAudit orchestrator | WIRED | end-to-end: slop-tells spot-check passes |
-| assets/scripts/cli/apply.mjs | .design-os/private/run-log.jsonl | mkdir before appendFile (codex fix ae19a6d) | WIRED | ENOENT fixed; tests pass |
+| assets/scripts/cli/apply.mjs | .complete-design/private/run-log.jsonl | mkdir before appendFile (codex fix ae19a6d) | WIRED | ENOENT fixed; tests pass |
 | evals/adversarial/red-05-synthetic-block/ | assets/scripts/gates/stage-1.mjs | fixture-builder → runStage1Gate | WIRED | 100/100 |
 | assets/scripts/cli/audit.mjs | git diff --name-only <base>...HEAD | three-tier base-ref resolution (codex fix 70048bf) | WIRED | --base flag + GITHUB_BASE_REF + merge-base auto-detect |
 
@@ -134,7 +134,7 @@ Test Files  63 passed (63)
 
 | Artifact | Data Variable | Source | Produces Real Data | Status |
 |----------|---------------|--------|-------------------|--------|
-| tokens-project.mjs → design-os-tokens.json | tokenTree (primitive/semantic/component) | emitTokens(colorPrimary, colorBackground, colorForeground, fontFamilyBase, borderRadius, spacingBase) | Yes — OKLCH values computed from inputs; canonicalize() for determinism | FLOWING |
+| tokens-project.mjs → complete-design-tokens.json | tokenTree (primitive/semantic/component) | emitTokens(colorPrimary, colorBackground, colorForeground, fontFamilyBase, borderRadius, spacingBase) | Yes — OKLCH values computed from inputs; canonicalize() for determinism | FLOWING |
 | audit.mjs → AUDIT-REPORT.md | findings[] | detectSlopTells() + detectStage5aPrIssues() + git diff | Yes — regex matches or git diff output; empty array when clean | FLOWING |
 | gate-stage-1.mjs → GateResult | provenances[] | gray-matter reads design/research/personas/*.persona.json | Yes — filesystem read; not_runnable when no personas | FLOWING |
 | gate-stage-2.mjs → GateResult | siteMapData, jtbdSlugs, mermaidFiles | ajv validates sitemap.json; glob finds flows/*.flow.mmd | Yes — Ajv2020 schema validation + renderMermaidFile | FLOWING |
@@ -144,10 +144,10 @@ Test Files  63 passed (63)
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| gate --stage 5a returns not_runnable | `node bin/design-os.mjs gate --stage 5a --design-dir /tmp/empty` | `{"kind":"not_runnable","reason":"stage-4-artifacts-absent"}` | PASS |
-| audit --slop-tells flags 5 patterns on seeded CSS | `node bin/design-os.mjs audit --slop-tells --scan-dir /tmp/slop-test` | `5 finding(s): BLOCKER:1, WARN:3, INFO:1` — BLOCKED | PASS |
+| gate --stage 5a returns not_runnable | `node bin/complete-design.mjs gate --stage 5a --design-dir /tmp/empty` | `{"kind":"not_runnable","reason":"stage-4-artifacts-absent"}` | PASS |
+| audit --slop-tells flags 5 patterns on seeded CSS | `node bin/complete-design.mjs audit --slop-tells --scan-dir /tmp/slop-test` | `5 finding(s): BLOCKER:1, WARN:3, INFO:1` — BLOCKED | PASS |
 | AUDIT-REPORT.md validates against schema | AJV2020 schema validation on report | `Schema valid: true`, `findings is array: true` | PASS |
-| clean audit --pr emits findings:[] | `node bin/design-os.mjs audit --pr --base HEAD` | `0 finding(s)` + `findings: []` in frontmatter | PASS |
+| clean audit --pr emits findings:[] | `node bin/complete-design.mjs audit --pr --base HEAD` | `0 finding(s)` + `findings: []` in frontmatter | PASS |
 | RED-05 100/100 synthetic block | `npx vitest run evals/adversarial/red-05-synthetic-block/` | 100/100 PASS | PASS |
 | RED-06 10/10 injection canary | `npx vitest run evals/adversarial/red-06-injection-canary/` | 10/10 PASS | PASS |
 | skillgrade recall ≥0.85 for 6 SKILL.md files | `npx vitest run tests/eval/phase2-skillgrade.test.ts` | 37/37 PASS; all skills recall ≥1.0 | PASS |
@@ -235,8 +235,8 @@ No `TBD`, `FIXME`, or `XXX` debt markers found in Phase 2 modified files (lint-d
 - `design/ia/sitemap.json` exists (DTCG-style; no color/font fields)
 - `design/ia/flows/` contains `*.flow.mmd` files (one per JTBD)
 - `design/tokens.json` has frontmatter `stage: 5a-lite, evidence: INFERRED`
-- `design/DESIGN.md` has `$extensions.design-os.evidence: INFERRED`
-- `node bin/design-os.mjs gate --stage 5a --design-dir design/` returns `not_runnable`
+- `design/DESIGN.md` has `$extensions.complete-design.evidence: INFERRED`
+- `node bin/complete-design.mjs gate --stage 5a --design-dir design/` returns `not_runnable`
 
 **Why human:** Artifact emission requires live LLM dispatch. Script-level fixture detection, dispatch wiring, and gate behavior are all verified programmatically.
 

@@ -66,7 +66,7 @@ stage: 3
 
 /** Sitemap with one route */
 const SITEMAP_ONE_ROUTE = JSON.stringify({
-  $schema: "https://design-os.dev/schemas/sitemap.v1.json",
+  $schema: "https://complete-design.dev/schemas/sitemap.v1.json",
   artifact: "sitemap",
   stage: "2",
   schemaVersion: 1,

@@ -172,7 +172,7 @@ export function renderSkeletonIR(irArray) {
     appState: {},
     elements,
     files: {},
-    source: "design-os",
+    source: "complete-design",
     type: "excalidraw",
     version: 2,
   };
@@ -181,5 +181,5 @@ export function renderSkeletonIR(irArray) {
   return canonicalize(doc);
 }
 
-// CLI usage when invoked via `node bin/design-os.mjs excalidraw-render`
+// CLI usage when invoked via `node bin/complete-design.mjs excalidraw-render`
 // (CLI module at assets/scripts/cli/excalidraw-render.mjs wires Commander flags)

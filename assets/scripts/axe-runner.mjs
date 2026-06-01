@@ -208,7 +208,7 @@ export async function runAxeOnFixture(fixtureDir, tokensOverridePath) {
       violations: [{
         id: 'fixture-output-absent',
         impact: 'critical',
-        description: `No tokens.json found at ${tokensPath}. axe-runner requires generated output to check contrast. Run \`design-os design --route <route> --apply\` first, or this fixture is not yet ready for the accessibility gate.`,
+        description: `No tokens.json found at ${tokensPath}. axe-runner requires generated output to check contrast. Run \`complete-design design --route <route> --apply\` first, or this fixture is not yet ready for the accessibility gate.`,
       }],
       contrastValues: {},
     };

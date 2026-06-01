@@ -1,5 +1,5 @@
 // assets/scripts/cli/resume.mjs
-// design-os resume subcommand — auto-discovered by bin/design-os.mjs dispatcher.
+// complete-design resume subcommand — auto-discovered by bin/complete-design.mjs dispatcher.
 //
 // Reads manifest.lock via recover.mjs; if requiresConfirmation, prompts user
 // before proceeding. Use --yes for CI / batch mode.

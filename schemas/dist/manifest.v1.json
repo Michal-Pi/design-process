@@ -1,5 +1,5 @@
 {
-  "$id": "https://design-os.dev/schemas/manifest.v1.json",
+  "$id": "https://complete-design.dev/schemas/manifest.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "MANIFEST.md frontmatter + per-artifact entry index; consumed by manifest-reconcile.mjs",

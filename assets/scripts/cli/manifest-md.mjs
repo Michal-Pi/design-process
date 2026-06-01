@@ -1,5 +1,5 @@
 // assets/scripts/cli/manifest-md.mjs
-// design-os manifest-md subcommand group — auto-discovered by bin/design-os.mjs.
+// complete-design manifest-md subcommand group — auto-discovered by bin/complete-design.mjs.
 //
 // Subcommand: manifest-md reconcile --design-dir <path>
 // Walks the design dir, reconciles artifact frontmatter, writes deterministic MANIFEST.md.

@@ -1,7 +1,7 @@
 // assets/scripts/cli/design-md-validate.mjs
-// CLI subcommand: design-os design-md-validate --file <path> [--design-md-version <ver>]
+// CLI subcommand: complete-design design-md-validate --file <path> [--design-md-version <ver>]
 // Handler stub — filled in by Task 3.
-// Auto-discovered by bin/design-os.mjs.
+// Auto-discovered by bin/complete-design.mjs.
 
 export const command = {
   name: "design-md-validate",

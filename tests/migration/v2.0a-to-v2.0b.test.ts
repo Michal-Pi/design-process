@@ -204,10 +204,10 @@ describe("v2.0a → v2.0b migration", () => {
         await copyFile(fixturePath, targetPath);
 
         // Run apply
-        await runMigrationApply({ filePath: targetPath, designOsDir: join(tmpDir, ".design-os") });
+        await runMigrationApply({ filePath: targetPath, designOsDir: join(tmpDir, ".complete-design") });
 
         // Verify manifest.lock was created (appendManifestLockEntry was called)
-        const lockPath = join(tmpDir, ".design-os", "manifest.lock");
+        const lockPath = join(tmpDir, ".complete-design", "manifest.lock");
         expect(existsSync(lockPath)).toBe(true);
 
         const lockContent = await readFile(lockPath, "utf8");
@@ -240,7 +240,7 @@ describe("v2.0a → v2.0b migration", () => {
 
   // ── CLI subcommand ─────────────────────────────────────────────────────────
 
-  describe("Test 9: design-os migrate --from 2.0a --to 2.0b CLI subcommand exists", () => {
+  describe("Test 9: complete-design migrate --from 2.0a --to 2.0b CLI subcommand exists", () => {
     it("CLI migrate subcommand exports { name, describe, builder, handler } and accepts --apply flag", async () => {
       const { command } = await import(
         "../../assets/scripts/cli/migrate.mjs"

@@ -35,7 +35,7 @@ const SOURCE_REFERENCE_MD = join(ROOT, 'references', 'garrett-elements.md');
 const { runInstall, validateTargetSandbox, PathContainmentError } =
   await import('../../assets/scripts/cli/install.mjs');
 
-describe('design-os install CLI', () => {
+describe('complete-design install CLI', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
@@ -49,7 +49,7 @@ describe('design-os install CLI', () => {
   // ---------------------------------------------------------------------------
   // Test 1: Default target install (HOME override) — bundled layout
   // ---------------------------------------------------------------------------
-  it('default install (HOME override) creates bundled skill layout at ~/.claude/skills/design-os', async () => {
+  it('default install (HOME override) creates bundled skill layout at ~/.claude/skills/complete-design', async () => {
     // Override HOME so the install goes to our tmpdir instead of the real home.
     const fakeHome = join(tmpDir, 'fake-home');
     const originalHome = process.env['HOME'];
@@ -67,7 +67,7 @@ describe('design-os install CLI', () => {
       await runInstall({ target: targetBase, force: true });
 
       // Assert all required bundled files exist.
-      const destDir = join(targetBase, 'design-os');
+      const destDir = join(targetBase, 'complete-design');
 
       // SKILL.md at install root
       expect(existsSync(join(destDir, 'SKILL.md'))).toBe(true);
@@ -100,7 +100,7 @@ describe('design-os install CLI', () => {
 
     try {
       await runInstall({ target: targetBase, force: true });
-      const installedSkillMd = join(targetBase, 'design-os', 'SKILL.md');
+      const installedSkillMd = join(targetBase, 'complete-design', 'SKILL.md');
       expect(existsSync(installedSkillMd)).toBe(true);
     } finally {
       await rm(targetBase, { recursive: true, force: true });
@@ -118,7 +118,7 @@ describe('design-os install CLI', () => {
     try {
       // First install.
       await runInstall({ target: targetBase, force: true });
-      const installedSkillMd = join(targetBase, 'design-os', 'SKILL.md');
+      const installedSkillMd = join(targetBase, 'complete-design', 'SKILL.md');
 
       const contentAfterFirstInstall = await readFile(installedSkillMd, 'utf8');
 
@@ -248,7 +248,7 @@ describe('design-os install CLI', () => {
     try {
       await runInstall({ target: targetBase, force: true });
 
-      const destDir = join(targetBase, 'design-os');
+      const destDir = join(targetBase, 'complete-design');
 
       // Helper: compute sha256 hex of a file
       async function sha256(filePath: string): Promise<string> {

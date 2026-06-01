@@ -1,9 +1,9 @@
 # evals/triggers/systematize/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/systematize' skill.
+# Per-skill trigger eval corpus for the 'complete-design/systematize' skill.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/systematize
+skill: complete-design/systematize
 description: >
   Systematize Stage 5b: promote recurring components to design system,
   emit DESIGN.md contract.

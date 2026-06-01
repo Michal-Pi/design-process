@@ -1,21 +1,21 @@
-# design-os
+# complete-design
 
 **The 5-stage design process, operationalized as an agent-loop workflow.**
 
-Stop jumping straight to hi-fi. design-os walks through Research → IA → Low-Fi → Interaction → Hi-Fi + Design System, with stage-typed artifacts and validation gates between every step — so your prototypes do not break at production scale.
+Stop jumping straight to hi-fi. complete-design walks through Research → IA → Low-Fi → Interaction → Hi-Fi + Design System, with stage-typed artifacts and validation gates between every step — so your prototypes do not break at production scale.
 
-[![npm version](https://img.shields.io/npm/v/design-os.svg)](https://www.npmjs.com/package/design-os)
+[![npm version](https://img.shields.io/npm/v/complete-design.svg)](https://www.npmjs.com/package/complete-design)
 [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-green)](https://nodejs.org)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
-[![Status: GA](https://img.shields.io/badge/status-GA-brightgreen)](https://www.npmjs.com/package/design-os)
+[![Status: GA](https://img.shields.io/badge/status-GA-brightgreen)](https://www.npmjs.com/package/complete-design)
 
 ---
 
 ## What it is
 
-design-os is a [SKILL.md](https://agentskills.io/specification) package for Claude Code, Codex CLI, and Cursor. Once installed, it teaches your coding agent to guide you through the full Garrett spine — Strategy → Scope → Structure → Skeleton → Surface — before touching a component. Each stage produces structured artifacts (`design/` directory); each transition is gated by checks that catch issues a LLM prompt loop without structure routinely misses.
+complete-design is a [SKILL.md](https://agentskills.io/specification) package for Claude Code, Codex CLI, and Cursor. Once installed, it teaches your coding agent to guide you through the full Garrett spine — Strategy → Scope → Structure → Skeleton → Surface — before touching a component. Each stage produces structured artifacts (`design/` directory); each transition is gated by checks that catch issues a LLM prompt loop without structure routinely misses.
 
-The key difference from Lovable, v0, Bolt, Subframe, Figma Make, and Claude Design: those tools start at the surface (hi-fi generation). design-os starts at the strategy layer and does not let you skip. Prototypes built this way hold up when the design system team, the PM, and the accessibility reviewer all look at the same artifact.
+The key difference from Lovable, v0, Bolt, Subframe, Figma Make, and Claude Design: those tools start at the surface (hi-fi generation). complete-design starts at the strategy layer and does not let you skip. Prototypes built this way hold up when the design system team, the PM, and the accessibility reviewer all look at the same artifact.
 
 This is version 2.0.0 (GA). All 5 stages are implemented and gate-verified across the acceptance corpus.
 
@@ -24,11 +24,11 @@ This is version 2.0.0 (GA). All 5 stages are implemented and gate-verified acros
 ## Quick start
 
 ```bash
-# 1. Install design-os globally
-npm i -g design-os
+# 1. Install complete-design globally
+npm i -g @pm-musketeers/complete-design
 
 # 2. Copy the SKILL.md package into your Claude Code skills directory
-design-os install
+complete-design install
 
 # 3. Restart Claude Code (close and reopen, or run /reload-skills if available)
 
@@ -42,7 +42,7 @@ Claude Code will pick up the skill automatically. No config files to edit. No `n
 
 ## What you get
 
-After `design-os install`, your agent knows four design routes:
+After `complete-design install`, your agent knows four design routes:
 
 - **new-product** — full Stages 1–5b for a product being built from scratch
 - **new-feature** — Stages 2, 4, 5a for a feature added to an existing app
@@ -64,7 +64,7 @@ Each route emits structured artifacts:
 
 ## Trust posture
 
-design-os never claims WCAG conformance — it reports measured contrast ratios. It never uses synthetic personas as primary research — it marks generated personas as `provenance: proto` and requires you to validate them. It never auto-publishes to your git tree — all output lands in `.design-os/preview/` first, and you run `--apply` to commit. The references corpus ([`references/`](./references/)) cites canon: Garrett, Wodtke, Saffer, Cagan, Frost.
+complete-design never claims WCAG conformance — it reports measured contrast ratios. It never uses synthetic personas as primary research — it marks generated personas as `provenance: proto` and requires you to validate them. It never auto-publishes to your git tree — all output lands in `.complete-design/preview/` first, and you run `--apply` to commit. The references corpus ([`references/`](./references/)) cites canon: Garrett, Wodtke, Saffer, Cagan, Frost.
 
 ---
 

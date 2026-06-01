@@ -1,10 +1,10 @@
 // assets/scripts/cli/eval-bundle-sufficiency.mjs
 // Auto-discovered CLI subcommand for the 'eval bundle-sufficiency' command.
-// Registered by bin/design-os.mjs's auto-discovery dispatcher.
+// Registered by bin/complete-design.mjs's auto-discovery dispatcher.
 // The dispatcher parses `name` by whitespace and creates nested command groups.
 //
 // Usage:
-//   tsx bin/design-os.mjs eval bundle-sufficiency
+//   tsx bin/complete-design.mjs eval bundle-sufficiency
 //
 // Source: CONTEXT.md D-08; PLAN.md Task 3 action
 // Implements: HAND-04 (bundle-sufficiency eval CLI entry point)
@@ -16,9 +16,9 @@
  *
  * NOTE: The evals/ directory is excluded from the published npm tarball (it is
  * dev-only). The import of sufficiency-structural.mjs is therefore LAZY (inside
- * the handler) so that `design-os --help` and other commands do not crash in
+ * the handler) so that `complete-design --help` and other commands do not crash in
  * installed (npm) contexts where evals/ is absent. The eval only runs when the
- * user explicitly invokes `design-os eval bundle-sufficiency` in a dev checkout.
+ * user explicitly invokes `complete-design eval bundle-sufficiency` in a dev checkout.
  */
 export const command = {
   name: "eval bundle-sufficiency",

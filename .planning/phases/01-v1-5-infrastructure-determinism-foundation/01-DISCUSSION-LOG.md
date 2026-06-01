@@ -161,7 +161,7 @@ Captured for future phases (not in scope for Phase 1):
 - Dovetail / Notably interview-transcript ingestion → v2.2
 - Notion / Linear / Google Doc PRD ingestion → v2.1 (Notion limited to Gaia Logic per CLAUDE.md)
 - Voice → PRD interview mode (Whisper) → v2.2
-- `design-os-bridges` (Material Web / Vue / Svelte adapters) → v2.1 sibling package
+- `complete-design-bridges` (Material Web / Vue / Svelte adapters) → v2.1 sibling package
 - Storybook MCP via Chromatic integration → v2.1
 - Enterprise design-process-compliance SKU → year-2+ sibling product
 - VS Code Copilot host parity → v2.1+ (depends on VS Code Agent Skills GA)

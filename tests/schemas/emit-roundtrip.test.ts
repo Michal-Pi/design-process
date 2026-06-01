@@ -90,7 +90,7 @@ describe("Schema emit roundtrip", () => {
       it(`${name}.v1.json declares versioned $id`, async () => {
         const schema = await readDistSchema(name);
         expect(schema["$id"]).toBe(
-          `https://design-os.dev/schemas/${name}.v1.json`
+          `https://complete-design.dev/schemas/${name}.v1.json`
         );
       });
     }

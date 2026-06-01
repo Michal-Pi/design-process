@@ -35,7 +35,7 @@ export const artifact = "<artifact>";
  *
  * Pitfall G prevention: any PR that changes schemas/src/<artifact>.ts and bumps
  * the major version MUST also add a migration script here. Enforce via CI rule
- * (shipped in Plan 03: design-os verify --golden checks for migration coverage).
+ * (shipped in Plan 03: complete-design verify --golden checks for migration coverage).
  *
  * @param {Record<string, unknown>} input - v0 artifact data
  * @returns {Promise<Record<string, unknown>>} - v1 artifact data

@@ -4,7 +4,7 @@ schemaVersion: 1
 stage: "2 → 5a"
 generated: "2026-05-25T00:00:00.000Z"
 provenance: generated
-owner: design-os
+owner: complete-design
 lastReviewedAt: "2026-05-25T00:00:00.000Z"
 sourceHash: sha256:c07057faa52c19c1f4c5574cca96d149bbcee56a30e843234223a9324cf2ba1f
 tokenCount: 3200

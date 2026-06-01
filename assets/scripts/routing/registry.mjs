@@ -1,5 +1,5 @@
 // assets/scripts/routing/registry.mjs
-// Route registry for all 7 design-os routes + stack detection.
+// Route registry for all 7 complete-design routes + stack detection.
 // Implements D-21: all 7 routes wired; 4 implemented-stub (v2.0a) + 3 not-yet-implemented (v2.0b).
 //
 // RouteDefinition shape:

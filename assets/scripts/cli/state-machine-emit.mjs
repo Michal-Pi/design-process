@@ -1,17 +1,17 @@
 // assets/scripts/cli/state-machine-emit.mjs
 // Commander CLI wrapper for state-machine-emit.mjs.
-// Registered by bin/design-os.mjs auto-discovery (subcommand: state-machine-emit).
+// Registered by bin/complete-design.mjs auto-discovery (subcommand: state-machine-emit).
 //
-// Dispatcher contract (bin/design-os.mjs): export const command = { name, describe, builder?, handler }
+// Dispatcher contract (bin/complete-design.mjs): export const command = { name, describe, builder?, handler }
 // NOT { name, description, options, action } — those keys are silently ignored by the dispatcher.
 //
-// Lesson 2 (INVARIANTS.md): CLI modules MUST use the shape bin/design-os.mjs consumes.
+// Lesson 2 (INVARIANTS.md): CLI modules MUST use the shape bin/complete-design.mjs consumes.
 // Read the dispatcher source before writing any CLI module.
 //
 // INVARIANT-05: No LLM imports. Deterministic CLI wrapper only.
 //
 // Usage (via dispatcher):
-//   node bin/design-os.mjs state-machine-emit --spec <path>.spec.md --output <dir> [--screen <name>]
+//   node bin/complete-design.mjs state-machine-emit --spec <path>.spec.md --output <dir> [--screen <name>]
 //
 // Source: PLAN.md 03-02 Task A; INVARIANTS.md Lesson 2
 // Implements: ATOM-10 CLI surface

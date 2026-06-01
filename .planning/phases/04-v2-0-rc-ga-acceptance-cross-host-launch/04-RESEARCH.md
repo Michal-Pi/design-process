@@ -44,7 +44,7 @@ Per D-71 and D-73: Planner allocates owner-write time against engineering tasks 
 
 ### Deferred Ideas (OUT OF SCOPE)
 
-- Junie + Copilot host parity (v2.1 / design-os-bridges companion)
+- Junie + Copilot host parity (v2.1 / complete-design-bridges companion)
 - 15-fixture suite expansion to 30+
 - Live-LLM trigger eval in CI
 - Bridges for Material Web / Vue / Svelte
@@ -100,7 +100,7 @@ Phase 4 is release-engineering and launch — all novel infrastructure (gates, a
 
 | Capability | Primary Tier | Secondary Tier | Rationale |
 |------------|-------------|----------------|-----------|
-| 15-fixture acceptance suite run | Node ESM script (`release-gate.mjs`) | CLI dispatcher (`bin/design-os.mjs`) | Pure scripted orchestration; no browser, no LLM client |
+| 15-fixture acceptance suite run | Node ESM script (`release-gate.mjs`) | CLI dispatcher (`bin/complete-design.mjs`) | Pure scripted orchestration; no browser, no LLM client |
 | Adversarial 100-case corpora generation | Static fixture files (`evals/adversarial/*/cases/`) | Test runner (`vitest`) | Fixed-seeded, not regenerated — determinism invariant |
 | Aggregate coexistence release gate | Existing `evals/coexistence/aggregate-eval.mjs` | `.github/workflows/aggregate-coexistence.yml` | Harness already complete; CI workflow needs `continue-on-error: false` flip |
 | Cross-host parity driver | New `assets/scripts/cross-host-parity.mjs` | `evals/hosts/{codex-cli,cursor}/` workspaces | Existing host-profile workspaces provide the test scaffold |
@@ -190,7 +190,7 @@ Each `cases/` directory holds 100 `case-NNN.case.json` files (zero-padded seed).
 {
   "seed": 0,
   "inputType": "synthetic-persona-block",
-  "fixtureDir": ".design-os/preview/run-case-000/",
+  "fixtureDir": ".complete-design/preview/run-case-000/",
   "expectedGateResult": { "kind": "pass_with_warnings" },
   "expectedCheckId": "1-provenance-001",
   "expectBlock": true
@@ -221,8 +221,8 @@ Each `cases/` directory holds 100 `case-NNN.case.json` files (zero-padded seed).
 **`evals/coexistence/aggregate-eval.mjs`** — complete harness. [VERIFIED: codebase — full implementation, 193 lines]
 
 What it currently does:
-- `runAggregateCoexistenceEval()` — installs 6-package corpus, measures recall (design-os fires on own prompts) and false-fire rate (design-os fires on peer prompts), writes `evals/coexistence/last-run.json`, exits 0 always.
-- `prepareCorpus(corpusDir)` from `install-corpus.mjs` — creates description-only stubs for all 5 peer packages (GSD, Superpowers, frontend-design, shadcn, Notion-MCP) + design-os itself.
+- `runAggregateCoexistenceEval()` — installs 6-package corpus, measures recall (complete-design fires on own prompts) and false-fire rate (complete-design fires on peer prompts), writes `evals/coexistence/last-run.json`, exits 0 always.
+- `prepareCorpus(corpusDir)` from `install-corpus.mjs` — creates description-only stubs for all 5 peer packages (GSD, Superpowers, frontend-design, shadcn, Notion-MCP) + complete-design itself.
 - `RECALL_THRESHOLD = 0.80` and `FALSE_FIRE_THRESHOLD = 0.15` are defined and correct.
 - The algorithm is correct; the missing piece is (a) blocking on failure and (b) real-package corpus.
 
@@ -255,7 +255,7 @@ The `dispatchToHost` function in `evals/runners/dispatch-host.mjs` uses static-a
 
 Each workspace has:
 - `host-profile.test.ts` — tests `detectHost()` and `dispatchSubagent()` behavior for that host profile
-- `package.json` with `@design-os/evals-hosts-<host>` name and `vitest` devDep
+- `package.json` with `@pm-musketeers/evals-hosts-<host>` name and `vitest` devDep
 - `vitest.config.ts` with `HOST_PROFILE=<host>` env set
 - `codex-cli/` and `cursor/` also have `setup.ts` and `node_modules/`
 
@@ -370,7 +370,7 @@ const results = await page.evaluate(async () => {
 });
 ```
 
-**Note on "own examples" scope (D-78):** axe-runner checks only the 15 acceptance fixture outputs — not user-generated outputs. The trust-posture boundary (P8) is preserved: design-os never claims WCAG compliance for user outputs; it only ensures its own demonstration artifacts pass.
+**Note on "own examples" scope (D-78):** axe-runner checks only the 15 acceptance fixture outputs — not user-generated outputs. The trust-posture boundary (P8) is preserved: complete-design never claims WCAG compliance for user outputs; it only ensures its own demonstration artifacts pass.
 
 ---
 
@@ -465,14 +465,14 @@ Per trust-posture P8: REPORTS measured, never claims. [CITED: CLAUDE.md trust po
 
 **`docs/MAINTAINERS.md`** — exists with `@TBD` placeholder for primary maintainer. [VERIFIED: codebase]
 
-**`evals/coexistence/install-corpus.mjs`** — defines the 5 peer packages and their descriptions. This also functions as the source of truth for which packages appear in the marketplace cross-post (same 5 packages validate design-os in coexistence with, aligning the GTM narrative with the technical evidence).
+**`evals/coexistence/install-corpus.mjs`** — defines the 5 peer packages and their descriptions. This also functions as the source of truth for which packages appear in the marketplace cross-post (same 5 packages validate complete-design in coexistence with, aligning the GTM narrative with the technical evidence).
 
 ### Build
 
 **`04-OUTREACH-PACKET.md`** (in `.planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/`) per D-75:
 
 ```markdown
-# design-os v2.0 — Reviewer Outreach Packet
+# complete-design v2.0 — Reviewer Outreach Packet
 
 ## Recruitment Message (200 words)
 [...]
@@ -524,7 +524,7 @@ Anthropic ships hi-fi-only generator (Claude Design current state as of May 2026
 
 **OQ-10 — Marketplace cross-post automation:** Recommend manual for v2.0 GA. Rationale: 8 marketplaces × 5-10 fields = ~80 field inputs. A script would require API keys for each marketplace (not all have public APIs). Manual copy-paste from a structured manifest file (one Markdown table per marketplace listing all required fields) is lower total effort than scripting 8 different submission flows. Create `docs/MARKETPLACE-MANIFEST.md` as a structured template; the owner executes during Wave B. [ASSUMED — marketplace API availability not verified]
 
-**OQ-8 — GTM-02 video production:** No technical dependency from design-os engineering. Identify: video needs the 15-fixture suite to produce screenshots (3 variants per stage — sitemap / wireframe / state-machine / visual). So the video is a Wave B deliverable (after 15-fixture suite passes). Owner records against the accepted fixture outputs.
+**OQ-8 — GTM-02 video production:** No technical dependency from complete-design engineering. Identify: video needs the 15-fixture suite to produce screenshots (3 variants per stage — sitemap / wireframe / state-machine / visual). So the video is a Wave B deliverable (after 15-fixture suite passes). Owner records against the accepted fixture outputs.
 
 ---
 
@@ -535,11 +535,11 @@ For each new Phase 4 file, INVARIANTS.md lessons apply:
 | Lesson | Phase 4 Application | Applies To |
 |--------|---------------------|------------|
 | 1 (GateResult shape) | `release-gate.mjs` must call gates via `runGate()` in `base.mjs` and receive ajv-validated `GateResult`. Do not access `result.kind` before ajv validation. | `release-gate.mjs` |
-| 2 (CLI export shape) | All new CLI files must export `command = { name, describe, builder, handler }`. Verify via `node bin/design-os.mjs <cmd> --help` before writing docs. | `release-gate.mjs`, `cross-host-parity.mjs`, `axe-runner.mjs` |
-| 3 (staged path) | `release-gate.mjs` runs gates against `.design-os/preview/<run-id>/` NOT against a live `design/` directory. The 15-fixture run creates ephemeral staging dirs per fixture. | `release-gate.mjs` |
+| 2 (CLI export shape) | All new CLI files must export `command = { name, describe, builder, handler }`. Verify via `node bin/complete-design.mjs <cmd> --help` before writing docs. | `release-gate.mjs`, `cross-host-parity.mjs`, `axe-runner.mjs` |
+| 3 (staged path) | `release-gate.mjs` runs gates against `.complete-design/preview/<run-id>/` NOT against a live `design/` directory. The 15-fixture run creates ephemeral staging dirs per fixture. | `release-gate.mjs` |
 | 4 (ajv-validate) | `release-gate.mjs` validates `parity-results.json` and `axe-results.json` via ajv before writing. `release-gate-results.json` is also ajv-validated against a new schema. | `release-gate.mjs`, `axe-runner.mjs`, `cross-host-parity.mjs` |
 | 5 (count + identity) | The 15-fixture pass count gate asserts ≥12 by count AND lists the identity (fixtureId) of each passing/failing fixture. `axe-runner.mjs` asserts contrast pass by fixture identity, not just global pass boolean. | `release-gate.mjs`, `axe-runner.mjs` |
-| 6 (real CLI flags) | Verify `node bin/design-os.mjs release-gate --help`, `cross-host-parity --help`, `axe-runner --help` before committing docs or plans that reference these flags. | All three new CLI files |
+| 6 (real CLI flags) | Verify `node bin/complete-design.mjs release-gate --help`, `cross-host-parity --help`, `axe-runner --help` before committing docs or plans that reference these flags. | All three new CLI files |
 | 7 (path-traversal) | `--fixtures-dir` in `release-gate.mjs` and `axe-runner.mjs` must `path.resolve()` the value and verify it starts within the project root before any `readdir`/`readFile`. | `release-gate.mjs`, `axe-runner.mjs` |
 
 ---
@@ -665,7 +665,7 @@ All 100-case adversarial corpora use fixed-seed fixture-builders with no LLM cal
 - `assets/scripts/routing/registry.mjs` — 7-route registry with all budgets [VERIFIED]
 - `assets/scripts/routing/dispatch.mjs` — PHASE3_ROUTE_SPECS per-stage budgets [VERIFIED via SUMMARY]
 - `evals/hosts/{claude-code,codex-cli,cursor}/` — three host-profile workspaces [VERIFIED]
-- `bin/design-os.mjs` — auto-discovery CLI dispatcher (INVARIANT-02 pattern) [VERIFIED]
+- `bin/complete-design.mjs` — auto-discovery CLI dispatcher (INVARIANT-02 pattern) [VERIFIED]
 - `.github/workflows/aggregate-coexistence.yml` — `continue-on-error: true` at line 36 [VERIFIED]
 - `.github/workflows/host-matrix.yml` — matrix strategy for 3 hosts [VERIFIED]
 - `docs/RAPID-RESPONSE.md` — Phase 1 stub with 8-marketplace copy [VERIFIED]

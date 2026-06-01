@@ -1,5 +1,5 @@
 // assets/scripts/schemas/migrate.mjs
-// design-os migrate command implementation.
+// complete-design migrate command implementation.
 // Discovers migration scripts, chains them, validates output.
 // Source: CONTEXT.md D-27; PLAN.md Task 3 action.
 // Implements: PERSIST-03, D-27

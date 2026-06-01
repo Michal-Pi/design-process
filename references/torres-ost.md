@@ -1,6 +1,6 @@
 # Continuous Discovery Habits — Teresa Torres (Opportunity Solution Tree)
 
-<!-- design-os reference: torres-ost -->
+<!-- complete-design reference: torres-ost -->
 
 ## Purpose
 
@@ -22,7 +22,7 @@ structure discovery artifacts and tie user needs to product decisions.
 - Ch.7, p.133: Assumption testing beats solution testing — Stage 1 gate requires ≥1
   assumption identified per major opportunity.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 0 (Strategy): PRD outcome field aligned to Torres OST outcome definition.
 - Stage 1 (Personas / Research): opportunity synthesis uses OST node vocabulary.

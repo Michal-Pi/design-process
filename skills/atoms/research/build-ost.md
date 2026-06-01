@@ -1,5 +1,5 @@
 ---
-name: "design-os/research/build-ost"
+name: "complete-design/research/build-ost"
 description: "Build Torres Opportunity Solution Tree from proto-personas; emit as Mermaid flowchart to design/research/ost.mmd"
 stage: 1
 mvp: true

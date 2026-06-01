@@ -1,5 +1,5 @@
 // assets/scripts/recover.mjs
-// Recovery semantics: reads .design-os/manifest.lock and identifies the resume point.
+// Recovery semantics: reads .complete-design/manifest.lock and identifies the resume point.
 //
 // Implements RECOV-01 (confirm-before-regenerate), RECOV-02 (equivalent end-state
 // assertion), RECOV-03 (scripted-test 100% pass), PERSIST-04 (the machinery;
@@ -64,7 +64,7 @@ function isArtifactPresent(designDir, stage) {
  * @property {string} [reason] - Human-readable reason for requiresConfirmation
  */
 export async function recover({ designDir, resume = true, allowConfirm = false }) {
-  const lockPath = join(designDir, ".design-os", "manifest.lock");
+  const lockPath = join(designDir, ".complete-design", "manifest.lock");
 
   // No lock → start from stage 0
   if (!existsSync(lockPath)) {

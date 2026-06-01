@@ -98,7 +98,7 @@ metrics:
    - Body: canonical DTCG JSON with `$schema`, `$description`, three tier groups
 
 4. Adapter dispatch (`switch + assertNever` — ESLint switch-exhaustiveness-check):
-   - `shadcn`: emits `design-os-tokens.css` (shadcn naming: `--background`, `--foreground`, `--primary`, etc.) + sample `design-os-theme-provider.tsx` wrapper in `components/` subfolder (never `components/ui/`)
+   - `shadcn`: emits `complete-design-tokens.css` (shadcn naming: `--background`, `--foreground`, `--primary`, etc.) + sample `complete-design-theme-provider.tsx` wrapper in `components/` subfolder (never `components/ui/`)
    - `tailwind-v4`: reads existing `app/globals.css`; if `@theme` block found → injects props inside it (additive only, T-02-03-02); if no `@theme` → appends; if no file → creates from scratch
    - `plain-css`: emits `:root {}` with OKLCH values (CSS Color 4)
 
@@ -111,7 +111,7 @@ metrics:
 - Post-check reads last matching entry from run-log.jsonl (flexible field names: tokensUsed/token_count/tokens)
 - Hard-stop exits 1; `--continue-anyway` logs warning but exits 0
 - Pre-check: informational only, exits 0
-- Auto-discovered by `bin/design-os.mjs`
+- Auto-discovered by `bin/complete-design.mjs`
 
 **Golden fixtures:**
 - `evals/fixtures/golden/tokens-project/input.json` — fixed seed with `generatedAt: 2026-05-25T00:00:00.000Z`
@@ -127,10 +127,10 @@ All 32 unit tests pass. lint-determinism CLEAN. tsc clean.
 **commit `49e9227`**: Three SKILL.md files + D-43 regression guard (already committed in RED phase `c0e39ec`).
 
 **skills/workflows/style.md** (W6-lite, Stage 5a):
-- Frontmatter: name=`design-os/style`, description 144 chars, stage:5a, gate:gate/stage-5a-complete
+- Frontmatter: name=`complete-design/style`, description 144 chars, stage:5a, gate:gate/stage-5a-complete
 - 11 numbered procedure steps:
   1. Read stage-2 handoff bundle (halt if absent)
-  2. Budget pre-check via `node bin/design-os.mjs budget-check --stage style --check pre`
+  2. Budget pre-check via `node bin/complete-design.mjs budget-check --stage style --check pre`
   3. Load DTCG/shadcn/WCAG references
   3a. `--depth` dispatch: lightweight/standard/full
   4. TRUST-05 intake (3 questions — brand personality, primary color, font preference)
@@ -138,7 +138,7 @@ All 32 unit tests pass. lint-determinism CLEAN. tsc clean.
   6. ATOM-14 inline: `node assets/scripts/tokens-project.mjs ...`
   7. ATOM-13 inline: 3 palette variants via preview harness, diversity check ≥0.15
   8. Budget post-check
-  9. **D-43 gate step**: explicit `node bin/design-os.mjs gate --stage 5a --design-dir design/` with `not_runnable` expected messaging
+  9. **D-43 gate step**: explicit `node bin/complete-design.mjs gate --stage 5a --design-dir design/` with `not_runnable` expected messaging
   10. Handoff bundle build
   11. Diff + `--apply` step (D-52)
 - Host fallback section: Codex CLI/Cursor sequential path, Playwright skip behavior (D-53)
@@ -182,7 +182,7 @@ All 32 unit tests pass. lint-determinism CLEAN. tsc clean.
 
 ## Known Stubs
 
-None — all tokens are emitted with real OKLCH values. The `evidence:INFERRED` label is intentional (D-42 contract), not a stub. The `hifi/variants-preview.md` atom procedure references `node bin/design-os.mjs preview --variant` which is a Phase 1 preview harness CLI path — that CLI command exists (`assets/scripts/cli/preview.mjs`).
+None — all tokens are emitted with real OKLCH values. The `evidence:INFERRED` label is intentional (D-42 contract), not a stub. The `hifi/variants-preview.md` atom procedure references `node bin/complete-design.mjs preview --variant` which is a Phase 1 preview harness CLI path — that CLI command exists (`assets/scripts/cli/preview.mjs`).
 
 ## Threat Flags
 
@@ -236,27 +236,27 @@ All 5 findings accepted (0 rejected).
 ### Finding 1 (P2) — CLOSED: staging dir anchored to repo root, not designDir
 
 **Commit:** `8414852`
-**Bug:** `stagingDir` computed as `join(designDir, '.design-os', 'preview', runId)`, so with
+**Bug:** `stagingDir` computed as `join(designDir, '.complete-design', 'preview', runId)`, so with
 `--design-dir nested/path/design/` the staging artifacts landed at
-`nested/path/design/.design-os/preview/` instead of `.design-os/preview/`.
-**Fix:** Changed to `resolve(projectRoot, '.design-os', 'preview', runId)`.
+`nested/path/design/.complete-design/preview/` instead of `.complete-design/preview/`.
+**Fix:** Changed to `resolve(projectRoot, '.complete-design', 'preview', runId)`.
 **New test:** `tokens-project: staging dir is anchored to projectRoot (not designDir)` —
-verifies `projectionPath` starts with `<repoRoot>/.design-os/preview/` when `designDir`
+verifies `projectionPath` starts with `<repoRoot>/.complete-design/preview/` when `designDir`
 is nested under `projectRoot`.
 
 ### Finding 2 (P2) — CLOSED: shadcn wrapper CSS import path corrected
 
 **Commit:** `8414852` (same commit as Finding 1)
-**Bug:** Wrapper at `<stagingDir>/components/design-os-theme-provider.tsx` imported
-`'./design-os-tokens.css'` (relative to `components/`) — the CSS file doesn't exist there.
-**Fix:** Changed to `'../design-os-tokens.css'` (parent-relative, resolves to `<stagingDir>/design-os-tokens.css`).
-**New test:** `shadcn wrapper import uses '../design-os-tokens.css'` — reads the wrapper, asserts
-`import "../design-os-tokens.css"` is present and the resolved CSS path exists on disk.
+**Bug:** Wrapper at `<stagingDir>/components/complete-design-theme-provider.tsx` imported
+`'./complete-design-tokens.css'` (relative to `components/`) — the CSS file doesn't exist there.
+**Fix:** Changed to `'../complete-design-tokens.css'` (parent-relative, resolves to `<stagingDir>/complete-design-tokens.css`).
+**New test:** `shadcn wrapper import uses '../complete-design-tokens.css'` — reads the wrapper, asserts
+`import "../complete-design-tokens.css"` is present and the resolved CSS path exists on disk.
 
 ### Finding 3 (P2) — CLOSED: style.md preview invocation aligned with real preview CLI
 
 **Commit:** `1b687be`
-**Bug:** Step 7 used `node bin/design-os.mjs preview --design-dir design/ --variant <A|B|C>` —
+**Bug:** Step 7 used `node bin/complete-design.mjs preview --design-dir design/ --variant <A|B|C>` —
 option surface doesn't exist; `preview` requires a subcommand (`spawn` or `release-port`).
 **Fix:** Rewrote step 7 to use the real two-step flow: `tokens-project.mjs` per variant (7a),
 `preview spawn --framework <vite|next|astro> --repo-root <path>` (7b), Playwright screenshot

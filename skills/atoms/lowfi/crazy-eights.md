@@ -1,5 +1,5 @@
 ---
-name: "design-os/lowfi/crazy-eights"
+name: "complete-design/lowfi/crazy-eights"
 description: "ATOM-08: Produce 8 skeleton IR objects for a screen, each with a distinct layout axis. IR only — never raw Excalidraw JSON."
 stage: 3
 type: atom
@@ -76,7 +76,7 @@ Each IR object follows this schema:
 
 Write the 8-element array to:
 ```
-.design-os/preview/<run-id>/wireframes/<screen>/skeleton-ir.json
+.complete-design/preview/<run-id>/wireframes/<screen>/skeleton-ir.json
 ```
 
 **Emit discipline (strictly enforced by gate):**

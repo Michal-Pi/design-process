@@ -12,9 +12,9 @@ The MRD calls for three distinct stacks. Conflating them is the #1 architectural
 
 | Layer | What it is | Lives where |
 |---|---|---|
-| **(a) What design-os ITSELF ships** | The SKILL.md package, its `references/` corpus, `assets/scripts/` (Node deterministic emitters), eval/CI harness | The published agentskills.io v1 package — installed into the user's `.claude/skills/` or equivalent |
-| **(b) What design-os GENERATES for the user** | `design/` artifacts: PRD.md, persona JSON, sitemap.json, Mermaid flows, Excalidraw wireframes, XState machines, DTCG tokens, DESIGN.md, component scaffolds | The user's repo |
-| **(c) What design-os READS from the user's repo** | The user's existing PRD, framework (Vite/Next/Astro), tokens (if any), shadcn/Tailwind config, existing components | The user's repo |
+| **(a) What complete-design ITSELF ships** | The SKILL.md package, its `references/` corpus, `assets/scripts/` (Node deterministic emitters), eval/CI harness | The published agentskills.io v1 package — installed into the user's `.claude/skills/` or equivalent |
+| **(b) What complete-design GENERATES for the user** | `design/` artifacts: PRD.md, persona JSON, sitemap.json, Mermaid flows, Excalidraw wireframes, XState machines, DTCG tokens, DESIGN.md, component scaffolds | The user's repo |
+| **(c) What complete-design READS from the user's repo** | The user's existing PRD, framework (Vite/Next/Astro), tokens (if any), shadcn/Tailwind config, existing components | The user's repo |
 
 **The package itself ships ZERO React/Next/Vue/Svelte.** No bundler, no app framework. It is a Markdown package + a small number of Node scripts. Bundlers/frameworks appear only as targets of (b) generated output and detection of (c) user repo state.
 
@@ -22,7 +22,7 @@ The MRD calls for three distinct stacks. Conflating them is the #1 architectural
 
 ## Recommended Stack
 
-### (a) Core technologies — what design-os itself ships
+### (a) Core technologies — what complete-design itself ships
 
 | Technology | Version | Purpose | Why Recommended |
 |---|---|---|---|
@@ -40,7 +40,7 @@ The MRD calls for three distinct stacks. Conflating them is the #1 architectural
 | **`vitest`** | 2.x | Unit tests for deterministic scripts; runs the `evals/` golden tests + schema-validation tests | First-party Vite ecosystem fit; ESM-native; fastest for our small TS surface. |
 | **`tsx`** | 4.x | Run TS scripts directly (`tsx assets/scripts/oklch.mts ...`) without precompile in dev | Replaces ts-node; native Node 20+ ESM loader. Production scripts are precompiled `.mjs`. |
 
-### (a-cont) Eval / CI harness — design-os's own quality gates
+### (a-cont) Eval / CI harness — complete-design's own quality gates
 
 | Technology | Version / Status | Purpose | Why Recommended |
 |---|---|---|---|
@@ -49,12 +49,12 @@ The MRD calls for three distinct stacks. Conflating them is the #1 architectural
 | **`axe-core`** | **4.11.x** (current: 4.11.4) | `axe-runner.mjs` CI gate per success metric "100% pass WCAG 2.2 AA contrast on own examples" | Industry-standard accessibility engine; 57% WCAG issue detection automated. Pair with Playwright for headless runs. ([npm](https://www.npmjs.com/package/axe-core)) |
 | **GitHub Actions** | n/a | CI: schema validation, trigger eval per skill, axe-runner, golden tests, coexistence eval | Apache-2.0 OSS standard. Build matrix per host (Claude Code / Codex / Cursor). |
 
-### (b) Artifact format pinning — what design-os generates
+### (b) Artifact format pinning — what complete-design generates
 
 | Format | Version | Stage | Why this exact pin |
 |---|---|---|---|
 | **W3C DTCG Design Tokens** | **2025.10** (first stable, 2025-10-28) | 5b | First stable spec; media type `application/design-tokens+json`; `.tokens` / `.tokens.json` extension; primitive→semantic→component tiers supported via `$type` + groups. R11 + P3 lock this. ([DTCG announcement](https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/), [spec](https://www.designtokens.org/tr/2025.10/format/)) |
-| **Google DESIGN.md** | **April 2026 open-source release** (Apache-2.0, `google-labs-code/design.md`) | 5b | Markdown + YAML frontmatter; tokens in frontmatter, rationale in body. We **emit** with our `$extensions.design-os` carrying structured token + composition data per §15. Track upstream; schema may evolve (animations / dark-mode / breakpoints still under discussion). MEDIUM confidence on schema stability over 14 weeks. ([repo](https://github.com/google-labs-code/design.md), [Google blog](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-design-md/)) |
+| **Google DESIGN.md** | **April 2026 open-source release** (Apache-2.0, `google-labs-code/design.md`) | 5b | Markdown + YAML frontmatter; tokens in frontmatter, rationale in body. We **emit** with our `$extensions.complete-design` carrying structured token + composition data per §15. Track upstream; schema may evolve (animations / dark-mode / breakpoints still under discussion). MEDIUM confidence on schema stability over 14 weeks. ([repo](https://github.com/google-labs-code/design.md), [Google blog](https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-design-md/)) |
 | **Excalidraw JSON** | element schema v2 (current `@excalidraw/excalidraw` 0.18+) | 3 | Excalidraw's `.excalidraw` JSON: `{ type, version, source, elements[], appState, files }`. Generate via `convertToExcalidrawElements()` from skeleton format — do **not** hand-build raw element JSON. MIT-licensed. ([docs](https://docs.excalidraw.com/docs/codebase/json-schema)) |
 | **Mermaid** | **11.15.x** (npm `mermaid` latest) | 2 (flowchart), 4 (stateDiagram-v2) | `flowchart` for user flows (Stage 2); `stateDiagram-v2` for designer-readable state machines (Stage 4, the canonical designer artifact per §3.22 / open-Q2). XState is the engineering parallel artifact, not a replacement. Render via `@mermaid-js/mermaid-cli` headless. ([npm](https://www.npmjs.com/package/mermaid)) |
 | **XState v5** | **5.20.x** (`xstate@5.20.1` per Context7) | 4 | The MRD's IxD machine format. v5 actor-model + setup() pattern + `assign` actions. **Required only** for components with async + ≥3 states + conditional transitions (§3.22 — codex finding). For everything else, Mermaid is enough. (Context7: `/statelyai/xstate`) |
@@ -63,18 +63,18 @@ The MRD calls for three distinct stacks. Conflating them is the #1 architectural
 | **Sitemap JSON (custom `$type` schema)** | `schemaVersion: 1` (we own) | 2 | Custom DTCG-style schema per §3.6. Sibling Mermaid flowcharts for human-readable. |
 | **Optimal Workshop CSV (tree-test results)** | their export format | 2 | Read-only ingestion at the boundary; never produce. v2.1+. |
 
-### (b-cont) Stack adapters — what design-os generates *into* the user's stack
+### (b-cont) Stack adapters — what complete-design generates *into* the user's stack
 
 | Adapter target | Version (what we expect/emit) | Why |
 |---|---|---|
 | **Tailwind CSS v4** | **4.1.x** (CSS-first `@theme` config, OKLCH defaults, Oxide engine) | Lingua franca of LLM-generated React UI. CSS-first config aligns 1:1 with DTCG token tiers — emit `@theme { --color-primary-500: oklch(60% 0.2 270); }`. ([v4 announcement](https://tailwindcss.com/blog/tailwindcss-v4)) |
 | **shadcn/ui** | latest (2026-Q2 — components are copy-paste; pin in eval fixture) | Default React component target. Per CLAUDE.md shadcn rule, generated wrappers in `components/`; never modify `components/ui/` directly. Tailwind v4 compatibility confirmed by shadcn. ([shadcn tailwind-v4 docs](https://ui.shadcn.com/docs/tailwind-v4)) |
 | **Plain CSS** | Modern CSS (CSS Color 4, `@layer`, `oklch()`) | Fallback for projects not on Tailwind. Emit raw `:root { --color-primary: oklch(...); }`. |
-| Material Web / Vue / Svelte | n/a | Out-of-core; ships as `design-os-bridges` companion in v2.1+ per MRD §3.15. **Not** in v2.0a/b. |
+| Material Web / Vue / Svelte | n/a | Out-of-core; ships as `complete-design-bridges` companion in v2.1+ per MRD §3.15. **Not** in v2.0a/b. |
 
-### (c) Preview-adapter targets — what design-os DETECTS in the user's repo
+### (c) Preview-adapter targets — what complete-design DETECTS in the user's repo
 
-These are *not* dependencies of design-os. They are user-stack frameworks design-os spawns dev-servers for at Stage 5a (preview-first variant workflow, preserved from v1.0.1).
+These are *not* dependencies of complete-design. They are user-stack frameworks complete-design spawns dev-servers for at Stage 5a (preview-first variant workflow, preserved from v1.0.1).
 
 | Framework | Version supported | Adapter responsibility |
 |---|---|---|
@@ -95,7 +95,7 @@ The adapter interface is the same v1.0.1 contract: `port.lock`, `_imports/` syml
 | `style-dictionary` | 4.x | Reference projection target for DTCG → Tailwind v4 / shadcn / plain CSS | Used as a validation oracle in `tokens/emit` tests, not a runtime dependency |
 | `js-yaml` | — | **Do not use** for round-trip writes | Use `yaml` (eemeli/yaml) instead |
 | `commander` | 12.x | CLI parsing for `assets/scripts/*.mjs` (e.g., `dtcg-lint.mjs --file ...`) | Only inside deterministic emitters; SKILL.md body invokes via Bash |
-| `pino` | 9.x | Structured logging for `.design-os/private/run-log.jsonl` | Per v1.0.1 §3.18 run logs spec |
+| `pino` | 9.x | Structured logging for `.complete-design/private/run-log.jsonl` | Per v1.0.1 §3.18 run logs spec |
 | `globby` | 14.x | File discovery for `design/` walking | Adapter scripts only |
 | `semver` | 7.x | `schemaVersion` comparison for artifact backwards-compat checks | Anywhere we load a versioned artifact |
 
@@ -108,7 +108,7 @@ The adapter interface is the same v1.0.1 contract: `port.lock`, `_imports/` syml
 | **`tsc --noEmit`** | Strict TypeScript checking on adapter source | Hooked into CI; `"strict": true`, `"noUncheckedIndexedAccess": true` |
 | **`eslint` + `@typescript-eslint`** | Lint adapter source + scripts | Config: forbid `any`, forbid `// @ts-ignore` without justification (CLAUDE.md universal rule) |
 | **`prettier`** | Format TS + Markdown | Pin via `.prettierrc`; run in pre-commit hook |
-| **`tsup`** | Bundle adapter scripts to single `.mjs` per script for shipping | Avoids requiring users to `npm install` design-os's deps |
+| **`tsup`** | Bundle adapter scripts to single `.mjs` per script for shipping | Avoids requiring users to `npm install` complete-design's deps |
 | **`changesets`** | Version + changelog management for the SKILL.md package | Maps to `version:` frontmatter in skill manifest |
 | **`gh` CLI** | GTM cross-post automation; release PRs | Per CLAUDE.md commit/PR conventions |
 | **`playwright install --with-deps chromium`** | One-time browser binary install in CI | Cache binaries between runs |
@@ -117,10 +117,10 @@ The adapter interface is the same v1.0.1 contract: `port.lock`, `_imports/` syml
 
 ## Installation
 
-The package itself installs into the user's agent skill directory (host-dependent path). The **build-time** dependencies of design-os live in the design-os repo, NOT in the user's project:
+The package itself installs into the user's agent skill directory (host-dependent path). The **build-time** dependencies of complete-design live in the complete-design repo, NOT in the user's project:
 
 ```bash
-# Inside the design-os repo (build/CI):
+# Inside the complete-design repo (build/CI):
 
 # Core
 npm install -E zod@^4.4 gray-matter@^4 yaml@^2 ajv@^8 ajv-formats@^3 culori@^4 \
@@ -143,7 +143,7 @@ npm install -ED typescript@^5.7 tsx@^4 tsup@^8 vitest@^2 \
 npx playwright install --with-deps chromium
 ```
 
-The user installing design-os does NOT run any of this. They install the SKILL.md package via their host's skill installer (e.g., `claude skills add design-os`). The package's `assets/scripts/*.mjs` are pre-bundled, so no `npm install` in the user's repo.
+The user installing complete-design does NOT run any of this. They install the SKILL.md package via their host's skill installer (e.g., `claude skills add complete-design`). The package's `assets/scripts/*.mjs` are pre-bundled, so no `npm install` in the user's repo.
 
 ---
 
@@ -156,9 +156,9 @@ The user installing design-os does NOT run any of this. They install the SKILL.m
 | **DTCG v2025.10** | Tokens Studio JSON (legacy), Style Dictionary proprietary, Figma Variables JSON | DTCG is now W3C stable + multi-vendor backed. Tokens Studio + Style Dictionary both target DTCG output. Figma Variables JSON is a one-way export, not an interchange. |
 | **Zod 4** | Valibot, ArkType, TypeBox, raw JSON Schema + Ajv | Zod 4 is now performance-competitive (14× faster than v3). Valibot wins on bundle size for browser; we run in Node, so it's a non-factor. ArkType is fast but smaller ecosystem. Raw JSON Schema is what we *emit* for external consumers (via `zod-to-json-schema`) — but we *author* in Zod. |
 | **Playwright** | Puppeteer, Selenium, Cypress | Playwright is multi-browser (matches the screenshot-variants requirement), first-party Microsoft, bundled browser binaries. v1.0.1 already chose this; preserved. |
-| **Node 22 LTS** | Bun, Deno | Bun's npm compatibility still has rough edges with the long tail of design-tool packages (axe, culori ESM, gray-matter). Deno requires shimming for `gray-matter` and friends. Stick with Node LTS for the package; users may run their *app* on Bun/Deno — design-os doesn't care. |
+| **Node 22 LTS** | Bun, Deno | Bun's npm compatibility still has rough edges with the long tail of design-tool packages (axe, culori ESM, gray-matter). Deno requires shimming for `gray-matter` and friends. Stick with Node LTS for the package; users may run their *app* on Bun/Deno — complete-design doesn't care. |
 | **Local Markdown `references/` corpus** | Vector DB (Pinecone, Chroma), knowledge graph (Memgraph) | The MRD explicitly forbids these in v2 (§3.10, §16). Markdown only. The reason is determinism + cost + zero infra dependency for users. |
-| **Vite 6 + Next 15 + Astro 5 adapters** | Remix, Nuxt, SvelteKit, RedwoodJS | The MRD scopes preview adapters to Vite/Next/Astro for v2.0. Others ship via `design-os-bridges` companion in v2.1+. |
+| **Vite 6 + Next 15 + Astro 5 adapters** | Remix, Nuxt, SvelteKit, RedwoodJS | The MRD scopes preview adapters to Vite/Next/Astro for v2.0. Others ship via `complete-design-bridges` companion in v2.1+. |
 | **Astro 5** | Astro 6 | Astro 6 stable per March 2026 articles; 5 is the conservative LTS-like pin for v2.0 GA (June 2026). Re-evaluate at v2.1. MEDIUM confidence — verify against Astro release cadence at v1.5 kickoff. |
 
 ---
@@ -167,17 +167,17 @@ The user installing design-os does NOT run any of this. They install the SKILL.m
 
 | Avoid | Why | Use Instead |
 |---|---|---|
-| **React / Next / Vue / Svelte in design-os itself** | The package ships as SKILL.md + Node scripts. Shipping a frontend framework would (a) bloat the package past Codex 2% cap, (b) lock to a runtime, (c) violate "inside the user's agent" principle | Plain Markdown + Node `.mjs` scripts. Frameworks appear only as ADAPTER TARGETS for user-repo output. |
+| **React / Next / Vue / Svelte in complete-design itself** | The package ships as SKILL.md + Node scripts. Shipping a frontend framework would (a) bloat the package past Codex 2% cap, (b) lock to a runtime, (c) violate "inside the user's agent" principle | Plain Markdown + Node `.mjs` scripts. Frameworks appear only as ADAPTER TARGETS for user-repo output. |
 | **Vector DB / RAG / Embeddings (Pinecone, Chroma, FAISS, Weaviate)** | MRD §3.10 + §16 explicitly forbids. Determinism + zero-infra principle | Local Markdown `references/`. LLM reads on demand via Read tool. |
 | **Knowledge graph (Memgraph, Neo4j, RDF)** | Same as above | Local Markdown |
-| **A separate package manager (pnpm/yarn workspaces) at user install** | Users install via host skill installer, not npm. Workspaces add no value | Plain `npm` in the design-os build repo only |
+| **A separate package manager (pnpm/yarn workspaces) at user install** | Users install via host skill installer, not npm. Workspaces add no value | Plain `npm` in the complete-design build repo only |
 | **`js-yaml` for round-trip writes** | Does not preserve comments or quote styles; corrupts frontmatter on rewrite | `yaml` (eemeli/yaml) v2 |
 | **ts-node** | Deprecated for ESM; replaced by tsx + native Node loader | `tsx` v4 |
 | **`puppeteer`** | Single-browser; superseded by Playwright for our screenshot-variants need | `@playwright/test` |
 | **Synthetic-persona generation as Stage 1 PRIMARY output** | NN/g 2024 red line; MRD P12 + §3.22 hard-blocks `VALIDATED` grade | Generate as `PROTO`-grade with `provenance: generated`; require `ASSUMPTIONS.md` |
 | **WCAG conformance CLAIMS in output** | P8 trust posture; not legally defensible | Report MEASURED contrast: "WCAG 2.2 AA contrast 4.7 (pass)" |
-| **Auto-publishing to user's git tree** | Trust posture — diff-by-default; `--apply` required | Write to `.design-os/preview/` first; surface diff; await user confirm |
-| **CommonJS** | Vite 6 + Mermaid 11 + culori 1+ + Excalidraw + Playwright are all ESM-only or ESM-first | Pure ESM (`"type": "module"`) throughout design-os |
+| **Auto-publishing to user's git tree** | Trust posture — diff-by-default; `--apply` required | Write to `.complete-design/preview/` first; surface diff; await user confirm |
+| **CommonJS** | Vite 6 + Mermaid 11 + culori 1+ + Excalidraw + Playwright are all ESM-only or ESM-first | Pure ESM (`"type": "module"`) throughout complete-design |
 | **Tailwind v3** | Old config-file model, no OKLCH defaults, doesn't align with DTCG `@theme` | Tailwind v4 (CSS-first `@theme`, OKLCH) |
 | **Node 18, 21, 23 (odd)** | 18 EOL April 2025; 21/23 are non-LTS; Vite 6 dropped 18 | Node 22 LTS (also 20 LTS) |
 | **Pages Router (Next.js)** | App Router is stable since Next 13.4 (May 2023); receives all new investment | Next.js App Router only |
@@ -225,7 +225,7 @@ The user installing design-os does NOT run any of this. They install the SKILL.m
 | Tailwind v4.1 | shadcn/ui (2026 cohort) | Confirmed by shadcn `tailwind-v4` docs |
 | TypeScript 5.7 | Zod 4.4 | Zod 4 redesigned generics for TS 5.4+; 5.7 is well within range |
 | Mermaid 11.15 | `stateDiagram-v2` | v2 is the modern unified-v3-renderer implementation; the diagram type to use |
-| XState 5.20 | `@xstate/inspect`, `@xstate/react` | If user wants visualization in their app; not a design-os dependency |
+| XState 5.20 | `@xstate/inspect`, `@xstate/react` | If user wants visualization in their app; not a complete-design dependency |
 | DTCG 2025.10 | Style Dictionary 4.x | SD 4 has DTCG output transforms; useful as test oracle |
 | DESIGN.md (April 2026) | DTCG 2025.10 | DESIGN.md frontmatter token format aligns with DTCG; treat DESIGN.md as a "DTCG + rationale" wrapper |
 | agentskills.io v1 | Claude Code, Codex CLI, Cursor, Junie, Copilot (VS Code Agent Skills) | `compatibility:` field is experimental; treat as documentation, not enforcement |
@@ -261,7 +261,7 @@ The user installing design-os does NOT run any of this. They install the SKILL.m
 ## Open recommendations to surface in roadmap
 
 1. **v1.5 must lock the versioned JSON Schemas** for `persona.json`, `sitemap.json`, `MANIFEST.md`, state specs, audit-report — emit them via `zod-to-json-schema`, commit as versioned files in `references/schemas/`. This is the R24 prerequisite.
-2. **DESIGN.md spec change-watch** — schedule a weekly check on `google-labs-code/design.md` issues. Spec instability over the 14-week build window is the highest *format* risk. If schema breaks, the `$extensions.design-os` namespace is the fallback (already in §3.6).
+2. **DESIGN.md spec change-watch** — schedule a weekly check on `google-labs-code/design.md` issues. Spec instability over the 14-week build window is the highest *format* risk. If schema breaks, the `$extensions.complete-design` namespace is the fallback (already in §3.6).
 3. **Build the trigger-eval harness in v1.5**, not v2.0a — the coexistence eval (5+ packages installed) is novel and needs early validation. Anthropic's skill-creator harness is the reference model; design ours to be plug-compatible if/when Anthropic ships an external harness.
 4. **Pin Tailwind v4.1 (not "latest")** in the eval fixture — Tailwind v4 has moved fast; we need a frozen target for golden tests.
 5. **Excalidraw element schema risk** — `@excalidraw/excalidraw` element format changed in 2025-2026 (baseline removal). Pin a tested version in tests; do **not** read `latest` at run-time. The MRD treats Excalidraw JSON as a stable interchange, which is approximately but not perfectly true.
@@ -302,9 +302,9 @@ The user installing design-os does NOT run any of this. They install the SKILL.m
 - [VS Code Agent Skills docs](https://code.visualstudio.com/docs/copilot/customization/agent-skills) — Copilot host support
 
 **MRD-referenced sources (cross-checks)**
-- MRD §3.5–§3.21, §9, §10, §11, §15, §16 — local file at `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/design-os-mrd-v2.md`
+- MRD §3.5–§3.21, §9, §10, §11, §15, §16 — local file at `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/complete-design-mrd-v2.md`
 - PROJECT.md R11, R13, R23, R24 — local file at `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/.planning/PROJECT.md`
 
 ---
-*Stack research for: design-os v2.0 — SKILL.md package for 5-stage design process facilitation*
+*Stack research for: complete-design v2.0 — SKILL.md package for 5-stage design process facilitation*
 *Researched: 2026-05-24*

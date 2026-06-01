@@ -1,6 +1,6 @@
 # Thinking in Services / Mental Models — Indi Young (Thinking Styles)
 
-<!-- design-os reference: indi-young-thinking-styles -->
+<!-- complete-design reference: indi-young-thinking-styles -->
 
 ## Purpose
 
@@ -23,7 +23,7 @@ generation and to frame the `provenance: generated` synthetic-persona red line.
 - Listening sessions methodology — 1:1 deep-listening rather than task observation. Stage 1
   research plan template references this as the preferred discovery format.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 1 persona JSON: `approach` (thinking-style cluster) replaces demographic `type`.
 - TRUST-01: synthetic persona red line. Indi Young's explicit position on AI-generated personas

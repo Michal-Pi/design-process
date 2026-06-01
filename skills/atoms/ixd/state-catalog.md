@@ -1,5 +1,5 @@
 ---
-name: "design-os/ixd/state-catalog"
+name: "complete-design/ixd/state-catalog"
 description: "Stage 4 atom: enumerate loading/empty/error/success states per screen, populate interaction-spec.v1.json frontmatter, cite HAX-18 if asyncOperations:true."
 type: atom
 stage: 4
@@ -51,7 +51,7 @@ Given a screen name (kebab-case, e.g., `dashboard`, `checkout-flow`):
    The `stage-4-pr.mjs` detector flags missing citations as `4-pr-hax18-001`.
 
 5. **Emit `<screen>.spec.md`** to the staged output path:
-   `.design-os/preview/<run-id>/interactions/<screen>.spec.md`
+   `.complete-design/preview/<run-id>/interactions/<screen>.spec.md`
 
 ## Output Format
 

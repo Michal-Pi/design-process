@@ -1,5 +1,5 @@
 ---
-name: "design-os/ingest"
+name: "complete-design/ingest"
 description: "Ingest PRD or launch Lenny 1-pager interview; emit design/PRD.md with frontmatter and stage-0 handoff bundle"
 stage: 0
 gate: null
@@ -44,10 +44,10 @@ a 5-7 question interview.
 ### Step 1: Initialise design directory
 
 ```bash
-node bin/design-os.mjs init --design-dir design/
+node bin/complete-design.mjs init --design-dir design/
 ```
 
-Creates `design/` and `.design-os/` structure if absent.
+Creates `design/` and `.complete-design/` structure if absent.
 
 ### Step 2: Auto-detect PRD (D-35)
 
@@ -87,7 +87,7 @@ Ask the user 5-7 questions:
 6. "What is explicitly out of scope for v1?"
 7. *(Optional)* "Are there existing solutions the user already has access to?"
 
-Write interview output to `.design-os/preview/run-<timestamp>/PRD.md` with YAML frontmatter:
+Write interview output to `.complete-design/preview/run-<timestamp>/PRD.md` with YAML frontmatter:
 
 ```yaml
 artifact: prd
@@ -100,18 +100,18 @@ generated: <ISO timestamp>
 
 ### Step 5: Stage and validate
 
-Write staged PRD to `.design-os/preview/run-<timestamp>/PRD.md`.
+Write staged PRD to `.complete-design/preview/run-<timestamp>/PRD.md`.
 
 Validate frontmatter:
 
 ```bash
-node bin/design-os.mjs validate --artifact prd --file .design-os/preview/run-<timestamp>/PRD.md
+node bin/complete-design.mjs validate --artifact prd --file .complete-design/preview/run-<timestamp>/PRD.md
 ```
 
 ### Step 6: Handoff bundle
 
 ```bash
-node bin/design-os.mjs handoff-bundle --stage 0 --design-dir design/
+node bin/complete-design.mjs handoff-bundle --stage 0 --design-dir design/
 ```
 
 ### Step 7: Present diff and await --apply
@@ -120,10 +120,10 @@ Show the user the staged `PRD.md`. Await explicit `--apply` confirmation before
 writing to `design/PRD.md`.
 
 ```bash
-node bin/design-os.mjs apply --run-id <timestamp> --design-dir design/
+node bin/complete-design.mjs apply --run-id <timestamp> --design-dir design/
 ```
 
-Surface: "PRD staged at `.design-os/preview/run-<timestamp>/PRD.md`. Run `--apply` to commit. Next step: `design --route <suggested-route>`."
+Surface: "PRD staged at `.complete-design/preview/run-<timestamp>/PRD.md`. Run `--apply` to commit. Next step: `design --route <suggested-route>`."
 
 ---
 

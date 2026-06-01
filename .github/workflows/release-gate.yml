@@ -61,10 +61,10 @@ jobs:
         run: npx vitest run evals/adversarial/accept-02/run.test.ts evals/adversarial/accept-03/run.test.ts evals/adversarial/accept-04/run.test.ts
 
       - name: Run axe-runner accessibility gate (ACCEPT-09 D-78)
-        run: node bin/design-os.mjs axe-runner --fixtures-dir evals/acceptance --output release-gate-axe-results.json
+        run: node bin/complete-design.mjs axe-runner --fixtures-dir evals/acceptance --output release-gate-axe-results.json
 
       - name: Run release-gate in dry-run mode (no CLAUDE_CODE_BIN in CI)
-        run: node bin/design-os.mjs release-gate --dry-run --fixtures-dir evals/acceptance --output release-gate-results.json
+        run: node bin/complete-design.mjs release-gate --dry-run --fixtures-dir evals/acceptance --output release-gate-results.json
 
       - name: Upload gate results
         if: always()

@@ -1,10 +1,10 @@
 # evals/triggers/audit/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/audit' skill.
-# Phase 2 update: skill name updated to design-os/audit per SKILL.md frontmatter.
+# Per-skill trigger eval corpus for the 'complete-design/audit' skill.
+# Phase 2 update: skill name updated to complete-design/audit per SKILL.md frontmatter.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/audit
+skill: complete-design/audit
 description: >
   Audit design artifacts: --slop-tells (regex linters) or --pr (Stage 5a/5b
   diff detectors); emits AUDIT-REPORT.md.

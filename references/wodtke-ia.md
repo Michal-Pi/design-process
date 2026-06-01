@@ -71,9 +71,9 @@ From Peter Morville: "information foraging theory." Users browse like predators 
 - It accurately predicts what the user will find
 - It differentiates from sibling labels
 
-In design-os Stage 2: every sitemap route label should pass the scent test — would a user with the matching JTBD click this label expecting to find what they need?
+In complete-design Stage 2: every sitemap route label should pass the scent test — would a user with the matching JTBD click this label expecting to find what they need?
 
-## Application to design-os
+## Application to complete-design
 
 ### Stage 2 `structure` workflow
 - Use card sorting results (if available) to validate sitemap route groupings

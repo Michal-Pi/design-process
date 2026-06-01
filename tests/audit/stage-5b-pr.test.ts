@@ -18,7 +18,7 @@ describe('detectStage5bPrIssues', () => {
     const content = `
       {
         "$extensions": {
-          "design-os": {
+          "complete-design": {
             "evidence": "validated"
           }
         }
@@ -56,7 +56,7 @@ describe('detectStage5bPrIssues', () => {
       {
         "$schema": "https://www.designtokens.org/schema/tokens.json",
         "$extensions": {
-          "design-os": {
+          "complete-design": {
             "evidence": "INFERRED"
           }
         }

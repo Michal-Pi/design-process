@@ -33,14 +33,14 @@ what they would have found at 8.
 ## Diverge before converge
 
 The Crazy 8s exercise is always followed by a convergence step (dot voting in Sprint;
-CHOICE.md in design-os). The sequence matters:
+CHOICE.md in complete-design). The sequence matters:
 - **Diverge first:** produce more options than you think you need
 - **Converge second:** select from the expanded option set with explicit rationale
 
 Skipping divergence (going straight to the "obvious" solution) anchors the team to
 pre-existing mental models and forecloses better solutions.
 
-## Application to design-os Stage 3
+## Application to complete-design Stage 3
 
 - 8 skeleton IR objects per screen (matching the 8 Crazy 8s slots)
 - wireframe-diversity.mjs enforces structural diversity (pairwise distance ≥ 0.35)

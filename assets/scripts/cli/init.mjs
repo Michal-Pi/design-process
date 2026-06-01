@@ -1,7 +1,7 @@
 // assets/scripts/cli/init.mjs
-// design-os init subcommand — auto-discovered by bin/design-os.mjs dispatcher.
+// complete-design init subcommand — auto-discovered by bin/complete-design.mjs dispatcher.
 //
-// Writes gitignore/gitattributes templates and creates design/ + .design-os/
+// Writes gitignore/gitattributes templates and creates design/ + .complete-design/
 // skeleton directories in the target repo.
 //
 // Source: Plan 01 auto-discovery contract; CONTEXT.md D-29; PLAN.md Task 1
@@ -13,7 +13,7 @@ import { resolve } from "node:path";
 export const command = {
   name: "init",
   describe:
-    "Initialize design-os in a target directory (writes .gitignore, .gitattributes, design/ skeleton)",
+    "Initialize complete-design in a target directory (writes .gitignore, .gitattributes, design/ skeleton)",
 
   /**
    * @param {import("commander").Command} cmd
@@ -42,7 +42,7 @@ export const command = {
         apply: args.apply ?? false,
       });
     } catch (err) {
-      console.error("design-os init failed:", err instanceof Error ? err.message : err);
+      console.error("complete-design init failed:", err instanceof Error ? err.message : err);
       process.exitCode = 1;
     }
   },

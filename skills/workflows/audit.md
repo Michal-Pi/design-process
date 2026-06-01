@@ -1,5 +1,5 @@
 ---
-name: "design-os/audit"
+name: "complete-design/audit"
 description: "Audit design artifacts: --slop-tells (regex linters) or --pr (Stage 5a/5b diff detectors); emits AUDIT-REPORT.md"
 stage: "cross-stage"
 gate: null
@@ -43,7 +43,7 @@ Runs deterministic regex linters against CSS and TSX files.
 ### Step 1: Scan CSS and TSX files
 
 ```bash
-node bin/design-os.mjs audit --slop-tells --scan-dir . --output .design-os/private/audit-findings.jsonl
+node bin/complete-design.mjs audit --slop-tells --scan-dir . --output .complete-design/private/audit-findings.jsonl
 ```
 
 Glob pattern: `{src,components,app}/**/*.{css,tsx,ts}` (excludes `node_modules`).
@@ -63,7 +63,7 @@ on each file. Patterns loaded from `${CLAUDE_SKILL_DIR}/references/slop-tells/he
 
 ### Step 3: Apply suppressions
 
-Load `.design-os/audit-suppressions.json` if it exists.
+Load `.complete-design/audit-suppressions.json` if it exists.
 Remove suppressed `findingId` entries from findings list.
 
 ### Step 4: Emit AUDIT-REPORT.md
@@ -80,7 +80,7 @@ auditType: slop-tells
 generated: <ISO timestamp>
 sourceHash: sha256:<hash>
 provenance: generated
-owner: design-os/audit
+owner: complete-design/audit
 lastReviewedAt: <ISO timestamp>
 findings: [...]
 ```
@@ -88,7 +88,7 @@ findings: [...]
 Validate against `schemas/dist/audit-report.v1.json`:
 
 ```bash
-node bin/design-os.mjs validate --artifact audit-report --file design/AUDIT-REPORT.md
+node bin/complete-design.mjs validate --artifact audit-report --file design/AUDIT-REPORT.md
 ```
 
 ### Step 5: Exit code
@@ -139,10 +139,10 @@ Follow Steps 3-5 from Mode A (apply suppressions, emit AUDIT-REPORT.md, exit cod
 For CI use:
 
 ```bash
-node bin/design-os.mjs audit --pr --block-on-severity BLOCKER
+node bin/complete-design.mjs audit --pr --block-on-severity BLOCKER
 ```
 
-Only BLOCKER findings block CI by default. Configure via `.design-os/ci.yaml`:
+Only BLOCKER findings block CI by default. Configure via `.complete-design/ci.yaml`:
 
 ```yaml
 audit:
@@ -169,19 +169,19 @@ but no design/ artifacts.
 
 **When to use:**
 - User has an existing live URL or cloned repo and wants to build a design/ foundation
-- Migrating from a prototyping tool to the full 5-stage design-os workflow
+- Migrating from a prototyping tool to the full 5-stage complete-design workflow
 - Auditing what design decisions were implicitly made in an existing app
 
 ### Two input modes
 
 **Mode (a) — Local cloned repo:**
 ```bash
-node bin/design-os.mjs reverse-engineer --source ./path/to/my-app --apply
+node bin/complete-design.mjs reverse-engineer --source ./path/to/my-app --apply
 ```
 
 **Mode (b) — Live URL (Playwright crawler, depth=1 — OQ-5):**
 ```bash
-node bin/design-os.mjs reverse-engineer --source https://my-app.vercel.app --apply
+node bin/complete-design.mjs reverse-engineer --source https://my-app.vercel.app --apply
 ```
 
 Dry-run by default (shows what would be created). Use `--apply` to write artifacts.
@@ -243,7 +243,7 @@ Each stage inference is bounded. URL crawl (Mode b): depth=1 only (OQ-5).
 2. Remove `provenance: inferred` from frontmatter
 3. Remove the `> **INFERRED** — ...` banner from the body
 4. Amend each section with your actual design decisions
-5. Promote: `node bin/design-os.mjs promote-inferred --file <path>`
+5. Promote: `node bin/complete-design.mjs promote-inferred --file <path>`
 
 `promote-inferred` blocks if either the frontmatter field or the body banner is
 still present — you must explicitly clean both (Pitfall 12: refugee fidelity).
@@ -262,11 +262,11 @@ still present — you must explicitly clean both (Pitfall 12: refugee fidelity).
 Post-hoc validator for an existing named feature against all 5 stages.
 
 ```bash
-node bin/design-os.mjs audit --new-feature --feature <feature-name>
+node bin/complete-design.mjs audit --new-feature --feature <feature-name>
 ```
 
 Takes an existing feature name (matching a route in `design/ia/sitemap.json`)
 and verifies that all 5 stage artifacts exist and are internally consistent.
 Does NOT generate new artifacts — use `design --route new-feature` for that.
 
-**Status:** Implemented in design-os 03-05 (next plan).
+**Status:** Implemented in complete-design 03-05 (next plan).

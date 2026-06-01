@@ -4,7 +4,7 @@ stage: "1"
 schemaVersion: 1
 generated: "2026-05-24T10:00:00Z"
 provenance: validated
-owner: design-os
+owner: complete-design
 ---
 
 # Research Assumptions

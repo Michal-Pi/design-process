@@ -1,6 +1,6 @@
-# Trust Posture — design-os
+# Trust Posture — complete-design
 
-This document records the five binding TRUST commitments for the design-os package.
+This document records the five binding TRUST commitments for the complete-design package.
 These are non-negotiable constraints that apply to every release, every output,
 every SKILL.md description, and every piece of marketing copy or README text.
 
@@ -8,7 +8,7 @@ every SKILL.md description, and every piece of marketing copy or README text.
 
 ## TRUST-01 — Never claim WCAG conformance
 
-**Commitment:** design-os outputs report measured contrast numbers only.
+**Commitment:** complete-design outputs report measured contrast numbers only.
 The forbidden claim words are listed under **Forbidden forms** below.
 Never use them in any output, description, or copy.
 
@@ -35,7 +35,7 @@ scans all SKILL.md descriptions and shipping docs for forbidden phrases on every
 
 ## TRUST-02 — Diff-by-default; --apply required to write
 
-**Commitment:** design-os never auto-publishes to the user's git tree.
+**Commitment:** complete-design never auto-publishes to the user's git tree.
 All scripts that would write to user files must:
 1. Default to a dry-run diff preview (exits 0, prints what would change).
 2. Require an explicit `--apply` flag to actually write files.
@@ -56,13 +56,13 @@ scripts follow this pattern.
 ## TRUST-03 — Every rule cites canon or a labeled house heuristic
 
 **Commitment:** Every gate checklist item, every fidelity-cap check, every
-accessibility assertion in design-os output MUST cite:
+accessibility assertion in complete-design output MUST cite:
 - A canonical source (Garrett §X, NN/g article URL, WCAG SC number, Radix step-role,
   W3C spec), OR
 - An explicitly labeled `house heuristic: <name>` with the rationale documented.
 
 **Rationale:** If a rule cannot be traced to a canonical source, it is an opinion.
-Users must be able to distinguish proven practice from design-os's house opinions
+Users must be able to distinguish proven practice from complete-design's house opinions
 to apply their own judgment (MRD §3.5 editorial standards).
 
 **Verification:** Gate checklist files in `references/gates/` include a `Citation`
@@ -88,7 +88,7 @@ description, release note, or marketing material:
 your coding agent".
 
 **Rationale:** "AI design" framing invites comparison with Figma Make, Lovable,
-v0, and Claude Design — tools that generate hi-fi UIs in one shot. design-os's
+v0, and Claude Design — tools that generate hi-fi UIs in one shot. complete-design's
 value is the opposite: structured validation at each stage. Leading with "AI design"
 miscommunicates the product and attracts users who want one-shot output (MRD §12).
 
@@ -100,7 +100,7 @@ docs/*.md (except the checklist itself), and README.md for forbidden phrases on 
 
 ## TRUST-05 — 3-5 question intake per stage; no silent defaults
 
-**Commitment:** Every stage workflow in design-os MUST open with a 3-5 question
+**Commitment:** Every stage workflow in complete-design MUST open with a 3-5 question
 intake sequence that clarifies scope, constraints, and user intent before proceeding.
 No stage may silently assume defaults and begin artifact generation without explicit
 user acknowledgment.

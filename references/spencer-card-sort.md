@@ -20,7 +20,7 @@ tags:
 
 Card sorting reveals how users mentally organize content — not how the organization wants to present it. The gap between organizational mental models and user mental models is the primary source of IA failure ("the org chart published as navigation").
 
-In design-os Stage 2, card sorting results (when available from prior research) inform the sitemap.json route groupings before committing to the hierarchy.
+In complete-design Stage 2, card sorting results (when available from prior research) inform the sitemap.json route groupings before committing to the hierarchy.
 
 ## Types of Card Sorts
 
@@ -65,7 +65,7 @@ Participants sort into predefined categories but can create new ones if needed. 
 ### Facilitation
 - In-person: physical index cards (sticky labels for categories in closed sort)
 - Remote/digital: Optimal Workshop (OptimalSort), Maze, UXtweak
-  - Note: Optimal Workshop CSV ingestion is deferred to design-os v2.1+
+  - Note: Optimal Workshop CSV ingestion is deferred to complete-design v2.1+
 
 ### Analysis Steps
 1. Build a similarity matrix: for each pair of cards, count how often they appeared in the same group across all participants
@@ -84,11 +84,11 @@ After card sorting → after designing the sitemap → validate with tree testin
 - Success: % who found the correct location
 - First click: where most participants clicked first (reveals expectation vs. design)
 
-**Tool:** Optimal Workshop TreeJack (analysis of results via CSV export — v2.1+ for design-os ingestion).
+**Tool:** Optimal Workshop TreeJack (analysis of results via CSV export — v2.1+ for complete-design ingestion).
 
-**design-os usage:** After emitting `design/ia/sitemap.json` in Stage 2, tree testing (if run with a sample) provides the empirical basis for upgrading sitemap provenance from `INFERRED` to `validated`.
+**complete-design usage:** After emitting `design/ia/sitemap.json` in Stage 2, tree testing (if run with a sample) provides the empirical basis for upgrading sitemap provenance from `INFERRED` to `validated`.
 
-## Relationship to design-os Workflows
+## Relationship to complete-design Workflows
 
 ### Stage 2 `structure` workflow
 - If card sort results exist: import groupings into the sitemap.json route hierarchy

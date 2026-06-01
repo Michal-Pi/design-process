@@ -30,7 +30,7 @@ describe("manifest.lock hash chain", () => {
 
   beforeEach(async () => {
     tmpDir = await mkdtemp(join(tmpdir(), "manifest-lock-test-"));
-    designOsDir = join(tmpDir, ".design-os");
+    designOsDir = join(tmpDir, ".complete-design");
     await mkdir(designOsDir, { recursive: true });
   });
 

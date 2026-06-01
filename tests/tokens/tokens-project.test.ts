@@ -67,7 +67,7 @@ describe("tokens-project: shadcn adapter", () => {
   let result: any;
 
   beforeAll(async () => {
-    tmpDir = join(tmpdir(), `design-os-tokens-shadcn-${Date.now()}`);
+    tmpDir = join(tmpdir(), `complete-design-tokens-shadcn-${Date.now()}`);
     await mkdir(tmpDir, { recursive: true });
 
     result = await emitTokens({
@@ -151,19 +151,19 @@ describe("tokens-project: shadcn adapter", () => {
     expect(content).toContain("--primary");
   });
 
-  it("shadcn wrapper import uses '../design-os-tokens.css' (correct relative path from components/)", async () => {
-    // Codex review Finding 2 (P2): wrapper in components/ must import ../design-os-tokens.css
-    // not ./design-os-tokens.css (which resolves from components/ to components/design-os-tokens.css
+  it("shadcn wrapper import uses '../complete-design-tokens.css' (correct relative path from components/)", async () => {
+    // Codex review Finding 2 (P2): wrapper in components/ must import ../complete-design-tokens.css
+    // not ./complete-design-tokens.css (which resolves from components/ to components/complete-design-tokens.css
     // — a path that does not exist).
     const stagingDir = resolve(result.projectionPath, "..");
-    const wrapperPath = join(stagingDir, "components", "design-os-theme-provider.tsx");
+    const wrapperPath = join(stagingDir, "components", "complete-design-theme-provider.tsx");
     expect(existsSync(wrapperPath), `wrapper file not found at ${wrapperPath}`).toBe(true);
     const wrapperContent = await readFile(wrapperPath, "utf8");
     // Must use ../  (parent-relative) not ./  (sibling — wrong path)
-    expect(wrapperContent).toContain('import "../design-os-tokens.css"');
-    expect(wrapperContent).not.toContain('import "./design-os-tokens.css"');
+    expect(wrapperContent).toContain('import "../complete-design-tokens.css"');
+    expect(wrapperContent).not.toContain('import "./complete-design-tokens.css"');
     // The resolved CSS file must actually exist at that path
-    const cssPath = resolve(wrapperPath, "../..", "design-os-tokens.css");
+    const cssPath = resolve(wrapperPath, "../..", "complete-design-tokens.css");
     expect(existsSync(cssPath), `CSS file must exist at resolved path ${cssPath}`).toBe(true);
   });
 });
@@ -177,7 +177,7 @@ describe("tokens-project: tailwind-v4 adapter", () => {
   let result: any;
 
   beforeAll(async () => {
-    tmpDir = join(tmpdir(), `design-os-tokens-tw4-${Date.now()}`);
+    tmpDir = join(tmpdir(), `complete-design-tokens-tw4-${Date.now()}`);
     await mkdir(tmpDir, { recursive: true });
 
     result = await emitTokens({
@@ -228,7 +228,7 @@ describe("tokens-project: tailwind-v4 adapter @theme merge", () => {
   const existingGlobals = `@import "tailwindcss";\n\n@theme {\n  --color-existing: oklch(50% 0.1 200);\n}\n`;
 
   beforeAll(async () => {
-    tmpDir = join(tmpdir(), `design-os-tokens-tw4-merge-${Date.now()}`);
+    tmpDir = join(tmpdir(), `complete-design-tokens-tw4-merge-${Date.now()}`);
     await mkdir(tmpDir, { recursive: true });
     // Write an existing globals.css with an @theme block
     const { writeFile } = await import("node:fs/promises");
@@ -279,7 +279,7 @@ describe("tokens-project: plain-css adapter", () => {
   let result: any;
 
   beforeAll(async () => {
-    tmpDir = join(tmpdir(), `design-os-tokens-plain-${Date.now()}`);
+    tmpDir = join(tmpdir(), `complete-design-tokens-plain-${Date.now()}`);
     await mkdir(tmpDir, { recursive: true });
 
     result = await emitTokens({
@@ -330,7 +330,7 @@ describe("tokens-project: determinism (5x byte-identical)", () => {
     const { createHash } = await import("node:crypto");
 
     for (let i = 0; i < 5; i++) {
-      const tmpDir = join(tmpdir(), `design-os-determ-${Date.now()}-${i}`);
+      const tmpDir = join(tmpdir(), `complete-design-determ-${Date.now()}-${i}`);
       await mkdir(tmpDir, { recursive: true });
 
       const res = await emitTokens({
@@ -460,7 +460,7 @@ describe("tokens-project: DTCG three-tier structure", () => {
   let dtcgBody: Record<string, unknown>;
 
   beforeAll(async () => {
-    tmpDir = join(tmpdir(), `design-os-dtcg-tiers-${Date.now()}`);
+    tmpDir = join(tmpdir(), `complete-design-dtcg-tiers-${Date.now()}`);
     await mkdir(tmpDir, { recursive: true });
 
     const res = await emitTokens({
@@ -532,15 +532,15 @@ describe("tokens-project: DTCG three-tier structure", () => {
 
 describe("tokens-project: staging dir is anchored to projectRoot (not designDir)", () => {
   // Codex review Finding 1 (P2): when --design-dir is a nested path such as
-  // /tmp/root/nested/design/, the staging dir MUST be /tmp/root/.design-os/preview/run-*/
-  // NOT /tmp/root/nested/design/.design-os/preview/run-*/
+  // /tmp/root/nested/design/, the staging dir MUST be /tmp/root/.complete-design/preview/run-*/
+  // NOT /tmp/root/nested/design/.complete-design/preview/run-*/
   // This test asserts that contract: if it ever regresses, the test fails.
 
   it("stagingDir under projectionPath resolves inside projectRoot, not under designDir", async () => {
     const { mkdtemp } = await import("node:fs/promises");
 
     // Create an isolated root + a nested design dir
-    const repoRoot = await mkdtemp(join(tmpdir(), "design-os-staging-anchor-root-"));
+    const repoRoot = await mkdtemp(join(tmpdir(), "complete-design-staging-anchor-root-"));
     const designDir = join(repoRoot, "src", "design");
     await mkdir(designDir, { recursive: true });
 
@@ -558,15 +558,15 @@ describe("tokens-project: staging dir is anchored to projectRoot (not designDir)
         generatedAt: "2026-05-25T00:00:00.000Z",
       });
 
-      // projectionPath must be inside repoRoot/.design-os/preview/
-      const expectedPrefix = join(repoRoot, ".design-os", "preview");
+      // projectionPath must be inside repoRoot/.complete-design/preview/
+      const expectedPrefix = join(repoRoot, ".complete-design", "preview");
       expect(
         res.projectionPath.startsWith(expectedPrefix),
         `projectionPath '${res.projectionPath}' must start with '${expectedPrefix}'`
       ).toBe(true);
 
-      // projectionPath must NOT be under designDir/.design-os/
-      const badPrefix = join(designDir, ".design-os");
+      // projectionPath must NOT be under designDir/.complete-design/
+      const badPrefix = join(designDir, ".complete-design");
       expect(
         res.projectionPath.startsWith(badPrefix),
         `projectionPath '${res.projectionPath}' must NOT be nested under designDir '${badPrefix}'`

@@ -68,7 +68,7 @@ None — plan executed exactly as written. The existing RAPID-RESPONSE.md struct
 | MAINTAINERS.md line count | 36 (≥10 spec met) |
 | Launch post word count | 1,642 (within 1,200-1,800) |
 | Recruitment message word count | 180 (within 180-220 spec) |
-| Watcher signal source present | PASS (.design-os/watcher/anthropic-labs-*.json) |
+| Watcher signal source present | PASS (.complete-design/watcher/anthropic-labs-*.json) |
 | Wave B marketplace list in launch post | 0 (no leakage) |
 | Repo URL consistent across docs | PASS (https://github.com/Michal-Pi/design-process) |
 | Owner email consistent | PASS (michal.pilawski@gmail.com in MAINTAINERS) |

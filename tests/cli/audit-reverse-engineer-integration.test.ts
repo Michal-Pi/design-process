@@ -1,5 +1,5 @@
 // tests/cli/audit-reverse-engineer-integration.test.ts
-// Integration test: `design-os audit --reverse-engineer-stages` CLI surface.
+// Integration test: `complete-design audit --reverse-engineer-stages` CLI surface.
 //
 // Finding 1 fix verification:
 //   - audit --help registers --reverse-engineer-stages, --source, --output-dir flags
@@ -22,9 +22,9 @@ import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
-const BIN = join(ROOT, 'bin', 'design-os.mjs');
+const BIN = join(ROOT, 'bin', 'complete-design.mjs');
 
-/** Spawn design-os with given args and return { stdout, stderr, status } */
+/** Spawn complete-design with given args and return { stdout, stderr, status } */
 function runDesignOs(args: string[]): { stdout: string; stderr: string; status: number } {
   const result = spawnSync(process.execPath, [BIN, ...args], {
     cwd: ROOT,

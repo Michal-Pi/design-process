@@ -20,7 +20,7 @@ dependency_graph:
   provides:
     - pii-scanner with Luhn CC validation and allowlist drift detection
     - gitignore/gitattributes templates with idempotent guarded-block injection
-    - design-os init CLI command
+    - complete-design init CLI command
     - SPINE-04 linearity checker (no forward-stage dependencies)
     - MANIFEST.md reconciler (deterministic sorted GFM table)
     - install-hooks pre-commit PII gate
@@ -45,8 +45,8 @@ tech_stack:
 
 key_files:
   created:
-    - assets/templates/gitignore-design-os.txt
-    - assets/templates/gitattributes-design-os.txt
+    - assets/templates/gitignore-complete-design.txt
+    - assets/templates/gitattributes-complete-design.txt
     - assets/scripts/init.mjs
     - assets/scripts/pii-scan.mjs
     - assets/scripts/manifest-md-reconcile.mjs
@@ -68,7 +68,7 @@ key_files:
     - docs/TRUST-POSTURE.md
     - docs/COPY-REVIEW-CHECKLIST.md
     - tools/install-hooks.sh
-    - .design-os/pii-allowlist.json
+    - .complete-design/pii-allowlist.json
     - tests/governance/gitignore-defaults.test.ts
     - tests/governance/init.test.ts
     - tests/governance/spine-linearity.test.ts
@@ -152,10 +152,10 @@ Governance layer providing diff-by-default init (gitignore/gitattributes templat
 - **Files modified:** `tests/governance/trust-posture.test.ts`
 - **Commit:** bf7d2fb
 
-**5. [Rule 3 - Blocking] Governance fixture .design-os/ directory gitignored**
+**5. [Rule 3 - Blocking] Governance fixture .complete-design/ directory gitignored**
 - **Found during:** Task 2 staging
-- **Issue:** `.gitignore` had `tests/fixtures/**/.design-os/` which blocked staging `tests/fixtures/governance/design-dir-with-overrides/.design-os/manifest.lock`
-- **Fix:** Added exception lines to `.gitignore`: `!tests/fixtures/governance/**/.design-os/` and `!tests/fixtures/governance/**/.design-os/manifest.lock`
+- **Issue:** `.gitignore` had `tests/fixtures/**/.complete-design/` which blocked staging `tests/fixtures/governance/design-dir-with-overrides/.complete-design/manifest.lock`
+- **Fix:** Added exception lines to `.gitignore`: `!tests/fixtures/governance/**/.complete-design/` and `!tests/fixtures/governance/**/.complete-design/manifest.lock`
 - **Files modified:** `.gitignore`
 - **Commit:** 52f7e3d
 
@@ -175,7 +175,7 @@ Governance layer providing diff-by-default init (gitignore/gitattributes templat
 
 **8. [Rule 1 - Bug] override-banner-propagate test: fixture had overrideBanner already present after manual CLI run**
 - **Found during:** Task 3 verification
-- **Issue:** Manual CLI verification run (`node bin/design-os.mjs override-banner propagate ...`) added `overrideBanner` to `p1.json` fixture before the test ran, causing the "modified" count to be 0
+- **Issue:** Manual CLI verification run (`node bin/complete-design.mjs override-banner propagate ...`) added `overrideBanner` to `p1.json` fixture before the test ran, causing the "modified" count to be 0
 - **Fix:** `git checkout -- tests/fixtures/governance/design-dir-with-overrides/personas/p1.json` to restore committed state; repeated pattern documented for future CLI verification order
 - **Commit:** No code change; fixture restored
 

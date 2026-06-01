@@ -70,7 +70,7 @@ export async function migrate(input) {
 
   // Ensure owner exists.
   if (!output.owner) {
-    output.owner = "unknown@design-os.dev";
+    output.owner = "unknown@complete-design.dev";
   }
 
   // Ensure sourceHash exists (set to a placeholder; real hash should be computed).

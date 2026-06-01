@@ -1,6 +1,6 @@
 # When Coffee and Kale Compete — Alan Klement (Jobs To Be Done)
 
-<!-- design-os reference: klement-jtbd -->
+<!-- complete-design reference: klement-jtbd -->
 
 ## Purpose
 
@@ -22,7 +22,7 @@ and in Stage 0 to validate that the PRD's outcome is a genuine job-to-be-done.
 - Ch.5, p.88: Switch interviews vs. new-user interviews — Stage 1 defaults to switch interviews
   (most revealing); pure new-user research is flagged with `provenance: generated`.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 0 PRD: product outcome validated against a JTBD statement.
 - Stage 1 persona JSON: `jtbd` field required (GATE-01 checklist item).

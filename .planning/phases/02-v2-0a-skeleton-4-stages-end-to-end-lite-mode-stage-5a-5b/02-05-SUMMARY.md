@@ -70,7 +70,7 @@ key_files:
     - assets/scripts/routing/dispatch.mjs (real runSubagent wiring, detectStack)
     - assets/scripts/routing/registry.mjs (detectStack export)
     - evals/runners/skillgrade.mjs (Phase 2 descriptions, recall tuning)
-    - evals/triggers/audit/triggers.yaml (skill: design-os/audit)
+    - evals/triggers/audit/triggers.yaml (skill: complete-design/audit)
     - skills/design/SKILL.md (v2.0a routes table, related skills)
     - schemas/src/audit-report.ts (findingId pattern, auditType field)
     - schemas/src/finding.ts (findingId pattern updated)
@@ -122,7 +122,7 @@ Phase 2 ("v2.0a Skeleton") final plan — delivers the audit CLI with regex slop
 
 **stage-5b-pr.mjs** — `detectStage5bPrIssues()` flags DTCG token files where `evidence: validated|proto` was changed (BLOCKER) or `$schema` doesn't reference designtokens.org (WARNING).
 
-**apply.mjs** — `applyStaging({ stagingPath, designDir })` copies artifacts from `.design-os/preview/run-<id>/` to `design/`. Diff-by-default; warns on conflict; `--no-overwrite` aborts if conflict detected. Returns `{ applied, warnings }`.
+**apply.mjs** — `applyStaging({ stagingPath, designDir })` copies artifacts from `.complete-design/preview/run-<id>/` to `design/`. Diff-by-default; warns on conflict; `--no-overwrite` aborts if conflict detected. Returns `{ applied, warnings }`.
 
 ### T-02-05-B: Dispatch Wiring + SKILL.md Files
 
@@ -138,7 +138,7 @@ Phase 2 ("v2.0a Skeleton") final plan — delivers the audit CLI with regex slop
 
 ### T-02-05-C: Audit CLI + AUDIT-REPORT Emit
 
-**audit.mjs** — `runAudit({ slopTells, pr, scanDir, designDir, output, blockOnSeverity, continueAnyway, projectRoot })`. Orchestrates slop-tells scan (globs CSS/TSX), PR diff scan (git diff --name-only HEAD~1), suppression loading (`.design-os/audit-suppressions.json`), severity sorting (BLOCKER → ERROR → WARNING → INFO), and AUDIT-REPORT.md emit. `blocked: true` if any finding meets blockOnSeverity threshold.
+**audit.mjs** — `runAudit({ slopTells, pr, scanDir, designDir, output, blockOnSeverity, continueAnyway, projectRoot })`. Orchestrates slop-tells scan (globs CSS/TSX), PR diff scan (git diff --name-only HEAD~1), suppression loading (`.complete-design/audit-suppressions.json`), severity sorting (BLOCKER → ERROR → WARNING → INFO), and AUDIT-REPORT.md emit. `blocked: true` if any finding meets blockOnSeverity threshold.
 
 **AUDIT-REPORT.md** — YAML frontmatter + GFM table; `artifact: audit-report`, `stage: cross-stage`, `sourceHash: sha256:<64hex>`, `findings[].findingId`, `findings[].severity` (WARN|BLOCKER|INFO per schema enum), `findings[].evidence.path`, `findings[].fixRecipe`.
 
@@ -261,9 +261,9 @@ Phase 2 final fix sweep addressing 5 P2 (HIGH) bugs found by Codex review.
 
 **Finding 3: apply.mjs ENOENT on overwrite warning path**
 - **Files:** `assets/scripts/cli/apply.mjs`, `assets/scripts/init.mjs`
-- **Bug:** `apply.mjs` appends to `.design-os/private/run-log.jsonl` but `design-os init` only creates `.design-os/`, not `.design-os/private/`. `appendFile` throws ENOENT before the copy happens.
-- **Fix:** (a) `apply.mjs`: `await mkdir(dirname(logPath), { recursive: true })` before `appendFile`. (b) `init.mjs`: explicitly creates `.design-os/private/` in the init skeleton.
-- **Test:** "succeeds (no ENOENT) when .design-os/private/ does not exist" — overwrite with no private/ pre-existing; verifies run-log is written and no ENOENT.
+- **Bug:** `apply.mjs` appends to `.complete-design/private/run-log.jsonl` but `complete-design init` only creates `.complete-design/`, not `.complete-design/private/`. `appendFile` throws ENOENT before the copy happens.
+- **Fix:** (a) `apply.mjs`: `await mkdir(dirname(logPath), { recursive: true })` before `appendFile`. (b) `init.mjs`: explicitly creates `.complete-design/private/` in the init skeleton.
+- **Test:** "succeeds (no ENOENT) when .complete-design/private/ does not exist" — overwrite with no private/ pre-existing; verifies run-log is written and no ENOENT.
 - **Commit:** ae19a6d
 
 **Finding 4: audit --pr only diffs HEAD~1 instead of PR range**
@@ -293,7 +293,7 @@ Phase 2 final fix sweep addressing 5 P2 (HIGH) bugs found by Codex review.
 
 - `normalizeSeverity()` exported in audit.mjs — VERIFIED
 - `findings: []` emitted for clean reports — VERIFIED (spot-check + test)
-- `.design-os/private/` created by apply.mjs before append — VERIFIED (spot-check)
+- `.complete-design/private/` created by apply.mjs before append — VERIFIED (spot-check)
 - `--base` CLI option present in audit command — VERIFIED
 - `process.exit(1)` on git diff failure — VERIFIED (test intercepts)
 - 815 tests pass — VERIFIED (full vitest run)

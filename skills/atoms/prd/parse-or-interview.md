@@ -1,5 +1,5 @@
 ---
-name: "design-os/prd/parse-or-interview"
+name: "complete-design/prd/parse-or-interview"
 description: "Auto-detect existing PRD and parse it, or launch 5-7 question Lenny 1-pager interview if no PRD found"
 stage: 0
 mvp: true

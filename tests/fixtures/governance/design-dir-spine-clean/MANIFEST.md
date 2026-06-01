@@ -8,7 +8,7 @@ entries:
     stage: "1"
 generated: 2026-05-25T00:00:00.000Z
 lastReviewedAt: 2026-05-25T00:00:00.000Z
-owner: design-os-reconciler
+owner: complete-design-reconciler
 provenance: validated
 schemaVersion: 1
 sourceHash: sha256:13731751403a622f5abaa02f0ba4bfcd9d3a5be880aebe2aa5c47bdba8af8c42

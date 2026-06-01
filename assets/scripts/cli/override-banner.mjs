@@ -1,5 +1,5 @@
 // assets/scripts/cli/override-banner.mjs
-// design-os override-banner subcommand group — auto-discovered by bin/design-os.mjs.
+// complete-design override-banner subcommand group — auto-discovered by bin/complete-design.mjs.
 //
 // Subcommand: override-banner propagate --design-dir <path>
 // Reads manifest.lock, finds user_overridden entries, adds overrideBanner: to matching artifacts.

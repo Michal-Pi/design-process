@@ -10,9 +10,9 @@ estimated_duration: 65-80 minutes total
 
 # SC-1 Manual Verification Plan — `design --route new-feature` on Next 15 fixture, via npm @beta install
 
-This is the live-LLM acceptance check that was structurally deferred from Phases 2 and 3 to user manual verification on a **clean laptop** (one that has never run design-os before). The goal is to catch host-installation, trigger-discovery, and cold-start failures that the in-tree CI matrix cannot see (CI always runs with the repo already cloned, deps pre-installed, and the trigger corpus warm in vitest memory).
+This is the live-LLM acceptance check that was structurally deferred from Phases 2 and 3 to user manual verification on a **clean laptop** (one that has never run complete-design before). The goal is to catch host-installation, trigger-discovery, and cold-start failures that the in-tree CI matrix cannot see (CI always runs with the repo already cloned, deps pre-installed, and the trigger corpus warm in vitest memory).
 
-Per **D-80**, this plan exercises the canonical install path that real users will hit at GA: `npm i -g design-os@beta && design-os install`. **It also exercises the deferred `${CLAUDE_SKILL_DIR}` path-resolution validation** that the Plan 04-00 fix-pass introduced — confirming that SKILL.md's `${CLAUDE_SKILL_DIR}/workflows/…` and `${CLAUDE_SKILL_DIR}/references/…` references actually resolve when the skill is loaded under `~/.claude/skills/`.
+Per **D-80**, this plan exercises the canonical install path that real users will hit at GA: `npm i -g @pm-musketeers/complete-design@beta && complete-design install`. **It also exercises the deferred `${CLAUDE_SKILL_DIR}` path-resolution validation** that the Plan 04-00 fix-pass introduced — confirming that SKILL.md's `${CLAUDE_SKILL_DIR}/workflows/…` and `${CLAUDE_SKILL_DIR}/references/…` references actually resolve when the skill is loaded under `~/.claude/skills/`.
 
 This plan supersedes any prior ad-hoc test instructions. Follow it sequentially. If a step diverges from "Expected", **stop and capture the divergence in `Notes`** at the bottom before continuing.
 
@@ -29,7 +29,7 @@ It does **not** verify:
 - The published npm tarball installs cleanly on a host the dev never touched
 - Skill-loader discovery by Claude Code / Codex CLI / Cursor in a real `~/.claude/skills/` install
 - `${CLAUDE_SKILL_DIR}` substitution working in the workflow + reference files at runtime
-- That the `design-os` description+triggers actually fire when a user types real intent into a fresh chat
+- That the `complete-design` description+triggers actually fire when a user types real intent into a fresh chat
 - Cost discipline in a real LLM call (vs. fixture token counts)
 - Wall-clock behavior under realistic LLM latency (vs. CI mocked harness)
 
@@ -43,7 +43,7 @@ SC-1 is the gate that catches the gap between "tests green" and "a real user can
    - macOS 14+ or Ubuntu 22.04+ or Windows 11 + WSL2
    - Node 22 LTS installed (`node --version` shows `v22.x`)
    - Claude Code CLI installed and authenticated to your Anthropic account
-   - No prior `~/.claude/skills/design-os` install (if you have one, back it up: `mv ~/.claude/skills/design-os ~/.claude/skills/design-os.pre-sc1-backup`)
+   - No prior `~/.claude/skills/complete-design` install (if you have one, back it up: `mv ~/.claude/skills/complete-design ~/.claude/skills/complete-design.pre-sc1-backup`)
    - At least 1 GB free disk (the published tarball is ~220 kB; node_modules ~500 MB for the global install; cache headroom)
    - Network access to npmjs.org and api.anthropic.com (NOT github.com — npm flow doesn't need git)
 
@@ -66,32 +66,32 @@ SC-1 is the gate that catches the gap between "tests green" and "a real user can
    cd /tmp/sc1-run-$(date +%Y%m%d)
    ```
 
-2. Install design-os globally from the `@beta` dist-tag:
+2. Install complete-design globally from the `@beta` dist-tag:
    ```bash
-   npm i -g design-os@beta
+   npm i -g @pm-musketeers/complete-design@beta
    ```
    **Expected:** Install completes in 30-60 seconds. The package is small (~220 kB tarball, 156 files); npm fetches deps; no build step (skills are pre-bundled). No `peer dep` errors.
 
 3. Verify the bin:
    ```bash
-   design-os --version
+   complete-design --version
    ```
    **Expected:** Output is `2.0.0-beta.0`.
 
 4. Run the install subcommand to copy the SKILL.md package into your Claude Code skills directory:
    ```bash
-   design-os install
+   complete-design install
    ```
    **Expected output:**
    ```
-   Installed design-os skill to: <home>/.claude/skills/design-os
+   Installed complete-design skill to: <home>/.claude/skills/complete-design
 
    Restart your Claude Code session (or run /reload-skills if available) to pick up the new skill.
    ```
 
 5. Verify the bundled layout (P1 fix from Plan 04-00 — the install copies more than just SKILL.md):
    ```bash
-   ls ~/.claude/skills/design-os/
+   ls ~/.claude/skills/complete-design/
    ```
    **Expected:** Shows `SKILL.md`, `workflows/`, `atoms/`, `audit/`, `handoff/`, `references/`. If only `SKILL.md` is present without the supporting dirs, the install command shipped without the Plan 04-00 fix — **STOP** and capture.
 
@@ -99,10 +99,10 @@ SC-1 is the gate that catches the gap between "tests green" and "a real user can
 
    Restart Claude Code (close the terminal, open a new one, `cd /tmp/sc1-run-…`, run `claude`). In the new session, paste this exact prompt:
 
-   > I'm testing a SKILL.md package called `design-os`. Please run these 4 checks and report each one as PASS or FAIL with a one-line note:
+   > I'm testing a SKILL.md package called `complete-design`. Please run these 4 checks and report each one as PASS or FAIL with a one-line note:
    >
    > 1. Is the `design` skill listed in your available skills? (`/help` or skill discovery — whatever surfaces them)
-   > 2. Read the file `${CLAUDE_SKILL_DIR}/workflows/discover.md` from the design-os skill. Did the Read succeed and return real content?
+   > 2. Read the file `${CLAUDE_SKILL_DIR}/workflows/discover.md` from the complete-design skill. Did the Read succeed and return real content?
    > 3. The file `discover.md` references other files via paths like `${CLAUDE_SKILL_DIR}/references/...`. Pick the first such reference inside `discover.md` and Read it. Did THAT Read succeed?
    > 4. Briefly: did the `${CLAUDE_SKILL_DIR}` substitution resolve correctly in both reads, or did you have to manually substitute the path?
 
@@ -115,7 +115,7 @@ SC-1 is the gate that catches the gap between "tests green" and "a real user can
 
 ### Phase B — Cold-start trigger discovery (~5 minutes)
 
-The point of this phase is to verify the `description` + `triggers.yaml` for `design-os` and the `design` workflow actually fire on a realistic user intent. **Do not** invoke `/design-os` or `design-os` directly — that bypasses the trigger surface.
+The point of this phase is to verify the `description` + `triggers.yaml` for `complete-design` and the `design` workflow actually fire on a realistic user intent. **Do not** invoke `/complete-design` or `complete-design` directly — that bypasses the trigger surface.
 
 1. Open a fresh Claude Code session if you haven't already (you can reuse the session from Phase A step 6 if it's still alive). Your working dir can be anywhere — `~/.claude/skills/` is what Claude Code reads from, not your `cwd`. For this verification, an empty tmp dir is fine:
    ```bash
@@ -132,7 +132,7 @@ The point of this phase is to verify the `description` + `triggers.yaml` for `de
 
 3. **Expected:** Claude should invoke the `design` skill (it should appear in the response trace as a Skill tool invocation, or Claude should announce something like "Using design to walk through the 5-stage process for your new feature"). The `design --route new-feature` route should be selected automatically based on stack detection (Next + Tailwind + shadcn existing app + new feature scope).
 
-   **If Claude does NOT invoke the skill** (e.g., it answers with generic design advice instead, or it asks "do you want me to use design-os?"), the trigger description is too weak to fire on real intent — capture this divergence; this is exactly the kind of gap SC-1 exists to catch.
+   **If Claude does NOT invoke the skill** (e.g., it answers with generic design advice instead, or it asks "do you want me to use complete-design?"), the trigger description is too weak to fire on real intent — capture this divergence; this is exactly the kind of gap SC-1 exists to catch.
 
 ---
 
@@ -140,7 +140,7 @@ The point of this phase is to verify the `description` + `triggers.yaml` for `de
 
 This phase runs the actual `design --route new-feature` workflow end-to-end. The clean-laptop wall-clock is the measured value.
 
-1. Still in the same Claude Code session (so the trigger already fired in Phase B), provide context. **Note:** the canonical TaskFlow PRD that fixture-01 of the acceptance corpus references lives inside the published npm package at `node_modules/-g/design-os/evals/.../PRD.md` (or wherever npm installed it). For SC-1, **paraphrase the TaskFlow context inline** in your prompt rather than fishing for the file:
+1. Still in the same Claude Code session (so the trigger already fired in Phase B), provide context. **Note:** the canonical TaskFlow PRD that fixture-01 of the acceptance corpus references lives inside the published npm package at `node_modules/-g/complete-design/evals/.../PRD.md` (or wherever npm installed it). For SC-1, **paraphrase the TaskFlow context inline** in your prompt rather than fishing for the file:
 
    ```
    The app is "TaskFlow" — a B2B SaaS team task management tool built on
@@ -172,22 +172,22 @@ This phase runs the actual `design --route new-feature` workflow end-to-end. The
    ```bash
    # In a second terminal:
    cd /tmp/sc1-run-$(date +%Y%m%d)
-   ls -R .design-os/preview/
-   # Or wherever design-os wrote outputs (it MUST be a staged preview, not
+   ls -R .complete-design/preview/
+   # Or wherever complete-design wrote outputs (it MUST be a staged preview, not
    # auto-applied, per the trust posture — diff-by-default, --apply required).
    ```
 
    **Expected:**
-   - Output went to `<cwd>/.design-os/preview/<run-id>/` (the staged-preview path per Phase 3 lesson 3), NOT directly into a `design/` directory.
+   - Output went to `<cwd>/.complete-design/preview/<run-id>/` (the staged-preview path per Phase 3 lesson 3), NOT directly into a `design/` directory.
    - The staged tree includes: `ia/sitemap.json` updates, `flows/<new-feature>.mmd`, `interactions/<screen>.spec.md`, `interactions/<screen>.diagram.mmd`, `wireframes/<screen>/CHOICE.md` (probably), `tokens.json` updates if any new component-tier tokens emerged.
    - No DESIGN.md regeneration (that's Stage 5b, which is NOT in the `new-feature` required stages).
 
 6. Run the relevant gates against the staged output to confirm pass:
    ```bash
-   # Replace <run-id> with the actual subdirectory name from `ls .design-os/preview/`:
-   design-os gate --stage 2 --design-dir ".design-os/preview/<run-id>" 2>&1 | tail -5
-   design-os gate --stage 4 --design-dir ".design-os/preview/<run-id>" 2>&1 | tail -5
-   design-os gate --stage 5a --design-dir ".design-os/preview/<run-id>" 2>&1 | tail -5
+   # Replace <run-id> with the actual subdirectory name from `ls .complete-design/preview/`:
+   complete-design gate --stage 2 --design-dir ".complete-design/preview/<run-id>" 2>&1 | tail -5
+   complete-design gate --stage 4 --design-dir ".complete-design/preview/<run-id>" 2>&1 | tail -5
+   complete-design gate --stage 5a --design-dir ".complete-design/preview/<run-id>" 2>&1 | tail -5
    ```
 
    **Expected:** Each command exits 0 with a `pass` or `pass_with_warnings` GateResult. If any returns `failed_after_repair` or `not_runnable`, the workflow output is incomplete or invalid — capture which stage and the finding.
@@ -198,7 +198,7 @@ This phase runs the actual `design --route new-feature` workflow end-to-end. The
 
 1. If Phase C looked good, simulate the user accepting the design:
    ```bash
-   design-os apply --design-dir ".design-os/preview/<run-id>" 2>&1 | tail
+   complete-design apply --design-dir ".complete-design/preview/<run-id>" 2>&1 | tail
    ```
    **Expected:** Artifacts move into `<cwd>/design/` (or wherever the apply target resolves to). No errors.
 
@@ -217,7 +217,7 @@ This phase runs the actual `design --route new-feature` workflow end-to-end. The
 
 3. Optional but recommended — run the audit retrospective against the applied output:
    ```bash
-   design-os audit --all-stages --design-dir "./design"
+   complete-design audit --all-stages --design-dir "./design"
    ```
 
    **Expected:** Audit completes cleanly; any findings are MEDIUM/LOW severity (none should be BLOCKER on a route that just shipped).
@@ -228,13 +228,13 @@ This phase runs the actual `design --route new-feature` workflow end-to-end. The
 
 All of these must be true:
 
-- [ ] `npm i -g design-os@beta` completes cleanly on the clean laptop (Phase A step 2)
-- [ ] `design-os --version` returns `2.0.0-beta.0` from the installed bin (Phase A step 3)
-- [ ] `design-os install` copies the bundled SKILL.md package (with workflows/, atoms/, audit/, handoff/, references/) to `~/.claude/skills/design-os/` (Phase A step 5)
+- [ ] `npm i -g @pm-musketeers/complete-design@beta` completes cleanly on the clean laptop (Phase A step 2)
+- [ ] `complete-design --version` returns `2.0.0-beta.0` from the installed bin (Phase A step 3)
+- [ ] `complete-design install` copies the bundled SKILL.md package (with workflows/, atoms/, audit/, handoff/, references/) to `~/.claude/skills/complete-design/` (Phase A step 5)
 - [ ] **${CLAUDE_SKILL_DIR} substitution probe: all 4 checks PASS** (Phase A step 6 — the architectural gate that blocks @latest dist-tag flip)
-- [ ] Skill fires on realistic user intent without explicit `design-os` invocation (Phase B step 3)
+- [ ] Skill fires on realistic user intent without explicit `complete-design` invocation (Phase B step 3)
 - [ ] `design --route new-feature` runs to completion (Phase C step 4)
-- [ ] Output lands in `.design-os/preview/<run-id>/`, not directly into `design/` (Phase C step 5)
+- [ ] Output lands in `.complete-design/preview/<run-id>/`, not directly into `design/` (Phase C step 5)
 - [ ] Stages 2, 4, 5a gates all return pass or pass_with_warnings (Phase C step 6)
 - [ ] `apply` succeeds and lands artifacts cleanly (Phase D step 1)
 - [ ] Total token usage ≤ 60k (hard p50) or ≤ 78k (soft p95 per D-74); wall-clock ≤ 8 min hard or ≤ 10.4 min soft (Phase D step 2)
@@ -248,7 +248,7 @@ If any check fails, capture in **Notes** below. If **${CLAUDE_SKILL_DIR}** probe
 
 ```
 npm install completed cleanly: Y / N (time: __ seconds)
-design-os install completed cleanly: Y / N
+complete-design install completed cleanly: Y / N
 Time from `npm i -g` to /help showing the skill: ___ minutes (target: <5)
 
 ${CLAUDE_SKILL_DIR} substitution probe (Phase A step 6):
@@ -260,7 +260,7 @@ ${CLAUDE_SKILL_DIR} substitution probe (Phase A step 6):
 Wall-clock: ___ minutes
 Total tokens: ___ k
 Trigger fired automatically? Y / N
-Output went to .design-os/preview/? Y / N
+Output went to .complete-design/preview/? Y / N
 Stage 2 gate result: ___
 Stage 4 gate result: ___
 Stage 5a gate result: ___
@@ -279,7 +279,7 @@ Overall verdict: PASS / PASS-WITH-NOTES / FAIL
 
 ## After verification
 
-- **PASS:** Proceed with `npm dist-tag add design-os@2.0.0 latest` (Plan 04-05 Step 0) → Wave A approval (04-04 T3) → Wave B execution (04-05 T2) → Phase 4 verifier → tag v2.0.0.
+- **PASS:** Proceed with `npm dist-tag add @pm-musketeers/complete-design@2.0.0 latest` (Plan 04-05 Step 0) → Wave A approval (04-04 T3) → Wave B execution (04-05 T2) → Phase 4 verifier → tag v2.0.0.
 - **PASS-WITH-NOTES:** Share the notes. Minor drift (e.g., wall-clock 9 min instead of 8) is within D-74 soft tolerance and is documented in CHANGELOG; proceed but record.
 - **FAIL — especially ${CLAUDE_SKILL_DIR} check 3+4 fail:** The @latest dist-tag flip is blocked. Likely fix-pass: rewrite workflow + atom file refs to use relative paths from each file's location (not `${CLAUDE_SKILL_DIR}/…`), or inline the referenced content where possible. Spin a new plan 04-00b or hotfix.
 - **FAIL — Phase B trigger doesn't fire:** SKILL.md description tuning; iterate the description text before re-publishing a `2.0.0-beta.1`.

@@ -1,10 +1,10 @@
 ---
-name: "design-os/invariants"
-description: "Cross-cutting invariants that all design-os workflow authors must uphold. Violating these creates footguns that have already burned 3 of 4 prior workflow contributors."
+name: "complete-design/invariants"
+description: "Cross-cutting invariants that all complete-design workflow authors must uphold. Violating these creates footguns that have already burned 3 of 4 prior workflow contributors."
 type: reference
 ---
 
-# design-os Workflow Invariants
+# complete-design Workflow Invariants
 
 Invariants every workflow author MUST uphold. These are not conventions — they are hard constraints enforced by the gate layer. Violating them has already burned 3 of 4 prior workflow contributors.
 
@@ -12,21 +12,21 @@ Invariants every workflow author MUST uphold. These are not conventions — they
 
 ## INVARIANT-01: Gate against the staged path, never the live `design/` directory
 
-**Rule:** Every gate check MUST run against `.design-os/preview/run-<timestamp>/` BEFORE the user runs `--apply`. Gates MUST NOT read from `design/` as their primary evaluation target.
+**Rule:** Every gate check MUST run against `.complete-design/preview/run-<timestamp>/` BEFORE the user runs `--apply`. Gates MUST NOT read from `design/` as their primary evaluation target.
 
 **Why this is a footgun:** If you gate against `design/` directly, you validate what the user already committed — not what the workflow is about to produce. A gate that passes on committed artifacts but fails on staged artifacts provides zero protection. Three prior workflow authors forgot this and shipped gates that silently did nothing.
 
 **Correct pattern:**
 ```
-1. Workflow emits artifacts to .design-os/preview/run-<id>/
-2. Gate runs: node bin/design-os.mjs gate --stage N --design-dir .design-os/preview/run-<id>/
+1. Workflow emits artifacts to .complete-design/preview/run-<id>/
+2. Gate runs: node bin/complete-design.mjs gate --stage N --design-dir .complete-design/preview/run-<id>/
 3. Gate passes → diff surfaced → user runs --apply → artifacts move to design/
 4. Gate fails → diff surfaced → user fixes → re-emit → re-gate
 ```
 
 **Incorrect pattern (do not do this):**
 ```
-❌ node bin/design-os.mjs gate --stage N --dir design/   ← gates AFTER the fact; protects nothing
+❌ node bin/complete-design.mjs gate --stage N --dir design/   ← gates AFTER the fact; protects nothing
 ❌ Using a non-existent --staged flag (correct flag is --design-dir)
 ```
 
@@ -38,7 +38,7 @@ Invariants every workflow author MUST uphold. These are not conventions — they
 
 ## INVARIANT-02: `--apply` is required; never auto-write to `design/`
 
-**Rule:** Workflow scripts MUST write to `.design-os/preview/run-<timestamp>/`. Writing directly to `design/` is forbidden. The user explicitly runs `--apply` to move staged artifacts to `design/`.
+**Rule:** Workflow scripts MUST write to `.complete-design/preview/run-<timestamp>/`. Writing directly to `design/` is forbidden. The user explicitly runs `--apply` to move staged artifacts to `design/`.
 
 **Why:** Trust posture (non-negotiable per project CLAUDE.md). Auto-publishing to the user's git tree without confirmation violates the "diff-by-default" principle. The user must see what will change before it's committed.
 
@@ -71,12 +71,12 @@ Invariants every workflow author MUST uphold. These are not conventions — they
 
 **Current usage (as of Phase 2):**
 ```
-design-os/ingest:      108 chars ✓
-design-os/discover:    106 chars ✓
-design-os/structure:   109 chars ✓
-design-os/style:       108 chars ✓
-design-os/systematize: 106 chars ✓
-design-os/audit:       112 chars ✓
+complete-design/ingest:      108 chars ✓
+complete-design/discover:    106 chars ✓
+complete-design/structure:   109 chars ✓
+complete-design/style:       108 chars ✓
+complete-design/systematize: 106 chars ✓
+complete-design/audit:       112 chars ✓
 ```
 
 ---

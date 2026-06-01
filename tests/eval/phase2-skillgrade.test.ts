@@ -20,12 +20,12 @@ const ROOT = join(__dirname, '../..');
 
 // Phase 2 trigger YAML files and their corresponding skill names
 const PHASE2_SKILLS = [
-  { skill: 'design-os/ingest', triggersPath: 'evals/triggers/ingest/triggers.yaml' },
-  { skill: 'design-os/discover', triggersPath: 'evals/triggers/discover/triggers.yaml' },
-  { skill: 'design-os/structure', triggersPath: 'evals/triggers/structure/triggers.yaml' },
-  { skill: 'design-os/style', triggersPath: 'evals/triggers/style/triggers.yaml' },
-  { skill: 'design-os/systematize', triggersPath: 'evals/triggers/systematize/triggers.yaml' },
-  { skill: 'design-os/audit', triggersPath: 'evals/triggers/audit/triggers.yaml' },
+  { skill: 'complete-design/ingest', triggersPath: 'evals/triggers/ingest/triggers.yaml' },
+  { skill: 'complete-design/discover', triggersPath: 'evals/triggers/discover/triggers.yaml' },
+  { skill: 'complete-design/structure', triggersPath: 'evals/triggers/structure/triggers.yaml' },
+  { skill: 'complete-design/style', triggersPath: 'evals/triggers/style/triggers.yaml' },
+  { skill: 'complete-design/systematize', triggersPath: 'evals/triggers/systematize/triggers.yaml' },
+  { skill: 'complete-design/audit', triggersPath: 'evals/triggers/audit/triggers.yaml' },
 ];
 
 describe('Phase 2 skillgrade: trigger YAML file quality (SC-5)', () => {

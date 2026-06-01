@@ -50,7 +50,7 @@ artifactsInventory: []
 pointersToVerify: []
 risksSurfaced: []
 provenance: generated
-owner: design-os
+owner: complete-design
 lastReviewedAt: 2026-05-25T00:00:00.000Z
 ---
 

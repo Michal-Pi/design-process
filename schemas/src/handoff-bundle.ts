@@ -1,6 +1,6 @@
 // schemas/src/handoff-bundle.ts
 // Zod source for stage handoff bundle — deterministic frame for LLM-summarized bodies.
-// Source: CONTEXT.md D-05..D-08; PLAN.md <interfaces>; design-os-mrd-v2.md §3.9.
+// Source: CONTEXT.md D-05..D-08; PLAN.md <interfaces>; complete-design-mrd-v2.md §3.9.
 // Implements: SCHEMA-06, HAND-01..04, ART-03
 
 import { z } from "zod";
@@ -48,7 +48,7 @@ const ArtifactInventoryEntry = z.object({
  * HandoffBundle v1 schema.
  * Extends FrontmatterCommon with bundle-specific frontmatter and section content.
  * Note: stage overrides the base enum — format is "N → M" or "Na → Nb".
- * $id: https://design-os.dev/schemas/handoff-bundle.v1.json
+ * $id: https://complete-design.dev/schemas/handoff-bundle.v1.json
  */
 export const HandoffBundleV1 = FrontmatterCommon.extend({
   artifact: z.literal("handoff-bundle"),
@@ -102,7 +102,7 @@ export const HandoffBundleV1 = FrontmatterCommon.extend({
   /** Risks surfaced during the upstream stage. Empty array when none. */
   risksSurfaced: z.array(z.string()).optional(),
 }).meta({
-  $id: "https://design-os.dev/schemas/handoff-bundle.v1.json",
+  $id: "https://complete-design.dev/schemas/handoff-bundle.v1.json",
   title: "Handoff Bundle (stage transition)",
   description:
     "Stage handoff bundle with deterministic frame and LLM-summarized sections; 3–15k token budget",

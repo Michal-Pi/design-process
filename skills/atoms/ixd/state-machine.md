@@ -1,5 +1,5 @@
 ---
-name: "design-os/ixd/state-machine"
+name: "complete-design/ixd/state-machine"
 description: "Stage 4 atom: invoke state-machine-emit to produce Mermaid stateDiagram-v2 (always) and conditional XState v5 machine, with max-2-retry repair on validation failure."
 type: atom
 stage: 4
@@ -26,9 +26,9 @@ Given a screen name and a completed `.spec.md` in the staged output:
 
 1. **Invoke state-machine-emit:**
    ```bash
-   node bin/design-os.mjs state-machine-emit \
-     --spec .design-os/preview/<run-id>/interactions/<screen>.spec.md \
-     --output .design-os/preview/<run-id>/interactions/ \
+   node bin/complete-design.mjs state-machine-emit \
+     --spec .complete-design/preview/<run-id>/interactions/<screen>.spec.md \
+     --output .complete-design/preview/<run-id>/interactions/ \
      --screen <screen>
    ```
 
@@ -45,8 +45,8 @@ Given a screen name and a completed `.spec.md` in the staged output:
    d. If validation fails a third time, surface the error to the user — do not retry further.
 
 4. **Confirm staged outputs:**
-   - `.design-os/preview/<run-id>/interactions/<screen>.diagram.mmd` — always present after success
-   - `.design-os/preview/<run-id>/interactions/<screen>.machine.ts` — present only if D-57 conditions met:
+   - `.complete-design/preview/<run-id>/interactions/<screen>.diagram.mmd` — always present after success
+   - `.complete-design/preview/<run-id>/interactions/<screen>.machine.ts` — present only if D-57 conditions met:
      `asyncOperations:true AND stateCount≥3 AND hasConditionalTransitions:true`
 
 ## D-57 XState Trigger (for reference)
@@ -64,7 +64,7 @@ skipped — Mermaid stateDiagram-v2 is sufficient.
 After this atom completes, the staged `interactions/` directory contains:
 
 ```
-.design-os/preview/<run-id>/interactions/
+.complete-design/preview/<run-id>/interactions/
   <screen>.spec.md          # State catalog (from state-catalog atom)
   <screen>.diagram.mmd      # Mermaid stateDiagram-v2 (always)
   <screen>.machine.ts       # XState v5 (conditional, D-57)

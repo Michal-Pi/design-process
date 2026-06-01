@@ -1,5 +1,5 @@
 {
-  "$id": "https://design-os.dev/schemas/handoff-bundle.v1.json",
+  "$id": "https://complete-design.dev/schemas/handoff-bundle.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "Stage handoff bundle with deterministic frame and LLM-summarized sections; 3–15k token budget",

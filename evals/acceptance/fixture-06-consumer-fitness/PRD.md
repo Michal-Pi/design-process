@@ -5,7 +5,7 @@ provenance: validated
 evidence: proto
 schemaVersion: 1
 generated: "2026-05-31T00:00:00.000Z"
-owner: design-os/acceptance-corpus
+owner: complete-design/acceptance-corpus
 ---
 
 # Kinetic — Adaptive Fitness Tracking App

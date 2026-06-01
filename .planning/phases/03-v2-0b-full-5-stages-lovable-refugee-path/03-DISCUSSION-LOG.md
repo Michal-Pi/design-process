@@ -117,7 +117,7 @@
 **Question:** How should the Frost ≥3× recurrence rule (FID-06) be enforced in `gate-stage-5b-complete` — and should the count be persisted or computed fresh at each gate run?
 
 **Options presented:**
-- Option A — Persisted counter in `.design-os/private/component-recurrence.json`, incremented each time a component appears in a Stage 5a run; gate checks the persisted total
+- Option A — Persisted counter in `.complete-design/private/component-recurrence.json`, incremented each time a component appears in a Stage 5a run; gate checks the persisted total
 - Option B — Per-gate-run filesystem count: `gate-stage-5b.mjs` scans `design/wireframes/` + `design/interactions/` at gate time, counts component name occurrences, blocks any component with count < 3
 - Option C — Frost ≥3× rule is implemented as a soft warning (severity: WARNING) rather than a BLOCKER, allowing designers to override
 
@@ -162,19 +162,19 @@
 **Question:** How "loud" should the `provenance: inferred` disclaimer be on reverse-engineered artifacts, and how should it be enforced?
 
 **Options presented:**
-- Option A — Both YAML frontmatter field AND a visible Markdown blockquote banner at the top of every artifact body; `frontmatter-validate.mjs` enforces both; `design-os promote-inferred` CLI subcommand gates the path from `design/inferred/` to `design/`
+- Option A — Both YAML frontmatter field AND a visible Markdown blockquote banner at the top of every artifact body; `frontmatter-validate.mjs` enforces both; `complete-design promote-inferred` CLI subcommand gates the path from `design/inferred/` to `design/`
 - Option B — YAML frontmatter field only (`provenance: inferred`); no Markdown banner; rely on the color-coded CLI output to communicate inferred status
 - Option C — A single top-of-file comment (`<!-- INFERRED: validate before use -->`) that can be easily stripped
 
 **Auto-selected:** Option A
 
-**Rationale:** MRD §6 says "loud disclaimer on every output"; MRD §9.2 repeats "loud disclaimer on every output." The word "loud" is specific — it must be visible in the artifact itself, not only in CLI output (Option B) or easily-stripped comments (Option C). The two-layer approach (frontmatter + Markdown banner) ensures the disclaimer survives copy-paste, Git diff review, and any tool that reads the file directly. AUDIT-07 requires all reverse-engineered artifacts carry `provenance: inferred`. The `design-os promote-inferred` CLI subcommand is the controlled path from `design/inferred/` to `design/` — it validates the user has reviewed and amended each section before the `provenance: inferred` is cleared.
+**Rationale:** MRD §6 says "loud disclaimer on every output"; MRD §9.2 repeats "loud disclaimer on every output." The word "loud" is specific — it must be visible in the artifact itself, not only in CLI output (Option B) or easily-stripped comments (Option C). The two-layer approach (frontmatter + Markdown banner) ensures the disclaimer survives copy-paste, Git diff review, and any tool that reads the file directly. AUDIT-07 requires all reverse-engineered artifacts carry `provenance: inferred`. The `complete-design promote-inferred` CLI subcommand is the controlled path from `design/inferred/` to `design/` — it validates the user has reviewed and amended each section before the `provenance: inferred` is cleared.
 
 ---
 
 ## v2.0a → v2.0b migration strategy
 
-**Question:** How should the `design-os migrate --from 2.0a --to 2.0b` command handle existing v2.0a artifacts without breaking them?
+**Question:** How should the `complete-design migrate --from 2.0a --to 2.0b` command handle existing v2.0a artifacts without breaking them?
 
 **Options presented:**
 - Option A — Idempotent migration with dry-run by default: reads `schemaVersion` frontmatter, skips already-migrated artifacts, applies only the delta fields (`wireframeRefs`, `interactionNeeds`, new MANIFEST.md sections), prints diff without `--apply`, writes in-place with `--apply`
@@ -183,7 +183,7 @@
 
 **Auto-selected:** Option A
 
-**Rationale:** PITFALLS.md Pitfall 8 names "schema migration without story" explicitly: "breaking the design/ directory contract for existing users is a distribution-level trust failure." Option B's destructive approach is a guaranteed trust failure for any user who has in-flight v2.0a work. Option C abandons the PERSIST-03 requirement entirely. Idempotency is the safe invariant: running the migration twice produces the same result as running it once. The dry-run-by-default pattern is consistent with Phase 2 D-52's diff-by-default discipline (every design-os write is diff-first, `--apply` to commit). MVPB-10 requires a migration command. The `appendManifestLockEntry` call on `--apply` maintains the SHA-256 hash chain integrity.
+**Rationale:** PITFALLS.md Pitfall 8 names "schema migration without story" explicitly: "breaking the design/ directory contract for existing users is a distribution-level trust failure." Option B's destructive approach is a guaranteed trust failure for any user who has in-flight v2.0a work. Option C abandons the PERSIST-03 requirement entirely. Idempotency is the safe invariant: running the migration twice produces the same result as running it once. The dry-run-by-default pattern is consistent with Phase 2 D-52's diff-by-default discipline (every complete-design write is diff-first, `--apply` to commit). MVPB-10 requires a migration command. The `appendManifestLockEntry` call on `--apply` maintains the SHA-256 hash chain integrity.
 
 ---
 

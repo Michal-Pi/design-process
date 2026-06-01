@@ -3,7 +3,7 @@
 // Wires Commander --input/--output/--screen flags to renderSkeletonIR().
 //
 // Usage (via dispatcher):
-//   node bin/design-os.mjs excalidraw-render --input <ir.json> --output <dir> --screen <name>
+//   node bin/complete-design.mjs excalidraw-render --input <ir.json> --output <dir> --screen <name>
 //
 // Security (T-03-01-01): validates --input path exists and is a .json file;
 // rejects paths containing '..' (path traversal guard).

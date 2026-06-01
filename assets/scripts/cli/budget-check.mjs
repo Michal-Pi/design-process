@@ -1,9 +1,9 @@
 // assets/scripts/cli/budget-check.mjs
 // Per-stage token budget soft/hard enforcement CLI.
-// Auto-discovered by bin/design-os.mjs.
+// Auto-discovered by bin/complete-design.mjs.
 //
 // Usage:
-//   node bin/design-os.mjs budget-check --stage style --check post [--run-log .design-os/private/run-log.jsonl]
+//   node bin/complete-design.mjs budget-check --stage style --check post [--run-log .complete-design/private/run-log.jsonl]
 //
 // Budget table (D-49):
 //   discover:      p50=30k, hard=60k
@@ -172,12 +172,12 @@ export async function checkBudget({ stage, check, runLogPath, continueAnyway = f
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CLI command (auto-discovered by bin/design-os.mjs)
+// CLI command (auto-discovered by bin/complete-design.mjs)
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Auto-discovered command object per the Plan 01 dispatcher contract.
- * bin/design-os.mjs globs cli/*.mjs and registers each module's `command` export.
+ * bin/complete-design.mjs globs cli/*.mjs and registers each module's `command` export.
  */
 export const command = {
   name: "budget-check",
@@ -198,7 +198,7 @@ export const command = {
       .option(
         "--run-log <path>",
         "Path to run-log.jsonl",
-        ".design-os/private/run-log.jsonl"
+        ".complete-design/private/run-log.jsonl"
       )
       .option(
         "--continue-anyway",
@@ -211,7 +211,7 @@ export const command = {
   handler: async (args) => {
     const stage = String(args.stage ?? "");
     const check = String(args.check ?? "post");
-    const runLogPath = resolve(String(args.runLog ?? ".design-os/private/run-log.jsonl"));
+    const runLogPath = resolve(String(args.runLog ?? ".complete-design/private/run-log.jsonl"));
     const continueAnyway = Boolean(args.continueAnyway);
 
     if (!stage) {

@@ -43,7 +43,7 @@
 | D-49: Soft warn at p50; hard-stop at 2× p50 | 02-03, 02-05 | T-02-03-A (budget-check.mjs) | COVERED — see Finding F-03 |
 | D-50: Three adversarial CI suites (RED-05, RED-06, worstProvenance) | 02-01 | T-02-01-B | COVERED |
 | D-51: evidence:INFERRED only valid for v2.0a Stage 5a/5b; frontmatter-validate enforces | 02-01, 02-03, 02-04 | T-02-01-A, T-02-03-A, T-02-04-A | COVERED |
-| D-52: Diff-by-default; all writes stage to .design-os/preview/; --apply via apply.mjs | 02-05 | T-02-05-A | COVERED |
+| D-52: Diff-by-default; all writes stage to .complete-design/preview/; --apply via apply.mjs | 02-05 | T-02-05-A | COVERED |
 | D-53: Claude Code host-first; Codex/Cursor exercise-tested; each SKILL.md has ## Host fallback | 02-01, 02-02, 02-03, 02-04, 02-05 | T-02-01-C, T-02-02-B, T-02-03-B, T-02-04-B, T-02-05-B | COVERED |
 
 ---
@@ -124,7 +124,7 @@
 
 - **Severity:** BLOCKING
 - **Plan:** 02-05, T-02-05-B
-- **Detail:** SC-5 requires "on Claude Code sees `design-os` triggers fire with recall ≥0.85 against the in-tree should-fire suite; on Codex CLI and Cursor the pass rate is within 0.10 of host-first." The plan's cross-host extension (T-02-05-B) only adds SKILL.md *file existence and parsability* checks to the host-profile workspaces. It does not extend the per-skill `skillgrade` trigger eval harness (which is the mechanism that measures recall). There is no task that runs the Phase 1 `skillgrade.mjs` harness against the new Phase 2 SKILL.md files to assert recall ≥0.85. This means SC-5's measurable truth — the recall number — cannot be confirmed by executing these plans.
+- **Detail:** SC-5 requires "on Claude Code sees `complete-design` triggers fire with recall ≥0.85 against the in-tree should-fire suite; on Codex CLI and Cursor the pass rate is within 0.10 of host-first." The plan's cross-host extension (T-02-05-B) only adds SKILL.md *file existence and parsability* checks to the host-profile workspaces. It does not extend the per-skill `skillgrade` trigger eval harness (which is the mechanism that measures recall). There is no task that runs the Phase 1 `skillgrade.mjs` harness against the new Phase 2 SKILL.md files to assert recall ≥0.85. This means SC-5's measurable truth — the recall number — cannot be confirmed by executing these plans.
 - **Fix:** Add a task (or a sub-step in T-02-05-B) that: (a) adds `triggers.yaml` files for each new Phase 2 skill under `evals/triggers/<skill>/` (required by Phase 1's skillgrade harness per 01-03-SUMMARY context), and (b) runs `node assets/scripts/skillgrade.mjs` against the new skills to assert recall ≥0.85. Without `triggers.yaml` files, the skillgrade harness cannot fire. The RESEARCH.md noted "every new triggerable SKILL.md needs a `triggers.yaml` in `evals/triggers/<skill>/`" but no plan task creates these files. This is a gap between Phase 1's skillgrade architecture and Phase 2's plan.
 
 ---
@@ -142,7 +142,7 @@
 
 - **Severity:** HIGH
 - **Plan:** 02-04, T-02-04-B
-- **Detail:** T-02-04-B creates `systematize.md` but has no test. The `<verify>` for T-02-04-B is purely structural: file existence + gray-matter parsability. There are no tests that verify (a) the DESIGN.md emit step correctly constructs the `$extensions.design-os` namespace, (b) the component scan step correctly identifies component-tier tokens from `design/tokens.json`, or (c) the DESIGN.md validates against `design-md.2026.04.json` after emit. The gate tests in T-02-04-A cover the gate logic but not the workflow body's produce-side behavior. If the DESIGN.md emit step generates malformed frontmatter, this will not be caught until an e2e run.
+- **Detail:** T-02-04-B creates `systematize.md` but has no test. The `<verify>` for T-02-04-B is purely structural: file existence + gray-matter parsability. There are no tests that verify (a) the DESIGN.md emit step correctly constructs the `$extensions.complete-design` namespace, (b) the component scan step correctly identifies component-tier tokens from `design/tokens.json`, or (c) the DESIGN.md validates against `design-md.2026.04.json` after emit. The gate tests in T-02-04-A cover the gate logic but not the workflow body's produce-side behavior. If the DESIGN.md emit step generates malformed frontmatter, this will not be caught until an e2e run.
 - **Fix:** Add a unit test in T-02-04-B (or a companion T-02-04-C task) that: imports the DESIGN.md emit logic (if extracted to a script), or creates a fixture test that runs the systematize workflow body's emit step and validates the output against `design-md.2026.04.json`. Alternatively, extend the e2e test in T-02-05-B to validate `design/DESIGN.md` structure after the full route completes.
 
 **(F-05) [key_links_planned] Stage 2→5a bundle transition is planned but not the Stage 2→5a sufficiency eval**

@@ -1,6 +1,6 @@
 #!/bin/sh
-# design-os pre-commit hook — PII scanner
-# Installed by: design-os install-hooks
+# complete-design pre-commit hook — PII scanner
+# Installed by: complete-design install-hooks
 # Source: assets/scripts/install-hooks.mjs / CONTEXT.md D-19
 # Implements: D-19 (pre-commit hook), ART-01 (per-file commit policy)
 
@@ -18,10 +18,10 @@ for FILE in $STAGED; do
   case "$FILE" in
     design/research/*|*transcript*.md)
       # Run PII scanner on this file
-      if ! npx tsx bin/design-os.mjs scan --pii "$FILE" 2>/dev/null; then
-        echo "design-os: PII found in staged file: $FILE"
-        echo "  Use 'design-os scan --pii $FILE' to see findings."
-        echo "  To allowlist this file: update .design-os/pii-allowlist.json with path + sha256."
+      if ! npx tsx bin/complete-design.mjs scan --pii "$FILE" 2>/dev/null; then
+        echo "complete-design: PII found in staged file: $FILE"
+        echo "  Use 'complete-design scan --pii $FILE' to see findings."
+        echo "  To allowlist this file: update .complete-design/pii-allowlist.json with path + sha256."
         FAILED=1
       fi
       ;;

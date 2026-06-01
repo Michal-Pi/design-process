@@ -1,5 +1,5 @@
 // assets/scripts/cli/scan.mjs
-// design-os scan subcommand — auto-discovered by bin/design-os.mjs dispatcher.
+// complete-design scan subcommand — auto-discovered by bin/complete-design.mjs dispatcher.
 //
 // Scans files for PII (email, phone, SSN, IPv4, CC, transcript headers).
 // Default scan paths: design/research/interviews/ + **/transcript*.md glob.
@@ -26,7 +26,7 @@ export const command = {
       .option(
         "--allowlist <path>",
         "Path to PII allowlist JSON",
-        ".design-os/pii-allowlist.json"
+        ".complete-design/pii-allowlist.json"
       );
   },
 
@@ -39,7 +39,7 @@ export const command = {
       return;
     }
 
-    const allowlistPath = args.allowlist ?? ".design-os/pii-allowlist.json";
+    const allowlistPath = args.allowlist ?? ".complete-design/pii-allowlist.json";
 
     // Collect files to scan
     let filesToScan = [];

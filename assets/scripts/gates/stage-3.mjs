@@ -2,7 +2,7 @@
 // Stage 3 (Low-Fidelity / Wireframes) gate — full business logic.
 //
 // INVARIANT-01: Gates against the staged preview path passed in as designDir.
-// The caller MUST pass .design-os/preview/<run-id>/ (not design/).
+// The caller MUST pass .complete-design/preview/<run-id>/ (not design/).
 // See skills/workflows/INVARIANTS.md.
 //
 // Check order (fail-fast: first violation ends the gate run):

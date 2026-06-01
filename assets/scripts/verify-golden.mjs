@@ -426,7 +426,7 @@ async function runTokensProjectFixtures() {
     }
   }
 
-  // ── plain-css adapter (design-os-tokens.css) ─────────────────────────────
+  // ── plain-css adapter (complete-design-tokens.css) ─────────────────────────────
   {
     const expectedPath = join(fixtureDir, "expected-plain-css.json");
     if (!existsSync(expectedPath)) {
@@ -460,18 +460,18 @@ async function runTokensProjectFixtures() {
       const allSame = hashes.every((h) => h === hashes[0]);
       if (!allSame) {
         results.push({
-          name: "tokens-project / plain-css adapter design-os-tokens.css",
+          name: "tokens-project / plain-css adapter complete-design-tokens.css",
           pass: false,
           mismatch: `Not byte-identical across ${BYTE_IDENTICAL_RUNS} runs.`,
         });
       } else if (hashes[0] !== expectedHash) {
         results.push({
-          name: "tokens-project / plain-css adapter design-os-tokens.css",
+          name: "tokens-project / plain-css adapter complete-design-tokens.css",
           pass: false,
           mismatch: `Output hash ${hashes[0]} != expected ${expectedHash}. Run npm run regen-golden to update.`,
         });
       } else {
-        results.push({ name: "tokens-project / plain-css adapter design-os-tokens.css", pass: true });
+        results.push({ name: "tokens-project / plain-css adapter complete-design-tokens.css", pass: true });
       }
     }
   }

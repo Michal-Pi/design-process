@@ -1,11 +1,11 @@
 // assets/scripts/cli/install.mjs
-// CLI subcommand: design-os install
+// CLI subcommand: complete-design install
 //
 // Copies the bundled skill package from the npm-installed location into
 // the user's host skills directory, making it available to Claude Code /
 // Codex CLI / Cursor without any manual file copy step.
 //
-// Installed layout (under <targetBase>/design-os/):
+// Installed layout (under <targetBase>/complete-design/):
 //   SKILL.md            ← promoted from skills/design/SKILL.md
 //   workflows/          ← copied from skills/workflows/
 //   atoms/              ← copied from skills/atoms/
@@ -17,10 +17,10 @@
 // and all workflow/atom .md files during the P1 fix-pass (04-00).
 //
 // Usage (via dispatcher):
-//   node bin/design-os.mjs install
-//   node bin/design-os.mjs install --target ~/.claude/skills
-//   node bin/design-os.mjs install --target ./.claude/skills --force
-//   node bin/design-os.mjs install --dry-run
+//   node bin/complete-design.mjs install
+//   node bin/complete-design.mjs install --target ~/.claude/skills
+//   node bin/complete-design.mjs install --target ./.claude/skills --force
+//   node bin/complete-design.mjs install --dry-run
 //
 // Security (t-04-00-01 / Lesson 7):
 //   --target is user-controlled. Resolve via path.resolve(), then confirm the
@@ -88,7 +88,7 @@ const SOURCE_DIRS = [
 
 /**
  * Default install base: ~/.claude/skills/
- * The destination will be: ~/.claude/skills/design-os/
+ * The destination will be: ~/.claude/skills/complete-design/
  */
 function defaultTargetBase() {
   return join(homedir(), ".claude", "skills");
@@ -174,7 +174,7 @@ async function verifySourceExists(sourcePath, description) {
     throw new Error(
       `install: ${description} not found at ${sourcePath}.\n` +
         `  This usually means the npm package is corrupt or the files whitelist excluded it.\n` +
-        `  Please reinstall design-os from npm: npm i -g design-os@beta`
+        `  Please reinstall complete-design from npm: npm i -g @pm-musketeers/complete-design@beta`
     );
   }
 }
@@ -202,8 +202,8 @@ export async function runInstall(opts) {
     targetBase = defaultTargetBase();
   }
 
-  // The actual destination directory: <targetBase>/design-os/
-  const destDir = join(targetBase, "design-os");
+  // The actual destination directory: <targetBase>/complete-design/
+  const destDir = join(targetBase, "complete-design");
 
   // Dry-run: print what would happen without touching the filesystem.
   if (dryRun) {
@@ -258,7 +258,7 @@ export async function runInstall(opts) {
     await cp(srcDir, join(destDir, destSubdir), { recursive: true });
   }
 
-  console.log(`Installed design-os skill to: ${destDir}`);
+  console.log(`Installed complete-design skill to: ${destDir}`);
   console.log(
     `\nRestart your Claude Code session (or run /reload-skills if available) to pick up the new skill.`
   );
@@ -267,7 +267,7 @@ export async function runInstall(opts) {
 export const command = {
   name: "install",
   describe:
-    "Install the design-os SKILL.md package into your host skills directory (~/.claude/skills/design-os by default)",
+    "Install the complete-design SKILL.md package into your host skills directory (~/.claude/skills/complete-design by default)",
 
   /**
    * @param {import("commander").Command} cmd

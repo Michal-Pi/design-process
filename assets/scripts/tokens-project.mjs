@@ -332,12 +332,12 @@ async function writeDtcgTokensJson(tokenTree, tokensPath, generatedAt) {
 
 /**
  * Emit the shadcn adapter projection.
- * Writes a CSS custom properties file to .design-os/preview/run-<id>/ staging area.
+ * Writes a CSS custom properties file to .complete-design/preview/run-<id>/ staging area.
  * NEVER modifies components/ui/ — writes wrappers only.
  * Uses semantic color tokens via var() in named props per shadcn naming convention.
  *
  * @param {object} tokenTree
- * @param {string} stagingDir - .design-os/preview/run-<id>/ path
+ * @param {string} stagingDir - .complete-design/preview/run-<id>/ path
  * @returns {Promise<string>} projectionPath
  */
 async function emitShadcnAdapter(tokenTree, stagingDir) {
@@ -358,7 +358,7 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
   ].join("\n");
 
   const cssContent = [
-    "/* design-os generated — stage:5a-lite evidence:INFERRED */",
+    "/* complete-design generated — stage:5a-lite evidence:INFERRED */",
     "/* Adapter: shadcn — CSS custom properties for shadcn/ui compatibility */",
     "/* DO NOT EDIT: regenerate via node assets/scripts/tokens-project.mjs */",
     "",
@@ -372,7 +372,7 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
     "",
   ].join("\n");
 
-  const projectionPath = join(stagingDir, "design-os-tokens.css");
+  const projectionPath = join(stagingDir, "complete-design-tokens.css");
   await mkdir(stagingDir, { recursive: true });
   await writeFile(projectionPath, cssContent, "utf8");
 
@@ -382,13 +382,13 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
   await mkdir(componentsDir, { recursive: true });
 
   const themeProviderContent = [
-    "// design-os generated — stage:5a-lite evidence:INFERRED",
+    "// complete-design generated — stage:5a-lite evidence:INFERRED",
     "// Adapter: shadcn theme-provider wrapper",
     "// Imports CSS tokens from staging area; wraps children with token scope.",
-    "// NOTE: This is in the STAGING area (.design-os/preview/) — NOT in components/ui/",
+    "// NOTE: This is in the STAGING area (.complete-design/preview/) — NOT in components/ui/",
     "// Apply with --apply to copy to your project's components/ directory.",
     "",
-    'import "../design-os-tokens.css";',
+    'import "../complete-design-tokens.css";',
     "",
     "interface DesignOsThemeProviderProps {",
     "  children: React.ReactNode;",
@@ -396,13 +396,13 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
     "}",
     "",
     "/**",
-    " * DesignOsThemeProvider — wraps app with design-os DTCG token CSS variables.",
+    " * DesignOsThemeProvider — wraps app with complete-design DTCG token CSS variables.",
     " * Uses semantic color tokens via CSS vars (var(--primary), etc.).",
     " * Never imports from shadcn/ui's components/ui/ directly.",
     " */",
     "export function DesignOsThemeProvider({ children, className }: DesignOsThemeProviderProps) {",
     "  return (",
-    `    <div className={\`design-os-theme \${className ?? ''}\`}>`,
+    `    <div className={\`complete-design-theme \${className ?? ''}\`}>`,
     "      {children}",
     "    </div>",
     "  );",
@@ -411,7 +411,7 @@ async function emitShadcnAdapter(tokenTree, stagingDir) {
   ].join("\n");
 
   await writeFile(
-    join(componentsDir, "design-os-theme-provider.tsx"),
+    join(componentsDir, "complete-design-theme-provider.tsx"),
     themeProviderContent,
     "utf8"
   );
@@ -453,7 +453,7 @@ async function emitTailwindV4Adapter(tokenTree, stagingDir, projectRoot) {
     `  --radius: ${dims["border-radius"].$value};`,
   ].join("\n");
 
-  const designOsComment = "  /* design-os tokens — stage:5a-lite evidence:INFERRED */";
+  const designOsComment = "  /* complete-design tokens — stage:5a-lite evidence:INFERRED */";
 
   // Read existing globals.css from projectRoot if present
   const existingGlobalsPath = join(projectRoot, "app/globals.css");
@@ -465,7 +465,7 @@ async function emitTailwindV4Adapter(tokenTree, stagingDir, projectRoot) {
   let mergedContent;
 
   if (baseContent.includes("@theme")) {
-    // Merge: inject design-os props inside the existing @theme block (additive only)
+    // Merge: inject complete-design props inside the existing @theme block (additive only)
     mergedContent = baseContent.replace(
       /(@theme\s*\{)/,
       `$1\n${designOsComment}\n${themeProps}`
@@ -478,7 +478,7 @@ async function emitTailwindV4Adapter(tokenTree, stagingDir, projectRoot) {
     mergedContent = [
       '@import "tailwindcss";',
       "",
-      "/* design-os generated — stage:5a-lite evidence:INFERRED */",
+      "/* complete-design generated — stage:5a-lite evidence:INFERRED */",
       "@theme {",
       designOsComment,
       themeProps,
@@ -529,7 +529,7 @@ async function emitPlainCssAdapter(tokenTree, stagingDir) {
   ].join("\n");
 
   const cssContent = [
-    "/* design-os generated — stage:5a-lite evidence:INFERRED */",
+    "/* complete-design generated — stage:5a-lite evidence:INFERRED */",
     "/* Adapter: plain-css — CSS custom properties in :root */",
     "/* DO NOT EDIT: regenerate via node assets/scripts/tokens-project.mjs */",
     "",
@@ -539,7 +539,7 @@ async function emitPlainCssAdapter(tokenTree, stagingDir) {
     "",
   ].join("\n");
 
-  const projectionPath = join(stagingDir, "design-os-tokens.css");
+  const projectionPath = join(stagingDir, "complete-design-tokens.css");
   await mkdir(stagingDir, { recursive: true });
   await writeFile(projectionPath, cssContent, "utf8");
 
@@ -627,19 +627,19 @@ export async function emitTokens(options) {
   const tokensPath = join(designDir, "tokens.json");
   await writeDtcgTokensJson(tokenTree, tokensPath, resolvedAt);
 
-  // Build staging dir path (.design-os/preview/run-<id>/)
+  // Build staging dir path (.complete-design/preview/run-<id>/)
   // IMPORTANT: staging dir is always anchored to the repo root (process.cwd() / projectRoot),
   // NOT to designDir. This ensures apply.mjs, preview adapters, and other consumers that
-  // read from <repoRoot>/.design-os/preview/ can always find staged artifacts regardless of
+  // read from <repoRoot>/.complete-design/preview/ can always find staged artifacts regardless of
   // where --design-dir points (e.g., --design-dir nested/path/design/ must not produce
-  // nested/path/design/.design-os/preview/).
+  // nested/path/design/.complete-design/preview/).
   //
   // Fix for codex review finding: "Finding 1 (P2): tokens-project.mjs stages preview
   // in wrong location" — staging dir was incorrectly relative to designDir.
   const runId = generatedAt
     ? `run-${generatedAt.replace(/[:.]/g, "-")}`
     : `run-${Date.now()}-${randomBytes(4).toString("hex")}`;
-  const stagingDir = resolve(projectRoot, ".design-os", "preview", runId);
+  const stagingDir = resolve(projectRoot, ".complete-design", "preview", runId);
 
   // Dispatch to adapter (exhaustive switch with assertNever — D-48)
   let projectionPath;

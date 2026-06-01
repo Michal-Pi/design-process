@@ -103,7 +103,7 @@ schemaVersion: 1
 provenance: generated
 worstProvenance: generated
 generated: "2026-05-25T00:00:00.000Z"
-owner: design-os/red-05-adversarial
+owner: complete-design/red-05-adversarial
 lastReviewedAt: "2026-05-25T00:00:00.000Z"
 sourceHash: "sha256:${"a".repeat(64 - seed.toString().length)}${seed.toString().padStart(seed.toString().length, "0")}"
 ---
@@ -135,7 +135,7 @@ schemaVersion: 1
 provenance: generated
 worstProvenance: generated
 generated: "2026-05-25T00:00:00.000Z"
-owner: design-os/red-05-adversarial
+owner: complete-design/red-05-adversarial
 lastReviewedAt: "2026-05-25T00:00:00.000Z"
 sourceHash: "sha256:${"b".repeat(64 - seed.toString().length)}${seed.toString().padStart(seed.toString().length, "0")}"
 ---

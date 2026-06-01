@@ -3,7 +3,7 @@ artifact: smoke-test-evidence
 phase: 04
 plan: "00"
 run_date: "2026-05-27"
-tarball: design-os-2.0.0-beta.0.tgz
+tarball: complete-design-2.0.0-beta.0.tgz
 tarball_size_kb: 221
 tarball_files: 156
 ---
@@ -19,7 +19,7 @@ Steps 7-8 added in 04-00 fix-pass (schemas/migrations + containment hardening).
 
 **Rule 1 bug fixed: `eval-bundle-sufficiency.mjs` used a static top-level import**
 
-During Step 4 of the first smoke-test run, `design-os --version` crashed with:
+During Step 4 of the first smoke-test run, `complete-design --version` crashed with:
 ```
 ERR_MODULE_NOT_FOUND: Cannot find module '.../evals/bundles/sufficiency-structural.mjs'
 ```
@@ -40,14 +40,14 @@ Since `evals/` is excluded from the npm tarball (dev-only), this import crashed 
 ## Step 1: Pack — PASS
 
 ```
-SMOKE_DIR=/tmp/design-os-smoke-QQdU
+SMOKE_DIR=/tmp/complete-design-smoke-QQdU
 
 cd <repo-root>
-npm pack --pack-destination /tmp/design-os-smoke-QQdU
+npm pack --pack-destination /tmp/complete-design-smoke-QQdU
 ```
 
 **Result (updated in fix-pass):**
-- Tarball name: `design-os-2.0.0-beta.0.tgz`
+- Tarball name: `complete-design-2.0.0-beta.0.tgz`
 - Package size: 220.7 kB (package/wire size) | ~750 kB unpacked
 - Total files: 156 (up from 150 pre-fix — 6 new files from schemas/migrations/)
 - Well under the 5 MB limit.
@@ -59,14 +59,14 @@ npm pack --pack-destination /tmp/design-os-smoke-QQdU
 ## Step 2: Inspect tarball contents — PASS
 
 ```bash
-tar -tzf /tmp/design-os-smoke-QQdU/design-os-2.0.0-beta.0.tgz | sort
+tar -tzf /tmp/complete-design-smoke-QQdU/complete-design-2.0.0-beta.0.tgz | sort
 ```
 
 ### Required files — all present:
 
 | File | Status |
 |------|--------|
-| `package/bin/design-os.mjs` | PASS |
+| `package/bin/complete-design.mjs` | PASS |
 | `package/assets/scripts/cli/install.mjs` | PASS |
 | `package/skills/design/SKILL.md` | PASS |
 | `package/skills/workflows/ingest.md` | PASS (bundled layout — new in fix-pass) |
@@ -101,9 +101,9 @@ No `.env`, `.npmrc` with auth tokens, API keys, or credential files detected in 
 ## Step 3: Local install — PASS
 
 ```bash
-mkdir -p /tmp/design-os-smoke-QQdU/install-target
-npm install --prefix /tmp/design-os-smoke-QQdU/install-target \
-  /tmp/design-os-smoke-QQdU/design-os-2.0.0-beta.0.tgz
+mkdir -p /tmp/complete-design-smoke-QQdU/install-target
+npm install --prefix /tmp/complete-design-smoke-QQdU/install-target \
+  /tmp/complete-design-smoke-QQdU/complete-design-2.0.0-beta.0.tgz
 ```
 
 **Result:** `added 394 packages in 8s` — exit code 0, no errors.
@@ -114,28 +114,28 @@ npm install --prefix /tmp/design-os-smoke-QQdU/install-target \
 
 ## Step 4: Run from installed location — PASS
 
-Binary path after `--prefix` install: `/tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os`
+Binary path after `--prefix` install: `/tmp/complete-design-smoke-QQdU/install-target/node_modules/.bin/complete-design`
 
 Note: `--prefix` creates the binary at `node_modules/.bin/`, not at `<prefix>/bin/`. For `-g` global installs the binary lands in the global bin dir.
 
-### `design-os --version`
+### `complete-design --version`
 ```
 2.0.0-beta.0
 ```
 **PASS**
 
-### `design-os --help` (key commands verified present)
+### `complete-design --help` (key commands verified present)
 All dispatcher subcommands listed:
 - `apply`, `audit`, `budget-check`, `design`, `design-md-validate`, `excalidraw-render`, `gate`, `handoff-bundle`, `init`, `install` (NEW), `install-hooks`, `lint-spine-linearity`, `manifest-md`, `migrate`, `override-banner`, `preview`, `promote-inferred`, `recover`, `resume`, `reverse-engineer`, `scan`, `stage-recurrence-evidence`, `state-machine-emit`, `validate`, `verify`, `verify-golden`, `eval bundle-sufficiency`, `eval coexistence`, `eval skillgrade`
 
 **PASS**
 
-### `design-os install --help`
+### `complete-design install --help`
 ```
-Usage: design-os install [options]
+Usage: complete-design install [options]
 
-Install the design-os SKILL.md package into your host skills directory
-(~/.claude/skills/design-os by default)
+Install the complete-design SKILL.md package into your host skills directory
+(~/.claude/skills/complete-design by default)
 
 Options:
   --target <path>  Override install target base directory (default: ~/.claude/skills)
@@ -152,15 +152,15 @@ All three flags (`--target`, `--force`, `--dry-run`) present.
 ## Step 5: End-to-end install command — PASS (updated in fix-pass)
 
 ```bash
-FAKE_HOME=/tmp/design-os-smoke-QQdU/fake-home
+FAKE_HOME=/tmp/complete-design-smoke-QQdU/fake-home
 mkdir -p $FAKE_HOME
 
-HOME=$FAKE_HOME /tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os install
+HOME=$FAKE_HOME /tmp/complete-design-smoke-QQdU/install-target/node_modules/.bin/complete-design install
 ```
 
 **Output:**
 ```
-Installed design-os skill to: /tmp/design-os-smoke-QQdU/fake-home/.claude/skills/design-os
+Installed complete-design skill to: /tmp/complete-design-smoke-QQdU/fake-home/.claude/skills/complete-design
 
 Restart your Claude Code session (or run /reload-skills if available) to pick up the new skill.
 ```
@@ -168,7 +168,7 @@ Restart your Claude Code session (or run /reload-skills if available) to pick up
 ### Bundled files existence (fix-pass expanded check):
 
 ```bash
-BASE=/tmp/design-os-smoke-QQdU/fake-home/.claude/skills/design-os
+BASE=/tmp/complete-design-smoke-QQdU/fake-home/.claude/skills/complete-design
 
 ls $BASE/SKILL.md          # root SKILL.md
 ls $BASE/workflows/        # workflows/ dir
@@ -179,7 +179,7 @@ ls $BASE/references/       # references/ dir
 ls $BASE/references/gates/ # gate checklists
 ```
 
-All paths exist after `design-os install`. The full layout matches `${CLAUDE_SKILL_DIR}` refs
+All paths exist after `complete-design install`. The full layout matches `${CLAUDE_SKILL_DIR}` refs
 rewritten in the P1 fix-pass (FIX 1 + FIX 2 together).
 
 Key verified paths:
@@ -202,19 +202,19 @@ Hashes match — byte-identical.
 
 ## Step 6: Cleanup — PASS
 
-Smoke dir `/tmp/design-os-smoke-QQdU` cleaned up after evidence recorded.
+Smoke dir `/tmp/complete-design-smoke-QQdU` cleaned up after evidence recorded.
 
 **PASS**
 
 ---
 
-## Step 7: design-os migrate works post-install — PENDING (requires live install)
+## Step 7: complete-design migrate works post-install — PENDING (requires live install)
 
 This step proves FIX 4 (schemas/migrations/ now in tarball) resolves the migrate crash.
 
 ```bash
 # After npm install from fix-pass tarball:
-INSTALLED_BIN=/tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os
+INSTALLED_BIN=/tmp/complete-design-smoke-QQdU/install-target/node_modules/.bin/complete-design
 
 $INSTALLED_BIN migrate --help
 # Expected: exits 0, shows migrate CLI usage with version options
@@ -234,7 +234,7 @@ from 150). This step should PASS when the fix-pass tarball is installed and test
 This step proves FIX 3 (POSIX-safe containment via `path.relative()`) rejects out-of-sandbox targets.
 
 ```bash
-INSTALLED_BIN=/tmp/design-os-smoke-QQdU/install-target/node_modules/.bin/design-os
+INSTALLED_BIN=/tmp/complete-design-smoke-QQdU/install-target/node_modules/.bin/complete-design
 
 $INSTALLED_BIN install --target /tmp/random-non-sandbox-dir
 # Expected: non-zero exit + PathContainmentError message printed to stderr
@@ -255,11 +255,11 @@ cover this case (9/9 passing including the backslash-name POSIX edge case).
 | 1 | npm pack — tarball <5 MB | PASS (221 kB, 156 files) |
 | 2 | Tarball contents — whitelist only, no secrets | PASS |
 | 3 | npm install from tarball in tmpdir | PASS |
-| 4 | design-os --version + --help + install --help from installed binary | PASS |
-| 5 | design-os install (HOME override) creates bundled layout byte-identically | PASS |
+| 4 | complete-design --version + --help + install --help from installed binary | PASS |
+| 5 | complete-design install (HOME override) creates bundled layout byte-identically | PASS |
 | 6 | Cleanup | PASS |
-| 7 | design-os migrate --help loads without crash (FIX 4: schemas/migrations/ ships) | PENDING |
-| 8 | design-os install --target /tmp/bad exits 1 + PathContainmentError (FIX 3) | PENDING |
+| 7 | complete-design migrate --help loads without crash (FIX 4: schemas/migrations/ ships) | PENDING |
+| 8 | complete-design install --target /tmp/bad exits 1 + PathContainmentError (FIX 3) | PENDING |
 
 **Steps 1-6: PASS** (carried forward from T3 smoke run)
 **Steps 7-8: PENDING** (to be verified by owner before publish)

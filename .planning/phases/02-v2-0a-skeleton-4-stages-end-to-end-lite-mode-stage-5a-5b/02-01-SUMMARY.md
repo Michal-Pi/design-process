@@ -263,9 +263,9 @@ Four P2 (HIGH-severity) bugs identified by Codex review were addressed with atom
 - **Tests added:** 2 adversarial tests in `frontmatter-worst-provenance.test.ts` (correct base dir validates, wrong base dir fails — regression guard)
 
 ### Finding 4: discover.md invokes cli modules directly instead of via dispatcher
-- **Commit:** 08a9e50 `fix(02-01): invoke design-os CLI dispatcher instead of cli/*.mjs directly in discover workflow`
+- **Commit:** 08a9e50 `fix(02-01): invoke complete-design CLI dispatcher instead of cli/*.mjs directly in discover workflow`
 - **Root cause:** `gate.mjs` exports a `command` object for Commander registration — running `node assets/scripts/cli/gate.mjs` directly exits without invoking the handler. The workflow step 8 and host-fallback section both used the direct invocation, silently skipping the gate.
-- **Fix:** Replaced both occurrences with `node bin/design-os.mjs gate --stage 1 --design-dir design/`. Verified `node bin/design-os.mjs gate --stage 1 --design-dir <path>` returns a real `GateResult` JSON object.
+- **Fix:** Replaced both occurrences with `node bin/complete-design.mjs gate --stage 1 --design-dir design/`. Verified `node bin/complete-design.mjs gate --stage 1 --design-dir <path>` returns a real `GateResult` JSON object.
 - **Retained:** `budget-check.mjs` and `apply.mjs` direct references — these scripts don't exist yet (ship in future plans) and have no dispatcher registration to replace.
 
 ## Cross-cutting follow-up

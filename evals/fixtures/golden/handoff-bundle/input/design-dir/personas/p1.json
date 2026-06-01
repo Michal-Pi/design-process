@@ -6,7 +6,7 @@
   "generated": "2026-05-24T10:00:00Z",
   "lastReviewedAt": "2026-05-24T10:00:00Z",
   "provenance": "validated",
-  "owner": "design-os",
+  "owner": "complete-design",
   "name": "Alex — The Context-Switching PM",
   "jobsToBeDone": [
     "Stop losing context when switching between Slack, Linear, and Notion mid-sprint",

@@ -1,5 +1,5 @@
 // tests/governance/init.test.ts
-// Tests for design-os init: writes templates, creates design/ + .design-os/ dirs,
+// Tests for complete-design init: writes templates, creates design/ + .complete-design/ dirs,
 // and is idempotent (guarded block not duplicated on second run).
 // RED phase — fails until Task 1 implementation exists.
 // Implements: D-29, ART-04, TRUST-02
@@ -21,27 +21,27 @@ describe("init: --apply mode", () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    tmpDir = await mkdtemp(join(os.tmpdir(), "design-os-init-test-"));
+    tmpDir = await mkdtemp(join(os.tmpdir(), "complete-design-init-test-"));
   });
 
   afterEach(async () => {
     await rm(tmpDir, { recursive: true, force: true });
   });
 
-  it("writes .gitignore with design-os guarded block", async () => {
+  it("writes .gitignore with complete-design guarded block", async () => {
     await runInit({ target: tmpDir, apply: true });
     const content = await readFile(join(tmpDir, ".gitignore"), "utf8");
-    expect(content).toContain("# >>> design-os defaults");
-    expect(content).toContain(".design-os/private/");
-    expect(content).toContain("# <<< design-os defaults");
+    expect(content).toContain("# >>> complete-design defaults");
+    expect(content).toContain(".complete-design/private/");
+    expect(content).toContain("# <<< complete-design defaults");
   });
 
-  it("writes .gitattributes with design-os guarded block", async () => {
+  it("writes .gitattributes with complete-design guarded block", async () => {
     await runInit({ target: tmpDir, apply: true });
     const content = await readFile(join(tmpDir, ".gitattributes"), "utf8");
-    expect(content).toContain("# >>> design-os defaults");
+    expect(content).toContain("# >>> complete-design defaults");
     expect(content).toContain("design/*.json merge=ours");
-    expect(content).toContain("# <<< design-os defaults");
+    expect(content).toContain("# <<< complete-design defaults");
   });
 
   it("creates design/ directory", async () => {
@@ -49,9 +49,9 @@ describe("init: --apply mode", () => {
     expect(existsSync(join(tmpDir, "design"))).toBe(true);
   });
 
-  it("creates .design-os/ directory", async () => {
+  it("creates .complete-design/ directory", async () => {
     await runInit({ target: tmpDir, apply: true });
-    expect(existsSync(join(tmpDir, ".design-os"))).toBe(true);
+    expect(existsSync(join(tmpDir, ".complete-design"))).toBe(true);
   });
 
   it("creates design/MANIFEST.md", async () => {
@@ -63,7 +63,7 @@ describe("init: --apply mode", () => {
     await runInit({ target: tmpDir, apply: true });
     await runInit({ target: tmpDir, apply: true });
     const content = await readFile(join(tmpDir, ".gitignore"), "utf8");
-    const count = (content.match(/# >>> design-os defaults/g) ?? []).length;
+    const count = (content.match(/# >>> complete-design defaults/g) ?? []).length;
     expect(count).toBe(1);
   });
 
@@ -71,7 +71,7 @@ describe("init: --apply mode", () => {
     await runInit({ target: tmpDir, apply: true });
     await runInit({ target: tmpDir, apply: true });
     const content = await readFile(join(tmpDir, ".gitattributes"), "utf8");
-    const count = (content.match(/# >>> design-os defaults/g) ?? []).length;
+    const count = (content.match(/# >>> complete-design defaults/g) ?? []).length;
     expect(count).toBe(1);
   });
 
@@ -81,7 +81,7 @@ describe("init: --apply mode", () => {
     await runInit({ target: tmpDir, apply: true });
     const content = await readFile(join(tmpDir, ".gitignore"), "utf8");
     expect(content).toContain("# existing content");
-    expect(content).toContain("# >>> design-os defaults");
+    expect(content).toContain("# >>> complete-design defaults");
   });
 });
 
@@ -89,7 +89,7 @@ describe("init: dry-run mode (no --apply)", () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    tmpDir = await mkdtemp(join(os.tmpdir(), "design-os-init-dry-"));
+    tmpDir = await mkdtemp(join(os.tmpdir(), "complete-design-init-dry-"));
   });
 
   afterEach(async () => {

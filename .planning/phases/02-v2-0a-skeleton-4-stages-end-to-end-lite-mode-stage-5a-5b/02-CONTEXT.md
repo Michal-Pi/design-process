@@ -33,7 +33,7 @@ Ship a standalone-distributable 4-stage skeleton (`ingest` → `discover` → `s
 - Schema migration v2.0a → v2.0b (Phase 3).
 
 **Out of scope full stop** (per PROJECT.md):
-- React/Next/Vue inside the design-os package itself.
+- React/Next/Vue inside the complete-design package itself.
 - Vector DB / knowledge graph for `references/`.
 - Hosted SaaS / dashboard.
 - Notion / Linear / Google Doc PRD ingestion (v2.1).
@@ -65,7 +65,7 @@ Ship a standalone-distributable 4-stage skeleton (`ingest` → `discover` → `s
 
 ### Sitemap + Mermaid flow generation (D-39 to D-40)
 
-- **D-39: `structure` workflow generates 2-5 LATCH-diverse sitemap variants via `ia/sitemap-variants` atom; user picks one; `ia/flows-from-jobs` atom generates one Mermaid flowchart per JTBD.** The `ia/sitemap-variants` atom reads `design/.handoff/stage-1-bundle.md` and generates between 2 and 5 variants (default 3) — each using a different LATCH scheme (Location, Alphabetical, Time, Category, Hierarchy). Variant diversity is checked by extending the Phase 1 `variant-distance.mjs` with a sitemap-structural distance function (unique node groupings, depth ratio). Each variant is a `sitemap.json` candidate in `.design-os/preview/variants/`. User picks one; it becomes `design/ia/sitemap.json`. Mermaid flowcharts are emitted per JTBD as `.flow.mmd` files and validated by the Phase 1 `mermaid-render.mjs` determinism path (Plan 03). No colors or typography in any IA output (FID-02, MRD §3.22 structure gate).
+- **D-39: `structure` workflow generates 2-5 LATCH-diverse sitemap variants via `ia/sitemap-variants` atom; user picks one; `ia/flows-from-jobs` atom generates one Mermaid flowchart per JTBD.** The `ia/sitemap-variants` atom reads `design/.handoff/stage-1-bundle.md` and generates between 2 and 5 variants (default 3) — each using a different LATCH scheme (Location, Alphabetical, Time, Category, Hierarchy). Variant diversity is checked by extending the Phase 1 `variant-distance.mjs` with a sitemap-structural distance function (unique node groupings, depth ratio). Each variant is a `sitemap.json` candidate in `.complete-design/preview/variants/`. User picks one; it becomes `design/ia/sitemap.json`. Mermaid flowcharts are emitted per JTBD as `.flow.mmd` files and validated by the Phase 1 `mermaid-render.mjs` determinism path (Plan 03). No colors or typography in any IA output (FID-02, MRD §3.22 structure gate).
 - **D-40: `gate/stage-2-complete` checks: sitemap covers all JTBDs, no orphan nodes, Mermaid flows are syntactically valid.** In v2.0a, tree-test data is absent, so the gate returns `(pass_with_warnings, proto)` if sitemap is present + JTBD-covered but no tree-test results exist. `evidence: VALIDATED` for Stage 2 requires tree-test results (v2.1+ atom `ia/tree-test-design`). This is the honest handling of the solo-indie reality per MRD §3.22 Stage 2 gate and GATE-04 evidence grades.
 
 ### Style-lite token scaffolding (D-41 to D-43)
@@ -85,7 +85,7 @@ Ship a standalone-distributable 4-stage skeleton (`ingest` → `discover` → `s
 
 ### Audit report format (D-47)
 
-- **D-47: `AUDIT-REPORT.md` output is validated against `schemas/dist/audit-report.v1.json` (Phase 1 Plan 01) at every `audit` run.** Finding ID schema: `<stage>-<type>-<seq>` (e.g., `5a-slop-001`, `5b-token-002`). Fix-recipe shape: `{ title: string, evidence: string, severity: 'BLOCKER'|'ERROR'|'WARNING'|'INFO', fixRecipe: string, suppressWith: string }`. Suppression: a `.design-os/audit-suppressions.json` file maps `findingId` → `{reason: string, suppressedAt: ISO date, suppressedBy: string}`. CI mode reads `.design-os/ci.yaml`'s `blockOnSeverity` field (default: `BLOCKER` only). AUDIT-05, AUDIT-08, MRD §6.
+- **D-47: `AUDIT-REPORT.md` output is validated against `schemas/dist/audit-report.v1.json` (Phase 1 Plan 01) at every `audit` run.** Finding ID schema: `<stage>-<type>-<seq>` (e.g., `5a-slop-001`, `5b-token-002`). Fix-recipe shape: `{ title: string, evidence: string, severity: 'BLOCKER'|'ERROR'|'WARNING'|'INFO', fixRecipe: string, suppressWith: string }`. Suppression: a `.complete-design/audit-suppressions.json` file maps `findingId` → `{reason: string, suppressedAt: ISO date, suppressedBy: string}`. CI mode reads `.complete-design/ci.yaml`'s `blockOnSeverity` field (default: `BLOCKER` only). AUDIT-05, AUDIT-08, MRD §6.
 
 ### Adapter detection heuristic (D-48)
 
@@ -105,7 +105,7 @@ Ship a standalone-distributable 4-stage skeleton (`ingest` → `discover` → `s
 
 ### Output write discipline (D-52)
 
-- **D-52: Diff-by-default; all Phase 2 workflow writes stage into `.design-os/preview/` first; `--apply` flag required to write into `design/`.** Every workflow SKILL.md body ends with a diff step: "Read the staged artifacts from `.design-os/preview/run-<id>/`. If the user approves with `--apply`, call `assets/scripts/cli/apply.mjs` (new Phase 2 deliverable) to copy from staging to `design/` and write `design/.handoff/stage-N-bundle.md`." This extends the TRUST-02 / TRUST-05 pattern from Phase 1's SKILL.md skeletons to all Phase 2 workflow bodies. Note: the `design-os init` command (Phase 1 Plan 04) already writes `.gitignore`/`.gitattributes` defaults; `apply.mjs` reuses those paths. MRD §3.6 per-file commit policy, PROJECT.md Trust posture constraint.
+- **D-52: Diff-by-default; all Phase 2 workflow writes stage into `.complete-design/preview/` first; `--apply` flag required to write into `design/`.** Every workflow SKILL.md body ends with a diff step: "Read the staged artifacts from `.complete-design/preview/run-<id>/`. If the user approves with `--apply`, call `assets/scripts/cli/apply.mjs` (new Phase 2 deliverable) to copy from staging to `design/` and write `design/.handoff/stage-N-bundle.md`." This extends the TRUST-02 / TRUST-05 pattern from Phase 1's SKILL.md skeletons to all Phase 2 workflow bodies. Note: the `complete-design init` command (Phase 1 Plan 04) already writes `.gitignore`/`.gitattributes` defaults; `apply.mjs` reuses those paths. MRD §3.6 per-file commit policy, PROJECT.md Trust posture constraint.
 
 ### Cross-host parity scaffolding (D-53)
 
@@ -144,29 +144,29 @@ The following lower-stakes implementation decisions are left to the Phase 2 plan
 - `.planning/research/PITFALLS.md` — Pitfalls 2 (synthetic-persona), 3 (fidelity-cap leakage), 5 (context-window), 6 (determinism), 7 (cost), 11 (process aversion), 13 (style-lite BLOCKER) — all Phase 2 ownership
 
 ### Phase 1 deliverables (what Phase 2 BUILDS ON — do not re-spec)
-- `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-01-SUMMARY.md` — Schemas Foundation: 6 Zod sources, JSON Schema emit pipeline, `ajv` runtime validation, `design-os migrate`, `design-md-validate` version pinning, auto-discovery CLI dispatcher. Key: `z.toJSONSchema()` (NOT `zod-to-json-schema` — EOL); `ajv strict: false` required; `schemas/dist/` committed to git.
+- `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-01-SUMMARY.md` — Schemas Foundation: 6 Zod sources, JSON Schema emit pipeline, `ajv` runtime validation, `complete-design migrate`, `design-md-validate` version pinning, auto-discovery CLI dispatcher. Key: `z.toJSONSchema()` (NOT `zod-to-json-schema` — EOL); `ajv strict: false` required; `schemas/dist/` committed to git.
 - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-02-SUMMARY.md` — Gate Runner + Handoff Bundle: `runGate()` base with 5-kind `GateResult` discriminated union; 6 per-stage gate skeletons; `stage-5a.mjs` already hard-codes `not_runnable` for empty `interactions/`; `manifest.lock` SHA-256 hash chain; 4 stage-gate checklists (stage-1,2,5a,5b); `handoff-bundle-build.mjs` with tiktoken budget + section-aware truncation; bundle-sufficiency eval harness.
 - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-03-SUMMARY.md` — Determinism CI + Eval Harness: `verify-golden` (5× byte-identical); `lint-determinism` (no LLM imports in `assets/scripts/`); `mermaid-render.mjs` determinism; `skillgrade` per-skill harness; aggregate coexistence eval; recovery semantics; 5 GitHub Actions CI workflows; ESLint switch-exhaustiveness-check.
-- `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-SUMMARY.md` — Governance + PII + Persistence: PII scanner (Luhn, E.164, transcript headers); `.gitignore`/`.gitattributes` templates; `design-os init`; SPINE-04 linearity checker; MANIFEST.md reconciler; override-banner propagation; 3 SKILL.md skeletons (`design`, `audit`, `handoff`); TRUST-01..05 docs.
+- `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-04-SUMMARY.md` — Governance + PII + Persistence: PII scanner (Luhn, E.164, transcript headers); `.gitignore`/`.gitattributes` templates; `complete-design init`; SPINE-04 linearity checker; MANIFEST.md reconciler; override-banner propagation; 3 SKILL.md skeletons (`design`, `audit`, `handoff`); TRUST-01..05 docs.
 - `.planning/phases/01-v1-5-infrastructure-determinism-foundation/01-05-SUMMARY.md` — Preview Harness + Routing + Watcher: `port-manager.mjs`; `playwright-runner.mjs`; `security-sandbox.mjs` (permission boundary, no vm2); `vite-adapter.mjs`, `next-adapter.mjs`, `astro-adapter.mjs`; `variant-distance.mjs` (6-axis); `run-subagent.mjs` (host-detection + Claude Code + sequential fallback); routing `registry.mjs` + `dispatch.mjs` (ROUTE-08 enforced); 12 MVPA-06 references; 3 host-profile vitest workspaces; Anthropic-Labs watcher (daily cron + heartbeat); `MAINTAINERS.md`; `RAPID-RESPONSE.md`.
 
 ### Source-of-truth MRD (specific sections)
-- `design-os-mrd-v2.md` §3.5 — Garrett spine; every workflow and atom maps to a plane
-- `design-os-mrd-v2.md` §3.6 — `design/` directory structure + per-file commit policy + frontmatter schema + handoff bundle format
-- `design-os-mrd-v2.md` §3.7 — workflow inventory (W0-W6 + audit); procedure steps for `ingest`, `discover`, `structure`, `style`, `systematize`
-- `design-os-mrd-v2.md` §3.8 — atom inventory; 9 v2.0a atoms + frontmatter fields
-- `design-os-mrd-v2.md` §3.9 — composition contract (artifact frontmatter `reads/writes/emits`)
-- `design-os-mrd-v2.md` §3.10 — references architecture (local Markdown only, no vector DB, stage-organized)
-- `design-os-mrd-v2.md` §3.22 — stage-validation gates (evidence grades, terminal states, per-gate checklists); the Stage 1 and Stage 2 gate requirements are the canonical spec for D-37 and D-40
-- `design-os-mrd-v2.md` §3.23 — fidelity caps per stage; Stage 2 no-color/no-typography rule (FID-02); Stage 5a lite-mode labeling
-- `design-os-mrd-v2.md` §9.1 — v2.0a MVP scope including the `style-lite` BLOCKER fix; the 9-atom list; 4-gate list; success criteria for the 4 routes
-- `design-os-mrd-v2.md` §10 — roadmap; v2.0a weeks 4-8 (now weeks 5-9 per Phase 1 expansion)
-- `design-os-mrd-v2.md` §16 — codex acceptance record; key for D-37 (synthetic-persona script enforcement), D-41 (token emit), D-43 (not_runnable gate), D-53 (cross-host scaffold)
+- `complete-design-mrd-v2.md` §3.5 — Garrett spine; every workflow and atom maps to a plane
+- `complete-design-mrd-v2.md` §3.6 — `design/` directory structure + per-file commit policy + frontmatter schema + handoff bundle format
+- `complete-design-mrd-v2.md` §3.7 — workflow inventory (W0-W6 + audit); procedure steps for `ingest`, `discover`, `structure`, `style`, `systematize`
+- `complete-design-mrd-v2.md` §3.8 — atom inventory; 9 v2.0a atoms + frontmatter fields
+- `complete-design-mrd-v2.md` §3.9 — composition contract (artifact frontmatter `reads/writes/emits`)
+- `complete-design-mrd-v2.md` §3.10 — references architecture (local Markdown only, no vector DB, stage-organized)
+- `complete-design-mrd-v2.md` §3.22 — stage-validation gates (evidence grades, terminal states, per-gate checklists); the Stage 1 and Stage 2 gate requirements are the canonical spec for D-37 and D-40
+- `complete-design-mrd-v2.md` §3.23 — fidelity caps per stage; Stage 2 no-color/no-typography rule (FID-02); Stage 5a lite-mode labeling
+- `complete-design-mrd-v2.md` §9.1 — v2.0a MVP scope including the `style-lite` BLOCKER fix; the 9-atom list; 4-gate list; success criteria for the 4 routes
+- `complete-design-mrd-v2.md` §10 — roadmap; v2.0a weeks 4-8 (now weeks 5-9 per Phase 1 expansion)
+- `complete-design-mrd-v2.md` §16 — codex acceptance record; key for D-37 (synthetic-persona script enforcement), D-41 (token emit), D-43 (not_runnable gate), D-53 (cross-host scaffold)
 
 ### External specifications (cited at canon granularity)
 - agentskills.io v1 SKILL.md spec — https://agentskills.io/specification — frontmatter fields + procedure body format
 - W3C DTCG v2025.10 — https://www.designtokens.org/tr/2025.10/format/ — token schema; primitive→semantic→component tiers; `$type` field
-- Google DESIGN.md — https://github.com/google-labs-code/design.md — Stage 5 contract; `$extensions.design-os` namespace; pinned to 2026.04 by Phase 1's `design-md-validate.mjs`
+- Google DESIGN.md — https://github.com/google-labs-code/design.md — Stage 5 contract; `$extensions.complete-design` namespace; pinned to 2026.04 by Phase 1's `design-md-validate.mjs`
 - Indi Young *Practical Empathy* — thinking-style format for persona generation; in `references/indi-young-thinking-styles.md`
 - Torres OST format — in `references/torres-ost.md`
 - Rosenfeld/Morville/Arango IA + LATCH — in `references/rosenfeld-ia.md`
@@ -187,11 +187,11 @@ The following lower-stakes implementation decisions are left to the Phase 2 plan
 ### What Phase 1 provides (do not re-implement)
 
 **From Plan 01-01 (Schemas Foundation):**
-- `bin/design-os.mjs` — auto-discovery CLI dispatcher; Phase 2 adds subcommands by dropping `.mjs` files under `assets/scripts/cli/` only
+- `bin/complete-design.mjs` — auto-discovery CLI dispatcher; Phase 2 adds subcommands by dropping `.mjs` files under `assets/scripts/cli/` only
 - `assets/scripts/schemas/validate.mjs` — `validateArtifact(schema, data)` returns structured errors; use this at every workflow boundary
 - `assets/scripts/schemas/migrate.mjs` — `migrateArtifact(artifact, fromVersion, toVersion)` chains migrations
 - `assets/scripts/design-md-validate.mjs` — validates `DESIGN.md` against pinned 2026.04 schema; `validateDesignMd(path)` export
-- `assets/scripts/frontmatter-validate.mjs` — strict mode for `design/` paths, lenient for `.design-os/private/`
+- `assets/scripts/frontmatter-validate.mjs` — strict mode for `design/` paths, lenient for `.complete-design/private/`
 
 **From Plan 01-02 (Gate Runner + Handoff Bundle):**
 - `assets/scripts/gates/base.mjs` — `runGate(stage, designDir, config) → GateResult`; all 5 kinds supported
@@ -199,10 +199,10 @@ The following lower-stakes implementation decisions are left to the Phase 2 plan
 - `assets/scripts/gates/stage-5a.mjs` — ALREADY hard-codes `not_runnable` for empty `design/interactions/`; Phase 2 must NOT override this
 - `assets/scripts/manifest-lock-append.mjs` — `appendManifestLockEntry(designDir, entry)` + `verifyManifestLockChain(designDir)`
 - `assets/scripts/handoff-bundle-build.mjs` — `buildHandoffBundle(stage, designDir, llmSummary)` → writes `design/.handoff/stage-N-bundle.md`; tiktoken budget + section-aware truncation
-- `assets/scripts/cli/gate.mjs` — `design-os gate --stage N` CLI command; Phase 2 stage workflows invoke via this
+- `assets/scripts/cli/gate.mjs` — `complete-design gate --stage N` CLI command; Phase 2 stage workflows invoke via this
 
 **From Plan 01-03 (Determinism CI + Eval Harness):**
-- `assets/scripts/verify-golden.mjs` — `design-os verify --golden`; Phase 2 emit scripts must add corresponding `.golden.json` fixtures
+- `assets/scripts/verify-golden.mjs` — `complete-design verify --golden`; Phase 2 emit scripts must add corresponding `.golden.json` fixtures
 - `assets/scripts/lint-determinism.mjs` — rejects LLM client imports in `assets/scripts/`; Phase 2 scripts must comply
 - `assets/scripts/mermaid-render.mjs` — headless Mermaid → SVG via `@mermaid-js/mermaid-cli`; deterministic render path
 - `assets/scripts/skillgrade.mjs` — per-skill trigger eval harness; Phase 2 adds `triggers.yaml` per new skill
@@ -215,7 +215,7 @@ The following lower-stakes implementation decisions are left to the Phase 2 plan
 - `assets/scripts/spine-linearity.mjs` — rejects forward-stage `dependsOn` in artifact frontmatter
 - `assets/scripts/manifest-reconcile.mjs` — rebuilds `design/MANIFEST.md` from filesystem; Phase 2 workflows call this after writes
 - `assets/scripts/override-banner-propagate.mjs` — injects `overrideBanner` into downstream artifacts after `USER_OVERRIDDEN` gate
-- `assets/scripts/init.mjs` — `design-os init`; Phase 2 ingest workflow calls this if `design/` doesn't exist
+- `assets/scripts/init.mjs` — `complete-design init`; Phase 2 ingest workflow calls this if `design/` doesn't exist
 - `skills/design.md`, `skills/audit.md`, `skills/handoff.md` — Phase 1 SKILL.md skeletons; Phase 2 extends the bodies
 
 **From Plan 01-05 (Preview Harness + Routing + Watcher):**
@@ -243,7 +243,7 @@ Phase 2 must create the following that do not yet exist:
 - `assets/scripts/audit/slop-tells.mjs` — deterministic slop-tell pattern matcher (D-46)
 - `assets/scripts/audit/stage-5a-pr.mjs` — Stage 5a PR diff detector
 - `assets/scripts/audit/stage-5b-pr.mjs` — Stage 5b PR diff detector
-- `assets/scripts/cli/apply.mjs` — copy from `.design-os/preview/run-<id>/` to `design/` after `--apply` (D-52)
+- `assets/scripts/cli/apply.mjs` — copy from `.complete-design/preview/run-<id>/` to `design/` after `--apply` (D-52)
 - Per-stage gate checklist extensions in `assets/scripts/gates/stage-1.mjs`, `stage-2.mjs` (flesh out checklist items from Phase 1 skeletons)
 
 **Updated `skills/design.md`:** extend Phase 1 skeleton body to handle the 4 implemented routes
@@ -301,7 +301,7 @@ These came up as relevant to Phase 2 but belong in later phases or v2.1+:
 ### v2.1+
 - Notion / Linear / Google Doc PRD ingestion (Notion scope restricted to Gaia Logic projects per CLAUDE.md).
 - Optimal Workshop tree-test CSV ingestion (`ia/tree-test-design` atom).
-- `design-os-bridges` (Material Web / Vue / Svelte adapters).
+- `complete-design-bridges` (Material Web / Vue / Svelte adapters).
 - Tokens Studio Figma export ingestion.
 - Dovetail / Notably interview-transcript ingestion (v2.2).
 - Voice → PRD interview mode via Whisper (v2.2).

@@ -2,7 +2,7 @@
 // Spine ordering for the Garrett 5-plane design process.
 // Consumed by: SPINE-04 check (lint-spine-linearity.mjs), Plan 05 routing.
 //
-// Source: CONTEXT.md SPINE-01..04; design-os-mrd-v2.md §3.5
+// Source: CONTEXT.md SPINE-01..04; complete-design-mrd-v2.md §3.5
 // Implements: SPINE-04 (linear forward data flow enforced in code)
 
 /**

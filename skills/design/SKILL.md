@@ -29,16 +29,16 @@ driver (D-77). Full 15-fixture parity confirmation runs via `npm run eval:parity
 
 ## Default behavior
 
-**ROUTE-08:** When invoked without `--route`, design-os asks before running — the default
+**ROUTE-08:** When invoked without `--route`, complete-design asks before running — the default
 is NOT all 5 stages. The orchestrator suggests a route based on repo signals or asks a
 brief intake. Never silently runs all 5 stages.
 
 ```bash
 # Explicit route (recommended)
-design-os design --route new-feature --design-dir ./design
+complete-design design --route new-feature --design-dir ./design
 
 # No route → prints suggestion + exits 0 (ROUTE-08)
-design-os design --design-dir ./design
+complete-design design --design-dir ./design
 ```
 
 ## Routes
@@ -87,7 +87,7 @@ Stage-to-stage transitions require passing the corresponding gate checklist:
 - `${CLAUDE_SKILL_DIR}/references/gates/stage-5a.md` — Interaction → Hi-Fi
 - `${CLAUDE_SKILL_DIR}/references/gates/stage-5b.md` — Hi-Fi → Design System
 
-Each gate returns a `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`.
+Each gate returns a `(terminal-state, evidence-grade)` tuple persisted in `.complete-design/manifest.lock`.
 
 Note: Stage 3 + Stage 4 gate checklists ship in Phase 3 (v2.0 GA) alongside the gate runners.
 
@@ -115,9 +115,9 @@ Gate checklists (v1.5 set — Stages 3+4 ship Phase 3):
 
 ## Related skills
 
-- `design-os/ingest` — Stage 0: PRD ingestion and Lenny 1-pager interview
-- `design-os/discover` — Stage 1: Research, personas, JTBD
-- `design-os/structure` — Stage 2: Sitemap, flows
-- `design-os/style` — Stage 5a: DTCG tokens, palette, preview variants
-- `design-os/systematize` — Stage 5b: Component promotion, DESIGN.md emit
-- `design-os/audit` — Cross-stage: slop-tells + PR diff audit
+- `complete-design/ingest` — Stage 0: PRD ingestion and Lenny 1-pager interview
+- `complete-design/discover` — Stage 1: Research, personas, JTBD
+- `complete-design/structure` — Stage 2: Sitemap, flows
+- `complete-design/style` — Stage 5a: DTCG tokens, palette, preview variants
+- `complete-design/systematize` — Stage 5b: Component promotion, DESIGN.md emit
+- `complete-design/audit` — Cross-stage: slop-tells + PR diff audit

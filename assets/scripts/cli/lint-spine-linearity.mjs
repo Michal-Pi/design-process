@@ -1,5 +1,5 @@
 // assets/scripts/cli/lint-spine-linearity.mjs
-// design-os lint:spine-linearity subcommand — auto-discovered by bin/design-os.mjs.
+// complete-design lint:spine-linearity subcommand — auto-discovered by bin/complete-design.mjs.
 //
 // Checks that no canonical artifact in a design dir references artifacts
 // from a higher stage in the Garrett spine (SPINE-04 enforcement).

@@ -7,7 +7,7 @@ import { promisify } from 'node:util';
 import { resolve } from 'node:path';
 
 const execFileAsync = promisify(execFile);
-const BIN = resolve(process.cwd(), 'bin/design-os.mjs');
+const BIN = resolve(process.cwd(), 'bin/complete-design.mjs');
 
 describe('ROUTE-08: default behavior (no --route given)', () => {
   it('suggestRoute with empty signals returns default-fallback reasoning', async () => {
@@ -42,6 +42,6 @@ describe('ROUTE-08: default behavior (no --route given)', () => {
   it('CLI: design without --route prints Which route prompt and exits 0', async () => {
     const result = await execFileAsync('node', [BIN, 'design', '--design-dir', '/tmp']);
     expect(result.stdout).toMatch(/Which route/i);
-    expect(result.stdout).toMatch(/design-os design --route/i);
+    expect(result.stdout).toMatch(/complete-design design --route/i);
   });
 });

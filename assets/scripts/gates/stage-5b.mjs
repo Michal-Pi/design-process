@@ -12,7 +12,7 @@
 // 4. DESIGN.md absent → finding 5b-missing-001 (ERROR — workflow will generate it)
 //    DESIGN.md present → validate schema (name, tokens, version required).
 //    - schema invalid → BLOCKER 5b-schema-001 (failed_after_repair)
-//    - $extensions.design-os.evidence present but ≠ 'INFERRED' → BLOCKER 5b-evidence-002
+//    - $extensions.complete-design.evidence present but ≠ 'INFERRED' → BLOCKER 5b-evidence-002
 // 5. Any BLOCKER → failed_after_repair (reason: 'schema-violation' unless frost, then 'frost-recurrence-not-met')
 //    Otherwise → pass_with_warnings (evidence: 'proto')
 //
@@ -49,7 +49,7 @@ const DESIGN_MD_SCHEMA = {
     $extensions: {
       type: "object",
       properties: {
-        "design-os": { type: "object" },
+        "complete-design": { type: "object" },
       },
     },
   },
@@ -425,21 +425,21 @@ export async function runStage5bGate(designDir) {
       hasBlocker = true;
     }
 
-    // Check $extensions.design-os.evidence — must be 'INFERRED' on every Stage 5b DESIGN.md (D-51)
+    // Check $extensions.complete-design.evidence — must be 'INFERRED' on every Stage 5b DESIGN.md (D-51)
     // D-51 requires evidence:INFERRED unconditionally. Missing block or missing field is also a BLOCKER.
-    const designOsExt = designMdFrontmatter?.["$extensions"]?.["design-os"];
+    const designOsExt = designMdFrontmatter?.["$extensions"]?.["complete-design"];
     if (
       designOsExt === undefined ||
       designOsExt === null ||
       typeof designOsExt !== "object"
     ) {
-      // BLOCKER: $extensions.design-os block entirely absent — required by D-51
+      // BLOCKER: $extensions.complete-design block entirely absent — required by D-51
       findings.push({
         checkId: "5b-evidence-002",
         status: "fail",
         evidence:
-          `DESIGN.md is missing the $extensions.design-os block required by D-51. ` +
-          `The systematize workflow must emit $extensions.design-os.evidence:'INFERRED'.`,
+          `DESIGN.md is missing the $extensions.complete-design block required by D-51. ` +
+          `The systematize workflow must emit $extensions.complete-design.evidence:'INFERRED'.`,
         citation: "D-51",
       });
       hasBlocker = true;
@@ -455,7 +455,7 @@ export async function runStage5bGate(designDir) {
           checkId: "5b-evidence-002",
           status: "fail",
           evidence:
-            `DESIGN.md $extensions.design-os.evidence must be 'INFERRED' in v2.0a (D-51). ` +
+            `DESIGN.md $extensions.complete-design.evidence must be 'INFERRED' in v2.0a (D-51). ` +
             `Found: ${foundDesc}. ` +
             `The systematize workflow emits evidence:INFERRED per D-51.`,
           citation: "D-51",

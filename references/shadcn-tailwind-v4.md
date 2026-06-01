@@ -1,11 +1,11 @@
 # shadcn/ui + Tailwind CSS v4 Integration
 
-<!-- design-os reference: shadcn-tailwind-v4 -->
+<!-- complete-design reference: shadcn-tailwind-v4 -->
 
 ## Purpose
 
 shadcn/ui (copy-paste component library) + Tailwind CSS v4 (CSS-first `@theme`, OKLCH
-defaults) is the primary generated-component target for design-os Stage 5a/5b. The
+defaults) is the primary generated-component target for complete-design Stage 5a/5b. The
 `cn()` utility, semantic color tokens, and `@theme` projection are canonical patterns.
 
 ## Citations
@@ -17,14 +17,14 @@ defaults) is the primary generated-component target for design-os Stage 5a/5b. T
 - CSS-first config: `@theme { --color-primary: oklch(60% 0.2 270); }` replaces tailwind.config.js.
   Design-os DESIGN.md token section emits `@theme` blocks per DTCG semantic tier.
 - `cn()` utility: `clsx(inputs) + twMerge(inputs)` pattern for class merging.
-  All design-os generated components use `cn()` for className composition.
+  All complete-design generated components use `cn()` for className composition.
 - Semantic color tokens: `bg-primary`, `text-destructive`, `ring-border` — never raw
   Tailwind colors like `bg-blue-500` in generated code (CLAUDE.md shadcn rule).
 - `forwardRef` + `cn()` pattern for new component wrappers (never modify `components/ui/`).
-- OKLCH defaults: Tailwind v4 ships P3 gamut colors via OKLCH; design-os `oklch.mjs`
+- OKLCH defaults: Tailwind v4 ships P3 gamut colors via OKLCH; complete-design `oklch.mjs`
   emits tokens in OKLCH format compatible with Tailwind v4 `@theme`.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 5a component scaffolds: use shadcn/ui Tailwind v4 patterns by default.
 - Stage 5b token emission: DTCG → Tailwind v4 `@theme` projection.

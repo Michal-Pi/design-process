@@ -1,5 +1,5 @@
 // assets/scripts/manifest-lock-append.mjs
-// Append-only SHA-256 hash chain for .design-os/manifest.lock.
+// Append-only SHA-256 hash chain for .complete-design/manifest.lock.
 // Every gate run appends one JSONL entry; tampering is detectable via
 // verifyManifestLockChain.
 //
@@ -43,10 +43,10 @@ function hashObject(obj) {
 }
 
 /**
- * Append one entry to .design-os/manifest.lock.
+ * Append one entry to .complete-design/manifest.lock.
  * Creates the file if it does not exist.
  *
- * @param {string} designOsDir - Path to the .design-os directory
+ * @param {string} designOsDir - Path to the .complete-design directory
  * @param {{ stage: string, gate: string, result: object, sourceHash: string }} entry
  */
 export async function appendManifestLockEntry(designOsDir, { stage, gate, result, sourceHash }) {
@@ -96,7 +96,7 @@ export async function appendManifestLockEntry(designOsDir, { stage, gate, result
  * Verify the manifest.lock hash chain integrity.
  * Walks every entry, recomputes entryHash, and verifies prevHash continuity.
  *
- * @param {string} designOsDir - Path to the .design-os directory
+ * @param {string} designOsDir - Path to the .complete-design directory
  * @returns {{ valid: boolean, brokenAt?: number }}
  */
 export async function verifyManifestLockChain(designOsDir) {

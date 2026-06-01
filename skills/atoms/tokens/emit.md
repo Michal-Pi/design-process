@@ -1,5 +1,5 @@
 ---
-name: "design-os/tokens/emit"
+name: "complete-design/tokens/emit"
 description: "Emit DTCG v2025.10 design tokens JSON + adapter projection (Tailwind v4 @theme / shadcn CSS vars / plain :root); all evidence:INFERRED"
 stage: "5a"
 mvp: true
@@ -78,7 +78,7 @@ Then proceed to the workflow procedure below.
    ```json
    {
      "tokensPath": "design/tokens.json",
-     "projectionPath": ".design-os/preview/run-<id>/design-os-tokens.css",
+     "projectionPath": ".complete-design/preview/run-<id>/complete-design-tokens.css",
      "adapterUsed": "shadcn|tailwind-v4|plain-css"
    }
    ```

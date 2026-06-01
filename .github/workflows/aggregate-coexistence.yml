@@ -1,6 +1,6 @@
 # .github/workflows/aggregate-coexistence.yml
 # CI workflow: Run aggregate coexistence eval on schedule + dispatch.
-# Reports design-os recall with 5 peer packages installed.
+# Reports complete-design recall with 5 peer packages installed.
 #
 # TRIG-03 GA gate disposition (Plan 4 hardening):
 #   Blocking is now enabled (continue-on-error: false). Current recall = 0.516 (below ≥0.80).
@@ -101,8 +101,8 @@ jobs:
               .addHeading('aggregate-coexistence: ' + pass, 3)
               .addTable([
                 [{ data: 'Metric', header: true }, { data: 'Value', header: true }],
-                ['design-os recall', recall],
-                ['design-os false-fire rate', falseFireRate],
+                ['complete-design recall', recall],
+                ['complete-design false-fire rate', falseFireRate],
                 ['pass (≥0.80 recall + ≤0.15 false-fire)', pass],
               ])
               .addRaw('\n**TRIG-03:** Blocking gate active since Plan 4 GA hardening. Current recall ~0.516 (below threshold). CI will fail until live-LLM calibration raises recall above 0.80.\n')

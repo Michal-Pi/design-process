@@ -1,5 +1,5 @@
 // assets/scripts/security-sandbox.mjs
-// Permission boundary for the design-os preview harness.
+// Permission boundary for the complete-design preview harness.
 //
 // Threat model: Phase 1 does NOT execute arbitrary user code in a sandbox.
 // The "sandbox" enforces:
@@ -8,7 +8,7 @@
 //
 // vm2 explicitly NOT used (CVE-2026-22709 + 11 advisories early 2026).
 // The project maintainer of vm2 recommends migration away from vm-based
-// sandboxing; design-os never executed arbitrary user code in a VM anyway.
+// sandboxing; complete-design never executed arbitrary user code in a VM anyway.
 //
 // Sources: RESEARCH.md "Security Sandbox — Permission Boundary (NOT vm-based)",
 //          CONTEXT.md D-23, PLAN.md Task 1 behavior block, threat model T-05-01..04.
@@ -19,13 +19,13 @@ import { resolve, relative } from 'node:path';
  * Relative path prefixes allowed for READ operations.
  * Paths must start with one of these to be permitted.
  */
-const READ_ALLOWLIST = ['design/', 'design/.handoff/', '.design-os/', 'PRD.md'];
+const READ_ALLOWLIST = ['design/', 'design/.handoff/', '.complete-design/', 'PRD.md'];
 
 /**
  * Relative path prefixes allowed for WRITE operations.
- * Writes are restricted to the working directories design-os manages.
+ * Writes are restricted to the working directories complete-design manages.
  */
-const WRITE_ALLOWLIST = ['design/', '.design-os/'];
+const WRITE_ALLOWLIST = ['design/', '.complete-design/'];
 
 /**
  * Determine whether a filesystem operation is permitted.

@@ -24,16 +24,16 @@ describe('security-sandbox: isPathAllowed', () => {
     expect(isPathAllowed(join(root, 'design/stage-1/output.md'), 'write', root)).toBe(true);
   });
 
-  it('allows reads from .design-os/ subdirectory', async () => {
+  it('allows reads from .complete-design/ subdirectory', async () => {
     const { isPathAllowed } = await import('../../assets/scripts/security-sandbox.mjs');
     const root = '/project/root';
-    expect(isPathAllowed(join(root, '.design-os/manifest.lock'), 'read', root)).toBe(true);
+    expect(isPathAllowed(join(root, '.complete-design/manifest.lock'), 'read', root)).toBe(true);
   });
 
-  it('allows writes to .design-os/ subdirectory', async () => {
+  it('allows writes to .complete-design/ subdirectory', async () => {
     const { isPathAllowed } = await import('../../assets/scripts/security-sandbox.mjs');
     const root = '/project/root';
-    expect(isPathAllowed(join(root, '.design-os/preview/run-1/port.lock'), 'write', root)).toBe(true);
+    expect(isPathAllowed(join(root, '.complete-design/preview/run-1/port.lock'), 'write', root)).toBe(true);
   });
 
   it('rejects path-traversal outside projectRoot', async () => {

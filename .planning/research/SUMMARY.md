@@ -1,13 +1,13 @@
 # Project Research Summary
 
-**Project:** design-os
+**Project:** complete-design
 **Domain:** SKILL.md package (agentskills.io v1) — design-process facilitator embedded in coding agents (Claude Code / Codex CLI / Cursor / Junie / Copilot)
 **Researched:** 2026-05-24
 **Confidence:** HIGH on spec/format/canon pinning; MEDIUM on infrastructure-load estimate (v1.5 phase length) and Stage 3/4 quality empirics; LOW on the existence of an external `skillgrade` package and the exact runtime behavior of the Codex 2% cap in mid-2026.
 
 ## Executive Summary
 
-design-os is **not** a typical web app. It is a Markdown + Node.js *skill package* that ships into the user's existing agent host and operationalizes the canonical 5-stage design process (Garrett spine: Strategy → Scope → Structure → Skeleton → Surface) with stage-typed artifacts in a `design/` directory, six first-class validation gates, and four evidence grades (VALIDATED / PROTO / INFERRED / MISSING). It ships zero React/Next/Vue — those frameworks appear only as (a) *adapter targets* for what the package emits into the user's repo and (b) *detected user-repo state* for the preview harness preserved from v1.0.1. The substrate is `design/` in the user's git tree (committed, designer-readable, AI-readable) plus `.design-os/` for package state (manifest hash chain, manual-override capture, preview run state, decision log). The architectural contract is **"LLM picks, scripts emit"** — every output that must be deterministic (DTCG tokens, contrast measurements, XState code, screenshots) flows through Node ESM scripts in `assets/scripts/`, never inline LLM emission.
+complete-design is **not** a typical web app. It is a Markdown + Node.js *skill package* that ships into the user's existing agent host and operationalizes the canonical 5-stage design process (Garrett spine: Strategy → Scope → Structure → Skeleton → Surface) with stage-typed artifacts in a `design/` directory, six first-class validation gates, and four evidence grades (VALIDATED / PROTO / INFERRED / MISSING). It ships zero React/Next/Vue — those frameworks appear only as (a) *adapter targets* for what the package emits into the user's repo and (b) *detected user-repo state* for the preview harness preserved from v1.0.1. The substrate is `design/` in the user's git tree (committed, designer-readable, AI-readable) plus `.complete-design/` for package state (manifest hash chain, manual-override capture, preview run state, decision log). The architectural contract is **"LLM picks, scripts emit"** — every output that must be deterministic (DTCG tokens, contrast measurements, XState code, screenshots) flows through Node ESM scripts in `assets/scripts/`, never inline LLM emission.
 
 Expert practice in this space converges on a very small set of standards: agentskills.io v1 (Dec 2025) for distribution; W3C DTCG v2025.10 (first stable, Oct 2025) for tokens; Google DESIGN.md (Apache-2.0, April 2026) for the Stage 5 contract; Mermaid stateDiagram-v2 as the designer-readable IxD canon with XState v5 as the conditional engineering parallel; Excalidraw JSON for low-fi; OKLCH + Tailwind v4 `@theme` for color emission. Trust posture is itself a feature — never claim WCAG conformance (report measured contrast), never use synthetic personas as primary research (NN/g 2024 red line), never auto-publish to git (diff-by-default, `--apply` required), never lead with "AI" framing. The competitive moat is structural: per MRD §2.5 stage-coverage matrix verified across 17+ tools, **no competitor covers the full 5-stage row** — Lovable/v0/Bolt/Subframe/Claude Design/frontend-design cluster at Stage 5; Maze/Optimal Workshop at Stages 1-2; UIzard/Visily at Stage 3. The integrative play does not exist as a product.
 
@@ -17,7 +17,7 @@ The five highest-leverage risks are: (1) **Codex 2% trigger-metadata aggregate c
 
 ### Recommended Stack
 
-design-os ships as a **pure Markdown + Node 22 LTS ESM** package; no bundlers, no frontend framework, no vector DB, no knowledge graph. Three stack layers must be kept distinct: (a) what design-os itself ships, (b) what it generates into the user's repo, (c) what it detects/reads in the user's repo. Conflating these is the #1 architectural risk. Frontmatter parsed by `gray-matter`; YAML round-trip by `yaml` (NOT js-yaml); schema authoring in **Zod 4.4** with `zod-to-json-schema` to emit the versioned R24 schemas; runtime JSON Schema validation by `ajv` 8 + `ajv-formats`; OKLCH/contrast math by `culori` 4 ESM + `apca-w3` + `@bjornlu/wcag-contrast`; Playwright 1.60 for screenshot variants; `vitest` 2 for eval/golden tests; `axe-core` 4.11 for the accessibility CI gate. Preview adapters target Vite 6 / Next 15 (App Router only) / Astro 5. Detail in `STACK.md`.
+complete-design ships as a **pure Markdown + Node 22 LTS ESM** package; no bundlers, no frontend framework, no vector DB, no knowledge graph. Three stack layers must be kept distinct: (a) what complete-design itself ships, (b) what it generates into the user's repo, (c) what it detects/reads in the user's repo. Conflating these is the #1 architectural risk. Frontmatter parsed by `gray-matter`; YAML round-trip by `yaml` (NOT js-yaml); schema authoring in **Zod 4.4** with `zod-to-json-schema` to emit the versioned R24 schemas; runtime JSON Schema validation by `ajv` 8 + `ajv-formats`; OKLCH/contrast math by `culori` 4 ESM + `apca-w3` + `@bjornlu/wcag-contrast`; Playwright 1.60 for screenshot variants; `vitest` 2 for eval/golden tests; `axe-core` 4.11 for the accessibility CI gate. Preview adapters target Vite 6 / Next 15 (App Router only) / Astro 5. Detail in `STACK.md`.
 
 **Core technologies:**
 - **agentskills.io v1 SKILL.md spec** — distribution unit; cross-host portability (Claude Code, Codex, Cursor, Junie, Copilot); ≤200 char descriptions, `name` + `description` required, `compatibility:` treated as best-effort not enforceable
@@ -25,21 +25,21 @@ design-os ships as a **pure Markdown + Node 22 LTS ESM** package; no bundlers, n
 - **Node 22 LTS + TypeScript 5.7 strict (compiled to ESM `.mjs`)** — deterministic emit scripts in `assets/scripts/`; users never run `npm install`; scripts are pre-bundled
 - **Zod 4.4** — schema authoring → emit versioned JSON Schemas via `zod-to-json-schema` (R24 v1.5 prerequisite); validate at API/system boundaries per CLAUDE.md TS discipline
 - **W3C DTCG v2025.10** — first stable token spec; media type `application/design-tokens+json`; primitive→semantic→component tiers; emitted at Stage 5b
-- **Google DESIGN.md (April 2026, Apache-2.0)** — Stage 5b contract; emit with `$extensions.design-os` namespace per MRD §3.6; spec stability over the 14-week window is the highest *format* risk (MEDIUM confidence)
+- **Google DESIGN.md (April 2026, Apache-2.0)** — Stage 5b contract; emit with `$extensions.complete-design` namespace per MRD §3.6; spec stability over the 14-week window is the highest *format* risk (MEDIUM confidence)
 - **Mermaid 11.15 + Excalidraw JSON + XState v5.20** — Stage 2/4 designer-readable diagrams (Mermaid canonical), Stage 3 low-fi (Excalidraw via `convertToExcalidrawElements`, never hand-built), Stage 4 engineering parallel (XState only when async + ≥3 states + conditional transitions)
 - **Playwright 1.60 + Vite 6 / Next 15 / Astro 5 adapters** — preview harness preserved from v1.0.1: port manager, security sandbox, readiness probe, headless screenshot capture, Tailwind v4 + shadcn as default emit target
 - **`culori` 4 + `apca-w3` + `@bjornlu/wcag-contrast`** — OKLCH/contrast math; report measured numbers, never "WCAG compliant"
 
-**Explicitly NOT in the stack:** React/Next/Vue/Svelte inside design-os itself (only as emit targets); vector DBs or knowledge graphs for `references/` (MRD §3.10 / §16 forbids; would break determinism + zero-infra principle); js-yaml for round-trip writes; ts-node; CommonJS; Tailwind v3; Node 18/21/23; Pages Router (App Router only).
+**Explicitly NOT in the stack:** React/Next/Vue/Svelte inside complete-design itself (only as emit targets); vector DBs or knowledge graphs for `references/` (MRD §3.10 / §16 forbids; would break determinism + zero-infra principle); js-yaml for round-trip writes; ts-node; CommonJS; Tailwind v3; Node 18/21/23; Pages Router (App Router only).
 
 ### Expected Features
 
-design-os exposes 22 triggerable skills (7 workflows + 15 atoms) + 6 stage gates + 7 named routing matrix routes. Categorization is based on MRD §2.5 stage-coverage matrix (17+ tools verified empirically), all 26 active requirements in PROJECT.md, and the §16 codex acceptance record (69 cumulative findings, all accepted). Detail in `FEATURES.md`.
+complete-design exposes 22 triggerable skills (7 workflows + 15 atoms) + 6 stage gates + 7 named routing matrix routes. Categorization is based on MRD §2.5 stage-coverage matrix (17+ tools verified empirically), all 26 active requirements in PROJECT.md, and the §16 codex acceptance record (69 cumulative findings, all accepted). Detail in `FEATURES.md`.
 
 **Must have (table stakes — v2.0a):**
 - SKILL.md package per agentskills.io v1 + per-skill description ≤200 chars + trigger discipline (recall ≥0.85, false-fire ≤0.15, aggregate coexistence ≥0.80 with 5+ packages)
 - PRD ingestion (Markdown + YAML frontmatter; paste-text; Lenny-style interview fallback for empty PRDs)
-- DTCG v2025.10 token emit + Google DESIGN.md compliance with `$extensions.design-os`
+- DTCG v2025.10 token emit + Google DESIGN.md compliance with `$extensions.complete-design`
 - WCAG 2.2 AA contrast *measurement* (never conformance claim)
 - Slop detection (`audit --slop-tells`), diff-by-default + `--apply`, citation-at-canon-granularity discipline
 - Local dev-server preview (Vite/Next/Astro adapters preserved from v1.0.1 with Playwright)
@@ -61,7 +61,7 @@ design-os exposes 22 triggerable skills (7 workflows + 15 atoms) + 6 stage gates
 - Crazy 8s as Excalidraw JSON with low-fi diversity enforcement (Stage 3 white space)
 - XState v5 + Mermaid stateDiagram-v2 dual-emit (Stage 4 biggest white space; Mermaid canonical for designers)
 - Microsoft HAX-18 audit (AI-products only) at Stage 4
-- Polyglot adapters: Tailwind v4 / shadcn / plain CSS in core; Material/Vue/Svelte via `design-os-bridges` (v2.1+)
+- Polyglot adapters: Tailwind v4 / shadcn / plain CSS in core; Material/Vue/Svelte via `complete-design-bridges` (v2.1+)
 
 **Defer (v2.1+ — explicit cessions per MRD §14):**
 - Notion / Linear / Google Doc PRD ingestion (v2.1; Notion scope = Gaia Logic projects only per CLAUDE.md)
@@ -77,7 +77,7 @@ design-os exposes 22 triggerable skills (7 workflows + 15 atoms) + 6 stage gates
 
 ### Architecture Approach
 
-design-os is an **agent-host SKILL.md package** orchestrating 7 workflows + 15 atoms via the host's Read/Write/Bash tools, backed by deterministic Node ESM emit scripts and a local Markdown canon corpus. The user-repo persistence surface splits into `design/` (committed cross-stage IR substrate) and `.design-os/` (selectively committed package state: manifest hash chain, manual-overrides, preview run state, gitignored private logs/screenshots). The data-flow contract is **stitched-context subagent dispatch** — each stage workflow reads only `design/.handoff/stage-(N-1)-bundle.md` (~5-15k tokens) plus stage-scoped references; full upstream artifacts are loaded on-demand to verify specific claims. Six core architectural patterns (per `ARCHITECTURE.md`): (1) LLM picks / scripts emit; (2) stage-typed artifact substrate as IR; (3) compact handoff bundles; (4) evidence-graded validation gates as `(terminal-state, evidence-grade)` tuples; (5) stitched-context subagent dispatch with cross-host parity; (6) per-file commit policy + frontmatter-tagged artifacts.
+complete-design is an **agent-host SKILL.md package** orchestrating 7 workflows + 15 atoms via the host's Read/Write/Bash tools, backed by deterministic Node ESM emit scripts and a local Markdown canon corpus. The user-repo persistence surface splits into `design/` (committed cross-stage IR substrate) and `.complete-design/` (selectively committed package state: manifest hash chain, manual-overrides, preview run state, gitignored private logs/screenshots). The data-flow contract is **stitched-context subagent dispatch** — each stage workflow reads only `design/.handoff/stage-(N-1)-bundle.md` (~5-15k tokens) plus stage-scoped references; full upstream artifacts are loaded on-demand to verify specific claims. Six core architectural patterns (per `ARCHITECTURE.md`): (1) LLM picks / scripts emit; (2) stage-typed artifact substrate as IR; (3) compact handoff bundles; (4) evidence-graded validation gates as `(terminal-state, evidence-grade)` tuples; (5) stitched-context subagent dispatch with cross-host parity; (6) per-file commit policy + frontmatter-tagged artifacts.
 
 **Major components:**
 1. **`skills/` (22 SKILL.md units)** — 7 workflows (`ingest`/`discover`/`structure`/`sketch`/`interact`/`style`/`systematize` + cross-stage `audit`) and 15 atoms organized by stage; each carries `name`/`description`/`stage`/`gate`/`artifacts.reads`/`writes`/`composition`/`compatibility`/`mvp` frontmatter
@@ -85,17 +85,17 @@ design-os is an **agent-host SKILL.md package** orchestrating 7 workflows + 15 a
 3. **`references/` (canon corpus)** — local Markdown organized by both stage and canon body (Garrett, Cooper, Torres, Klement, Rosenfeld, Buxton, Saffer, Frost, WCAG, DTCG, DESIGN.md) + 6 stage-gate operational checklists + PRD canon + slop-tells; no vector DB, no graph
 4. **`schemas/` (v1.5 prerequisite)** — versioned JSON Schemas emitted from Zod via `zod-to-json-schema`: `persona.v1.json`, `sitemap.v1.json`, `manifest.v1.json`, `interaction-spec.v1.json`, `audit-report.v1.json`, `handoff-bundle.v1.json`
 5. **`evals/` (CI-gated quality bar, co-equal with `skills/`)** — per-skill trigger suites (≥10 should-fire + ≥10 should-not-fire × 3 trials), golden output tests, 15-fixture end-to-end suite, adversarial tests (synthetic-persona block, fidelity-cap reject, color-leak canary, prompt-injection canary), aggregate coexistence eval with 5+ skill packages installed, per-stage handoff-bundle sufficiency tests
-6. **User-repo persistence (`design/` + `.design-os/`)** — `design/` carries stage-typed artifacts with required frontmatter (`artifact`/`stage`/`generated`/`schemaVersion`/`sourceHash`/`provenance`/`owner`/`lastReviewedAt`); `.gitignore` rejects raw transcripts, rejected wireframe variants, screenshots, `.design-os/private/`; `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
+6. **User-repo persistence (`design/` + `.complete-design/`)** — `design/` carries stage-typed artifacts with required frontmatter (`artifact`/`stage`/`generated`/`schemaVersion`/`sourceHash`/`provenance`/`owner`/`lastReviewedAt`); `.gitignore` rejects raw transcripts, rejected wireframe variants, screenshots, `.complete-design/private/`; `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
 
 ### Critical Pitfalls
 
-1. **Codex 2% aggregate trigger-metadata cap breach** — 22 skills × ~200 chars fits in isolation but silently truncates once 5+ popular packages (GSD, Superpowers, frontend-design, shadcn, Notion-MCP) coexist. *Mitigation:* aggregate coexistence eval ≥0.80 enforced in CI from v1.5; per-skill front-loading of fire-condition keywords in first 100 chars; contingency split into `design-os-core` + `design-os-atoms` per MRD §12.
-2. **Synthetic-persona red line breach via prompt injection or evidence-grade leakage** — LLMs are sycophantic (the NN/g + ACM papers design-os honors are the same papers showing LLMs cave to social pressure). *Mitigation:* deterministic gate enforcement (`gate-stage-1.mjs` reads `persona.json` frontmatter `provenance:` and refuses `evidence: VALIDATED` if any persona is `generated` without linked interviews); provenance propagation requiring downstream artifacts to inherit `worstProvenance:`; adversarial + prompt-injection canary tests in CI; `USER_OVERRIDDEN` requires `--override-reason` flag + visible banner on every downstream artifact.
+1. **Codex 2% aggregate trigger-metadata cap breach** — 22 skills × ~200 chars fits in isolation but silently truncates once 5+ popular packages (GSD, Superpowers, frontend-design, shadcn, Notion-MCP) coexist. *Mitigation:* aggregate coexistence eval ≥0.80 enforced in CI from v1.5; per-skill front-loading of fire-condition keywords in first 100 chars; contingency split into `complete-design-core` + `complete-design-atoms` per MRD §12.
+2. **Synthetic-persona red line breach via prompt injection or evidence-grade leakage** — LLMs are sycophantic (the NN/g + ACM papers complete-design honors are the same papers showing LLMs cave to social pressure). *Mitigation:* deterministic gate enforcement (`gate-stage-1.mjs` reads `persona.json` frontmatter `provenance:` and refuses `evidence: VALIDATED` if any persona is `generated` without linked interviews); provenance propagation requiring downstream artifacts to inherit `worstProvenance:`; adversarial + prompt-injection canary tests in CI; `USER_OVERRIDDEN` requires `--override-reason` flag + visible banner on every downstream artifact.
 3. **Fidelity-cap leakage — `style-lite` claims full Stage 5a gate (codex §16 BLOCKER)** — sloppy implementation lets `style-lite` emit `(PASS, VALIDATED)` for `gate/stage-5a-complete` even though Stage 4 artifacts don't exist in v2.0a. *Mitigation:* gate runner hard-coded to return `not-runnable, reason: stage-4-artifacts-absent` when `design/interactions/` is empty; `evidence: INFERRED` is the only schema-allowed value for v2.0a Stage 5a/5b output; CI test asserts this on every v2.0a release; Excalidraw validator rejects color/font drift in Stage 3.
 4. **Context-window blowout from raw-directory ingestion** — Stage 4+ on real projects easily exceeds 150k tokens before the new stage starts. *Mitigation:* handoff bundles are a workflow *contract*, not optimization — each stage reads `.handoff/stage-(N-1)-bundle.md` and is prohibited from reading raw upstream files except for explicit verification queries; per-bundle sufficiency eval gates release; p50/p95 budgets enforced in CI on 15-fixture suite.
 5. **GTM kill-risk — Anthropic ships a 5-stage equivalent in Claude Design first** — MRD §12 lists this as Medium-likelihood, *Existential* impact. The 14-week timeline is the vulnerability window. *Mitigation:* v2.0a must be shippable standalone (4 stages end-to-end usable; do not wait for v2.0b for first distribution); differentiate on host-portability (Cursor/Codex/Junie — Claude Design is Claude-only) and cite-canon discipline; designated weekly watcher process on `anthropics/skills` + Anthropic blog from v1.5; Brad Frost intellectual-heritage outreach pre-launch; rapid-response GTM pivot to "interoperability with Claude Design" if Anthropic ships first.
 
-Additional HIGH-severity pitfalls from `PITFALLS.md` that the roadmap must address: `design/` hygiene rot (PII/merge/bloat — needs PII scanner pre-commit hook + manifest reconciler + `.gitignore`/`.gitattributes` defaults in v1.5); determinism drift (no LLM imports in `assets/scripts/` — CI linter from v1.5); cost runaway p95 tail (per-stage AND total budgets in CI); schema versioning without migration tooling (`design-os migrate` mandatory with every schema bump from v1.5); designer trust gap (never lead with "AI design"); process aversion (routing matrix is the on-ramp; `--depth lightweight` default; `design --route design-bug` is the 60-second eval entry point).
+Additional HIGH-severity pitfalls from `PITFALLS.md` that the roadmap must address: `design/` hygiene rot (PII/merge/bloat — needs PII scanner pre-commit hook + manifest reconciler + `.gitignore`/`.gitattributes` defaults in v1.5); determinism drift (no LLM imports in `assets/scripts/` — CI linter from v1.5); cost runaway p95 tail (per-stage AND total budgets in CI); schema versioning without migration tooling (`complete-design migrate` mandatory with every schema bump from v1.5); designer trust gap (never lead with "AI design"); process aversion (routing matrix is the on-ramp; `--depth lightweight` default; `design --route design-bug` is the 60-second eval entry point).
 
 ## Implications for Roadmap
 
@@ -111,11 +111,11 @@ The MRD §10 proposes a 14-week roadmap: v1.5 infra (weeks 1-3) → v2.0a skelet
 - Handoff-bundle writer (`handoff-bundle-build.mjs`) + bundle-sufficiency eval harness
 - Preview harness preserved from v1.0.1 (port manager, security sandbox, Playwright readiness, Vite/Next/Astro adapter spawning)
 - `skillgrade`-style per-skill eval harness + aggregate coexistence eval corpus (≥5 popular packages installed: GSD, Superpowers, frontend-design, shadcn, Notion-MCP)
-- `design/` governance: shipped `.gitignore` / `.gitattributes` defaults, PII scanner (`design-os scan --pii`), manifest reconciler, frontmatter validator, schema migration template (`design-os migrate`)
+- `design/` governance: shipped `.gitignore` / `.gitattributes` defaults, PII scanner (`complete-design scan --pii`), manifest reconciler, frontmatter validator, schema migration template (`complete-design migrate`)
 - Routing-matrix scaffolding (7 routes wired, even if only 4 implemented in v2.0a)
 - Host-compatibility matrix CI scaffold (Claude Code passing fully; Codex CLI + Cursor scaffolded with sequential-fallback stubs)
 - Mermaid stateDiagram-v2 designer-readable renderer (must exist before Stage 4 ships in v2.0b)
-- Determinism CI gate (`design-os verify --golden`): 5× byte-identical script output; linter rejects LLM-client imports in `assets/scripts/`
+- Determinism CI gate (`complete-design verify --golden`): 5× byte-identical script output; linter rejects LLM-client imports in `assets/scripts/`
 - Anthropic-Labs watcher process (named owner; weekly monitoring of `anthropics/skills` + Anthropic blog + Claude Design release notes)
 - Adversarial test fixtures (synthetic-persona block, fidelity-cap color-leak canary, prompt-injection canary, override-reason missing)
 
@@ -135,7 +135,7 @@ The MRD §10 proposes a 14-week roadmap: v1.5 infra (weeks 1-3) → v2.0a skelet
 - Routes implemented: 4 of 7 (`design-bug`, `new-feature` partial, `brand-refresh`, `PR-audit`) — the on-ramps; `new-product` full path remains opt-in
 - Stage 1 synthetic-persona red-line test in CI (100/100 adversarial runs); fidelity-cap color-leak canary; prompt-injection canary
 
-**Uses (stack):** Zod 4.4 schemas, gray-matter frontmatter parser, yaml round-trip writer, ajv 8 validation, culori + apca-w3 + @bjornlu/wcag-contrast, Playwright 1.60, Vite 6 / Next 15 adapters, Tailwind v4 `@theme` emit target, DTCG v2025.10, DESIGN.md emit per Google spec with `$extensions.design-os` namespace.
+**Uses (stack):** Zod 4.4 schemas, gray-matter frontmatter parser, yaml round-trip writer, ajv 8 validation, culori + apca-w3 + @bjornlu/wcag-contrast, Playwright 1.60, Vite 6 / Next 15 adapters, Tailwind v4 `@theme` emit target, DTCG v2025.10, DESIGN.md emit per Google spec with `$extensions.complete-design` namespace.
 
 **Implements (architecture):** Patterns 1 (LLM picks / scripts emit), 2 (stage-typed IR), 3 (handoff bundles — stage 1→2 and 2→5a-lite transitions), 4 (evidence-graded gates), 5 (stitched-context subagent dispatch — Claude Code host-first), 6 (per-file commit policy + frontmatter).
 
@@ -222,7 +222,7 @@ Phases with standard patterns (skip research-phase):
 
 - **Codex 2% cap exact behavior in mid-2026** (MEDIUM): verify against current Codex CLI release at v1.5 kickoff. Mitigation already in scope: per-skill ≤200 chars; core/atoms split is the contingency lever.
 - **`skillgrade` as external dependency vs. in-tree harness** (LOW external): no shipped OSS package by that name as of May 2026. Treat as in-tree harness plug-compatible with Anthropic skill-creator pattern. Phase 1 includes harness *design* as a distinct deliverable.
-- **Google DESIGN.md schema stability over 14 weeks** (MEDIUM): weekly upstream watch from v1.5; `$extensions.design-os` namespace fallback; `design-md-validate.mjs` must support schema version pinning.
+- **Google DESIGN.md schema stability over 14 weeks** (MEDIUM): weekly upstream watch from v1.5; `$extensions.complete-design` namespace fallback; `design-md-validate.mjs` must support schema version pinning.
 - **Stage 3 Crazy 8s LLM quality empirics** (MEDIUM): if empirical pass rate is poor, expand v2.0b by 1 week or descope to MVP Stage 3 (single converged wireframe per screen).
 - **v1.5 length conflict (3 vs 4 weeks)** (MEDIUM — methodological): Architecture and Pitfalls research independently endorse 4 weeks; MRD §10 proposes 3 weeks. Highest-leverage roadmap conflict.
 - **Excalidraw element schema pinning** (MEDIUM): pin a tested version in v1.5; do NOT read `latest` at runtime.
@@ -235,7 +235,7 @@ Phases with standard patterns (skip research-phase):
 - `.planning/research/ARCHITECTURE.md`
 - `.planning/research/PITFALLS.md`
 - `.planning/PROJECT.md`
-- `design-os-mrd-v2.md` — MRD v2.0 (§§2.4, 2.5, 3.4a–3.23, 5, 9 incl. §9.1 v2.0a BLOCKER fix, 10, 11, 12, 13, 14, 15, 16 codex acceptance record — 69 cumulative findings)
+- `complete-design-mrd-v2.md` — MRD v2.0 (§§2.4, 2.5, 3.4a–3.23, 5, 9 incl. §9.1 v2.0a BLOCKER fix, 10, 11, 12, 13, 14, 15, 16 codex acceptance record — 69 cumulative findings)
 - agentskills.io v1 spec (stabilized 2025-12-18)
 - W3C DTCG v2025.10 (2025-10-28)
 - Google DESIGN.md GitHub repo (`google-labs-code/design.md`, April 2026, Apache-2.0)

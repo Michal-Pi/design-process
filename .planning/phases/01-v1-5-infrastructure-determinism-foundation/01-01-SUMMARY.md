@@ -22,7 +22,7 @@ dependency_graph:
     - assets/scripts/schemas/validate.mjs
     - assets/scripts/schemas/migrate.mjs
     - assets/scripts/schemas/emit.mjs
-    - bin/design-os.mjs
+    - bin/complete-design.mjs
   affects:
     - All plans that produce or consume artifact JSON (Plans 02-05)
     - Plan 03 CI golden-test gate (consumes emit.mjs determinism)
@@ -39,7 +39,7 @@ tech_stack:
     - "canonicalize() recursive key sort for deterministic JSON emit"
     - "Commander camelCase option normalization (--design-md-version -> designMdVersion)"
     - "ajv-formats CJS/ESM interop pattern: typeof mod.default === 'function' ? mod.default : mod"
-    - "Auto-discovery CLI dispatcher: bin/design-os.mjs globs cli/*.mjs at startup"
+    - "Auto-discovery CLI dispatcher: bin/complete-design.mjs globs cli/*.mjs at startup"
 key_files:
   created:
     - package.json
@@ -73,7 +73,7 @@ key_files:
     - assets/scripts/cli/migrate.mjs
     - assets/scripts/cli/schemas-emit.mjs
     - assets/scripts/cli/design-md-validate.mjs
-    - bin/design-os.mjs
+    - bin/complete-design.mjs
     - tests/schemas/persona.test.ts
     - tests/schemas/sitemap.test.ts
     - tests/schemas/manifest.test.ts
@@ -115,7 +115,7 @@ Zod 4 sources for 6 artifact types emitting Draft 2020-12 JSON Schemas via z.toJ
 | Task | Name | Commit | Files |
 |------|------|--------|-------|
 | 1 | Package scaffold + Zod sources for 6 artifact types | a123b34 | package.json, tsconfig.json, schemas/src/*.ts (8 files), vitest.config.ts, fixtures, tests |
-| 2 | Emit pipeline + ajv validator + CLI dispatcher + dist schemas | 163e336 | emit.mjs, validate.mjs, bin/design-os.mjs, cli/*.mjs (4 files), schemas/dist/ (7 files) |
+| 2 | Emit pipeline + ajv validator + CLI dispatcher + dist schemas | 163e336 | emit.mjs, validate.mjs, bin/complete-design.mjs, cli/*.mjs (4 files), schemas/dist/ (7 files) |
 | 3 | Migration pipeline + design-md-validate version pinning | 9d494ce | migrate.mjs, design-md-validate.mjs, schemas/migrations/ (2 files), migrate.test.ts, v0 fixture |
 
 ## What Was Built
@@ -142,11 +142,11 @@ Zod 4 sources for 6 artifact types emitting Draft 2020-12 JSON Schemas via z.toJ
 
 **`assets/scripts/schemas/validate.mjs`:** `Ajv2020` from `ajv/dist/2020.js` (required for Draft 2020-12 — default Ajv does not support $schema URL). `strict: false, allErrors: true`. Returns structured errors: schemaPath, instancePath, keyword, params, message (D-03). Lazy-init schema cache.
 
-**`bin/design-os.mjs`:** Auto-discovery dispatcher — globs `assets/scripts/cli/*.mjs` at startup, registers each module's `command = { name, describe, builder, handler }` with Commander. Plans 02-05 add subcommands by adding cli/*.mjs files — no future modification to bin/design-os.mjs needed.
+**`bin/complete-design.mjs`:** Auto-discovery dispatcher — globs `assets/scripts/cli/*.mjs` at startup, registers each module's `command = { name, describe, builder, handler }` with Commander. Plans 02-05 add subcommands by adding cli/*.mjs files — no future modification to bin/complete-design.mjs needed.
 
 **CLI subcommands:** `validate`, `migrate`, `schemas:emit`, `design-md-validate`.
 
-**`assets/scripts/frontmatter-validate.mjs`:** D-28 strict-vs-lenient: `design/` path prefix → `strict: true` (exit 1 on error), `.design-os/private/` prefix → `lenient: true` (warn, exit 0).
+**`assets/scripts/frontmatter-validate.mjs`:** D-28 strict-vs-lenient: `design/` path prefix → `strict: true` (exit 1 on error), `.complete-design/private/` prefix → `lenient: true` (warn, exit 0).
 
 **`tests/schemas/emit-roundtrip.test.ts`:** 25 tests — all 6 schemas have correct $schema/$id, roundtrip valid/invalid fixtures through ajv, deterministic emit (byte-identical across two consecutive runs).
 
@@ -171,12 +171,12 @@ Zod 4 sources for 6 artifact types emitting Draft 2020-12 JSON Schemas via z.toJ
 | `npx tsc --noEmit` | PASS — zero errors |
 | `npx vitest run` | PASS — 78/78 tests (9 test files) |
 | Deterministic emit (two runs byte-identical) | PASS — empty diff |
-| `design-os validate` valid persona | PASS — exits 0 |
-| `design-os validate` invalid persona | PASS — exits 1 with structured errors |
-| `design-os migrate --from 0 --to 1` persona | PASS — migrated + validated |
-| `design-os validate` migrated output | PASS — exits 0 |
-| `design-os design-md-validate --design-md-version 9.9.9` | PASS — exits 1 with version error |
-| `design-os design-md-validate` valid DESIGN.md | PASS — exits 0 |
+| `complete-design validate` valid persona | PASS — exits 0 |
+| `complete-design validate` invalid persona | PASS — exits 1 with structured errors |
+| `complete-design migrate --from 0 --to 1` persona | PASS — migrated + validated |
+| `complete-design validate` migrated output | PASS — exits 0 |
+| `complete-design design-md-validate --design-md-version 9.9.9` | PASS — exits 1 with version error |
+| `complete-design design-md-validate` valid DESIGN.md | PASS — exits 0 |
 | Discovery manifest covers all 6 artifacts | PASS |
 
 ## Deviations from Plan
@@ -256,7 +256,7 @@ None. No new network endpoints, auth paths, file access patterns, or schema chan
 - [x] assets/scripts/schemas/validate.mjs exists
 - [x] assets/scripts/schemas/migrate.mjs exists
 - [x] assets/scripts/design-md-validate.mjs exists
-- [x] bin/design-os.mjs exists
+- [x] bin/complete-design.mjs exists
 - [x] schemas/migrations/persona-v0-to-v1.mjs exists
 - [x] tests/schemas/migrate.test.ts exists
 - [x] Commit a123b34 (Task 1) exists

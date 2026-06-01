@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// bin/design-os.mjs
-// Thin auto-discovery dispatcher for the design-os CLI.
+// bin/complete-design.mjs
+// Thin auto-discovery dispatcher for the complete-design CLI.
 //
 // At startup, globs assets/scripts/cli/*.mjs and registers each module's
 // exported `command = { name, describe, builder?, handler }` with commander.
@@ -26,7 +26,7 @@ const ROOT = resolve(__dirname, "..");
 
 const program = new Command();
 program
-  .name("design-os")
+  .name("complete-design")
   .description(
     "5-stage design process operationalized as an agent-loop workflow"
   )

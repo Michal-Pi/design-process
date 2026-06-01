@@ -67,10 +67,10 @@ name: "Test Design"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "INFERRED"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
 ---
 
 ## Typography rationale
@@ -96,10 +96,10 @@ name: "Test Design"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     evidence: "validated"
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
 ---
 
 ## Typography rationale
@@ -142,15 +142,15 @@ OKLCH primary.
 - **button**: Promoted.
 `;
 
-/** DESIGN.md with $extensions.design-os present but evidence field absent — codex finding F-01 */
+/** DESIGN.md with $extensions.complete-design present but evidence field absent — codex finding F-01 */
 const DESIGN_MD_EXTENSIONS_NO_EVIDENCE = `---
 name: "Test Design"
 tokens: 5000
 version: "2026.04"
 $extensions:
-  design-os:
+  complete-design:
     stage: "5b-lite"
-    generatedBy: "design-os/systematize"
+    generatedBy: "complete-design/systematize"
 ---
 
 ## Typography rationale
@@ -253,9 +253,9 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     expect(finding.status).toBe("fail");
   });
 
-  // ── Case 4b: DESIGN.md has no $extensions.design-os block at all → BLOCKER (codex F-01) ──
+  // ── Case 4b: DESIGN.md has no $extensions.complete-design block at all → BLOCKER (codex F-01) ──
 
-  it("returns failed_after_repair when DESIGN.md has no $extensions.design-os block (D-51 requires evidence:INFERRED)", async () => {
+  it("returns failed_after_repair when DESIGN.md has no $extensions.complete-design block (D-51 requires evidence:INFERRED)", async () => {
     await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
     await writeFile(join(tmpDir, "DESIGN.md"), DESIGN_MD_NO_EXTENSIONS_BLOCK);
 
@@ -273,9 +273,9 @@ describe("runStage5bGate — lite-mode business logic (D-44, D-51)", () => {
     expect(finding.citation).toBe("D-51");
   });
 
-  // ── Case 4c: $extensions.design-os present but evidence field absent → BLOCKER (codex F-01) ──
+  // ── Case 4c: $extensions.complete-design present but evidence field absent → BLOCKER (codex F-01) ──
 
-  it("returns failed_after_repair when $extensions.design-os block exists but evidence field is absent (D-51)", async () => {
+  it("returns failed_after_repair when $extensions.complete-design block exists but evidence field is absent (D-51)", async () => {
     await writeFile(join(tmpDir, "tokens.json"), VALID_TOKENS_WITH_COMPONENT);
     await writeFile(join(tmpDir, "DESIGN.md"), DESIGN_MD_EXTENSIONS_NO_EVIDENCE);
 

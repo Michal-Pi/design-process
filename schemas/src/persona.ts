@@ -1,6 +1,6 @@
 // schemas/src/persona.ts
 // Zod source for Persona v1 — Indi Young thinking-style format + RED-04 provenance carrier.
-// Source: CONTEXT.md D-01, D-02; RESEARCH.md Pattern 2; design-os-mrd-v2.md §3.6.
+// Source: CONTEXT.md D-01, D-02; RESEARCH.md Pattern 2; complete-design-mrd-v2.md §3.6.
 // Implements: SCHEMA-01, FORMAT-02, ART-03
 
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { FrontmatterCommon } from "./frontmatter-common.js";
 /**
  * Persona v1 schema.
  * Extends FrontmatterCommon with Indi Young thinking-style fields.
- * $id: https://design-os.dev/schemas/persona.v1.json
+ * $id: https://complete-design.dev/schemas/persona.v1.json
  */
 export const PersonaV1 = FrontmatterCommon.extend({
   artifact: z.literal("persona"),
@@ -36,7 +36,7 @@ export const PersonaV1 = FrontmatterCommon.extend({
     guidingPrinciples: z.array(z.string()).min(1),
   }),
 }).meta({
-  $id: "https://design-os.dev/schemas/persona.v1.json",
+  $id: "https://complete-design.dev/schemas/persona.v1.json",
   title: "Persona (Stage 1)",
   description:
     "Indi Young thinking-style format with NN/g provenance gating (RED-04 carrier)",

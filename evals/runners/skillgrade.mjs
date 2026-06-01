@@ -161,17 +161,17 @@ function getSkillDescription(skill) {
     handoff:
       "Build a handoff bundle compressing stage output into a context-efficient format for downstream stage consumption.",
     // Phase 2 skills (Plan 02-05 SC-5 — trigger-phrase front-loaded per D-32)
-    "design-os/ingest":
+    "complete-design/ingest":
       "Ingest PRD or launch Lenny 1-pager interview; emit design/PRD.md with frontmatter and stage-0 handoff bundle.",
-    "design-os/discover":
+    "complete-design/discover":
       "Design research: generate user personas, synthesize job stories, build OST from PRD, understand target users for Stage 1.",
-    "design-os/structure":
+    "complete-design/structure":
       "Structure IA: create sitemap variants, generate user flows from JTBD, validate Stage 2 structural gate.",
-    "design-os/style":
+    "complete-design/style":
       "Style Stage 5a: DTCG token generation, palette selection, shadcn/Tailwind v4 adapter projection, variant preview.",
-    "design-os/systematize":
+    "complete-design/systematize":
       "Systematize Stage 5b: promote recurring components to design system, emit DESIGN.md contract.",
-    "design-os/audit":
+    "complete-design/audit":
       "Audit review design artifacts: slop-tells linter, PR diff check, rainbow gradient detection, design token review; emits AUDIT-REPORT.md.",
   };
   return descriptions[skill] ?? `${skill} skill`;

@@ -15,7 +15,7 @@ dependency_graph:
   requires:
     - 02-05 (verify-golden.mjs, lint-determinism.mjs, globby 14.x, base gate infrastructure)
     - 02-04 (INVARIANT-01 staged-path enforcement pattern)
-    - 01-03 (bin/design-os.mjs auto-discovery dispatcher)
+    - 01-03 (bin/complete-design.mjs auto-discovery dispatcher)
   provides:
     - assets/scripts/excalidraw-render.mjs (sole .excalidraw emitter; IR → Excalidraw JSON)
     - assets/scripts/wireframe-diversity.mjs (3-factor structural distance metric)

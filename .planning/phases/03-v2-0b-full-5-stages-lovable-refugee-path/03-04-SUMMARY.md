@@ -24,8 +24,8 @@ dependency_graph:
     - 01-04 (frontmatter-validate.mjs Phase 1 strict/lenient base)
   provides:
     - assets/scripts/audit/reverse-engineer.mjs (D-62/63/64 orchestrator)
-    - assets/scripts/cli/reverse-engineer.mjs (design-os reverse-engineer CLI)
-    - assets/scripts/cli/promote-inferred.mjs (design-os promote-inferred CLI)
+    - assets/scripts/cli/reverse-engineer.mjs (complete-design reverse-engineer CLI)
+    - assets/scripts/cli/promote-inferred.mjs (complete-design promote-inferred CLI)
     - assets/scripts/frontmatter-validate.mjs (extended: Rule A + Rule B + skipSchemaValidation)
     - schemas/migrations/sitemap-v2.0a-to-v2.0b.mjs (D-65a wireframeRefs)
     - schemas/migrations/persona-v2.0a-to-v2.0b.mjs (D-65b interactionNeeds)
@@ -101,7 +101,7 @@ metrics:
 
 # Phase 3 Plan 04: Reverse-Engineer + INFERRED Enforcement + v2.0a→v2.0b Migration
 
-Delivered: `audit --reverse-engineer-stages` pipeline (Stage 4→3→2→1 inference, local + URL modes), two-layer INFERRED enforcement system (frontmatter + Markdown banner enforced by frontmatter-validate.mjs Rules A/B + promote-inferred CLI), and `design-os migrate --from 2.0a --to 2.0b` idempotent migration adding wireframeRefs (sitemap), interactionNeeds (persona), and stage3/4artifacts (MANIFEST.md).
+Delivered: `audit --reverse-engineer-stages` pipeline (Stage 4→3→2→1 inference, local + URL modes), two-layer INFERRED enforcement system (frontmatter + Markdown banner enforced by frontmatter-validate.mjs Rules A/B + promote-inferred CLI), and `complete-design migrate --from 2.0a --to 2.0b` idempotent migration adding wireframeRefs (sitemap), interactionNeeds (persona), and stage3/4artifacts (MANIFEST.md).
 
 ## Tasks Completed
 
@@ -188,8 +188,8 @@ The reverse-engineer inference functions (`inferStage4`, `inferStage3`, `inferSt
 | assets/scripts/audit/reverse-engineer.mjs exists + exports runReverseEngineer, shouldExcludeUrl, crawlUrlToFs | PASS |
 | assets/scripts/cli/reverse-engineer.mjs exports { name, describe, builder, handler } | PASS |
 | assets/scripts/cli/promote-inferred.mjs exports { command, promoteInferredFile } | PASS |
-| node bin/design-os.mjs reverse-engineer --help registers --source, --output-dir, --apply | PASS |
-| node bin/design-os.mjs promote-inferred --help registers --file, --all, --design-dir | PASS |
+| node bin/complete-design.mjs reverse-engineer --help registers --source, --output-dir, --apply | PASS |
+| node bin/complete-design.mjs promote-inferred --help registers --file, --all, --design-dir | PASS |
 | frontmatter-validate.mjs Rule A fires for design/inferred/ file missing banner | PASS (Test 4 + adversarial Test 9) |
 | frontmatter-validate.mjs Rule B fires for design/ file with provenance:inferred | PASS (Test 5) |
 | promote-inferred blocks when provenance:inferred present | PASS (Test 6) |
@@ -217,14 +217,14 @@ Three findings from the post-ship codex review accepted and fixed.
 
 ### Finding 1 [P1] — Wire reverse-engineer through the audit command
 
-**Problem:** `audit.md` documented `design-os audit --reverse-engineer-stages --source <path>` but the implementation only registered a standalone `design-os reverse-engineer` top-level command. Running `design-os audit --reverse-engineer-stages` exited with "unknown option".
+**Problem:** `audit.md` documented `complete-design audit --reverse-engineer-stages --source <path>` but the implementation only registered a standalone `complete-design reverse-engineer` top-level command. Running `complete-design audit --reverse-engineer-stages` exited with "unknown option".
 
 **Fix:** Extended `cli/audit.mjs` builder to register `--reverse-engineer-stages`, `--source <path-or-url>`, `--output-dir <path>`, and `--apply` options directly on the `audit` command. Handler detects `reverseEngineerStages` flag and dispatches to `runReverseEngineer()` from `audit/reverse-engineer.mjs`. Dry-run (no `--apply`) prints inference plan without writing files. The standalone `reverse-engineer` CLI is kept in place as an internal helper — `audit --reverse-engineer-stages` is now the advertised surface per `audit.md`. Lesson 2 compliance: `{name, describe, builder, handler}` export shape preserved.
 
-**Verification — `node bin/design-os.mjs audit --reverse-engineer-stages --help`:**
+**Verification — `node bin/complete-design.mjs audit --reverse-engineer-stages --help`:**
 
 ```
-Usage: design-os audit [options]
+Usage: complete-design audit [options]
 
 Audit design artifacts for slop patterns (--slop-tells), PR regressions (--pr),
 or reverse-engineer stages (--reverse-engineer-stages)
@@ -255,14 +255,14 @@ Options:
 
 ### Finding 2 [P1] — Route v2.0a migrations from the CLI
 
-**Problem:** `cli/migrate.mjs` used `parseInt` coercion and required `--path`. Running `design-os migrate --from 2.0a --to 2.0b --design-dir ./design` failed — `parseInt('2.0a')` returns `2` and `parseInt('2.0b')` returns `2`, causing a version collision. The new v2.0a→v2.0b migration was shipped but unreachable via CLI.
+**Problem:** `cli/migrate.mjs` used `parseInt` coercion and required `--path`. Running `complete-design migrate --from 2.0a --to 2.0b --design-dir ./design` failed — `parseInt('2.0a')` returns `2` and `parseInt('2.0b')` returns `2`, causing a version collision. The new v2.0a→v2.0b migration was shipped but unreachable via CLI.
 
 **Fix:** Rewrote `cli/migrate.mjs` with two routing modes: Mode A (legacy integer chain — back-compat preserved) and Mode B (named string-version migration). `isStringVersion()` detects semver-ish format via `/^\d+\.\d+[a-z]*$/`. A `NAMED_MIGRATION_TABLE` maps `'2.0a→2.0b'` to `runV20aMigration()` from `schemas/migrations/run-v2.0a-to-v2.0b.mjs`. Added `--design-dir` and `--apply` options. Integer chain: `parseInt` coercion moved to handler; `--path` validated at runtime (no longer a Commander-level `requiredOption`).
 
-**Verification — `node bin/design-os.mjs migrate --help`:**
+**Verification — `node bin/complete-design.mjs migrate --help`:**
 
 ```
-Usage: design-os migrate [options]
+Usage: complete-design migrate [options]
 
 Migrate design artifacts between schema versions (integer chain or named e.g. --from 2.0a --to 2.0b)
 
@@ -278,13 +278,13 @@ Options:
 
 **Dry-run verification:**
 ```
-node bin/design-os.mjs migrate --from 2.0a --to 2.0b --design-dir evals/fixtures/migration/v2.0a-to-v2.0b/
+node bin/complete-design.mjs migrate --from 2.0a --to 2.0b --design-dir evals/fixtures/migration/v2.0a-to-v2.0b/
 # → prints: Dry run: use --apply to write changes
 ```
 
 **Apply verification (on temp copy):**
 ```
-node bin/design-os.mjs migrate --from 2.0a --to 2.0b --design-dir <tmpDir> --apply
+node bin/complete-design.mjs migrate --from 2.0a --to 2.0b --design-dir <tmpDir> --apply
 # → [migrate] APPLIED sitemap.json → v2.0b
 # → [migrate] APPLIED .../primary.persona.json → v2.0b
 # → [migrate] APPLIED MANIFEST.md → v2.0b
@@ -323,8 +323,8 @@ After `--apply`, `sitemap.json` `schemaVersion` verified as `"2.0b"`.
 
 | Check | Result |
 |-------|--------|
-| `node bin/design-os.mjs audit --reverse-engineer-stages --help` shows `--source`, `--output-dir` | PASS |
-| `node bin/design-os.mjs migrate --help` shows `--design-dir`, `--apply`, semver-ish description | PASS |
+| `node bin/complete-design.mjs audit --reverse-engineer-stages --help` shows `--source`, `--output-dir` | PASS |
+| `node bin/complete-design.mjs migrate --help` shows `--design-dir`, `--apply`, semver-ish description | PASS |
 | `migrate --from 2.0a --to 2.0b --apply` writes sitemap + persona + MANIFEST to v2.0b | PASS |
 | Error component spec has `error` state declared AND no open transitions | PASS |
 | `tsc --noEmit` clean | PASS |

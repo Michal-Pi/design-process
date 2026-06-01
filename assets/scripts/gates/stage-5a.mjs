@@ -8,7 +8,7 @@
 // is preserved for empty/missing interactions/ (backward compat with v2.0a).
 //
 // Source: CONTEXT.md D-09, D-10, D-25, D-26, D-60; PLAN.md Task 1 action
-// Source: design-os-mrd-v2.md §16 (codex §16 BLOCKER fix)
+// Source: complete-design-mrd-v2.md §16 (codex §16 BLOCKER fix)
 // Implements: GATE-07 (not_runnable required from day one), GATE-08, D-60 (Phase 3 full gate)
 
 import { existsSync } from "node:fs";

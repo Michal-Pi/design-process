@@ -1,6 +1,6 @@
 # Designing for the Digital Age — Kim Goodwin (Cooper)
 
-<!-- design-os reference: cooper-goodwin -->
+<!-- complete-design reference: cooper-goodwin -->
 
 ## Purpose
 
@@ -22,7 +22,7 @@ persona construction and Stage 4 interaction design.
 - Ch.11, p.267: Design principles as criteria — each principle directly testable during gate
   review. Stage gate checklists cite design principles as `VALIDATED` evidence.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 1 (Research / Strategy plane): persona archetypes defined by behavioral goals per §Ch.3.
 - Stage 2 (IA / Scope plane): mental-model alignment in sitemap review checklist.

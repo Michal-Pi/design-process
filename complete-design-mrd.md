@@ -13,11 +13,11 @@
 
 **The opportunity.** SKILL.md is now a cross-host standard (≥32 agent harnesses read the same file). The most-installed design-adjacent skills on skills.sh — `frontend-design`, `web-design-guidelines`, `shadcn`, `extract-design-system`, `taste-skill`, `impeccable`, `theme-factory` — together cover ~1.3M+ installs but each fills **one** of the four primitives a designer actually executes: pick a **direction**, generate engineered **tokens**, **build** components on a real stack, and **critique** against deterministic and aesthetic gates. No package on any registry combines all four into one auditable flow. That is the structural white space.
 
-**What we are building.** `design-os`: a skill package that, from a single user request, can either (a) execute a **complete job-to-be-done** — full design system + initial pages + critique — by chaining specialist skills under subagent supervision, or (b) be **invoked atomically** — "generate just a palette," "audit just this component for WCAG 2.2," "convert these tokens to Tailwind v4 `@theme`." The same skills serve both modes because every workflow is a thin orchestrator over the atoms.
+**What we are building.** `complete-design`: a skill package that, from a single user request, can either (a) execute a **complete job-to-be-done** — full design system + initial pages + critique — by chaining specialist skills under subagent supervision, or (b) be **invoked atomically** — "generate just a palette," "audit just this component for WCAG 2.2," "convert these tokens to Tailwind v4 `@theme`." The same skills serve both modes because every workflow is a thin orchestrator over the atoms.
 
 **The structural moats.**
 1. **Sourced opinions, not vibes.** Every generator skill cites a canonical source (Bringhurst on measure, Radix on color scale roles, WAI-ARIA APG on keyboard maps, Wroblewski on form layout, Tidwell on collection patterns). The package can defend every output.
-2. **Project-context awareness.** No competitor reads the user's repo first. `design-os` scans existing tokens, existing components, stack signals, and brand assets before proposing anything — and reconciles, not overrides.
+2. **Project-context awareness.** No competitor reads the user's repo first. `complete-design` scans existing tokens, existing components, stack signals, and brand assets before proposing anything — and reconciles, not overrides.
 3. **Persisted direction.** A `DESIGN-DIRECTION.md` artifact written once and re-read on every subsequent invocation closes the dice-roll loop that `frontend-design` (anthropics) explicitly induces.
 4. **DTCG-first, stack-pluggable output.** Generate in W3C DTCG JSON (stable v2025.10), project to Tailwind v4 `@theme`, shadcn `:root`/`.dark` OKLCH, Style Dictionary, plain CSS, SwiftUI (later) — not "shadcn-or-bust" like the dominant skill.
 5. **Gated delivery.** Every workflow ends in a deterministic + LLM critique. axe-core / contrast math / DTCG-conformance / Tidwell-pattern-fit gates must pass before the agent reports done.
@@ -62,7 +62,7 @@ Against that backdrop the dominant skill in the category, `frontend-design` (ant
 | Frontend engineer on a team without a designer | Maintain a coherent design system without a Figma file | Tokens drift, ad-hoc colors creep in, can't audit | New brand refresh, design-system audit failure | Doesn't want to context-switch into a separate tool | Atomic skills they can invoke surgically inside their editor |
 | Designer working with a coding agent | Translate Figma intent into faithful code; iterate without leaving the agent loop | Agent-generated code ignores their tokens; rounds-trip through Figma is slow | Working on a project with no design-eng partner | Friction in Figma → DTCG → code | Reads Figma tokens, emits matching code tokens, generates components that respect them |
 | Design-system maintainer | Sustain a system across teams, surfaces, and stacks | Component drift, token rot, undocumented usage | Quarterly system audit | Existing tooling investment (Style Dictionary, Knapsack) | Plugs into existing pipeline, doesn't replace it |
-| AI-builder / agentic UI platform (v0, Lovable, Subframe-likes) | Constrain generative output to known-good patterns | Their own model produces slop without scaffolding | Quality complaints from end-users | Concern about over-constraining brand voice | Embed `design-os` as a downstream skill bundle invoked during generation |
+| AI-builder / agentic UI platform (v0, Lovable, Subframe-likes) | Constrain generative output to known-good patterns | Their own model produces slop without scaffolding | Quality complaints from end-users | Concern about over-constraining brand voice | Embed `complete-design` as a downstream skill bundle invoked during generation |
 | Indie agency / studio | Bid faster on greenfield work | Each new client starts from zero | New client onboarding | Bespoke aesthetics are the deliverable | Direction + tokens + a critique pass that defends choices to the client |
 | PM / operator at a startup | Author a credible landing page or dashboard without a designer | "I don't know what to ask the agent for" | Founder-led launch, no design budget | Doesn't know vocabulary | Decision-guide skills that ask the right questions and route to the right generator |
 | Platform / enterprise design system team | Govern AI-generated UI inside their company | Devs use shadcn defaults, ignore the system | First serious AI-coding rollout | Compliance and audit | Read internal tokens, refuse to generate non-conformant output, produce findings |
@@ -114,7 +114,7 @@ Verified inventory (skills.sh and major registry directories, May 2026):
 | `theme-factory` | partial | partial | — | — |
 | `shadcn` | — | partial | ✓ (locked) | — |
 | `swiftui-design-skill` | partial | — | ✓ (locked) | ✓ |
-| **`design-os` (proposed)** | **✓** | **✓** | **✓ (pluggable)** | **✓ (gated)** |
+| **`complete-design` (proposed)** | **✓** | **✓** | **✓ (pluggable)** | **✓ (gated)** |
 
 ### 2.6 Market opportunity
 
@@ -139,7 +139,7 @@ Bundled with a curated, licensed, machine-readable knowledge layer (8 design-sys
 
 | # | Principle | Implication |
 |---|---|---|
-| P1 | **Direction precedes generation, with a standalone fallback.** | Every workflow asks for or recovers a direction before emitting tokens, components, or critiques. Every *atomic* skill, when invoked standalone, executes a minimum-viable bootstrap: read `.design-os/DESIGN-DIRECTION.md` if present; if absent, infer from repo signals (existing tokens, brand assets, stack) or emit a neutral draft tagged `direction: unset` and ask the user one blocking question on next turn. The skill never silently picks "modern minimal" and never crashes for lack of direction. |
+| P1 | **Direction precedes generation, with a standalone fallback.** | Every workflow asks for or recovers a direction before emitting tokens, components, or critiques. Every *atomic* skill, when invoked standalone, executes a minimum-viable bootstrap: read `.complete-design/DESIGN-DIRECTION.md` if present; if absent, infer from repo signals (existing tokens, brand assets, stack) or emit a neutral draft tagged `direction: unset` and ask the user one blocking question on next turn. The skill never silently picks "modern minimal" and never crashes for lack of direction. |
 | P2 | **Persisted artifacts beat re-rolled prompts.** | Every workflow writes `DESIGN-DIRECTION.md` and `design-tokens.json` and reads them on every subsequent call. |
 | P3 | **DTCG is the interchange.** | Tokens are authored in DTCG v2025.10 JSON; everything else (Tailwind, shadcn, Style Dictionary, CSS) is a projection. |
 | P4 | **Sourced opinions, cited at rule granularity.** | Every prescriptive rule (not every sentence) in a skill body either cites a canonical reference (Bringhurst, Radix, APG, WCAG) or labels itself "house heuristic." References are *summaries* of canonical sources with source date, edition, license class, and quote-length limit — never verbatim chapters or excerpts from copyrighted books. See §11 for the licensing policy. |
@@ -158,7 +158,7 @@ Bundled with a curated, licensed, machine-readable knowledge layer (8 design-sys
 | **Priya — Frontend lead, no designer** | Cursor / Claude Code | Atomic skills to fix tokens, audit a component, regenerate a palette without touching the rest |
 | **Ren — Designer pairing with an agent** | Claude Code with Figma open | Read Figma DTCG export, emit code that respects it, audit drift |
 | **Sam — DS maintainer at a Series-B startup** | CI + local agent | Token lint + component conformance check in PRs |
-| **Jordan — AI-builder integrating `design-os`** | Their own runtime | Programmatic invocation of atoms with structured I/O |
+| **Jordan — AI-builder integrating `complete-design`** | Their own runtime | Programmatic invocation of atoms with structured I/O |
 | **Lin — PM authoring a launch page** | Web Claude.ai with repo context | Direction selector + skeleton generator that doesn't require knowing CSS |
 
 ### 3.4 Jobs-To-Be-Done
@@ -176,7 +176,7 @@ The core JTBDs the package must execute, in order of expected frequency:
 
 ### 3.5 Architecture — workflows + atoms
 
-`design-os` ships **two coherent surfaces against the same skill set**:
+`complete-design` ships **two coherent surfaces against the same skill set**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -307,7 +307,7 @@ Trim of W1 that skips full foundation generation when an existing system is pres
 
 ### 3.7 Subagent architecture
 
-`design-os` uses subagents narrowly, only where parallelism is genuinely safe:
+`complete-design` uses subagents narrowly, only where parallelism is genuinely safe:
 
 | Subagent | Scope | Why a subagent? |
 |---|---|---|
@@ -465,12 +465,12 @@ A vector store would add a pipeline for negligible lift: the total reference cor
 
 ### 3.11 Persisted project artifacts
 
-The package's defining UX choice: **persistence beats re-rolling.** Every workflow reads-and-writes structured state under `.design-os/` at the user's chosen project root (or `--cwd` override for monorepos). Files in stack-native locations (e.g. `globals.css`, `tailwind.config.ts`) are only touched as deliberate projections, never as primary state.
+The package's defining UX choice: **persistence beats re-rolling.** Every workflow reads-and-writes structured state under `.complete-design/` at the user's chosen project root (or `--cwd` override for monorepos). Files in stack-native locations (e.g. `globals.css`, `tailwind.config.ts`) are only touched as deliberate projections, never as primary state.
 
 **Layout:**
 
 ```
-.design-os/
+.complete-design/
   DESIGN-DIRECTION.md   # the chosen direction record
   design-tokens.json    # DTCG v2025.10 source of truth
   CRITIQUE-REPORT.md    # last audit terminal state + findings
@@ -485,7 +485,7 @@ The package's defining UX choice: **persistence beats re-rolling.** Every workfl
 schemaVersion: 1
 projectId:     <stable id, e.g. repo origin URL or hash>
 appPath:       <relative path the workflow operates under>
-generatedBy:   design-os@<version>
+generatedBy:   @pm-musketeers/complete-design@<version>
 knowledgeVersion: v2025.10
 lastReviewedBy: <user | agent | unattended>
 lastReviewedAt: <ISO8601>
@@ -494,17 +494,17 @@ sourceRefs:    [ ... ]  # citations supporting choices in this artifact
 
 **Merge policy (the rule that lets users edit safely):**
 
-1. **Diff-before-write.** Workflows produce a unified diff and surface it to the user; they never write a non-dot-file in the working tree without explicit confirmation. Dot-files under `.design-os/` are written with hashes recorded in `manifest.lock`.
+1. **Diff-before-write.** Workflows produce a unified diff and surface it to the user; they never write a non-dot-file in the working tree without explicit confirmation. Dot-files under `.complete-design/` are written with hashes recorded in `manifest.lock`.
 2. **Manual-override detection.** Before regenerating any persisted artifact, the workflow hashes the existing file against the last `manifest.lock` entry. If hashes mismatch, the file is treated as user-modified: the regeneration runs in 3-way-merge mode, and any user-divergent regions become entries in `manual-overrides.json`. Subsequent regenerations preserve those regions.
 3. **No destructive overwrite.** A workflow that cannot reconcile a manual edit halts and asks; it does not "win."
 4. **PR-first.** Default output mode is "diff/patch saved to a path, ready for review"; direct write requires `--apply` or an interactive confirmation per host.
-5. **Monorepo-aware.** `.design-os/` may exist at multiple paths (e.g. `apps/web/.design-os/`, `apps/admin/.design-os/`). Workflows resolve scope from the invocation's `cwd` upward.
+5. **Monorepo-aware.** `.complete-design/` may exist at multiple paths (e.g. `apps/web/.complete-design/`, `apps/admin/.complete-design/`). Workflows resolve scope from the invocation's `cwd` upward.
 
 These artifacts are the package's contract with future invocations, with the user's edits, and with the version-control history.
 
 ### 3.12 Host compatibility contract
 
-`design-os` is multi-host by design but **not equally capable everywhere**. The contract is published as a `compatibility-matrix.json` artifact shipped with the package and re-derived by CI evals on every release.
+`complete-design` is multi-host by design but **not equally capable everywhere**. The contract is published as a `compatibility-matrix.json` artifact shipped with the package and re-derived by CI evals on every release.
 
 | Capability | Claude Code | Codex CLI | Cursor | Gemini CLI | JetBrains Junie | VS Code Copilot |
 |---|---|---|---|---|---|---|
@@ -552,7 +552,7 @@ adapter:
 
 The workflow's stack-resolution step (W1 step 9, etc.) picks the highest-confidence adapter, falls back to `plain-css` if none detect, and surfaces `unsupported-reason` rather than silently emitting wrong-format output.
 
-**MVP adapters:** `tailwind-v4`, `shadcn`, `plain-css`. **v0.5 adapters (in `design-os-bridges`):** `material-web`, `vue-3-sfc`, `svelte-5`. **Later:** `swiftui`, `kotlin-compose`, `lit`.
+**MVP adapters:** `tailwind-v4`, `shadcn`, `plain-css`. **v0.5 adapters (in `complete-design-bridges`):** `material-web`, `vue-3-sfc`, `svelte-5`. **Later:** `swiftui`, `kotlin-compose`, `lit`.
 
 ### 3.14 Canonical inventory manifest
 
@@ -569,8 +569,8 @@ The workflow's stack-resolution step (W1 step 9, etc.) picks the highest-confide
       "category":        "color",
       "mvp":             true,
       "host-support":    ["claude-code", "codex-cli", "cursor"],
-      "reads":           [".design-os/DESIGN-DIRECTION.md"],
-      "writes":          [".design-os/design-tokens.json"],
+      "reads":           [".complete-design/DESIGN-DIRECTION.md"],
+      "writes":          [".complete-design/design-tokens.json"],
       "knowledge":       ["wcag-2-2", "radix-step-roles", "dtcg"],
       "adapters":        ["tailwind-v4", "shadcn", "plain-css"],
       "composition": {
@@ -740,7 +740,7 @@ Each criterion is operationally measurable. Eval datasets, graders, trial counts
 
 **v0.1 acceptance:**
 
-1. **Atomic invocation works on the host-first path.** Each v0.1 skill, invoked standalone in Claude Code with no prior `.design-os/` state, produces useful output for ≥9 of 10 hand-curated prompts per skill (3 trials each, semantic rubric). "Useful" = passes the skill's own structural validator and the rubric grader at ≥0.7.
+1. **Atomic invocation works on the host-first path.** Each v0.1 skill, invoked standalone in Claude Code with no prior `.complete-design/` state, produces useful output for ≥9 of 10 hand-curated prompts per skill (3 trials each, semantic rubric). "Useful" = passes the skill's own structural validator and the rubric grader at ≥0.7.
 2. **DTCG conformance.** 100% of token emits from v0.1 validate against DTCG v2025.10 schema in a `style-dictionary` test run.
 3. **Contrast conformance.** 100% of generated palettes pass WCAG 2.2 1.4.3 / 1.4.11 contrast for all declared text/background pairs at AA, verified by the bundled `contrast.mjs` script.
 4. **Trigger discipline.** Each v0.1 skill has ≥10 should-fire + ≥10 should-not-fire prompts; trigger recall ≥0.80, false-trigger rate ≤0.15.
@@ -748,7 +748,7 @@ Each criterion is operationally measurable. Eval datasets, graders, trial counts
 
 **v0.2 acceptance (bootstrap workflow):**
 
-6. **End-to-end bootstrap completes.** From a fixed test brief + a clean Next.js + Tailwind v4 + shadcn repo, `bootstrap-design-system` produces `.design-os/DESIGN-DIRECTION.md`, `.design-os/design-tokens.json`, projections to `globals.css` + Tailwind `@theme` + shadcn `:root`/`.dark`, 3 component files, 1 hero composition, and `CRITIQUE-REPORT.md` with terminal state ∈ {`PASS`, `PASS_WITH_WARNINGS`}. Tested across 5 brief variants, 3 trials each (15 runs total). ≥12 of 15 must reach PASS; ≤1 may reach FAILED_AFTER_REPAIR.
+6. **End-to-end bootstrap completes.** From a fixed test brief + a clean Next.js + Tailwind v4 + shadcn repo, `bootstrap-design-system` produces `.complete-design/DESIGN-DIRECTION.md`, `.complete-design/design-tokens.json`, projections to `globals.css` + Tailwind `@theme` + shadcn `:root`/`.dark`, 3 component files, 1 hero composition, and `CRITIQUE-REPORT.md` with terminal state ∈ {`PASS`, `PASS_WITH_WARNINGS`}. Tested across 5 brief variants, 3 trials each (15 runs total). ≥12 of 15 must reach PASS; ≤1 may reach FAILED_AFTER_REPAIR.
 7. **Critic recall + precision.** On a curated corpus of 30 AI-slop UI samples + 30 hand-validated good samples, `ai-slop-detector` at medium strictness must reach ≥0.80 recall on the slop set, ≤0.10 false-positive rate on the good set.
 8. **Visual regression captured.** Each bootstrap run produces a Playwright screenshot of the seed hero; the screenshot is attached to `CRITIQUE-REPORT.md` and is checked for non-trivial diff vs the prior run.
 9. **Cost discipline.** Bootstrap workflow median ≤80k tokens (p90 ≤120k) across the 15 runs. Atomic skill median ≤8k tokens.
@@ -761,13 +761,13 @@ Each criterion is operationally measurable. Eval datasets, graders, trial counts
 
 | Wave | Weeks | Deliverable | Milestone |
 |---|---|---|---|
-| 0 | 1–2 | Repo, eval harness, `references/` first cut (wcag, dtcg, radix, shadcn-tailwind, apg index), `assets/scripts/` (contrast, oklch, dtcg-lint), `design-os-router` stub | infra ready |
-| 1 | 3–5 | Layer 0 + Layer 1 (color, typography, spacing, tokens) + `tokens/token-emitter` (DTCG + Tailwind v4 + shadcn) | `design-os@0.1` — atom-only release; users can generate tokens end-to-end |
-| 2 | 6–7 | `bootstrap-design-system` workflow + 6 style codifiers + 4 priority components + 4 critics | `design-os@0.2` — first JTBD release |
-| 3 | 8–9 | `audit-ui` workflow + remaining critics + Layer 2 components (rest) + Layer 3 minimal | `design-os@0.3` — generation+audit closed loop |
-| 4 | 10–12 | Remaining 14 styles + all compositions + redesign workflow | `design-os@0.4` — full style coverage |
-| 5 | 13–14 | AI-UX live skills + `design-os-bridges` (plain-CSS, Material Web, optional SwiftUI) + extraction workflow | `design-os@0.5` — public release candidate |
-| 6 | 15–16 | Documentation, public skills.sh / Anthropic plugin marketplace listing, two-designer review, eval lift-vs-baseline measurement | `design-os@1.0` GA |
+| 0 | 1–2 | Repo, eval harness, `references/` first cut (wcag, dtcg, radix, shadcn-tailwind, apg index), `assets/scripts/` (contrast, oklch, dtcg-lint), `complete-design-router` stub | infra ready |
+| 1 | 3–5 | Layer 0 + Layer 1 (color, typography, spacing, tokens) + `tokens/token-emitter` (DTCG + Tailwind v4 + shadcn) | `@pm-musketeers/complete-design@0.1` — atom-only release; users can generate tokens end-to-end |
+| 2 | 6–7 | `bootstrap-design-system` workflow + 6 style codifiers + 4 priority components + 4 critics | `@pm-musketeers/complete-design@0.2` — first JTBD release |
+| 3 | 8–9 | `audit-ui` workflow + remaining critics + Layer 2 components (rest) + Layer 3 minimal | `@pm-musketeers/complete-design@0.3` — generation+audit closed loop |
+| 4 | 10–12 | Remaining 14 styles + all compositions + redesign workflow | `@pm-musketeers/complete-design@0.4` — full style coverage |
+| 5 | 13–14 | AI-UX live skills + `complete-design-bridges` (plain-CSS, Material Web, optional SwiftUI) + extraction workflow | `@pm-musketeers/complete-design@0.5` — public release candidate |
+| 6 | 15–16 | Documentation, public skills.sh / Anthropic plugin marketplace listing, two-designer review, eval lift-vs-baseline measurement | `@pm-musketeers/complete-design@1.0` GA |
 
 ---
 
@@ -798,7 +798,7 @@ Each metric specifies dataset, grader, trial count, and ceiling. Targets are bas
 |---|---|---|---|
 | **Anthropic / Vercel absorb the category.** `frontend-design` could fork into a tokens-aware version. | High | High | Move fast on the workflow surface (none of them have it); embed harder-to-replicate canon references; stay framework-agnostic where they are framework-locked. |
 | **DTCG spec evolves and breaks our emits.** | Medium | Medium | Version `references/dtcg/` independently; lock to v2025.10 with explicit upgrade evals. |
-| **Skills under-trigger anyway.** Even with the template. | Medium | High | Treat trigger eval as a first-class CI gate; ship a `design-os-router` orchestrator the user can call by name when ambient triggers miss. |
+| **Skills under-trigger anyway.** Even with the template. | Medium | High | Treat trigger eval as a first-class CI gate; ship a `complete-design-router` orchestrator the user can call by name when ambient triggers miss. |
 | **Style codifiers feel parochial.** Real designs blend styles. | Medium | Medium | Ship `style-blender` in v0.4 with explicit warnings; lean on the "marketing vs product" two-decisions framing per §2.2 trend 2. |
 | **APCA becomes legal conformance.** | Low | Medium | Keep WCAG 2.x as the conformance standard; APCA as informational only. Already encoded. |
 | **Vision-based extraction is unreliable.** Vision models classify style at ~60–70%. | Medium | Low | Ship extraction with explicit confidence markers (anydesign pattern); never auto-apply low-confidence inferences. |
@@ -812,7 +812,7 @@ Each metric specifies dataset, grader, trial count, and ceiling. Targets are bas
 
 | # | Question | Default lean |
 |---|---|---|
-| Q1 | Stack adapters in the core package vs `design-os-bridges` companion | Split: core ships DTCG + Tailwind v4 + shadcn + plain CSS; bridges ship Material Web, SwiftUI, Vue/Svelte later |
+| Q1 | Stack adapters in the core package vs `complete-design-bridges` companion | Split: core ships DTCG + Tailwind v4 + shadcn + plain CSS; bridges ship Material Web, SwiftUI, Vue/Svelte later |
 | Q2 | Should style codifiers compose (e.g. "Bauhaus + Material")? | Strict atomicity; cross-style remixing is `style-blender` only |
 | Q3 | Where do code framework outputs >40 lines live? | External `assets/components/<name>/*` templates; not inline in bodies |
 | Q4 | Ship a vision "screenshot → style classification" skill? | Defer to v0.3+ as a critic (read-only), not a generator |
@@ -827,11 +827,11 @@ Each metric specifies dataset, grader, trial count, and ceiling. Targets are bas
 
 ## 11. Adoption strategy
 
-**Distribution.** Publish on `skills.sh` (`npx skills add design-os/<skill>`), the Anthropic plugin marketplace (`/plugin marketplace add`), and the JetBrains Skill Repository simultaneously at v1.0 launch. Use namespacing (`design-os/*`) so users discover atoms as a family.
+**Distribution.** Publish on `skills.sh` (`npx skills add complete-design/<skill>`), the Anthropic plugin marketplace (`/plugin marketplace add`), and the JetBrains Skill Repository simultaneously at v1.0 launch. Use namespacing (`complete-design/*`) so users discover atoms as a family.
 
 **Discovery.** Two flagship skills with the highest trigger surface:
-- `design-os/bootstrap` — the JTBD entry point; description matches "design system," "theme," "set up tokens," "make this look good," "redesign."
-- `design-os/audit` — the audit entry point; description matches "review my UI," "check accessibility," "audit contrast," "design review."
+- `complete-design/bootstrap` — the JTBD entry point; description matches "design system," "theme," "set up tokens," "make this look good," "redesign."
+- `complete-design/audit` — the audit entry point; description matches "review my UI," "check accessibility," "audit contrast," "design review."
 
 The remaining 83 skills install with them but discover via composition routing.
 
@@ -898,7 +898,7 @@ This MRD was reviewed by an independent Codex pass before publication. Findings 
 | 2 | BLOCKER | Cross-host portability overclaimed | ACCEPT | New §3.12 Host Compatibility Contract with capability matrix + sequential-fallback rule |
 | 3 | HIGH | MVP too large and internally inconsistent | ACCEPT | §6.1 split into v0.1 (atoms + tokens) and v0.2 (bootstrap workflow); `audit-ui` moved to v0.3 |
 | 4 | HIGH | Critique gating had no terminal states | ACCEPT | §3.6 W1 steps 13–16 add `PASS`/`PASS_WITH_WARNINGS`/`FAILED_AFTER_REPAIR`/`USER_OVERRIDDEN` + visual-regression step + PR-first diff |
-| 5 | HIGH | Persistence had no merge policy | ACCEPT | §3.11 rewritten: `.design-os/` layout, schema header, diff-before-write, manual-override detection, monorepo support, manifest.lock |
+| 5 | HIGH | Persistence had no merge policy | ACCEPT | §3.11 rewritten: `.complete-design/` layout, schema header, diff-before-write, manual-override detection, monorepo support, manifest.lock |
 | 6 | HIGH | Atomic mode conflicted with "direction first" | ACCEPT | §3.2 P1 rewritten to require a standalone-bootstrap path in every atom |
 | 7 | HIGH | Stack adapter design too thin | ACCEPT | New §3.13 with explicit adapter interface (`detect`, `can-emit`, `emit-tokens`, `emit-component`, `verify-compile`, `verify-a11y`, `unsupported-reason`) |
 | 8 | MEDIUM | Style catalog mixed taxonomies | ACCEPT | New §4.0 Direction Model with 5 orthogonal axes (`visual_style`, `platform_language`, `layout_pattern`, `interaction_pattern`, `historical_reference`); reclassified entries |
@@ -947,7 +947,7 @@ No findings were rejected. The MRD increased from ~620 to ~880 lines through the
 8. **Must-encode canon files (12):** WCAG 2.2, typography (Bringhurst/Butterick/Brown), color (Itten/Radix/OKLCH), motion (Head/Material/HIG), forms (Wroblewski), charts (Few/Munzner), HAX 18, deceptive patterns (Brignull), Pickering, Roselli, Tidwell, microcopy (Polaris+Atlassian+NN/g).
 9. **Style catalog:** 10 validated current + 10 validated all-time, with forbidden-pairs lint.
 10. **APCA stance:** informational signal only; WCAG 2.x is conformance.
-11. **Stack adapters in core:** Tailwind v4 + shadcn + plain CSS. Material Web, SwiftUI, Vue/Svelte → `design-os-bridges` companion.
+11. **Stack adapters in core:** Tailwind v4 + shadcn + plain CSS. Material Web, SwiftUI, Vue/Svelte → `complete-design-bridges` companion.
 12. **Trigger discipline:** 4-part template; ≥20-prompt eval per skill; CI-gated.
 13. **MVP wedge:** `bootstrap-design-system` end-to-end on Tailwind v4 + shadcn on three hosts (Claude Code, Codex CLI, Cursor).
 

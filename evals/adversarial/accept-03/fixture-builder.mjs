@@ -213,7 +213,7 @@ function buildStyledDoc(seed, suffix) {
     appState: {},
     elements,
     files: {},
-    source: "design-os-accept-03",
+    source: "complete-design-accept-03",
     type: "excalidraw",
     version: 2,
   };
@@ -234,7 +234,7 @@ function buildCleanDoc(seed, suffix) {
     appState: {},
     elements,
     files: {},
-    source: "design-os-accept-03",
+    source: "complete-design-accept-03",
     type: "excalidraw",
     version: 2,
   };

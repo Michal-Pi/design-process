@@ -20,17 +20,17 @@ Four research streams were commissioned to ground v2.0:
 3. **Per-stage tooling + AI gaps** — established the cross-stage handoff format (Excalidraw JSON for low-fi, XState for IxD, DTCG v2025.10 for tokens, Mermaid for sitemaps/flows). Identified the "do not compete with X" list (Storybook MCP, Tokens Studio, Optimal Workshop, Anthropic frontend-design).
 4. **PRD → design handoff patterns** — Markdown + YAML frontmatter is the winning format (30-40% better LLM extraction than prose); the 5-way PRD split (Horowitz / Cagan / Singer / Bezos / Rachitsky); `RESEARCH.md` + `ASSUMPTIONS.md` separation; the synthetic-persona red line.
 
-The result: v2.0 replaces the v1.0.1 spine ("explore variants → pick → contract → enforce → audit") with **Garrett's Elements of UX 5-plane spine** (Strategy → Scope → Structure → Skeleton → Surface), which maps 1:1 to the user's 5 stages and gives each stage discrete artifacts + defensible validation gates. Preserved from v1.0.1: DESIGN.md as Stage 5 output anchor, DTCG tokens, the preview/variants pattern (now applied at multiple stages, not just hi-fi), critique gate with terminal states, persistence under `.design-os/`, security/permissions, monorepo design, determinism verification, trigger discipline, host compatibility, GTM principles.
+The result: v2.0 replaces the v1.0.1 spine ("explore variants → pick → contract → enforce → audit") with **Garrett's Elements of UX 5-plane spine** (Strategy → Scope → Structure → Skeleton → Surface), which maps 1:1 to the user's 5 stages and gives each stage discrete artifacts + defensible validation gates. Preserved from v1.0.1: DESIGN.md as Stage 5 output anchor, DTCG tokens, the preview/variants pattern (now applied at multiple stages, not just hi-fi), critique gate with terminal states, persistence under `.complete-design/`, security/permissions, monorepo design, determinism verification, trigger discipline, host compatibility, GTM principles.
 
 The skill count grew from 14 (v1.0.1) to **22 (v2.0)** — more than v1.0.1 because v2.0 covers 5 stages instead of 1.5, but still well under Codex 2% cap (~5k chars metadata budget).
 
 ### v1.0.1 — Preview-first design correction
 
-Documented in `design-os-mrd-v1.md` §0. Preserved for reference.
+Documented in `complete-design-mrd-v1.md` §0. Preserved for reference.
 
 ### v1.0 — Strategic rewrite
 
-Documented in `design-os-mrd-v1.md` §0a.
+Documented in `complete-design-mrd-v1.md` §0a.
 
 ---
 
@@ -40,19 +40,19 @@ Documented in `design-os-mrd-v1.md` §0a.
 
 What's missing is **a tool that walks the user through all 5 stages — Research, IA, Low-Fi, Interaction, High-Fi + Design System — with AI scaffolding at each stage and explicit validation gates between them.** No competing product covers the full 5-stage row. The closest analogs (Knapsack IPE, Anthropic Claude Design, Subframe with MCP) all enter at stage 5 and work outward into governance or backward into systematization — never the full design process.
 
-**What we are building.** `design-os` is a SKILL.md package (Claude Code / Cursor / Codex / Junie) that scaffolds the full 5-stage design process inside the agent loop. Seven workflows — `ingest` (Stage 0 PRD), `discover` (Stage 1), `structure` (Stage 2), `sketch` (Stage 3), `interact` (Stage 4), `style` (Stage 5a), `systematize` (Stage 5b) — plus an `audit` cross-stage maintenance workflow. Fifteen atomic skills underneath, organized by stage. Each stage produces opinionated, named, machine-readable artifacts (`design/research/personas/*.persona.json`, `design/ia/sitemap.json`, `design/wireframes/<screen>/*.excalidraw`, `design/interactions/<screen>.machine.ts` XState, `design/tokens.json` DTCG, `DESIGN.md`). The next stage consumes the previous stage's artifacts; validation gates between stages enforce that you can't proceed without the work being meaningfully complete.
+**What we are building.** `complete-design` is a SKILL.md package (Claude Code / Cursor / Codex / Junie) that scaffolds the full 5-stage design process inside the agent loop. Seven workflows — `ingest` (Stage 0 PRD), `discover` (Stage 1), `structure` (Stage 2), `sketch` (Stage 3), `interact` (Stage 4), `style` (Stage 5a), `systematize` (Stage 5b) — plus an `audit` cross-stage maintenance workflow. Fifteen atomic skills underneath, organized by stage. Each stage produces opinionated, named, machine-readable artifacts (`design/research/personas/*.persona.json`, `design/ia/sitemap.json`, `design/wireframes/<screen>/*.excalidraw`, `design/interactions/<screen>.machine.ts` XState, `design/tokens.json` DTCG, `DESIGN.md`). The next stage consumes the previous stage's artifacts; validation gates between stages enforce that you can't proceed without the work being meaningfully complete.
 
 **The defensible moats** — five, in order of durability:
 
-1. **Garrett's 5-plane spine, applied as a tool not a textbook.** No competitor turns the canonical design process into a tool. The frameworks (IDEO, d.school, Double Diamond, Design Sprint, Lean UX, Continuous Discovery) all exist as books and workshops; none ships as software. design-os is the first to operationalize the spine.
-2. **Validation gates between stages as the real contribution.** The cross-stage gates (tree-test ≥80%, ≥3 alternatives before convergence, complete state-maps before hi-fi, DTCG schema validity) are the most under-documented part of the canon. design-os formalizes them as checklists the package runs automatically.
+1. **Garrett's 5-plane spine, applied as a tool not a textbook.** No competitor turns the canonical design process into a tool. The frameworks (IDEO, d.school, Double Diamond, Design Sprint, Lean UX, Continuous Discovery) all exist as books and workshops; none ships as software. complete-design is the first to operationalize the spine.
+2. **Validation gates between stages as the real contribution.** The cross-stage gates (tree-test ≥80%, ≥3 alternatives before convergence, complete state-maps before hi-fi, DTCG schema validity) are the most under-documented part of the canon. complete-design formalizes them as checklists the package runs automatically.
 3. **Inside the user's repo, in the user's agent, on their existing LLM subscription.** Same v1.0.1 advantage: no second tool, no double-billed tokens, no context-switch.
 4. **Opinionated named artifacts that chain across stages.** The `design/` directory with stage-typed file formats (Excalidraw JSON, XState, DTCG, Mermaid) is the package's "intermediate representation" — the thing that makes the pipeline reproducible instead of one-shot.
 5. **Trust posture: AI as facilitator and synthesizer, never primary data source.** Hard red lines: no synthetic personas as research substitute (NN/g 2024); no auto-claimed WCAG conformance; no styled UI in Stage 3 (Buxton's discipline); no hi-fi before complete state-maps (Stage 4 discipline). The discipline is the differentiation.
 
 **The MVP wedge.** A working end-to-end run of **`discover → structure → style`** (Stages 1, 2, 5) for a solo indie building a new app: PRD in → research scaffold → sitemap variants → user picks IA → hi-fi variants in their repo → user picks → DESIGN.md committed. Stages 3 (Sketch) and 4 (Interact) ship in v2.0b a few weeks later. This sequence delivers usable end-to-end value on day one while reserving the biggest unfilled niche (IxD) for the differentiation push.
 
-**The hook.** *"AI tools for design skip stages 1-4. That's why your prototype breaks. design-os doesn't."* Launch artifact: a long-form post titled **"What every AI design tool gets wrong — and the 5 stages they all skip"** with a live demo showing a Lovable/v0 prototype's missing IA / state model / design-system, then design-os filling those gaps end-to-end.
+**The hook.** *"AI tools for design skip stages 1-4. That's why your prototype breaks. complete-design doesn't."* Launch artifact: a long-form post titled **"What every AI design tool gets wrong — and the 5 stages they all skip"** with a live demo showing a Lovable/v0 prototype's missing IA / state model / design-system, then complete-design filling those gaps end-to-end.
 
 ---
 
@@ -101,7 +101,7 @@ Earlier than 2026 and the spec stack wasn't ready. Later than 2026 and Anthropic
 | **Designer who wants to scaffold the process with AI without losing rigor** *(secondary)* | Use AI for the boring synthesis work; keep human judgment on craft choices | AI tools either skip stages or replace judgment; want to control which | Working on a project alone or with too many stakeholders | AI handles transcription, synthesis, sitemap variants, state catalogs; designer makes every "pick" decision |
 | **Design-system maintainer at a Series-B or larger** *(tertiary)* | Govern the upstream design process so the system isn't bypassed | Devs adopt the system but skip the research/IA work that justified it | First serious AI-coding-tool rollout | `audit` cross-stage maintenance verifies every new feature passes through stages 1-5 |
 
-The primary persona explicitly includes the **"Lovable/v0 refugee"**: founders who bought into the prompt-to-app promise, hit the 80/20 wall, and now need to do the design work properly. This is a large and growing segment; design-os should serve them with an explicit `extract --reverse-engineer-stages` flag in v2.1.
+The primary persona explicitly includes the **"Lovable/v0 refugee"**: founders who bought into the prompt-to-app promise, hit the 80/20 wall, and now need to do the design work properly. This is a large and growing segment; complete-design should serve them with an explicit `extract --reverse-engineer-stages` flag in v2.1.
 
 ### 2.4 The trust gap
 
@@ -109,7 +109,7 @@ Preserved from v1.0.1, with one v2.0-specific addition.
 
 | Design choice | Rationale | v2.0 implementation |
 |---|---|---|
-| Don't lead with "AI" | van Schneider signal | Package name design-os; tagline "design-process facilitator," not "AI design tool" |
+| Don't lead with "AI" | van Schneider signal | Package name complete-design; tagline "design-process facilitator," not "AI design tool" |
 | Final output deterministic | Subframe lever | Token emit, projection templates, state-machine generation are scripts; LLM picks, scripts emit |
 | Never claim WCAG conformance | Frontend Masters critique | Output measured contrast, never "compliant" |
 | Cite every rule at granularity | Claude Design backlash | Every stage decision links to source (Garrett §X, NN/g article, WCAG SC, Radix step role) |
@@ -144,7 +144,7 @@ The stage-coverage matrix (verified empirically across product pages, designer r
 | Knapsack IPE / Supernova | I (ingest) | N | N | N | N | F |
 | Storybook MCP / Chromatic | N | N | N | N | N | F |
 | ChatPRD / Productboard AI | F | I | N | N | N | N |
-| **design-os v2.0** | **F** | **F** | **F** | **F** | **F** | **F** |
+| **complete-design v2.0** | **F** | **F** | **F** | **F** | **F** | **F** |
 
 (F = Full, P = Partial, I = Implicit-only, N = None)
 
@@ -174,7 +174,7 @@ The integrative play does not exist as a product.
 - Marketing capture on "AI UI design" — too many incumbents
 - Live preview during generation — fundamentally a different runtime than ours
 
-**The asymmetry matters:** the live-preview tools win first-impression demos; design-os wins long-term product health. The 80/20-wall discourse is the empirical proof that long-term health is the unfilled market.
+**The asymmetry matters:** the live-preview tools win first-impression demos; complete-design wins long-term product health. The 80/20-wall discourse is the empirical proof that long-term health is the unfilled market.
 
 ### 2.7 Market opportunity
 
@@ -315,7 +315,7 @@ design/
     <name>.tsx (or .vue, .svelte)
   storybook/                               # Stage 5: stories for Storybook MCP
 
-.design-os/                                # package-internal state
+.complete-design/                                # package-internal state
   preview/                                 # local dev-server outputs
     run-<id>/
       port.lock
@@ -328,7 +328,7 @@ design/
     screenshots/
 ```
 
-**Why two top-level directories?** `design/` is project metadata — committed to git, shared with the team, AI-readable, designer-readable. `.design-os/` is package state — committed selectively per v1.0.1's per-file commit policy. The split makes "design artifacts" first-class without polluting them with package internals.
+**Why two top-level directories?** `design/` is project metadata — committed to git, shared with the team, AI-readable, designer-readable. `.complete-design/` is package state — committed selectively per v1.0.1's per-file commit policy. The split makes "design artifacts" first-class without polluting them with package internals.
 
 **`design/` governance (codex-driven addition — committing a lot to git needs explicit rules):**
 
@@ -342,14 +342,14 @@ design/
 | Generated component scaffolds (`components/*.tsx`) | **Conditional** | Yes if the package's stack adapter is the source; No if the user maintains components and this is regenerable |
 | Raw transcripts (`research/interviews/*.transcript.md`) | **No (gitignored)** | PII risk; high volume; team-only via separate mechanism |
 | Storybook stories | Yes when generated; user can opt out | Standard practice |
-| Screenshots, audit reports (full body), run logs | **No (`.design-os/private/`)** | Same as v1.0.1 commit policy |
+| Screenshots, audit reports (full body), run logs | **No (`.complete-design/private/`)** | Same as v1.0.1 commit policy |
 
 **Per-file frontmatter (canonical artifacts only):**
 
 ```yaml
 artifact: persona | jtbd | sitemap | flow | wireframe-choice | interaction-spec | tokens | design-md
 stage: 1 | 2 | 3 | 4 | 5a | 5b
-generated: true | false      # true = produced by design-os, false = user-authored
+generated: true | false      # true = produced by complete-design, false = user-authored
 schemaVersion: 1
 sourceHash: <sha256 of inputs that produced this>
 provenance: validated | proto | inferred | missing
@@ -528,7 +528,7 @@ Preserves the v1.0.1 preview-first workflow but now consumes the previous stages
 2   Promote-to-system rule: any component used ≥3× across the wireframes/
     interactions/ becomes a system component
 3   Generate DTCG v2025.10 tokens (primitive → semantic → component tiers)
-4   Generate DESIGN.md (Google spec) with $extensions.design-os carrying
+4   Generate DESIGN.md (Google spec) with $extensions.complete-design carrying
     structured token + composition data
 5   Generate component scaffold per system component (with full state set
     from Stage 4)
@@ -692,7 +692,7 @@ Hybrid file-based. No vector DB. No knowledge graph. Per the SKILL.md spec's fou
 - `references/prd/singer-shape-up.md` — pitch format (Problem / Appetite / Solution / Rabbit Holes / No-Gos)
 - `references/prd/bezos-pr-faq.md` — working backwards
 - `references/prd/lenny-one-pager.md` — modern 1-pager template
-- `references/prd/yien-staged.md` — Kevin Yien's staged PRD (closest analog to design-os gates)
+- `references/prd/yien-staged.md` — Kevin Yien's staged PRD (closest analog to complete-design gates)
 - `references/prd/lean-ux-canvas.md` — Gothelf/Seiden 8-box canvas
 - `references/prd/spec-driven.md` — GitHub Spec Kit + Markdown frontmatter conventions
 
@@ -703,7 +703,7 @@ Hybrid file-based. No vector DB. No knowledge graph. Per the SKILL.md spec's fou
 
 Sections preserved from v1.0.1 with v2.0-specific extensions noted:
 
-- **§3.11 Persisted artifacts:** preserved; updated to use `design/` for stage artifacts and `.design-os/` for package state per §3.6
+- **§3.11 Persisted artifacts:** preserved; updated to use `design/` for stage artifacts and `.complete-design/` for package state per §3.6
 - **§3.12 Host compatibility:** preserved (Claude Code host-first; Codex CLI + Cursor sequential-fallback; broader hosts in v2.1+)
 - **§3.13 Stack adapter interface:** preserved; v2.0 adds adapters for Mermaid rendering (`mermaid.mjs`), Excalidraw rendering (static viewer), XState code emit
 - **§3.14 Canonical manifest:** preserved; `manifest.json` now carries `stage` per skill
@@ -711,13 +711,13 @@ Sections preserved from v1.0.1 with v2.0-specific extensions noted:
 - **§3.16 Recovery / versioning / invalid states:** preserved; extended to per-stage artifacts (deleting `design/research/` triggers a "this was your research — confirm before re-generation" prompt)
 - **§3.17 LLM model selection + cost discipline:** preserved; per-workflow cost tables in §3.7 above
 - **§3.18 Security & permissions:** preserved; v2.0 adds: stage-1 `interviews/` directory NEVER processed remotely (transcripts may contain PII); brand-asset rules unchanged
-- **§3.19 Determinism verification:** preserved (golden tests, decision log, hash chain, `design-os verify --golden` CI gate)
+- **§3.19 Determinism verification:** preserved (golden tests, decision log, hash chain, `complete-design verify --golden` CI gate)
 - **§3.20 Monorepo design:** preserved (per-app `design/` directories supported)
 - **§3.21 Real-world repo failure modes:** preserved + extended to stage-1 cases (empty repo → no signals to extract from → flips to `discover` interview mode)
 
 ### 3.22 Stage validation gates (the package's real contribution)
 
-The most under-documented part of canon is *when a stage is done*. Practitioners know intuitively; the literature is scattered. design-os formalizes gates as **evidence-graded** checks, not pass/fail bits — this honestly handles the solo-indie reality (no real research available) while preserving the discipline the team-with-resources expects.
+The most under-documented part of canon is *when a stage is done*. Practitioners know intuitively; the literature is scattered. complete-design formalizes gates as **evidence-graded** checks, not pass/fail bits — this honestly handles the solo-indie reality (no real research available) while preserving the discipline the team-with-resources expects.
 
 **Evidence grades** (each gate returns both terminal state AND evidence grade):
 
@@ -746,7 +746,7 @@ The most under-documented part of canon is *when a stage is done*. Practitioners
 - Stage 1 with **mixed** data (e.g., 1 real interview + 4 synthetic personas) → `PROTO_PASS_WITH_WARNINGS`; the real-evidence claims grade as `VALIDATED`, synthetic ones grade as `PROTO`.
 - Stage 1 with **no data** at all (user has only a PRD) → enter `proto-mode` with verbose flags throughout; subsequent stages inherit `PROTO` provenance until real evidence backs the claims.
 
-Each gate is run by the corresponding workflow (or by `audit --stage N`). Gates have four terminal states: `PASS`, `PASS_WITH_WARNINGS`, `FAILED_AFTER_REPAIR`, `USER_OVERRIDDEN`. Override requires explicit rationale. CI mode blocks merges based on the project's `.design-os/ci.yaml` configured severities (default: only `BLOCKER` blocks). The `(terminal-state, evidence-grade)` tuple is recorded in `manifest.lock`.
+Each gate is run by the corresponding workflow (or by `audit --stage N`). Gates have four terminal states: `PASS`, `PASS_WITH_WARNINGS`, `FAILED_AFTER_REPAIR`, `USER_OVERRIDDEN`. Override requires explicit rationale. CI mode blocks merges based on the project's `.complete-design/ci.yaml` configured severities (default: only `BLOCKER` blocks). The `(terminal-state, evidence-grade)` tuple is recorded in `manifest.lock`.
 
 ### 3.23 Per-stage fidelity caps (Buxton discipline)
 
@@ -761,7 +761,7 @@ Hard rules the package enforces:
 | 5a | Must consume Stage 4 state set | Cannot proceed if `design/interactions/` is empty or incomplete; refuses to generate hi-fi for components without state-maps |
 | 5b | Promote-to-system rule | Component appears ≥3× in Stage 4 artifacts before becoming a system component (Frost rule of thumb) |
 
-This is the most counter-cultural choice — every other AI design tool eagerly renders hi-fi. design-os refuses, and the discipline IS the product.
+This is the most counter-cultural choice — every other AI design tool eagerly renders hi-fi. complete-design refuses, and the discipline IS the product.
 
 ---
 
@@ -846,9 +846,9 @@ Same release-monitoring infrastructure, 3 pre-written launch variants, named coo
 The post:
 1. Opens with the empirical evidence: Sourcetoad's 10.3% Lovable security audit, Stack Overflow's 76% 80/20 wall, design-eng post-mortems — framed as *industry-wide patterns*, not as attacks on specific tools
 2. Walks the 5 canonical design stages (Research / IA / Low-Fi / IxD / Hi-Fi+DS) with named canon references (Garrett, Cooper, Rosenfeld, Buxton, Saffer, Frost)
-3. Shows the stage-coverage matrix as *complementary positioning* — "v0 and Lovable are excellent at Stage 5; design-os fills the missing stages 1-4 they don't address by design"
-4. Live-demo design-os walking a project through all 5 stages — including importing from a v0 prototype as the starting point
-5. Closes with constructive collaboration framing: design-os outputs DESIGN.md (Google's spec), can feed v0/Lovable/Bolt prompts, integrates with shadcn/Storybook MCP/Tokens Studio
+3. Shows the stage-coverage matrix as *complementary positioning* — "v0 and Lovable are excellent at Stage 5; complete-design fills the missing stages 1-4 they don't address by design"
+4. Live-demo complete-design walking a project through all 5 stages — including importing from a v0 prototype as the starting point
+5. Closes with constructive collaboration framing: complete-design outputs DESIGN.md (Google's spec), can feed v0/Lovable/Bolt prompts, integrates with shadcn/Storybook MCP/Tokens Studio
 
 **Secondary hook (90s video):** *"Three sitemap variants, three wireframe variants, three state-machine variants, three visual variants — in your own repo, in the agent you're already using."*
 
@@ -863,11 +863,11 @@ Same 8 marketplaces as v1.0.1: skills.sh, claudemarketplaces.com, mcpmarket.com,
 Preserved from v1.0.1 §7.4 with two v2.0-specific additions:
 
 - **Brad Frost** — the launch artifact directly riffs on his "design systems are the antidote to AI slop" thesis and extends it upstream. His engagement is high-value.
-- **Marty Cagan / SVPG** — *Reframed per codex feedback.* The MRD does not claim Cagan would endorse design-os; what design-os shares with Cagan's *build-to-learn* position (per his 2025-2026 SVPG writing) is the conviction that prototypes are tools for testing risks (value, usability, feasibility, viability), not just downstream specs. design-os outputs a prototype-as-Stage-5-artifact specifically to enable that risk-testing — it is *complementary* to Cagan's discovery practice, not a replacement. Outreach acknowledges the build-to-learn framing as intellectual heritage.
+- **Marty Cagan / SVPG** — *Reframed per codex feedback.* The MRD does not claim Cagan would endorse complete-design; what complete-design shares with Cagan's *build-to-learn* position (per his 2025-2026 SVPG writing) is the conviction that prototypes are tools for testing risks (value, usability, feasibility, viability), not just downstream specs. complete-design outputs a prototype-as-Stage-5-artifact specifically to enable that risk-testing — it is *complementary* to Cagan's discovery practice, not a replacement. Outreach acknowledges the build-to-learn framing as intellectual heritage.
 
 ### 7.5 Skill-as-funnel — still unsolved
 
-Same v1.0.1 weakness: design-os has no commercial product to funnel into. Mitigation: §8 monetization paths.
+Same v1.0.1 weakness: complete-design has no commercial product to funnel into. Mitigation: §8 monetization paths.
 
 ---
 
@@ -961,8 +961,8 @@ Each measurable, with dataset + grader + trials + ceilings in `evals/`.
 | **v2.0b — full 5 stages** | 9-12 | `sketch`, `interact` workflows + 6 atoms + Excalidraw/Mermaid/XState renderers + gates for stages 3/4 |
 | **v2.0 RC** | 13 | Public RC; cross-host smoke; designer + PM review |
 | **v2.0 GA — public launch** | 14 | Aligned with platform launch window per §7.1; cross-posted; launch artifact published; PR to anthropics/skills#1008 |
-| **v2.1** | +6 weeks | `extract --reverse-engineer-stages` for Lovable/v0 refugees; Notion + Linear PRD ingestion; tree-test integration with Optimal Workshop; `design-os-bridges` companion (Material Web, Vue, Svelte) |
-| **v2.2** | +12 weeks | Voice → PRD interview mode; Figma DTCG export ingestion; full Storybook MCP integration; design-os styles companion (premium style packs); enterprise audit dashboard prototype |
+| **v2.1** | +6 weeks | `extract --reverse-engineer-stages` for Lovable/v0 refugees; Notion + Linear PRD ingestion; tree-test integration with Optimal Workshop; `complete-design-bridges` companion (Material Web, Vue, Svelte) |
+| **v2.2** | +12 weeks | Voice → PRD interview mode; Figma DTCG export ingestion; full Storybook MCP integration; complete-design styles companion (premium style packs); enterprise audit dashboard prototype |
 
 ---
 
@@ -985,7 +985,7 @@ Preserved from v1.0.1 §11 with v2.0-specific additions:
 | `design` workflow cost p50 (new-feature route) | ≤60k tokens | ≤45k | Mature-app routing matrix per §3.4a |
 | `design` workflow cost p50 (design-bug route) | ≤20k tokens | ≤15k | Smallest route |
 | `design` workflow wall-clock p50 | ≤8 minutes for full 5 stages | ≤5 minutes | Wallclock measurement, 15-run suite |
-| **NEW: Aggregate coexistence trigger eval** | Trigger recall ≥0.80 when 5+ other popular Claude Code skill packages are installed alongside design-os | ≥0.85 | Multi-package install corpus eval; codex feedback — 2% cap math doesn't model real-world skill ecosystems |
+| **NEW: Aggregate coexistence trigger eval** | Trigger recall ≥0.80 when 5+ other popular Claude Code skill packages are installed alongside complete-design | ≥0.85 | Multi-package install corpus eval; codex feedback — 2% cap math doesn't model real-world skill ecosystems |
 | **NEW: Partial-output recovery** | User can interrupt `design` after any stage and resume; partial outputs are usable on their own | 100% | Scripted test: interrupt after stages 1, 2, 4; verify resumability |
 | Designer-rated quality | ≥4 of 5 say "this is doing it properly" | ≥4.5 of 5 | Blind designer review |
 | PM-rated artifact quality | ≥4 of 5 say "I'd share with engineering" | ≥4.5 of 5 | Blind PM review |
@@ -1068,7 +1068,7 @@ Preserved from v1.0.1 plus v2.0-specific:
 | Per-stage fidelity caps | None | **First-class — §3.23; Buxton discipline** |
 | Synthetic-persona red line | None | **First-class — Stage 1 hard-blocks (NN/g 2024)** |
 | Garrett's 5-plane canon | Mentioned | **Spine** |
-| Cross-stage artifacts in `design/` directory | Single `.design-os/DESIGN.md` | **Stage-typed: research/, ia/, wireframes/, interactions/, tokens.json + DESIGN.md** |
+| Cross-stage artifacts in `design/` directory | Single `.complete-design/DESIGN.md` | **Stage-typed: research/, ia/, wireframes/, interactions/, tokens.json + DESIGN.md** |
 | Lovable refugee segment | Implicit | **Explicit primary persona + v2.1 `--reverse-engineer-stages` flag** |
 | Market positioning | "Design-contract layer with preview" | **"The only AI design tool that follows the real 5-stage design process — instead of skipping straight to hi-fi like every other tool"** |
 | Preview-first workflow | Headline | **Preserved at Stage 5; preview/variants pattern extended to IA + Low-fi + IxD stages too** |
@@ -1086,7 +1086,7 @@ All accepted. Mapping to where applied:
 |---|---|---|
 | v2.0a MVP includes `style` workflow but Stage 5a gate requires Stage 4 artifacts which v2.0a doesn't ship — direct internal contradiction | **BLOCKER** | §9.1 — `style-lite` / `systematize-lite` mode introduced; honestly does not claim `gate/stage-5a-complete`; output labeled `evidence: INFERRED`; full gate gated to v2.0b |
 | Context survival under-specified — "read all upstream artifacts" doesn't scale | HIGH | §3.6 added compact handoff contract: per-stage `design/.handoff/stage-N-bundle.md` (~5-15k tokens) replaces raw-directory ingestion |
-| Risks becoming waterfall with AI in the middle (Cagan build-to-learn position not honored) | HIGH | §7.4 Cagan reframe — design-os is *complementary* to Cagan's build-to-learn discovery, not a replacement; prototype-as-Stage-5-artifact specifically enables risk-testing |
+| Risks becoming waterfall with AI in the middle (Cagan build-to-learn position not honored) | HIGH | §7.4 Cagan reframe — complete-design is *complementary* to Cagan's build-to-learn discovery, not a replacement; prototype-as-Stage-5-artifact specifically enables risk-testing |
 | Synthetic-persona policy self-contradicts (§2.4 hard-block vs §12 `--proto-mode` completes) | HIGH | §3.22 rewritten with **evidence grades** (VALIDATED / PROTO / INFERRED / MISSING); operational definition added for synthetic-only / mixed / no-data cases |
 | `design/` will create repo hygiene problems (PII, merge conflicts, noisy diffs, bloat) | HIGH | §3.6 expanded with explicit governance: per-file commit policy, frontmatter for every artifact, `.gitattributes` merge strategy, raw transcripts gitignored |
 | Crazy 8s quality not guaranteed (LLM produces 3 + 5 near-clones) | HIGH | §3.22 Stage 3 gate clarified — "≥3 alternatives" is the minimum but variants must pass low-fi-specific diversity (separate from v1.0.1's visual-style metric, defined in evals/) |
@@ -1095,7 +1095,7 @@ All accepted. Mapping to where applied:
 | Workflow degradation too weak ("`--skip-to style` with warning" is not enough) | HIGH | New §3.4a routing matrix — 7 named routes (new-product, new-feature, mature-app-refactor, design-bug, brand-refresh, DS-extraction, PR-audit) with required/optional/skipped stages per route + per-route token budgets |
 | `audit` cross-stage semantics under-specified | HIGH | §6 rewritten — stage-specific detector logic per `audit --stage N --pr` mode; per-mode list of what each detector finds (route changes, nav labels, JTBD mapping, etc.) |
 | Cost target optimistic — p50-only hides tail | MEDIUM | §11 — added p95 cost targets per route; added partial-output-recovery metric |
-| Launch hook directly antagonizes Vercel (v0 distributor risk) | HIGH | §7.2 — reworded hook from "What every AI design tool gets wrong" to "The 5 design stages every AI tool skips — and why your prototype struggles past month 3" (softer); reframes as *complementary positioning*, not attack; specifies design-os outputs DESIGN.md that v0/Lovable/Bolt can consume |
+| Launch hook directly antagonizes Vercel (v0 distributor risk) | HIGH | §7.2 — reworded hook from "What every AI design tool gets wrong" to "The 5 design stages every AI tool skips — and why your prototype struggles past month 3" (softer); reframes as *complementary positioning*, not attack; specifies complete-design outputs DESIGN.md that v0/Lovable/Bolt can consume |
 | Lovable refugee persona is primary but `extract --reverse-engineer-stages` deferred to v2.1 | HIGH | §3.4 + §9.2 — feature moved from v2.1 to v2.0b (within MVP timeline); persona alignment restored |
 | Indie devs are process-averse — no on-ramp story | HIGH | §3.4a routing matrix provides the on-ramp (start with `design --route design-bug` or `--route new-feature`, never forced to commit to all 5 stages) |
 | "Marty Cagan would agree" not defensible as written | MEDIUM | §7.4 reframed to "intellectual heritage" / "complementary to build-to-learn"; no claim Cagan would endorse |
@@ -1117,10 +1117,10 @@ All accepted. Mapping to where applied:
 Preserved from v1.0.1 + v2.0-specific terms:
 
 - **Garrett's 5 planes** — Strategy / Scope / Structure / Skeleton / Surface (Garrett, *The Elements of User Experience*, 2nd ed., 2011). The package's architectural spine.
-- **Stage gate** — A deterministic checklist run between stages that determines whether the upstream work is complete enough to proceed. design-os formalizes 6 gates.
+- **Stage gate** — A deterministic checklist run between stages that determines whether the upstream work is complete enough to proceed. complete-design formalizes 6 gates.
 - **Cross-stage artifact** — A file in `design/` written by one stage and read by the next (e.g., `design/ia/sitemap.json` from Stage 2 read by Stage 3).
 - **Proto-persona** — A persona generated from limited data, explicitly labeled as `provenance: generated` with linked validation plan in `ASSUMPTIONS.md`. Distinct from a validated persona.
-- **Synthetic-persona red line** — The NN/g 2024 / ACM Interactions 2026 finding that LLM-generated personas are not a substitute for primary research. design-os hard-blocks Stage 1 completion with synthetic-only data.
+- **Synthetic-persona red line** — The NN/g 2024 / ACM Interactions 2026 finding that LLM-generated personas are not a substitute for primary research. complete-design hard-blocks Stage 1 completion with synthetic-only data.
 - **Fidelity cap** — A hard rule per stage that prevents premature jumping to higher fidelity (Buxton discipline). Stage 3 caps at grey-boxes; Stage 4 caps at state diagrams; Stage 5a requires complete Stage 4 state-maps.
 - **OST (Opportunity Solution Tree)** — Teresa Torres's structure: Outcome → Opportunities → Solutions → Experiments. The Stage 1 bridge to Stage 2.
 - **JTBD job story (Klement format)** — "When [context], I want to [motivation], so I can [outcome]." The package's preferred JTBD format.
@@ -1128,10 +1128,10 @@ Preserved from v1.0.1 + v2.0-specific terms:
 - **Decider** — Sprint method for converging on one chosen wireframe from multiple variants. Stage 3 convergence rule.
 - **Switch interview (Moesta/Klement JTBD)** — Reconstructs the moment a user switched solutions; surfaces the Four Forces of Progress (push/pull/anxiety/habit).
 - **Indi Young thinking-style** — Persona alternative format: 3-5 sentences describing a mindset toward a purpose. No names, no faces, no ages.
-- **Lovable refugee** — A founder/dev who built a prototype in Lovable/v0/Bolt, hit the 80/20 wall, and needs to do the design work properly. A primary segment for design-os.
+- **Lovable refugee** — A founder/dev who built a prototype in Lovable/v0/Bolt, hit the 80/20 wall, and needs to do the design work properly. A primary segment for complete-design.
 - **Stage-typed artifact** — A file with a stage-specific schema and location. The design/ directory convention enforces stage typing.
 - **The design/ directory** — The user-facing artifact substrate. Committed to git. Designer-readable. AI-readable.
-- **The .design-os/ directory** — Package-internal state. Selectively committed per v1.0.1 commit policy.
+- **The .complete-design/ directory** — Package-internal state. Selectively committed per v1.0.1 commit policy.
 
 Plus all v1.0.1 glossary terms (DESIGN.md, DTCG, brownfield, greenfield, slop tell, atomic skill, workflow, subagent, adapter, critic, trust posture, terminal state, variant, preview surface, preview backend, variant axis, show-don't-tell, double-billed tokens).
 
@@ -1149,11 +1149,11 @@ Plus all v1.0.1 glossary terms (DESIGN.md, DTCG, brownfield, greenfield, slop te
 8. **Hosts:** Claude Code host-first; Codex CLI + Cursor sequential-fallback; broader hosts v2.1+.
 9. **Trust posture (v1.0.1 + v2.0):** don't lead with AI; deterministic emit; never claim WCAG; ask before generating; never auto-publish; cite every rule; synthetic data never primary.
 10. **Polyglot input adapters (v1.0.1 preserved + v2.0 extended):** read PRDs (Markdown / paste / interview / v1.1 Notion+Linear+Google), interview transcripts (v2.2), Optimal Workshop CSVs (v2.1), Tokens Studio exports (v2.1), shadcn/Tailwind/Style Dictionary/Radix/Material 3 tokens (v1.0.1).
-11. **Polyglot output adapters (v1.0.1 preserved):** Tailwind v4, shadcn, plain CSS in core; Material Web, Vue, Svelte in `design-os-bridges` v2.1+.
+11. **Polyglot output adapters (v1.0.1 preserved):** Tailwind v4, shadcn, plain CSS in core; Material Web, Vue, Svelte in `complete-design-bridges` v2.1+.
 12. **Trigger discipline:** 200-char directive front-load; ≥20-prompt eval per skill; CI-gated.
 13. **Knowledge architecture:** hybrid file-based (no vector DB, no graph in v2); references organized by stage + canon body.
 14. **Critique loop:** terminal states; max 2 repair cycles; visual regression where supported; PR-first diff; user-override capture.
-15. **Persistence:** `design/` (artifacts, committed) + `.design-os/` (package state, selectively committed) per v1.0.1 policy.
+15. **Persistence:** `design/` (artifacts, committed) + `.complete-design/` (package state, selectively committed) per v1.0.1 policy.
 16. **GTM:** ride platform launch; primary hook = "What every AI design tool gets wrong — and the 5 stages they all skip"; cross-post 8 marketplaces; named designer + PM outreach (Brad Frost + Marty Cagan additions for v2.0).
 17. **Monetization:** zero in v2.0; year-2+ paths include enterprise design-process compliance SKU (new in v2.0).
 18. **MVP:** Split v2.0a (skeleton, 5 workflows, 9 atoms, 4 gates) → v2.0b (full 5 stages, +2 workflows, +6 atoms, +2 gates). Operationally measurable acceptance criteria.

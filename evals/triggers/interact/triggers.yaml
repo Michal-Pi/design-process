@@ -1,5 +1,5 @@
 # evals/triggers/interact/triggers.yaml
-# Trigger evaluation prompts for design-os/interact skill.
+# Trigger evaluation prompts for complete-design/interact skill.
 #
 # shouldFire: prompts that should activate the interact workflow
 # shouldNotFire: prompts that should NOT activate the interact workflow
@@ -10,7 +10,7 @@
 # Source: PLAN.md 03-02 Task C, 03-05 Task C; CONTEXT.md D-32
 # Implements: WF-05 trigger corpus
 
-skill: design-os/interact
+skill: complete-design/interact
 
 shouldFire:
   - "map interaction states for the dashboard"

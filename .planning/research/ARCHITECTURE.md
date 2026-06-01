@@ -1,8 +1,8 @@
 # Architecture Research
 
-**Domain:** Agent-host SKILL.md package (design-process facilitator) — workflows + atoms + references + deterministic scripts, persisted via stage-typed artifacts in `design/` and package state in `.design-os/`
+**Domain:** Agent-host SKILL.md package (design-process facilitator) — workflows + atoms + references + deterministic scripts, persisted via stage-typed artifacts in `design/` and package state in `.complete-design/`
 **Researched:** 2026-05-24
-**Confidence:** HIGH — the MRD (design-os-mrd-v2.md) specifies the architecture in detail; this document validates the shape, names the seams, and surfaces risks the MRD glossed over
+**Confidence:** HIGH — the MRD (complete-design-mrd-v2.md) specifies the architecture in detail; this document validates the shape, names the seams, and surfaces risks the MRD glossed over
 
 ---
 
@@ -18,7 +18,7 @@
                             │ skill trigger (200-char description match)
                             ↓
 ┌──────────────────────────────────────────────────────────────────────┐
-│                  design-os SKILL.md PACKAGE (22 skills)              │
+│                  complete-design SKILL.md PACKAGE (22 skills)              │
 │                                                                       │
 │  ┌──────────────────┐  ┌─────────────────────────────────────────┐  │
 │  │   Workflows (7)  │  │           Atoms (15)                    │  │
@@ -49,7 +49,7 @@
 │        USER REPO — TWO PERSISTENCE SURFACES                          │
 │                                                                       │
 │  ┌──────────────────────────────┐  ┌────────────────────────────┐  │
-│  │  design/  (committed)        │  │  .design-os/ (selective)   │  │
+│  │  design/  (committed)        │  │  .complete-design/ (selective)   │  │
 │  │  ─ MANIFEST.md               │  │  ─ manifest.lock (hash    │  │
 │  │  ─ PRD.md                    │  │     chain)                 │  │
 │  │  ─ research/personas/        │  │  ─ manual-overrides.json   │  │
@@ -80,7 +80,7 @@
 | **`references/` corpus** | Stage-organized canon (Garrett, Cooper, Rosenfeld, Buxton, Saffer, Frost, WCAG, DTCG, DESIGN.md) + 6 stage-gate checklists + PRD canon + slop-tells | Local Markdown files (no vector DB, no graph); loaded on-demand via Read |
 | **`design/` (artifact substrate)** | The cross-stage IR: stage-typed user-facing artifacts. Committed to git. Schema-validated. Frontmatter-tagged with `provenance:`, `evidence:`, `sourceHash:` | Mixed JSON (personas, sitemap, tokens) + Markdown (findings, JTBDs, spec) + Mermaid + Excalidraw JSON + TypeScript (XState) |
 | **`design/.handoff/`** | Compact ~5-15k-token per-stage bundles. **The context-window survival mechanism.** Each stage reads only the previous bundle, not the raw upstream directory | Auto-written Markdown at the end of each stage workflow |
-| **`.design-os/` (package state)** | Manifest hash chain, manual-override capture, preview/run state, decision log, screenshots — selectively committed per v1.0.1 commit policy | `manifest.lock` (hash chain), `manual-overrides.json`, `private/*.jsonl`, `preview/run-<id>/port.lock` |
+| **`.complete-design/` (package state)** | Manifest hash chain, manual-override capture, preview/run state, decision log, screenshots — selectively committed per v1.0.1 commit policy | `manifest.lock` (hash chain), `manual-overrides.json`, `private/*.jsonl`, `preview/run-<id>/port.lock` |
 | **Gate runner** | Executes a stage-gate checklist; returns `(terminal-state, evidence-grade)` tuple — PASS/PASS_WITH_WARNINGS/FAILED_AFTER_REPAIR/USER_OVERRIDDEN × VALIDATED/PROTO/INFERRED/MISSING | Pure script per gate (`gates/stage-N.mjs`) reading `design/` + frontmatter; emits structured report |
 | **Host compatibility layer** | Claude Code host-first; Codex CLI + Cursor sequential-fallback. Per-host adapter for tool dispatch differences (Claude subagents vs. Codex linear, Cursor session model) | Branch logic in workflow bodies; CI matrix runs `skillgrade` on all three hosts |
 | **Trigger metadata index** | The flattened ≤5k char registry of all 22 skill descriptions — what hosts truncate against the 2% cap | `manifest.json` aggregates frontmatter; skillgrade eval gates regressions per-skill + aggregate coexistence with 5+ other packages |
@@ -91,7 +91,7 @@
 ## Recommended Project Structure
 
 ```
-design-os/                          # repo root (the package)
+complete-design/                          # repo root (the package)
 ├── manifest.json                   # aggregate registry of all skills (auto-built)
 ├── package.json                    # Node tooling for assets/scripts
 ├── README.md                       # OSS-grade entry point
@@ -227,7 +227,7 @@ design-os/                          # repo root (the package)
 - **`references/` organized by stage AND by author:** Two indexes for one corpus. A workflow reads stage-scoped (`references/gates/stage-1.md`); an atom may need canon-scoped (`references/torres-ost/`). Stage-gate references live under `references/gates/` because they are operational checklists, not reading material.
 - **`schemas/` as a top-level v1.5 prerequisite:** The MRD §16 BLOCKER-adjacent finding was "custom schemas not ship-ready." Schemas must precede every v2.0a workflow because gates depend on them, frontmatter validation depends on them, and the handoff bundle structure depends on them.
 - **`design/` lives in user's repo, not the package:** The substrate is *output*, never bundled. `evals/fixtures/` contains example `design/` trees for testing.
-- **`.design-os/` selective commit:** `manifest.lock` and `manual-overrides.json` are committed (team needs them); `private/`, `preview/run-<id>/`, screenshots are gitignored (PII + bulk).
+- **`.complete-design/` selective commit:** `manifest.lock` and `manual-overrides.json` are committed (team needs them); `private/`, `preview/run-<id>/`, screenshots are gitignored (PII + bulk).
 - **`evals/` co-equal with `skills/`:** Trigger discipline is non-negotiable (R15). The 15-run end-to-end fixture, adversarial tests, coexistence eval gate every release. Treating `evals/` as a top-level peer signals the discipline.
 
 ---
@@ -240,19 +240,19 @@ design-os/                          # repo root (the package)
 
 **When to use:** Any output that must (a) round-trip identically across runs, (b) validate against a schema, or (c) be testable via golden output.
 
-**Trade-offs:** Forces upfront investment in scripts (v1.5 weeks 1-3); pays back as the only way to keep cross-host parity (Codex, Cursor, Claude Code can't agree on numeric outputs from LLMs); essential to pass `design-os verify --golden` CI gate.
+**Trade-offs:** Forces upfront investment in scripts (v1.5 weeks 1-3); pays back as the only way to keep cross-host parity (Codex, Cursor, Claude Code can't agree on numeric outputs from LLMs); essential to pass `complete-design verify --golden` CI gate.
 
 **Example (skill procedure body fragment):**
 ```markdown
 5. User picks variant V (from the 3 rendered options).
 6. Bash: node assets/scripts/tokens-project.mjs \
      --variant V \
-     --in .design-os/preview/run-<id>/variant-V.json \
+     --in .complete-design/preview/run-<id>/variant-V.json \
      --target tailwind-v4 \
      --out design/tokens.json
 7. Bash: node assets/scripts/dtcg-lint.mjs --in design/tokens.json
 8. Bash: node assets/scripts/contrast.mjs --tokens design/tokens.json \
-     --report .design-os/private/contrast-report.json
+     --report .complete-design/private/contrast-report.json
 ```
 
 ### Pattern 2: Stage-Typed Artifact Substrate as Intermediate Representation (IR)
@@ -309,7 +309,7 @@ sourceHash: <sha256 of design/ia/ at write time>
 
 ### Pattern 4: Evidence-Graded Validation Gates
 
-**What:** Each gate returns a `(terminal-state, evidence-grade)` tuple — not a binary pass/fail. Terminal states (PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN) describe procedural outcome; evidence grades (VALIDATED / PROTO / INFERRED / MISSING) describe the truth-grounding of the artifact. The tuple is recorded in `.design-os/manifest.lock` and propagates to downstream gates (Stage 2 can be `(PASS, PROTO)` because Stage 1 was `PROTO`).
+**What:** Each gate returns a `(terminal-state, evidence-grade)` tuple — not a binary pass/fail. Terminal states (PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN) describe procedural outcome; evidence grades (VALIDATED / PROTO / INFERRED / MISSING) describe the truth-grounding of the artifact. The tuple is recorded in `.complete-design/manifest.lock` and propagates to downstream gates (Stage 2 can be `(PASS, PROTO)` because Stage 1 was `PROTO`).
 
 **When to use:** Every stage close. Also at `audit --stage N`.
 
@@ -343,7 +343,7 @@ sourceHash: <sha256 of design/ia/ at write time>
 
 ### Pattern 6: Per-File Commit Policy + Frontmatter-Tagged Artifacts
 
-**What:** Every canonical artifact in `design/` carries YAML frontmatter (`artifact:`, `stage:`, `generated:`, `schemaVersion:`, `sourceHash:`, `provenance:`, `owner:`, `lastReviewedAt:`). The `.gitignore` excludes rejected wireframe variants, raw transcripts, screenshots, and `.design-os/private/`. The `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain.
+**What:** Every canonical artifact in `design/` carries YAML frontmatter (`artifact:`, `stage:`, `generated:`, `schemaVersion:`, `sourceHash:`, `provenance:`, `owner:`, `lastReviewedAt:`). The `.gitignore` excludes rejected wireframe variants, raw transcripts, screenshots, and `.complete-design/private/`. The `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain.
 
 **When to use:** Always. Repo hygiene is a HIGH-severity risk per the codex review (PII, merge conflicts, noisy diffs, bloat).
 
@@ -375,7 +375,7 @@ discover (Stage 1) — subagent dispatch
     ↓ writes: design/research/findings.md, competitive.md, ost.mmd
     ↓ writes: design/ASSUMPTIONS.md (if synthetic-only or PROTO)
     ↓ run: assets/scripts/gates/stage-1.mjs → (state, grade)
-    ↓ writes: .design-os/manifest.lock entry
+    ↓ writes: .complete-design/manifest.lock entry
     ↓ writes: design/.handoff/stage-1-bundle.md
     ↓
 structure (Stage 2) — subagent dispatch
@@ -400,7 +400,7 @@ style (Stage 5a) — subagent dispatch
     ↓ atoms: hifi/variants-preview
     ↓ scripts: oklch, contrast, port-manager, playwright-runner
     ↓ user picks 1 variant
-    ↓ writes: .design-os/preview/run-<id>/ (rendered, screenshotted)
+    ↓ writes: .complete-design/preview/run-<id>/ (rendered, screenshotted)
     ↓ writes: design/.handoff/stage-5a-bundle.md
     ↓
 systematize (Stage 5b) — subagent dispatch
@@ -411,26 +411,26 @@ systematize (Stage 5b) — subagent dispatch
     ↓ writes: design/components/*.tsx, design/storybook/*.stories.tsx
     ↓ run: assets/scripts/gates/stage-5b.mjs
     ↓
-Final: design/MANIFEST.md updated; .design-os/manifest.lock sealed;
+Final: design/MANIFEST.md updated; .complete-design/manifest.lock sealed;
        diff presented to user; --apply required to land.
 ```
 
 ### State Management
 
 ```
-.design-os/manifest.lock  ← append-only hash chain of every gate run
+.complete-design/manifest.lock  ← append-only hash chain of every gate run
        ↑
-       └── written by every gate runner; verified by `design-os verify --golden`
+       └── written by every gate runner; verified by `complete-design verify --golden`
 
 design/.handoff/stage-N-bundle.md  ← compact stage-output summary
        ↑                              read by stage N+1
        └── written at end of every stage workflow
 
-.design-os/manual-overrides.json  ← user edits to generated artifacts
+.complete-design/manual-overrides.json  ← user edits to generated artifacts
        ↑                            preserved across regen
        └── captured by Pattern 6 frontmatter `sourceHash:` mismatch
 
-.design-os/private/decision-log.jsonl  ← every "user picked variant X" decision
+.complete-design/private/decision-log.jsonl  ← every "user picked variant X" decision
        └── never committed; rebuilds on demand
 ```
 
@@ -440,7 +440,7 @@ design/.handoff/stage-N-bundle.md  ← compact stage-output summary
 2. **`audit --stage N --pr` (cross-stage backward):** PR contains code changes (new routes, new components). Detector reads the PR diff + `design/.handoff/stage-N-bundle.md` + relevant `design/` artifacts, emits `design/AUDIT-REPORT.md` with severity-ranked findings. Does NOT mutate `design/`.
 3. **`audit --reverse-engineer` (Lovable refugee, v2.0b):** Reads existing prototype (no `design/` yet), runs static analysis + LLM inference per stage, writes inferred `design/research/`, `design/ia/`, etc. with `provenance: inferred` frontmatter. The reverse of flow #1.
 4. **Atomic invocation (standalone bootstrap):** Atom is triggered by user prompt (e.g., "create a sitemap for these JTBDs"). Atom reads available `design/` artifacts; if missing, asks the minimum questions to bootstrap; writes its single artifact + runs the relevant gate atomically. Standalone atoms do NOT write `.handoff/` bundles (those are workflow responsibilities).
-5. **Preview/render loop (Stage 5a, preserved from v1.0.1):** `hifi/variants-preview` spawns local dev server via `port-manager.mjs` (per stack adapter), Playwright captures screenshots, screenshots are diffed against variant-distance metric, user picks. Preview state lives in `.design-os/preview/run-<id>/` and is reaped on next run.
+5. **Preview/render loop (Stage 5a, preserved from v1.0.1):** `hifi/variants-preview` spawns local dev server via `port-manager.mjs` (per stack adapter), Playwright captures screenshots, screenshots are diffed against variant-distance metric, user picks. Preview state lives in `.complete-design/preview/run-<id>/` and is reaped on next run.
 6. **Gate-rerun flow:** User edits `design/` artifact by hand; `sourceHash:` mismatch detected on next workflow run; manual-overrides captured; relevant downstream gates re-run (if Stage 2 sitemap changed by hand, Stage 3+ gates may regress to needing re-evaluation).
 
 ---
@@ -458,7 +458,7 @@ The MRD proposes a 14-week roadmap. Validated and annotated:
 | Preview harness (Vite/Next/Astro adapters, port manager, Playwright readiness, security sandbox) | v1.0.1 preserved; Stage 5a depends on it | OK |
 | `manifest.json` aggregator + `skillgrade` per-skill eval + aggregate coexistence eval | Trigger discipline (R15) is non-negotiable; CI must be green before v2.0a build starts | OK |
 | Eval harness (`evals/`) including adversarial tests | The synthetic-persona block (R6) and fidelity-cap reject (P11) need adversarial fixtures BEFORE the workflows that they test exist — they are part of the spec, not an afterthought | OK |
-| Determinism: golden tests, decision-log writer, hash-chain writer | `design-os verify --golden` CI gate must work before v2.0a | OK |
+| Determinism: golden tests, decision-log writer, hash-chain writer | `complete-design verify --golden` CI gate must work before v2.0a | OK |
 | References for stages 0+1+2+5 (core canon) | Workflows depend on them; references for stages 3+4 deferred to v2.0b | OK |
 | **NEW: `handoff-bundle-build.mjs` and `handoff-bundle.v1.json` schema** | This is the context-window survival mechanism (Pattern 3). The MRD §3.6 mentions it but §10 doesn't list it. Without it, v2.0a cannot run end-to-end. | **GAP — must be a v1.5 deliverable** |
 | **NEW: Host-compatibility adapter scaffold + host-matrix CI** | Sequential fallback for Codex/Cursor is the difference between R17 met and not-met. v1.5 should produce the matrix CI even if only Claude Code host is fully passing. | **GAP — flagged for v1.5** |
@@ -538,7 +538,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 | **Solo indie, 1 repo, 1 PRD** | v2.0a out-of-box. `--depth lightweight` mode (~60min). Handoff bundles compact enough that the whole 5-stage run fits in a single Claude Code session. |
 | **Series-B team, 1 monorepo, 5 apps with separate design/** | Per-app `design/` directories (preserved from v1.0.1 §3.20). Each app gets its own `.handoff/`, its own manifest.lock. `audit --new-feature --app=<name>` scopes to one app's contract. |
 | **OSS install base 30k → 150k users** | Coexistence eval (≥0.80 with 5+ packages) is the critical scaling metric — not server load, not LLM cost (user pays). Aggregate `manifest.json` size must stay under Codex 2% cap; split into core (workflows) + companion (atoms) if pressure rises per R14 mitigation. |
-| **Series-B regulated industry (year-2+ enterprise SKU)** | Audit dashboard sibling product reads `.design-os/manifest.lock` chains across many repos. Out of scope for v2.0; architectural seam preserved (hash chain is append-only, audit-report schema is versioned). |
+| **Series-B regulated industry (year-2+ enterprise SKU)** | Audit dashboard sibling product reads `.complete-design/manifest.lock` chains across many repos. Out of scope for v2.0; architectural seam preserved (hash chain is append-only, audit-report schema is versioned). |
 
 ### Scaling Priorities
 
@@ -613,7 +613,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 
 **Why it's wrong:** Repo bloat; PII leakage (transcripts); merge conflicts; designers refuse to PR-review. MRD §3.6 governance addresses this; the codex review flagged it as HIGH.
 
-**Do this instead:** Ship `.gitignore` and `.gitattributes` as part of `ingest`. Rejected wireframe variants gitignored. Raw transcripts gitignored. Screenshots in `.design-os/private/`. Per-file commit policy enforced via a `design-os check-hygiene` script.
+**Do this instead:** Ship `.gitignore` and `.gitattributes` as part of `ingest`. Rejected wireframe variants gitignored. Raw transcripts gitignored. Screenshots in `.complete-design/private/`. Per-file commit policy enforced via a `complete-design check-hygiene` script.
 
 ---
 
@@ -624,7 +624,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 | Service | Integration Pattern | Notes |
 |---------|---------------------|-------|
 | **Playwright** | Local install via npx; controlled by `assets/scripts/playwright-runner.mjs`; readiness probe + screenshot capture | Preserved from v1.0.1; deterministic via fixed viewport + frozen clock |
-| **Vite / Next / Astro dev-server** | Per-stack adapter spawns dev-server in `.design-os/preview/run-<id>/`; port allocated by `port-manager.mjs` | v1.0.1 preserved; stack detected by repo signals |
+| **Vite / Next / Astro dev-server** | Per-stack adapter spawns dev-server in `.complete-design/preview/run-<id>/`; port allocated by `port-manager.mjs` | v1.0.1 preserved; stack detected by repo signals |
 | **Excalidraw renderer (v2.0b)** | Static HTML page with embedded Excalidraw library + JSON; served by preview harness | No live editing in MVP; designer opens locally in editor |
 | **Mermaid renderer** | `mermaid-cli` invoked via Bash; SVG output | Used at Stage 2 (flowcharts), Stage 4 (state diagrams) |
 | **XState v5 (v2.0b)** | `state-machine-emit.mjs` generates TypeScript machine definitions; LLM picks pattern, script emits code | Only required for components with async + ≥3 states + conditional transitions |
@@ -642,7 +642,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 | Skill ↔ `assets/scripts/` | `Bash node assets/scripts/<name>.mjs ...` | Pure scripts (no LLM); deterministic |
 | Skill ↔ `references/` | `Read references/<path>` on-demand | No vector DB; stage-scoped + canon-scoped indexes |
 | Skill ↔ `design/` | `Read` for upstream context (via handoff bundle preferentially); `Write` for own-stage artifacts only | Anti-Pattern 5 forbids upstream mutation |
-| Skill ↔ `.design-os/manifest.lock` | Append-only via `assets/scripts/gates/*.mjs` | Hash chain verified by `design-os verify --golden` |
+| Skill ↔ `.complete-design/manifest.lock` | Append-only via `assets/scripts/gates/*.mjs` | Hash chain verified by `complete-design verify --golden` |
 | Gate runner ↔ Workflow | Workflow `Bash`-invokes gate; gate emits `(state, grade)` JSON; workflow renders terminal state | Pattern 4 |
 | Stage N ↔ Stage N+1 | Via `design/.handoff/stage-N-bundle.md` (compact) + on-demand `design/` reads | Pattern 3 |
 | Package ↔ Host (Claude Code) | SKILL.md trigger description; host invokes; subagent dispatch native | Primary host (R17) |
@@ -679,10 +679,10 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 
 **Why it happens:** No migration tooling. No staleness detection. No PII scanner. The governance rules in §3.6 are documented but not enforced by scripts.
 
-**Detection:** `design-os check-hygiene` script (must be a v1.5 deliverable) + CI hook + `audit --hygiene` mode.
+**Detection:** `complete-design check-hygiene` script (must be a v1.5 deliverable) + CI hook + `audit --hygiene` mode.
 
 **Prevention:**
-- Schema migration runner: `design-os migrate --from v1 --to v2`.
+- Schema migration runner: `complete-design migrate --from v1 --to v2`.
 - PII scanner over `design/research/` (regex + LLM-assisted) at `ingest` time.
 - Staleness check: `lastReviewedAt` > 90 days → warning at next `audit` run.
 - `.gitignore` and `.gitattributes` written by `ingest` workflow with idempotent merge.
@@ -697,7 +697,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 
 **Prevention:**
 - Every schema bump ships with a `migrations/v(N) → v(N+1).mjs` script.
-- `design-os migrate` runs the chain.
+- `complete-design migrate` runs the chain.
 - `manifest.json` records the package version that generated each artifact; mismatch triggers migration prompt.
 
 ### Risk 5: Cross-host subagent dispatch divergence (HIGH)
@@ -733,7 +733,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 
 ### Risk 8: Trigger description coexistence regression (MEDIUM)
 
-**Failure mode:** User installs design-os + 5 other popular skill packages; some design-os triggers no longer fire because aggregate description metadata exceeds Codex 2% cap or competing skills' descriptions match user prompts better.
+**Failure mode:** User installs complete-design + 5 other popular skill packages; some complete-design triggers no longer fire because aggregate description metadata exceeds Codex 2% cap or competing skills' descriptions match user prompts better.
 
 **Detection:** Aggregate coexistence eval per §11 (NEW metric).
 
@@ -785,7 +785,7 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 
 ## Sources
 
-- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/design-os-mrd-v2.md` — §3.5 spine, §3.6 directory + governance, §3.7 workflows, §3.8 atoms, §3.9 composition contract, §3.10 references, §3.11-3.21 preserved infra, §3.22 gates, §3.23 fidelity caps, §9 MVP scope, §10 roadmap, §12 risks, §16 codex acceptance record
+- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/complete-design-mrd-v2.md` — §3.5 spine, §3.6 directory + governance, §3.7 workflows, §3.8 atoms, §3.9 composition contract, §3.10 references, §3.11-3.21 preserved infra, §3.22 gates, §3.23 fidelity caps, §9 MVP scope, §10 roadmap, §12 risks, §16 codex acceptance record
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/.planning/PROJECT.md` — R1-R26 requirements + key decisions
 - agentskills.io v1 spec (stabilized 2025-12-18) — SKILL.md frontmatter contract, four-tier reference hierarchy, host compatibility
 - W3C DTCG v2025.10 (Oct 2025) — token schema canon
@@ -794,5 +794,5 @@ This is a SKILL.md package, not a SaaS. "Scaling" here means: scaling across pro
 - v1.0.1 preserved patterns: preview-first workflow, variant-distance metric, decision log, hash chain, manual-override capture, security sandbox, port manager, host compatibility, monorepo design, trigger discipline
 
 ---
-*Architecture research for: design-os SKILL.md package (agent-host design-process facilitator)*
+*Architecture research for: complete-design SKILL.md package (agent-host design-process facilitator)*
 *Researched: 2026-05-24*

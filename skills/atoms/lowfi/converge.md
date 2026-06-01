@@ -1,5 +1,5 @@
 ---
-name: "design-os/lowfi/converge"
+name: "complete-design/lowfi/converge"
 description: "ATOM-09: Select one wireframe variant from Crazy 8s candidates; emit CHOICE.md with rationale and rejected-variant list."
 stage: 3
 type: atom
@@ -14,7 +14,7 @@ allows-tools:
 
 # converge — ATOM-09: Wireframe Convergence to CHOICE.md
 
-Given ≥3 screened wireframe variants from `.design-os/preview/<run-id>/wireframes/<screen>/`,
+Given ≥3 screened wireframe variants from `.complete-design/preview/<run-id>/wireframes/<screen>/`,
 selects the single best variant and emits CHOICE.md.
 
 ---
@@ -36,7 +36,7 @@ Ask the user:
 
 List all `.excalidraw` files in:
 ```
-.design-os/preview/<run-id>/wireframes/<screen>/
+.complete-design/preview/<run-id>/wireframes/<screen>/
 ```
 
 Each file is a variant produced by the crazy-eights atom.
@@ -62,7 +62,7 @@ Your choice should reflect layout reasoning, not preference for a particular vis
 
 Write to:
 ```
-.design-os/preview/<run-id>/wireframes/<screen>/CHOICE.md
+.complete-design/preview/<run-id>/wireframes/<screen>/CHOICE.md
 ```
 
 Required structure:
@@ -103,7 +103,7 @@ while the content pane provides context without navigation context-switching.">
 
 After emitting, confirm the gate passes:
 ```bash
-node bin/design-os.mjs gate --stage 3 --design-dir .design-os/preview/<run-id>/
+node bin/complete-design.mjs gate --stage 3 --design-dir .complete-design/preview/<run-id>/
 ```
 
 The gate checks `wireframes/**/CHOICE.md` exists. If the CHOICE.md path is correct,

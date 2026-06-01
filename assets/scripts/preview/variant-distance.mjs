@@ -9,7 +9,7 @@
 //    does not apply to greyscale wireframes)."
 //
 // Sources: CONTEXT.md PREV-05, PLAN.md Task 1 behavior block,
-//          design-os-mrd-v2.md §3.11
+//          complete-design-mrd-v2.md §3.11
 
 /**
  * The 6 axes for Stage 5a visual-style distance measurement.

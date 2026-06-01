@@ -1,7 +1,7 @@
 // assets/scripts/cli/cross-host-parity.mjs
 // CLI wrapper for cross-host-parity sampled driver (D-77, DIST-05/06).
 //
-// Registers as: node bin/design-os.mjs cross-host-parity
+// Registers as: node bin/complete-design.mjs cross-host-parity
 //
 // Flags:
 //   --host <codex-cli|cursor>  Target host to test (required)
@@ -12,7 +12,7 @@
 //
 // INVARIANTS.md compliance:
 //   Lesson 2: command = { name, describe, builder, handler }; lazy handler import.
-//   Lesson 6: flags verified via node bin/design-os.mjs cross-host-parity --help before commit.
+//   Lesson 6: flags verified via node bin/complete-design.mjs cross-host-parity --help before commit.
 //   Lesson 7: fixturesDir, baseline, output paths are containment-checked in the core module.
 //
 // Source: 04-03-PLAN.md Task 2 action block; INVARIANTS.md Lesson 2; D-77
@@ -62,7 +62,7 @@ export const command = {
     const host = opts.host;
     if (!host || (host !== 'codex-cli' && host !== 'cursor')) {
       console.error('cross-host-parity: --host is required and must be codex-cli or cursor.');
-      console.error('  Example: node bin/design-os.mjs cross-host-parity --host codex-cli');
+      console.error('  Example: node bin/complete-design.mjs cross-host-parity --host codex-cli');
       process.exit(1);
     }
 

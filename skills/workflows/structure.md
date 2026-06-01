@@ -1,5 +1,5 @@
 ---
-name: "design-os/structure"
+name: "complete-design/structure"
 description: "Design IA: generate 2-5 LATCH-diverse sitemap variants, pick one, emit one Mermaid flowchart per job story, run Stage 2 gate"
 stage: 2
 gate: "gate/stage-2-complete"
@@ -65,7 +65,7 @@ before generating to ensure schemes are grounded in Rosenfeld's definitions.
 
 If `assets/scripts/cli/budget-check.mjs` exists:
 ```bash
-node bin/design-os.mjs budget-check --stage structure --check pre
+node bin/complete-design.mjs budget-check --stage structure --check pre
 ```
 If the script is absent (ships in Plan 02-03), skip with warning:
 "Budget pre-check skipped — budget-check.mjs not yet available."
@@ -108,7 +108,7 @@ Diversity check: if any two variants share the same LATCH scheme OR score
 
 Validate each variant against `schemas/dist/sitemap.v1.json`:
 ```bash
-node bin/design-os.mjs validate --artifact sitemap --file <path>
+node bin/complete-design.mjs validate --artifact sitemap --file <path>
 ```
 
 **5. Present variants for user selection**
@@ -137,7 +137,7 @@ Do NOT continue until the user makes a selection.
 
 **6. Stage to preview area**
 
-Write the selected variant to `.design-os/preview/run-<timestamp>/sitemap.json`
+Write the selected variant to `.complete-design/preview/run-<timestamp>/sitemap.json`
 (the staging area per D-52). Do NOT write to `design/ia/sitemap.json` yet —
 that happens in step 12 after the user confirms.
 
@@ -154,7 +154,7 @@ For each JTBD in the stage-1 bundle:
 
 For each generated `.flow.mmd` file, attempt render:
 ```bash
-node bin/design-os.mjs mermaid-render --input <path>.flow.mmd --output /dev/null
+node bin/complete-design.mjs mermaid-render --input <path>.flow.mmd --output /dev/null
 ```
 
 If validation fails, attempt up to 2 LLM repair cycles:
@@ -169,10 +169,10 @@ Error: <render error>. Please manually fix or simplify the flow and re-run."
 **9. Run Stage 2 gate against the staged preview path**
 
 ```bash
-node bin/design-os.mjs gate --stage 2 --design-dir .design-os/preview/run-<timestamp>/
+node bin/complete-design.mjs gate --stage 2 --design-dir .complete-design/preview/run-<timestamp>/
 ```
 
-**Important:** Run the gate against the staged preview path (`.design-os/preview/run-<timestamp>/`),
+**Important:** Run the gate against the staged preview path (`.complete-design/preview/run-<timestamp>/`),
 NOT against `design/` — the files are not there yet. The gate accepts any directory containing
 `ia/sitemap.json` via the `--design-dir` parameter.
 
@@ -188,18 +188,18 @@ Gate outcomes:
 **10. Build stage-2 handoff bundle**
 
 ```bash
-node bin/design-os.mjs handoff-bundle-build --stage 2 --design-dir .design-os/preview/run-<timestamp>/
+node bin/complete-design.mjs handoff-bundle-build --stage 2 --design-dir .complete-design/preview/run-<timestamp>/
 ```
 
 **11. Reconcile MANIFEST.md**
 
 ```bash
-node bin/design-os.mjs manifest-md-reconcile --design-dir design/
+node bin/complete-design.mjs manifest-md-reconcile --design-dir design/
 ```
 
 **12. Present diff and await --apply**
 
-Show a diff summary of all files staged in `.design-os/preview/run-<timestamp>/`:
+Show a diff summary of all files staged in `.complete-design/preview/run-<timestamp>/`:
 - `sitemap.json`: selected variant with node count + LATCH scheme
 - `ia/flows/`: list of flow files + JTBD names
 
@@ -210,7 +210,7 @@ Do NOT write to `design/ia/` until the user confirms with `--apply`.
 
 If `assets/scripts/cli/budget-check.mjs` exists:
 ```bash
-node bin/design-os.mjs budget-check --stage structure --check post
+node bin/complete-design.mjs budget-check --stage structure --check post
 ```
 If absent, skip with the same warning as step 2a.
 
@@ -220,11 +220,11 @@ If absent, skip with the same warning as step 2a.
 
 For Codex CLI / Cursor (no subagent dispatch — sequential single-context execution):
 
-Run steps 1-12 sequentially in a single context window. Replace all `node bin/design-os.mjs`
+Run steps 1-12 sequentially in a single context window. Replace all `node bin/complete-design.mjs`
 invocations with:
 - Gate: `node assets/scripts/cli/gate.mjs` is registered via Commander — always use
-  `node bin/design-os.mjs gate --stage 2 --design-dir design/` (the dispatcher).
-- Validate: `node bin/design-os.mjs validate --artifact sitemap --file <path>`
+  `node bin/complete-design.mjs gate --stage 2 --design-dir design/` (the dispatcher).
+- Validate: `node bin/complete-design.mjs validate --artifact sitemap --file <path>`
 
 The sub-agent sitemap generation (step 4) and flow generation (step 7) are inlined in
 this context. If context window is at risk, truncate sitemap variant rationale to 2 words

@@ -1,6 +1,6 @@
 # Google DESIGN.md — April 2026 Open-Source Release
 
-<!-- design-os reference: design-md -->
+<!-- complete-design reference: design-md -->
 
 ## Purpose
 
@@ -13,19 +13,19 @@ Design-os emits DESIGN.md as the Stage 5b contract artifact.
 - Google Labs (2026-04). *DESIGN.md specification*, Apache-2.0.
   https://github.com/google-labs-code/design.md
 - Frontmatter fields: `version`, `tokens` (DTCG-aligned YAML block), `rationale` (free text).
-  Design-os extends with `$extensions.design-os` carrying `generatedAt`, `schemaVersion`,
+  Design-os extends with `$extensions.complete-design` carrying `generatedAt`, `schemaVersion`,
   `provenance`, `routeName`.
 - DESIGN.md integrates with Google Stitch for AI-assisted token projection. Design-os uses
   a compatible subset; no Stitch dependency required.
 - Schema note: animations, dark-mode, and breakpoints sections are under active discussion
   upstream as of April 2026. Design-os defers those sections to Phase 3 (v2.0b).
-- Apache-2.0 license — compatible with design-os Apache-2.0 distribution.
+- Apache-2.0 license — compatible with complete-design Apache-2.0 distribution.
 
-## How design-os uses it
+## How complete-design uses it
 
 - Stage 5b artifact: `design-md-validate.mjs` validates emitted DESIGN.md against pinned
   April 2026 schema version (FORMAT-07 pin; unsupported `--design-md-version` exits 1).
-- `$extensions.design-os` namespace carries structured provenance metadata (PERSIST-01).
+- `$extensions.complete-design` namespace carries structured provenance metadata (PERSIST-01).
 - Token section aligns to DTCG v2025.10 semantic tier.
 
 ## Drift watch

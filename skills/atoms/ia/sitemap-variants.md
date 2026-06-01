@@ -1,5 +1,5 @@
 ---
-name: "design-os/ia/sitemap-variants"
+name: "complete-design/ia/sitemap-variants"
 description: "Generate 2-5 LATCH-diverse sitemap JSON variants from JTBD corpus; no styling fields (FID-02)"
 stage: 2
 mvp: true
@@ -100,7 +100,7 @@ Set `worstProvenance` in the sitemap JSON frontmatter to this value.
 
 Validate the complete sitemap JSON against `schemas/dist/sitemap.v1.json`:
 ```bash
-node bin/design-os.mjs validate --artifact sitemap --file <path>
+node bin/complete-design.mjs validate --artifact sitemap --file <path>
 ```
 
 If validation fails, fix the schema errors before proceeding. The most common

@@ -42,7 +42,7 @@ export const Finding = z.object({
    */
   suppression: z.string().optional(),
 }).meta({
-  $id: "https://design-os.dev/schemas/finding.v1.json",
+  $id: "https://complete-design.dev/schemas/finding.v1.json",
   title: "Finding",
   description: "A diagnostic finding produced by a gate or audit check",
 });

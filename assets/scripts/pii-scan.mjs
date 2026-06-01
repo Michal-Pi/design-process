@@ -123,7 +123,7 @@ export async function scanFile(filePath) {
  */
 export async function scanWithAllowlist(
   filePath,
-  allowlistPath = ".design-os/pii-allowlist.json",
+  allowlistPath = ".complete-design/pii-allowlist.json",
   baseDir = process.cwd()
 ) {
   const { findings, sha256 } = await scanFile(filePath);

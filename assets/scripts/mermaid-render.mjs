@@ -6,7 +6,7 @@
 // Two consecutive renders on the same input MUST produce byte-identical SVG.
 // Pitfall 12 prevention: ships in Phase 1 for Phase 3 consumption.
 //
-// Config: deterministicIds=true, deterministicIDSeed='design-os', theme='default'
+// Config: deterministicIds=true, deterministicIDSeed='complete-design', theme='default'
 // Post-process: strip any <!-- generated YYYY-MM-DD --> HTML comments.
 //
 // Usage:
@@ -27,14 +27,14 @@ const ROOT = resolve(__dirname, "../..");
 /**
  * Mermaid configuration for deterministic output.
  * deterministicIds: true ensures element IDs are computed from content, not random.
- * deterministicIDSeed: 'design-os' ensures the same seed across all renders.
+ * deterministicIDSeed: 'complete-design' ensures the same seed across all renders.
  */
 const MERMAID_CONFIG = {
   theme: "default",
   securityLevel: "strict",
   startOnLoad: false,
   deterministicIds: true,
-  deterministicIDSeed: "design-os",
+  deterministicIDSeed: "complete-design",
 };
 
 /**

@@ -302,7 +302,7 @@ export async function emitToFiles(specPath, outputDir, screenName) {
     sourceHash: `sha256:${'0'.repeat(64)}`,
     generated: new Date().toISOString(),
     provenance: 'generated',
-    owner: 'design-os',
+    owner: 'complete-design',
     lastReviewedAt: new Date().toISOString(),
     screen,
     states: spec.states,

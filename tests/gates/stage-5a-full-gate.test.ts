@@ -50,7 +50,7 @@ hasConditionalTransitions: false
 
 /** A minimal sitemap.json with one route */
 const SITEMAP_JSON_ONE_ROUTE = JSON.stringify({
-  $schema: "https://design-os.dev/schemas/sitemap.v1.json",
+  $schema: "https://complete-design.dev/schemas/sitemap.v1.json",
   artifact: "sitemap",
   stage: "2",
   schemaVersion: 1,
@@ -61,7 +61,7 @@ const SITEMAP_JSON_ONE_ROUTE = JSON.stringify({
 
 /** A sitemap.json with two routes (for coverage-gap test) */
 const SITEMAP_JSON_TWO_ROUTES = JSON.stringify({
-  $schema: "https://design-os.dev/schemas/sitemap.v1.json",
+  $schema: "https://complete-design.dev/schemas/sitemap.v1.json",
   artifact: "sitemap",
   stage: "2",
   schemaVersion: 1,

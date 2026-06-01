@@ -30,7 +30,7 @@ A Shape Up pitch accompanies the fat-marker sketch with:
 A wireframe that doesn't answer "what happens when there are 0 results?" leaves a rabbit
 hole. The sketch-stage discipline is to name these as no-gos or skeleton placeholders.
 
-## Application to design-os Stage 3
+## Application to complete-design Stage 3
 
 Fat-marker sketches map directly to Stage 3 lo-fi wireframes:
 - The Excalidraw hand-drawn style achieves the "fat marker" communication signal

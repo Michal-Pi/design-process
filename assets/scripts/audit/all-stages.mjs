@@ -134,7 +134,7 @@ function routePathToScreenName(routePath) {
  * @returns {Promise<string>} - Path to the scoped staging directory
  */
 async function buildScopedDesignDir(resolvedDesignDir, node, fullSitemap) {
-  const scopedDir = await mkdtemp(join(tmpdir(), 'design-os-scope-'));
+  const scopedDir = await mkdtemp(join(tmpdir(), 'complete-design-scope-'));
 
   // ── ia/sitemap.json — scoped to the single matched route ──────────────────
   const scopedSitemap = {
@@ -402,7 +402,7 @@ export async function runAuditAllStages({ designDir, featureName, outputPath }) 
         `generated: "${generated}"`,
         `sourceHash: "sha256:${hash}"`,
         `provenance: generated`,
-        `owner: "design-os/audit"`,
+        `owner: "complete-design/audit"`,
         `lastReviewedAt: "${generated}"`,
         frontmatterFindings,
       ];
@@ -431,7 +431,7 @@ export async function runAuditAllStages({ designDir, featureName, outputPath }) 
         generated,
         sourceHash: `sha256:${hash}`,
         provenance: 'generated',
-        owner: 'design-os/audit',
+        owner: 'complete-design/audit',
         lastReviewedAt: generated,
         findings: sortedFindings.map(f => ({
           findingId: f.findingId,

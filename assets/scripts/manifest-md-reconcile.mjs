@@ -93,12 +93,12 @@ function hashObject(obj) {
 export async function reconcileManifest({ designDir }) {
   const absDir = resolve(designDir);
 
-  // Discover all .md and .json files (exclude .design-os/, .handoff/, node_modules/)
+  // Discover all .md and .json files (exclude .complete-design/, .handoff/, node_modules/)
   const files = await globby(["**/*.{md,json}"], {
     cwd: absDir,
     absolute: true,
     ignore: [
-      ".design-os/**",
+      ".complete-design/**",
       ".handoff/**",
       "node_modules/**",
       "MANIFEST.md",
@@ -197,7 +197,7 @@ export async function reconcileManifest({ designDir }) {
     sourceHash,
     generated: RECONCILE_TIMESTAMP,
     provenance: "validated",
-    owner: "design-os-reconciler",
+    owner: "complete-design-reconciler",
     lastReviewedAt: RECONCILE_TIMESTAMP,
     entries: manifestEntries,
   };

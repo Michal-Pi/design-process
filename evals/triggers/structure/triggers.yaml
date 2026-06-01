@@ -1,9 +1,9 @@
 # evals/triggers/structure/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/structure' skill.
+# Per-skill trigger eval corpus for the 'complete-design/structure' skill.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/structure
+skill: complete-design/structure
 description: >
   Structure IA: create sitemap variants, generate user flows from JTBD,
   validate Stage 2 structural gate.

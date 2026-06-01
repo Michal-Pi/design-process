@@ -1,11 +1,11 @@
 # The Elements of User Experience — Jesse James Garrett
 
-<!-- design-os reference: garrett-elements -->
+<!-- complete-design reference: garrett-elements -->
 
 ## Purpose
 
 Garrett's 5-plane model (Strategy → Scope → Structure → Skeleton → Surface) is the primary
-structural spine of the design-os workflow. The 5 design stages map directly to the 5 planes.
+structural spine of the complete-design workflow. The 5 design stages map directly to the 5 planes.
 
 ## Citations
 
@@ -24,7 +24,7 @@ structural spine of the design-os workflow. The 5 design stages map directly to 
 - §3.2, p.45: "Each of these planes is dependent on the planes below it." Non-negotiable sequencing
   is central to the Garrett model.
 
-## How design-os uses it
+## How complete-design uses it
 
 - SPINE-01: `stage:` frontmatter field maps artifacts to Garrett planes 1:1.
 - Gate runners enforce forward-only promotion (no skipping planes).

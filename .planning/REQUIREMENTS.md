@@ -1,4 +1,4 @@
-# Requirements: design-os
+# Requirements: complete-design
 
 **Defined:** 2026-05-24
 **Core Value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
@@ -27,17 +27,17 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 ### `design/` Directory & Artifacts
 
 - [x] **ART-01**: `design/` directory is the user-facing cross-stage artifact substrate, committed to git
-- [x] **ART-02**: Per-file commit policy implemented (canonical summaries committed; rejected wireframes, raw transcripts, `.design-os/private/` gitignored)
+- [x] **ART-02**: Per-file commit policy implemented (canonical summaries committed; rejected wireframes, raw transcripts, `.complete-design/private/` gitignored)
 - [x] **ART-03**: Per-artifact YAML frontmatter (`artifact`, `stage`, `generated`, `schemaVersion`, `sourceHash`, `provenance`, `owner`, `lastReviewedAt`)
 - [x] **ART-04**: `.gitattributes` declares `design/*.json merge=ours` to bound merge-conflict pain
-- [x] **ART-05**: PII scanner (`design-os scan --pii`) runs pre-commit and rejects transcripts/PII in committed paths
-- [x] **ART-06**: `.design-os/` package-internal state (manifest.lock hash chain, manual-overrides.json, preview run state, gitignored private logs/screenshots) per v1.0.1 commit policy
+- [x] **ART-05**: PII scanner (`complete-design scan --pii`) runs pre-commit and rejects transcripts/PII in committed paths
+- [x] **ART-06**: `.complete-design/` package-internal state (manifest.lock hash chain, manual-overrides.json, preview run state, gitignored private logs/screenshots) per v1.0.1 commit policy
 - [x] **ART-07**: MANIFEST.md auto-maintained: links every artifact to its stage + downstream dependents
 
 ### Stage Validation Gates
 
 - [x] **GATE-01**: Six stage gates implemented as deterministic Node ESM checklists: `gate/stage-1-complete`, `gate/stage-2-complete`, `gate/stage-3-complete`, `gate/stage-4-complete`, `gate/stage-5a-complete`, `gate/stage-5b-complete`
-- [x] **GATE-02**: Each gate returns `(terminal-state, evidence-grade)` tuple persisted in `.design-os/manifest.lock`
+- [x] **GATE-02**: Each gate returns `(terminal-state, evidence-grade)` tuple persisted in `.complete-design/manifest.lock`
 - [x] **GATE-03**: Four terminal states supported: PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN
 - [x] **GATE-04**: Four evidence grades supported: VALIDATED / PROTO / INFERRED / MISSING
 - [x] **GATE-05**: `USER_OVERRIDDEN` requires `--override-reason` flag and propagates a visible banner to every downstream artifact
@@ -71,7 +71,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [ ] **WF-04**: `sketch` (Stage 3) — Crazy 8s with structural-diversity enforcement; Sprint Decider for convergence; Excalidraw JSON output; `gate/stage-3-complete` enforced
 - [x] **WF-05**: `interact` (Stage 4) — state catalogs, pattern variants with tradeoffs, XState v5 (only when async + ≥3 states + conditional), Mermaid stateDiagram-v2 (designer-readable), HAX-18 audit for AI products; `gate/stage-4-complete` enforced
 - [x] **WF-06**: `style` (Stage 5a) — preview-first variant exploration preserved from v1.0.1; 3 visual variants with 6-axis distance metric; `gate/stage-5a-complete` enforced (in v2.0b; lite mode in v2.0a)
-- [x] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.design-os`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
+- [x] **WF-07**: `systematize` (Stage 5b) — promote-to-system rule, DTCG v2025.10 token emit, Google DESIGN.md emit with `$extensions.complete-design`, Storybook stories; `gate/stage-5b-complete` enforced (in v2.0b; lite mode in v2.0a)
 - [x] **WF-08**: `audit` (cross-stage) — modes: `--stage N`, `--all-stages`, `--pr`, `--slop-tells`, `--new-feature`, `--reverse-engineer-stages`
 - [x] **WF-09**: Every workflow supports `--depth lightweight|standard|full`
 
@@ -119,7 +119,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 - [x] **FORMAT-03**: Wireframes = Excalidraw JSON (pinned schema version; never `latest`)
 - [x] **FORMAT-04**: Interaction specs = Markdown + XState v5 machine (when applicable); motion tokens DTCG-compatible
 - [x] **FORMAT-05**: Tokens = W3C DTCG v2025.10 (`application/design-tokens+json`, primitive→semantic→component tiers)
-- [x] **FORMAT-06**: DESIGN.md emit per Google spec (April 2026, Apache-2.0); `$extensions.design-os` namespace for design-os-specific data
+- [x] **FORMAT-06**: DESIGN.md emit per Google spec (April 2026, Apache-2.0); `$extensions.complete-design` namespace for complete-design-specific data
 - [x] **FORMAT-07**: `design-md-validate.mjs` supports schema version pinning to survive Google spec drift
 
 ### References Corpus
@@ -133,7 +133,7 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [x] **PREV-01**: Preview harness preserved from v1.0.1 — port manager, security sandbox, Playwright 1.60 readiness probe, headless screenshot capture
 - [x] **PREV-02**: Adapter scaffolds for Vite 6 / Next 15 (App Router only) / Astro 5 user repos
-- [x] **PREV-03**: Determinism CI gate (`design-os verify --golden`) — 5× byte-identical script output on a fixed input set *(Plan 03)*
+- [x] **PREV-03**: Determinism CI gate (`complete-design verify --golden`) — 5× byte-identical script output on a fixed input set *(Plan 03)*
 - [x] **PREV-04**: CI linter rejects LLM-client imports inside `assets/scripts/` (operationalizing "LLM picks, scripts emit") *(Plan 03)*
 - [x] **PREV-05**: Variant-distance metric — visual-style 6-axis for Stage 5a (preserved from v1.0.1); separate structural-diversity metric for Stage 3 wireframes
 
@@ -149,8 +149,8 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 - [x] **TRIG-01**: Per-skill `skillgrade`-style eval suite — ≥10 should-fire prompts + ≥10 should-not-fire prompts × 3 trials *(Plan 03)*
 - [x] **TRIG-02**: Per-skill trigger recall ≥0.85 in CI; false-trigger rate ≤0.15 in CI *(Plan 03 — Phase 1 baseline below threshold; real dispatch in Plan 05)*
-- [ ] **TRIG-03**: Aggregate coexistence eval — trigger recall ≥0.80 when 5+ other popular Claude Code skill packages are installed alongside design-os
-- [x] **TRIG-04**: Contingency lever defined — split into `design-os-core` + `design-os-atoms` if Codex cap pressure rises *(Plan 03 — docs/CONTINGENCY-TRIG-04.md)*
+- [ ] **TRIG-03**: Aggregate coexistence eval — trigger recall ≥0.80 when 5+ other popular Claude Code skill packages are installed alongside complete-design
+- [x] **TRIG-04**: Contingency lever defined — split into `complete-design-core` + `complete-design-atoms` if Codex cap pressure rises *(Plan 03 — docs/CONTINGENCY-TRIG-04.md)*
 
 ### Audit Verb (Cross-Stage)
 
@@ -165,15 +165,15 @@ v1 = the v2.0 GA release (per MRD §10). Split into the v1.5-infra → v2.0a-ske
 
 ### Persistence Split
 
-- [x] **PERSIST-01**: `design/` for artifacts (committed, designer-readable, AI-readable) vs `.design-os/` (package state, selectively committed)
+- [x] **PERSIST-01**: `design/` for artifacts (committed, designer-readable, AI-readable) vs `.complete-design/` (package state, selectively committed)
 - [x] **PERSIST-02**: Decision log + hash chain + manual-override capture preserved from v1.0.1
-- [x] **PERSIST-03**: Schema-migration tooling (`design-os migrate`) accompanies every schema bump from v1.5
+- [x] **PERSIST-03**: Schema-migration tooling (`complete-design migrate`) accompanies every schema bump from v1.5
 - [x] **PERSIST-04**: Recovery semantics — deleting `design/research/` triggers a confirm-before-regenerate prompt
 
 ### Polyglot Adapters
 
 - [x] **ADAPT-01**: Output adapters: Tailwind v4 / shadcn / plain CSS / Style Dictionary in core
-- [ ] **ADAPT-02**: Material Web / Vue / Svelte output adapters via `design-os-bridges` (v2.1+)
+- [ ] **ADAPT-02**: Material Web / Vue / Svelte output adapters via `complete-design-bridges` (v2.1+)
 - [x] **ADAPT-03**: Input adapters: Markdown PRD, paste-text, interview mode in core
 - [ ] **ADAPT-04**: Tokens Studio Figma export ingestion (v2.1)
 - [ ] **ADAPT-05**: Optimal Workshop tree-test CSV ingestion (v2.1)
@@ -266,9 +266,9 @@ Deferred to v2.1 / v2.2 per MRD §10 and §13. Tracked but not in the current ro
 
 ### Polyglot Output Adapters (v2.1)
 
-- **POLY-05**: Material Web adapter via `design-os-bridges`
-- **POLY-06**: Vue adapter via `design-os-bridges`
-- **POLY-07**: Svelte adapter via `design-os-bridges`
+- **POLY-05**: Material Web adapter via `complete-design-bridges`
+- **POLY-06**: Vue adapter via `complete-design-bridges`
+- **POLY-07**: Svelte adapter via `complete-design-bridges`
 
 ### Voice + Transcript Ingestion (v2.2)
 
@@ -300,7 +300,7 @@ Explicit exclusions. Documented to prevent scope creep.
 
 | Feature | Reason |
 |---------|--------|
-| Prompt → fully-shipped UI from scratch | Lovable / v0 / Bolt own this; design-os positioned as complementary, not competitive |
+| Prompt → fully-shipped UI from scratch | Lovable / v0 / Bolt own this; complete-design positioned as complementary, not competitive |
 | Visual canvas editing | Subframe / Figma Make own this |
 | Hosting / deploy | Orthogonal; user owns runtime |
 | Authoring the DESIGN.md spec | Google owns; we adopt and emit |
@@ -315,7 +315,7 @@ Explicit exclusions. Documented to prevent scope creep.
 | WCAG conformance claims | Frontend Masters critique; we report measured contrast only |
 | Auto-publishing to git tree | Designer gatekeeper-bypass fear; `--apply` always required |
 | Vector DB / knowledge graph for `references/` | MRD §3.10 forbids; would break determinism + zero-infra |
-| React / Next / Vue / Svelte inside the package itself | design-os is Markdown + Node ESM only; frameworks are emit targets, not dependencies |
+| React / Next / Vue / Svelte inside the package itself | complete-design is Markdown + Node ESM only; frameworks are emit targets, not dependencies |
 
 ## Traceability
 

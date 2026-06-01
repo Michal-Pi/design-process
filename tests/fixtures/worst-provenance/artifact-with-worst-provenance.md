@@ -2,7 +2,7 @@
 artifact: findings
 stage: 1
 generated: "2026-05-25T00:00:00.000Z"
-owner: design-os/test
+owner: complete-design/test
 lastReviewedAt: "2026-05-25T00:00:00.000Z"
 sourceHash: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
 worstProvenance: generated

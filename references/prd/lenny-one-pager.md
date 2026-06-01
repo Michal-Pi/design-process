@@ -1,6 +1,6 @@
 # Lenny's One-Pager PRD Format
 
-<!-- design-os reference: prd/lenny-one-pager -->
+<!-- complete-design reference: prd/lenny-one-pager -->
 
 ## Purpose
 
@@ -15,7 +15,7 @@ this template. The format is intentionally concise (single page) to minimize tok
 - Section structure: Problem, Why now, Who, What (not how), Metrics, Constraints, Open questions.
   Design-os PRD.md uses this as the minimal required scaffold (7 sections).
 - "The best PRD fits on one page." — token budget principle: Stage 0 PRD should be ≤2k tokens
-  (design-os enforces ≤3k tokens for full PRD.md).
+  (complete-design enforces ≤3k tokens for full PRD.md).
 - Problem section: one sentence describing the user's struggle + the consequence if unsolved.
   Maps to JTBD struggling moment (Klement §Ch.3, p.51).
 - Metrics section: ≤3 north-star metrics. Each metric must be measurable and time-bound.
@@ -23,9 +23,9 @@ this template. The format is intentionally concise (single page) to minimize tok
 - "Open questions are the most valuable section of the PRD" — unresolved questions drive
   Stage 1 research agenda; they appear as `openQuestions` in persona JSON.
 
-## How design-os uses it
+## How complete-design uses it
 
-- Stage 0 (Strategy): if no PRD exists, `design-os design --route new-product` launches
+- Stage 0 (Strategy): if no PRD exists, `complete-design design --route new-product` launches
   interview mode using this template as the question guide.
 - PRD.md schema: 7 required sections validated by `frontmatter-validate.mjs`.
 - Gate-0 checklist (Phase 2): Problem + Metrics sections required for gate PASS.

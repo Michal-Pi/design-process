@@ -1,6 +1,6 @@
 // schemas/src/audit-report.ts
 // Zod source for AUDIT-REPORT.md with findings, severity, evidence, fix recipe, suppression.
-// Source: CONTEXT.md D-01; design-os-mrd-v2.md §3.22; GATE-01..07.
+// Source: CONTEXT.md D-01; complete-design-mrd-v2.md §3.22; GATE-01..07.
 // Implements: SCHEMA-05, ART-03
 
 import { z } from "zod";
@@ -55,7 +55,7 @@ const Finding = z.object({
 /**
  * AuditReport v1 schema.
  * Extends FrontmatterCommon with a list of findings.
- * $id: https://design-os.dev/schemas/audit-report.v1.json
+ * $id: https://complete-design.dev/schemas/audit-report.v1.json
  */
 export const AuditReportV1 = FrontmatterCommon.extend({
   artifact: z.literal("audit-report"),
@@ -69,7 +69,7 @@ export const AuditReportV1 = FrontmatterCommon.extend({
   /** All findings identified in this audit run. */
   findings: z.array(Finding),
 }).meta({
-  $id: "https://design-os.dev/schemas/audit-report.v1.json",
+  $id: "https://complete-design.dev/schemas/audit-report.v1.json",
   title: "Audit Report (cross-stage)",
   description:
     "AUDIT-REPORT.md with findingId, severity, evidence pointer, fix recipe, and suppression option",

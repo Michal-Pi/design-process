@@ -1,7 +1,7 @@
 // assets/scripts/cli/validate.mjs
-// CLI subcommand: design-os validate --artifact <name> --file <path>
+// CLI subcommand: complete-design validate --artifact <name> --file <path>
 // Source: PLAN.md Task 2 action block; D-03 structured error on exit 1.
-// Auto-discovered by bin/design-os.mjs.
+// Auto-discovered by bin/complete-design.mjs.
 
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";

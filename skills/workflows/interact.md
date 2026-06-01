@@ -1,5 +1,5 @@
 ---
-name: "design-os/interact"
+name: "complete-design/interact"
 description: "Stage 4: Enumerate loading/empty/error/success states per screen, map interaction patterns (Tidwell/APG), emit Mermaid stateDiagram-v2 + conditional XState v5."
 type: workflow
 stage: 4
@@ -14,12 +14,12 @@ allows-tools:
 artifacts:
   reads:
     - design/ia/sitemap.json
-    - .design-os/preview/<run-id>/stage-3-bundle.md
+    - .complete-design/preview/<run-id>/stage-3-bundle.md
     - design/wireframes/*/CHOICE.md
   writes:
-    - .design-os/preview/<run-id>/interactions/<screen>.spec.md
-    - .design-os/preview/<run-id>/interactions/<screen>.diagram.mmd
-    - .design-os/preview/<run-id>/interactions/<screen>.machine.ts (conditional)
+    - .complete-design/preview/<run-id>/interactions/<screen>.spec.md
+    - .complete-design/preview/<run-id>/interactions/<screen>.diagram.mmd
+    - .complete-design/preview/<run-id>/interactions/<screen>.machine.ts (conditional)
 references:
   - "@${CLAUDE_SKILL_DIR}/references/saffer-microinteractions.md"
   - "@${CLAUDE_SKILL_DIR}/references/tidwell-patterns.md"
@@ -50,28 +50,28 @@ Do not enumerate more than 8 states per screen; add a `custom` type for screen-s
 
 1. **Read Stage 3 handoff bundle:**
    ```
-   Read .design-os/preview/<run-id>/stage-3-bundle.md
+   Read .complete-design/preview/<run-id>/stage-3-bundle.md
    ```
    Extract: screen list from sitemap, CHOICE.md selections, skeleton IR outputs.
 
 2. **For each screen in sitemap.json, run the `ixd/state-catalog` atom:**
    ```
-   Run design-os/ixd/state-catalog atom for <screen>
+   Run complete-design/ixd/state-catalog atom for <screen>
    ```
    This produces `<screen>.spec.md` with YAML frontmatter including `asyncOperations`,
    `stateCount`, `hasConditionalTransitions`, and `states[]` array with required types.
 
 3. **Map interaction patterns for each screen:**
    ```
-   Run design-os/ixd/pattern-variants atom for <screen>
+   Run complete-design/ixd/pattern-variants atom for <screen>
    ```
    Produces `<screen>-patterns.md` with 3 candidate patterns from Tidwell/APG/Material 3.
 
 4. **Emit state machine artifacts for each screen:**
    ```bash
-   node bin/design-os.mjs state-machine-emit \
-     --spec .design-os/preview/<run-id>/interactions/<screen>.spec.md \
-     --output .design-os/preview/<run-id>/interactions/ \
+   node bin/complete-design.mjs state-machine-emit \
+     --spec .complete-design/preview/<run-id>/interactions/<screen>.spec.md \
+     --output .complete-design/preview/<run-id>/interactions/ \
      --screen <screen>
    ```
    - Always produces `<screen>.diagram.mmd` (Mermaid stateDiagram-v2)
@@ -84,25 +84,25 @@ Do not enumerate more than 8 states per screen; add a `custom` type for screen-s
 
 6. **Run Stage 4 gate:**
    ```bash
-   node bin/design-os.mjs gate --stage 4 --design-dir .design-os/preview/<run-id>/
+   node bin/complete-design.mjs gate --stage 4 --design-dir .complete-design/preview/<run-id>/
    ```
    Gate checks: (a) sitemap coverage, (b) loading/empty/error/success states present,
    (c) no open transitions. Fix any BLOCKER findings before proceeding.
 
 7. **Build Stage 4→5a handoff bundle:**
    ```bash
-   node bin/design-os.mjs handoff-bundle --from 4 --to 5a --staged .design-os/preview/<run-id>/
+   node bin/complete-design.mjs handoff-bundle --from 4 --to 5a --staged .complete-design/preview/<run-id>/
    ```
 
 8. **Surface diff and await `--apply`:**
    ```bash
-   node bin/design-os.mjs diff --staged .design-os/preview/<run-id>/
+   node bin/complete-design.mjs diff --staged .complete-design/preview/<run-id>/
    ```
    Present the diff to the user. Wait for explicit `--apply` confirmation before writing to `design/`.
 
 ## INVARIANTS
 
-- **INVARIANT-01:** Gate runs against `.design-os/preview/<run-id>/` — never against `design/` directly.
+- **INVARIANT-01:** Gate runs against `.complete-design/preview/<run-id>/` — never against `design/` directly.
 - **INVARIANT-02:** `--apply` is required; never auto-write to `design/`.
 - **INVARIANT-05:** No LLM calls inside `assets/scripts/`. Only the SKILL.md workflow body makes LLM choices.
 

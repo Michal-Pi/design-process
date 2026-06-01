@@ -1,5 +1,5 @@
 ---
-name: "design-os/ixd/pattern-variants"
+name: "complete-design/ixd/pattern-variants"
 description: "Stage 4 atom: identify 3 candidate interaction patterns from Tidwell/APG/Material 3 with tradeoffs table and accessibility notes per screen."
 type: atom
 stage: 4
@@ -25,7 +25,7 @@ and document them with a tradeoffs table and accessibility notes.
 
 Given a screen name and its `<screen>.spec.md`:
 
-1. **Read the screen's state catalog** from `.design-os/preview/<run-id>/interactions/<screen>.spec.md`.
+1. **Read the screen's state catalog** from `.complete-design/preview/<run-id>/interactions/<screen>.spec.md`.
    Identify the primary interaction type (form, list, data grid, navigation, dialog, etc.).
 
 2. **Select 3 candidate patterns** from these canonical sources:
@@ -43,7 +43,7 @@ Given a screen name and its `<screen>.spec.md`:
    - Accessibility note from APG (ARIA roles, keyboard interactions, focus management)
    - Fit score for this screen (high/medium/low)
 
-4. **Emit `<screen>-patterns.md`** to `.design-os/preview/<run-id>/interactions/<screen>-patterns.md`
+4. **Emit `<screen>-patterns.md`** to `.complete-design/preview/<run-id>/interactions/<screen>-patterns.md`
 
 ## Output Format
 

@@ -1,5 +1,5 @@
 // assets/scripts/cli/promote-inferred.mjs
-// CLI: design-os promote-inferred — validates + moves design/inferred/<X> → design/<X>
+// CLI: complete-design promote-inferred — validates + moves design/inferred/<X> → design/<X>
 //
 // Blocks if:
 //   - frontmatter contains provenance:'inferred'
@@ -135,7 +135,7 @@ export async function promoteInferredFile({ filePath, designDir }) {
     const { appendManifestLockEntry } = await import(
       "../manifest-lock-append.mjs"
     );
-    const designOsDir = join(absDesignDir, "..", ".design-os");
+    const designOsDir = join(absDesignDir, "..", ".complete-design");
     await appendManifestLockEntry(designOsDir, {
       stage: "promote-inferred",
       gate: "promote-inferred",
@@ -180,7 +180,7 @@ async function collectAllFiles(dir) {
   return files;
 }
 
-/** CLI module descriptor for auto-discovery by bin/design-os.mjs. */
+/** CLI module descriptor for auto-discovery by bin/complete-design.mjs. */
 export const command = {
   name: "promote-inferred",
   describe:
@@ -216,8 +216,8 @@ export const command = {
     if (!filePath && !allMode) {
       console.error(
         "Error: specify --file <path> or --all\n" +
-          "  design-os promote-inferred --file design/inferred/research/personas/persona.md\n" +
-          "  design-os promote-inferred --all"
+          "  complete-design promote-inferred --file design/inferred/research/personas/persona.md\n" +
+          "  complete-design promote-inferred --all"
       );
       process.exit(1);
     }

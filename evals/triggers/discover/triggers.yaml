@@ -1,9 +1,9 @@
 # evals/triggers/discover/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/discover' skill.
+# Per-skill trigger eval corpus for the 'complete-design/discover' skill.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/discover
+skill: complete-design/discover
 description: >
   Design research: generate proto-personas, synthesize job stories and OST
   from PRD, run Stage 1 provenance gate.

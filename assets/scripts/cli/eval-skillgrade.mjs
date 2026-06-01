@@ -1,13 +1,13 @@
 // assets/scripts/cli/eval-skillgrade.mjs
-// CLI subcommand: design-os eval skillgrade --skill <name> --triggers <path>
-// Auto-discovered by bin/design-os.mjs dispatcher (Plan 01 contract).
-// Plan 03 does NOT modify bin/design-os.mjs.
+// CLI subcommand: complete-design eval skillgrade --skill <name> --triggers <path>
+// Auto-discovered by bin/complete-design.mjs dispatcher (Plan 01 contract).
+// Plan 03 does NOT modify bin/complete-design.mjs.
 //
 // Note: whitespace in `name` ('eval skillgrade') triggers the nested-group
-// registration in bin/design-os.mjs: first segment = parent command 'eval',
-// remaining = subcommand 'skillgrade'. Results in: design-os eval skillgrade ...
+// registration in bin/complete-design.mjs: first segment = parent command 'eval',
+// remaining = subcommand 'skillgrade'. Results in: complete-design eval skillgrade ...
 //
-// Source: PLAN.md Task 2 action; bin/design-os.mjs dispatcher contract
+// Source: PLAN.md Task 2 action; bin/complete-design.mjs dispatcher contract
 // Implements: TRIG-01, TRIG-02 (CLI entry point for per-skill trigger eval)
 
 /**

@@ -1,9 +1,9 @@
 // assets/scripts/cli/handoff-bundle.mjs
 // Auto-discovered CLI subcommand for the 'handoff-bundle' command.
-// Registered by bin/design-os.mjs's auto-discovery dispatcher.
+// Registered by bin/complete-design.mjs's auto-discovery dispatcher.
 //
 // Usage:
-//   tsx bin/design-os.mjs handoff-bundle --from 1 --to 2 --design-dir <path> --body-file <path>
+//   tsx bin/complete-design.mjs handoff-bundle --from 1 --to 2 --design-dir <path> --body-file <path>
 //
 // Source: CONTEXT.md D-05, D-06, D-07; PLAN.md Task 2 action
 // Implements: HAND-01..03 (CLI entry point)

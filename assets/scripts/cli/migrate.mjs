@@ -1,14 +1,14 @@
 // assets/scripts/cli/migrate.mjs
-// CLI subcommand: design-os migrate
+// CLI subcommand: complete-design migrate
 //
 // Supports two routing modes:
 //
 //   Mode A (legacy integer chain — existing behavior, back-compat preserved):
-//     design-os migrate --from <int> --to <int> --path <artifact-file>
+//     complete-design migrate --from <int> --to <int> --path <artifact-file>
 //     Parses integer versions; routes to migrateArtifact() from schemas/migrate.mjs.
 //
 //   Mode B (named v2.0a→v2.0b string migration — new in Codex review fix Finding 2):
-//     design-os migrate --from 2.0a --to 2.0b [--design-dir <path>] [--apply]
+//     complete-design migrate --from 2.0a --to 2.0b [--design-dir <path>] [--apply]
 //     Detects semver-ish string format (e.g. "2.0a", "2.0b") and routes to the
 //     runV20aMigration() orchestrator from schemas/migrations/run-v2.0a-to-v2.0b.mjs.
 //     Dry-run by default — prints diff without writing. --apply writes in-place.
@@ -23,8 +23,8 @@
 //   The --path option remains optional so --design-dir mode does not conflict.
 //
 // Source: Codex review Finding 2 [P1]; PLAN.md T-03-04-B action block; CONTEXT.md D-65
-// Implements: PERSIST-03, D-65, design-os migrate --from 2.0a --to 2.0b
-// Auto-discovered by bin/design-os.mjs.
+// Implements: PERSIST-03, D-65, complete-design migrate --from 2.0a --to 2.0b
+// Auto-discovered by bin/complete-design.mjs.
 
 /**
  * Detect whether a version string looks like a semver-ish named version

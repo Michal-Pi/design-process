@@ -13,15 +13,15 @@ progress:
   percent: 86
 ---
 
-# State: design-os
+# State: complete-design
 
 **Last updated:** 2026-05-26
 
 ## Project Reference
 
-- **Project:** design-os
+- **Project:** complete-design
 - **Core value:** The 5-stage design process, operationalized as an agent-loop workflow with stage-typed artifacts in `design/` and validation gates between stages — so prototypes don't break at production scale.
-- **Current focus:** Phase 4 (v2.0 RC/GA) — Plans 00-02 complete. 04-00: npm @beta dist + design-os install CLI. 04-01: 15-fixture acceptance corpus + 3×100-case adversarial corpora. 04-02: release-gate.mjs (ACCEPT-01/05/06/COST-07/10) + axe-runner.mjs (ACCEPT-09/D-78) + CI workflow. 1349 tests (1349 passing; 1 pre-existing stage-2-latch flake).
+- **Current focus:** Phase 4 (v2.0 RC/GA) — Plans 00-02 complete. 04-00: npm @beta dist + complete-design install CLI. 04-01: 15-fixture acceptance corpus + 3×100-case adversarial corpora. 04-02: release-gate.mjs (ACCEPT-01/05/06/COST-07/10) + axe-runner.mjs (ACCEPT-09/D-78) + CI workflow. 1349 tests (1349 passing; 1 pre-existing stage-2-latch flake).
 - **Mode:** standard (Horizontal Layers — infrastructure-heavy SKILL.md package work)
 - **Granularity:** coarse (4 phases, 1-3 plans each)
 
@@ -182,7 +182,7 @@ Phase 4: [██████████] 100% code-side (6/6 plans T1 complete;
 - [Phase 04 Plan 04]: MAINTAINERS.md @TBD replaced — Michal Pilawski (@Michal-Pi, michal.pilawski@gmail.com); all 3 @TBD instances cleared
 - [Phase 04 Plan 04]: RAPID-RESPONSE.md D-79 Severity 1/2/3 triggers prepended before existing 72-hour content; Severity 1 dual-condition prevents false positives from partial overlaps (T-04-04-04 mitigation)
 - [Phase 04 Plan 04]: GTM-01 launch post draft — 1,642 words, TRUST-04 enforced (0 prohibited phrases), process framing, Garrett/Frost/Cagan intellectual heritage cited not endorsed, 1,394 test count (not stale 999)
-- [Phase 04 Plan 05]: package.json + bin/design-os.mjs version bumps NOT in plan files_modified YAML but REQUIRED per Task 2 Step 0 — included and flagged as plan deviation; both files committed in feat(04-05) version bump commit
+- [Phase 04 Plan 05]: package.json + bin/complete-design.mjs version bumps NOT in plan files_modified YAML but REQUIRED per Task 2 Step 0 — included and flagged as plan deviation; both files committed in feat(04-05) version bump commit
 - [Phase 04 Plan 05]: Sample bundles approach (a) synthetic-realistic format reference — real bundles deferred to Wave B Step 0+ (first release-gate run with CLAUDE_CODE_BIN); labeled "FORMAT REFERENCE" per P8 trust posture
 - [Phase 04 Plan 05]: TRIG-03 reported as PENDING in CHANGELOG (recall 0.71 vs 0.80 threshold) — not claimed PASS per P8 honest gate reporting
 
@@ -213,11 +213,11 @@ None yet.
 ### Last Session
 
 - **Date:** 2026-05-31
-- **Activity:** Phase 04 Plan 05 T1 execution — Wave B GA artifacts. Version bumps (package.json 2.0.0-beta.0→2.0.0, bin/design-os.mjs, SKILL.md v2.0b→v2.0 GA + cross-host parity section). Created docs/MARKETPLACE-MANIFEST.md (8 marketplaces, TRUST-04, SKILL.md vs MCP disclaimers). Created CHANGELOG.md (v2.0 GA entry, 11-gate table, TRIG-03 PENDING, ACCEPT-07/08 reviews scaffold). Filled 04-OUTREACH-PACKET.md sample bundles (approach a: 3 synthetic-realistic format references, clearly labeled, real bundles deferred to Wave B Step 0).
+- **Activity:** Phase 04 Plan 05 T1 execution — Wave B GA artifacts. Version bumps (package.json 2.0.0-beta.0→2.0.0, bin/complete-design.mjs, SKILL.md v2.0b→v2.0 GA + cross-host parity section). Created docs/MARKETPLACE-MANIFEST.md (8 marketplaces, TRUST-04, SKILL.md vs MCP disclaimers). Created CHANGELOG.md (v2.0 GA entry, 11-gate table, TRIG-03 PENDING, ACCEPT-07/08 reviews scaffold). Filled 04-OUTREACH-PACKET.md sample bundles (approach a: 3 synthetic-realistic format references, clearly labeled, real bundles deferred to Wave B Step 0).
 - **Stopped at:** T2 checkpoint — human-action (owner Wave B: npm @latest flip, anthropics PR, 8 marketplaces, launch post, outreach, reviews)
 - **Artifacts produced:**
   - `package.json` — 2.0.0-beta.0 → 2.0.0 (flagged: not in plan files_modified YAML — deviation documented)
-  - `bin/design-os.mjs` — .version("2.0.0-beta.0") → .version("2.0.0") (also not in plan files_modified — deviation documented)
+  - `bin/complete-design.mjs` — .version("2.0.0-beta.0") → .version("2.0.0") (also not in plan files_modified — deviation documented)
   - `skills/design/SKILL.md` — version v2.0b → v2.0 GA; cross-host parity section added
   - `docs/MARKETPLACE-MANIFEST.md` — NEW; 8 marketplace submission data; 0 WCAG conformance claims
   - `CHANGELOG.md` — NEW; v2.0 GA entry; TRIG-03 PENDING; ACCEPT-07/08 scaffold

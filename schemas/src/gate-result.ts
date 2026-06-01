@@ -1,6 +1,6 @@
 // schemas/src/gate-result.ts
 // Discriminated union for GateResult — 5 kinds including not_runnable (GATE-07).
-// Source: CONTEXT.md D-09; RESEARCH.md Pattern 3; design-os-mrd-v2.md §3.22.
+// Source: CONTEXT.md D-09; RESEARCH.md Pattern 3; complete-design-mrd-v2.md §3.22.
 // Implements: GATE-01..07, SCHEMA-07
 
 import { z } from "zod";

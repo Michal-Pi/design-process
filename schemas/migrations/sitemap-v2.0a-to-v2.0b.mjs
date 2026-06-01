@@ -118,7 +118,7 @@ export async function migrate(input, opts = {}) {
  *
  * @param {object} opts
  * @param {string} opts.filePath - Path to the sitemap.json file to migrate in place
- * @param {string} opts.designOsDir - Path to .design-os directory for manifest.lock
+ * @param {string} opts.designOsDir - Path to .complete-design directory for manifest.lock
  * @returns {Promise<void>}
  */
 export async function runMigrationApply({ filePath, designOsDir }) {

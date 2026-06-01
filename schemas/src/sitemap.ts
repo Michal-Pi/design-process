@@ -1,6 +1,6 @@
 // schemas/src/sitemap.ts
 // Zod source for Sitemap v1 — DTCG-style custom $type schema.
-// Source: CONTEXT.md D-01, D-02; design-os-mrd-v2.md §3.6; DTCG v2025.10.
+// Source: CONTEXT.md D-01, D-02; complete-design-mrd-v2.md §3.6; DTCG v2025.10.
 // Implements: SCHEMA-02, FORMAT-03, ART-03
 
 import { z } from "zod";
@@ -50,7 +50,7 @@ const SitemapVariant = z.object({
 /**
  * Sitemap v1 schema.
  * Extends FrontmatterCommon with DTCG-style custom $type schema.
- * $id: https://design-os.dev/schemas/sitemap.v1.json
+ * $id: https://complete-design.dev/schemas/sitemap.v1.json
  */
 export const SitemapV1 = FrontmatterCommon.extend({
   artifact: z.literal("sitemap"),
@@ -59,7 +59,7 @@ export const SitemapV1 = FrontmatterCommon.extend({
   /** One or more LATCH-diverse sitemap variants. */
   variants: z.array(SitemapVariant).min(1),
 }).meta({
-  $id: "https://design-os.dev/schemas/sitemap.v1.json",
+  $id: "https://complete-design.dev/schemas/sitemap.v1.json",
   title: "Sitemap (Stage 2)",
   description:
     "LATCH-diverse sitemap with DTCG-style custom $type organizational scheme",

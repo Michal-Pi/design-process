@@ -27,10 +27,10 @@ human_verification:
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| SC-1 | Maintainer can author against frozen versioned JSON Schemas; `design-os migrate` upgrades v0 fixture; every schema validates via ajv | VERIFIED | 6 Zod sources + 6 JSON Schemas in `schemas/dist/`; `node bin/design-os.mjs validate --artifact persona --file tests/fixtures/persona/v1-minimal.json` exits 0; `node bin/design-os.mjs validate --artifact persona --file tests/fixtures/persona/v1-invalid.json` exits 1 with structured `schemaPath`/`instancePath` errors; `node bin/design-os.mjs migrate --from 0 --to 1` produces a v1 file that validates clean |
-| SC-2 | `npm run verify:golden` sees 5× byte-identical output from every emit script; LLM-import lint rejects violations | VERIFIED (with noted caveat) | `npm run verify:golden` exits 0 with "5/5 passed" — handoff-bundle, gate-stage-5a (both states), mermaid-render, schemas-emit all PASS; `npm run lint:determinism` exits 0 "CLEAN". Caveat: `node bin/design-os.mjs verify --golden` fails with ERR_MODULE_NOT_FOUND when invoked via plain Node (no tsx loader); this is the CLI wrapper path only — CI correctly uses `npm run verify:golden` which invokes `tsx assets/scripts/verify-golden.mjs` |
+| SC-1 | Maintainer can author against frozen versioned JSON Schemas; `complete-design migrate` upgrades v0 fixture; every schema validates via ajv | VERIFIED | 6 Zod sources + 6 JSON Schemas in `schemas/dist/`; `node bin/complete-design.mjs validate --artifact persona --file tests/fixtures/persona/v1-minimal.json` exits 0; `node bin/complete-design.mjs validate --artifact persona --file tests/fixtures/persona/v1-invalid.json` exits 1 with structured `schemaPath`/`instancePath` errors; `node bin/complete-design.mjs migrate --from 0 --to 1` produces a v1 file that validates clean |
+| SC-2 | `npm run verify:golden` sees 5× byte-identical output from every emit script; LLM-import lint rejects violations | VERIFIED (with noted caveat) | `npm run verify:golden` exits 0 with "5/5 passed" — handoff-bundle, gate-stage-5a (both states), mermaid-render, schemas-emit all PASS; `npm run lint:determinism` exits 0 "CLEAN". Caveat: `node bin/complete-design.mjs verify --golden` fails with ERR_MODULE_NOT_FOUND when invoked via plain Node (no tsx loader); this is the CLI wrapper path only — CI correctly uses `npm run verify:golden` which invokes `tsx assets/scripts/verify-golden.mjs` |
 | SC-3 | Aggregate coexistence eval reports recall with 5 popular skill packages; per-skill skillgrade harness exists | VERIFIED (below-threshold baseline acceptable per plan) | `evals/coexistence/aggregate-eval.mjs` and `evals/runners/skillgrade.mjs` implemented with 9 trigger YAMLs; Phase 1 baseline: design recall=0.786 (threshold 0.85), aggregate=0.581 (threshold 0.80). Both below thresholds — expected for static-analysis fallback. CI runs `continue-on-error: true` (non-blocking) as documented in D-17 / Open Q3 decision in STATE.md. Blocking enables at v2.0 GA. `evals/coexistence/last-run.json` committed |
-| SC-4 | `design-os scan --pii` rejects transcripts with email/phone; `.gitignore`/`.gitattributes` defaults reject raw transcripts and private paths | VERIFIED | `node bin/design-os.mjs scan --pii tests/fixtures/governance/transcript-with-pii.md` exits 1 with 10 PII findings; `node bin/design-os.mjs scan --pii tests/fixtures/governance/transcript-clean.md` exits 0; `assets/templates/gitignore-design-os.txt` + `gitattributes-design-os.txt` present; `design-os init --apply` creates guarded-block .gitignore/.gitattributes (verified by 467/467 test suite) |
+| SC-4 | `complete-design scan --pii` rejects transcripts with email/phone; `.gitignore`/`.gitattributes` defaults reject raw transcripts and private paths | VERIFIED | `node bin/complete-design.mjs scan --pii tests/fixtures/governance/transcript-with-pii.md` exits 1 with 10 PII findings; `node bin/complete-design.mjs scan --pii tests/fixtures/governance/transcript-clean.md` exits 0; `assets/templates/gitignore-complete-design.txt` + `gitattributes-complete-design.txt` present; `complete-design init --apply` creates guarded-block .gitignore/.gitattributes (verified by 467/467 test suite) |
 | SC-5 | Anthropic-Labs watcher daily cron live; host-compatibility matrix CI shows Claude Code scaffolded; MAINTAINERS.md named | VERIFIED | `.github/workflows/anthropic-watcher.yml` + `anthropic-watcher-heartbeat.yml` committed; `.github/workflows/host-matrix.yml` with 3-host matrix (claude-code, codex-cli, cursor); `docs/MAINTAINERS.md` exists with `@TBD` placeholder (intentional; documented STATE.md todo for pre-GA fill-in) |
 
 **Score:** 5/5 success criteria verified
@@ -52,13 +52,13 @@ human_verification:
 | `assets/scripts/lint-determinism.mjs` | LLM-import architecture lint | VERIFIED | `npm run lint:determinism` exits 0 CLEAN |
 | `assets/scripts/pii-scan.mjs` | PII scanner with email/phone/SSN/CC/transcript-header detection | VERIFIED | CLI exits 1 on PII transcript, exits 0 on clean transcript |
 | `assets/scripts/routing/registry.mjs` | 7-route registry | VERIFIED | Registry exports 7 routes (4 implemented-stub, 3 not-yet-implemented) |
-| `assets/scripts/routing/dispatch.mjs` | ROUTE-08 dispatcher (no silent all-5-stages default) | VERIFIED | `design-os design` with no --route exits 0 with route-suggestion prompt |
+| `assets/scripts/routing/dispatch.mjs` | ROUTE-08 dispatcher (no silent all-5-stages default) | VERIFIED | `complete-design design` with no --route exits 0 with route-suggestion prompt |
 | `references/garrett-elements.md` | 12 mandatory MVPA-06 references | VERIFIED | All 12 reference files present including `references/prd/lenny-one-pager.md` |
 | `references/gates/stage-1.md` | 4 v1.5 gate checklists (stage-1, 2, 5a, 5b) | VERIFIED | 4 gate checklists present; stage-3.md + stage-4.md intentionally absent (Phase 3) |
 | `skills/design/SKILL.md` | 3 SKILL.md skeletons with trust-posture-clean descriptions | VERIFIED | `skills/design/SKILL.md`, `skills/audit/SKILL.md`, `skills/handoff/SKILL.md` all present |
 | `.github/workflows/verify-golden.yml` | 5 CI workflows (determinism, lint, migration-guard, host-matrix, coexistence) | VERIFIED | All 7 CI workflows committed (including 2 watcher workflows) |
 | `docs/TRUST-POSTURE.md` | Trust posture documentation (TRUST-01..05 binding) | VERIFIED | File exists with trust posture coverage |
-| `bin/design-os.mjs` | Auto-discovery CLI dispatcher | VERIFIED | Dispatcher globs cli/*.mjs at startup; all 20 subcommands registered |
+| `bin/complete-design.mjs` | Auto-discovery CLI dispatcher | VERIFIED | Dispatcher globs cli/*.mjs at startup; all 20 subcommands registered |
 | `evals/hosts/claude-code/` | 3 host-profile vitest workspaces | VERIFIED | claude-code, codex-cli, cursor workspaces each have package.json + vitest.config.ts + host-profile.test.ts |
 
 ### Key Link Verification
@@ -67,10 +67,10 @@ human_verification:
 |------|----|-----|--------|---------|
 | `assets/scripts/schemas/emit.mjs` | `schemas/src/*.ts` | Dynamic tsx import | VERIFIED | emit.mjs imports `import("../../../schemas/src/persona.ts")` et al.; works via tsx loader (npm script) |
 | `assets/scripts/frontmatter-validate.mjs` | `schemas/dist/index.json` | Discovery manifest read | VERIFIED | Tests confirm strict vs lenient mode routing |
-| `bin/design-os.mjs` | `assets/scripts/cli/*.mjs` | Commander auto-discovery via globby | VERIFIED | All 20 CLI subcommands registered at startup |
-| `assets/scripts/gates/stage-5a.mjs` | `GateResult not_runnable` | Hardcoded for empty interactions/ | VERIFIED | `node bin/design-os.mjs gate --stage 5a --design-dir empty-interactions` returns `{kind: "not_runnable"}` |
-| `assets/scripts/verify-golden.mjs` | `assets/scripts/schemas/emit.mjs` | Dynamic import + tsx loader | VERIFIED (npm path only) | Works via `npm run verify:golden` (tsx loader); CLI path `node bin/design-os.mjs verify --golden` fails without tsx loader |
-| `assets/scripts/pii-scan.mjs` | Pre-commit hook | `install-hooks.mjs` | VERIFIED | `design-os install-hooks --apply` installs hook; `tools/install-hooks.sh` present |
+| `bin/complete-design.mjs` | `assets/scripts/cli/*.mjs` | Commander auto-discovery via globby | VERIFIED | All 20 CLI subcommands registered at startup |
+| `assets/scripts/gates/stage-5a.mjs` | `GateResult not_runnable` | Hardcoded for empty interactions/ | VERIFIED | `node bin/complete-design.mjs gate --stage 5a --design-dir empty-interactions` returns `{kind: "not_runnable"}` |
+| `assets/scripts/verify-golden.mjs` | `assets/scripts/schemas/emit.mjs` | Dynamic import + tsx loader | VERIFIED (npm path only) | Works via `npm run verify:golden` (tsx loader); CLI path `node bin/complete-design.mjs verify --golden` fails without tsx loader |
+| `assets/scripts/pii-scan.mjs` | Pre-commit hook | `install-hooks.mjs` | VERIFIED | `complete-design install-hooks --apply` installs hook; `tools/install-hooks.sh` present |
 
 ### Data-Flow Trace (Level 4)
 
@@ -80,17 +80,17 @@ Not applicable for this phase — Phase 1 delivers infrastructure scripts and sc
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| CLI help shows all subcommands | `node bin/design-os.mjs --help` | 20 commands listed | PASS |
-| Valid persona validates clean | `node bin/design-os.mjs validate --artifact persona --file tests/fixtures/persona/v1-minimal.json` | Exit 0, "OK" | PASS |
-| Invalid persona rejected with structured error | `node bin/design-os.mjs validate --artifact persona --file tests/fixtures/persona/v1-invalid.json` | Exit 1, `schemaPath`/`instancePath`/`message` in stderr | PASS |
-| Migration pipeline end-to-end | `node bin/design-os.mjs migrate --from 0 --to 1 --path tests/fixtures/persona/v0-minimal.json` then validate | Exit 0 both steps | PASS |
-| Stage-5a gate returns not_runnable | `node bin/design-os.mjs gate --stage 5a --design-dir tests/fixtures/design-dirs/empty-interactions` | `{kind:"not_runnable", reason:"stage-4-artifacts-absent"}` | PASS |
-| ROUTE-08 no --route exits 0 with prompt | `node bin/design-os.mjs design` | Exits 0 with route suggestions | PASS |
-| PII scanner detects violations | `node bin/design-os.mjs scan --pii tests/fixtures/governance/transcript-with-pii.md` | Exit 1, 10 PII findings | PASS |
-| PII scanner clean passes | `node bin/design-os.mjs scan --pii tests/fixtures/governance/transcript-clean.md` | Exit 0 | PASS |
+| CLI help shows all subcommands | `node bin/complete-design.mjs --help` | 20 commands listed | PASS |
+| Valid persona validates clean | `node bin/complete-design.mjs validate --artifact persona --file tests/fixtures/persona/v1-minimal.json` | Exit 0, "OK" | PASS |
+| Invalid persona rejected with structured error | `node bin/complete-design.mjs validate --artifact persona --file tests/fixtures/persona/v1-invalid.json` | Exit 1, `schemaPath`/`instancePath`/`message` in stderr | PASS |
+| Migration pipeline end-to-end | `node bin/complete-design.mjs migrate --from 0 --to 1 --path tests/fixtures/persona/v0-minimal.json` then validate | Exit 0 both steps | PASS |
+| Stage-5a gate returns not_runnable | `node bin/complete-design.mjs gate --stage 5a --design-dir tests/fixtures/design-dirs/empty-interactions` | `{kind:"not_runnable", reason:"stage-4-artifacts-absent"}` | PASS |
+| ROUTE-08 no --route exits 0 with prompt | `node bin/complete-design.mjs design` | Exits 0 with route suggestions | PASS |
+| PII scanner detects violations | `node bin/complete-design.mjs scan --pii tests/fixtures/governance/transcript-with-pii.md` | Exit 1, 10 PII findings | PASS |
+| PII scanner clean passes | `node bin/complete-design.mjs scan --pii tests/fixtures/governance/transcript-clean.md` | Exit 0 | PASS |
 | Determinism gate via npm script | `npm run verify:golden` | "5/5 passed", exit 0 | PASS |
 | LLM-import architecture lint | `npm run lint:determinism` | "lint-determinism: CLEAN", exit 0 | PASS |
-| CLI verify --golden via plain node | `node bin/design-os.mjs verify --golden` | FAILS with ERR_MODULE_NOT_FOUND | WARNING (see concerns) |
+| CLI verify --golden via plain node | `node bin/complete-design.mjs verify --golden` | FAILS with ERR_MODULE_NOT_FOUND | WARNING (see concerns) |
 
 ### Probe Execution
 
@@ -110,7 +110,7 @@ Phase 1 claimed requirements (from ROADMAP.md Phase 1 `Requirements:` section):
 | PREV-01..05 | SATISFIED | port-manager, security-sandbox (no vm2), playwright-runner, Vite/Next/Astro adapters, variant-distance 6-axis + stage-3 stub |
 | TRUST-01..05 | SATISFIED | TRUST-POSTURE.md, COPY-REVIEW-CHECKLIST.md, SKILL.md skeletons with trust-clean descriptions, diff-by-default |
 | TRIG-01, TRIG-02, TRIG-04 | SATISFIED | Per-skill trigger YAMLs (14+12 prompts), skillgrade harness (TRIALS=3), CONTINGENCY-TRIG-04.md |
-| PERSIST-01..04 | SATISFIED | design/ vs .design-os/ split, manifest.lock hash chain, design-os migrate, recovery semantics |
+| PERSIST-01..04 | SATISFIED | design/ vs .complete-design/ split, manifest.lock hash chain, complete-design migrate, recovery semantics |
 | ROUTE-08 | SATISFIED | dispatchRoute exits 0 with prompt when --route absent; never silently runs all 5 stages |
 | SPINE-01..04 | SATISFIED | Stage enum in Zod schemas, SPINE linearity checker, data-flow linear enforcement |
 | DIST-01, DIST-02, DIST-03 | SATISFIED | SKILL.md skeletons, 3 triggerable skills scaffolded, descriptions ≤200 chars with trigger phrases |
@@ -143,15 +143,15 @@ No unreferenced TBD/FIXME/XXX markers in production code paths. One TODO in a te
 
 ### CLI verify --golden via plain Node (WARNING)
 
-`node bin/design-os.mjs verify --golden` fails with `ERR_MODULE_NOT_FOUND: Cannot find module '...frontmatter-common.js'` because:
-1. `bin/design-os.mjs` uses plain `node` (no tsx loader)
+`node bin/complete-design.mjs verify --golden` fails with `ERR_MODULE_NOT_FOUND: Cannot find module '...frontmatter-common.js'` because:
+1. `bin/complete-design.mjs` uses plain `node` (no tsx loader)
 2. `verify-golden.mjs` dynamically imports `emit.mjs`
 3. `emit.mjs` dynamically imports TypeScript source files (`schemas/src/persona.ts` etc.)
 4. Without the tsx loader, Node cannot resolve `.ts` files (it looks for `.js`)
 
 **The correct path (`npm run verify:golden`) works correctly** — it invokes `tsx assets/scripts/verify-golden.mjs` which has the tsx loader. CI uses `npm run verify:golden` so the gate works in CI. The CLI wrapper is broken for the emit sub-test specifically.
 
-**Impact:** A maintainer following the ROADMAP success criterion literally ("A maintainer running `design-os verify --golden`") would hit this failure if they use the CLI. They would need to use `npm run verify:golden` instead. This is a usability gap but does not affect CI or the underlying determinism guarantees.
+**Impact:** A maintainer following the ROADMAP success criterion literally ("A maintainer running `complete-design verify --golden`") would hit this failure if they use the CLI. They would need to use `npm run verify:golden` instead. This is a usability gap but does not affect CI or the underlying determinism guarantees.
 
 ---
 
@@ -173,7 +173,7 @@ No blocking gaps found. The phase goal is achieved: deterministic infrastructure
 
 1. **WARNING: tsc --noEmit not clean** — 92 TypeScript errors in test files (90 × TS7016 from unguarded `.mjs` imports, 1 × TS2345, 1 × TS2307). Plans 03-05 introduced test files that import `.mjs` scripts without `@ts-ignore` annotations. Does not break the 467/467 test suite or any production behavior. Recommend fixing in Phase 2 to restore CLAUDE.md TypeScript discipline.
 
-2. **WARNING: `node bin/design-os.mjs verify --golden` CLI path broken** — Works via `npm run verify:golden` (CI path); broken via direct CLI invocation because emit.mjs requires tsx loader for TypeScript dynamic imports. Success Criterion 2 is satisfied by the npm script path which CI uses. Recommend documenting or wiring tsx into the CLI verify path in Phase 2.
+2. **WARNING: `node bin/complete-design.mjs verify --golden` CLI path broken** — Works via `npm run verify:golden` (CI path); broken via direct CLI invocation because emit.mjs requires tsx loader for TypeScript dynamic imports. Success Criterion 2 is satisfied by the npm script path which CI uses. Recommend documenting or wiring tsx into the CLI verify path in Phase 2.
 
 3. **INFO: GATE-08 implemented early but REQUIREMENTS.md not updated** — GATE-08 is marked `[ ]` and mapped to Phase 2 in traceability, but the implementation exists and is verified. Recommend updating REQUIREMENTS.md traceability in Phase 2 kickoff.
 
@@ -211,17 +211,17 @@ Both WARNING items from the initial verification have been resolved.
 
 **Commit:** `fix(01): restore tsc --noEmit clean across test surface` (05cf511)
 
-### WARNING 2 Closed: node bin/design-os.mjs verify --golden now exits 0 (5/5 passed)
+### WARNING 2 Closed: node bin/complete-design.mjs verify --golden now exits 0 (5/5 passed)
 
-**Root cause:** `bin/design-os.mjs` runs under plain node (no tsx loader). The `verify --golden` handler previously called `runGolden()` from `verify-golden.mjs` in-process. That function calls `emitSchemas()` from `emit.mjs`, which dynamically imports `schemas/src/*.ts` files — requiring the tsx loader to resolve `.ts` extensions.
+**Root cause:** `bin/complete-design.mjs` runs under plain node (no tsx loader). The `verify --golden` handler previously called `runGolden()` from `verify-golden.mjs` in-process. That function calls `emitSchemas()` from `emit.mjs`, which dynamically imports `schemas/src/*.ts` files — requiring the tsx loader to resolve `.ts` extensions.
 
 **Fix:** `assets/scripts/cli/verify.mjs` now spawns `verify-golden.mjs` as a child process via `node_modules/.bin/tsx` (the local tsx binary), so the tsx loader is active for the full execution tree. The child process exit code is surfaced as the CLI's exit code. The `npm run verify:golden` path (which invokes tsx directly) is unaffected.
 
 **Verification:**
-- `node bin/design-os.mjs verify --golden` → "5/5 passed", exit 0
+- `node bin/complete-design.mjs verify --golden` → "5/5 passed", exit 0
 - `npm run verify:golden` → "5/5 passed", exit 0 (no regression)
 
-**Commit:** `fix(01): wire tsx loader into design-os verify --golden CLI path` (1682bf4)
+**Commit:** `fix(01): wire tsx loader into complete-design verify --golden CLI path` (1682bf4)
 
 ### Final Verification Results (2026-05-25)
 
@@ -229,7 +229,7 @@ Both WARNING items from the initial verification have been resolved.
 |---------|--------|--------|
 | `npx tsc --noEmit` | Exit 0, 0 errors | PASS |
 | `npm test` | 467/467 passing | PASS |
-| `node bin/design-os.mjs verify --golden` | "5/5 passed", exit 0 | PASS |
+| `node bin/complete-design.mjs verify --golden` | "5/5 passed", exit 0 | PASS |
 | `npm run verify:golden` | "5/5 passed", exit 0 | PASS |
 
 **Phase 1 verdict: PASS (clean)**

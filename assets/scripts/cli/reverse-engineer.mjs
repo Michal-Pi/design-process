@@ -1,9 +1,9 @@
 // assets/scripts/cli/reverse-engineer.mjs
 // CLI wrapper for reverse-engineer.mjs orchestrator.
-// Registered by bin/design-os.mjs auto-discovery.
+// Registered by bin/complete-design.mjs auto-discovery.
 //
 // Usage:
-//   design-os audit --reverse-engineer-stages --source <path|url> [--apply]
+//   complete-design audit --reverse-engineer-stages --source <path|url> [--apply]
 //
 // Dry-run by default. --apply writes artifacts to design/inferred/.
 //
@@ -52,8 +52,8 @@ export const command = {
     if (!source) {
       console.error(
         "Error: --source <path-or-url> is required.\n" +
-          "  Local: design-os reverse-engineer --source ./my-app\n" +
-          "  URL:   design-os reverse-engineer --source https://my-app.vercel.app"
+          "  Local: complete-design reverse-engineer --source ./my-app\n" +
+          "  URL:   complete-design reverse-engineer --source https://my-app.vercel.app"
       );
       process.exit(1);
     }
@@ -64,7 +64,7 @@ export const command = {
 
     if (!apply) {
       console.log(
-        `[DRY RUN] design-os reverse-engineer --source ${source} --output-dir ${outputDir}`
+        `[DRY RUN] complete-design reverse-engineer --source ${source} --output-dir ${outputDir}`
       );
       console.log(
         "  Would create artifacts in design/inferred/ with two-layer INFERRED enforcement:"
@@ -82,7 +82,7 @@ export const command = {
       console.log("");
       console.log("  Use --apply to write artifacts.");
       console.log(
-        "  After reviewing, use: design-os promote-inferred --file <path>"
+        "  After reviewing, use: complete-design promote-inferred --file <path>"
       );
       console.log(
         "  Dry run: use --apply to write changes"
@@ -126,7 +126,7 @@ export const command = {
         "  'provenance: inferred' frontmatter AND the > **INFERRED** banner before promoting."
       );
       console.log(
-        "  Then use: design-os promote-inferred --file <path>"
+        "  Then use: complete-design promote-inferred --file <path>"
       );
     } catch (err) {
       console.error(

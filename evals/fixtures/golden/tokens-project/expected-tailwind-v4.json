@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* design-os generated — stage:5a-lite evidence:INFERRED */
+/* complete-design generated — stage:5a-lite evidence:INFERRED */
 @theme {
-  /* design-os tokens — stage:5a-lite evidence:INFERRED */
+  /* complete-design tokens — stage:5a-lite evidence:INFERRED */
   --color-primary: oklch(60% 0.2 270);
   --color-background: oklch(98% 0.0 0);
   --color-foreground: oklch(15% 0.0 0);

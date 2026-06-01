@@ -1,11 +1,11 @@
 // assets/scripts/cli/apply.mjs
 // CLI module for the `apply` command.
-// Auto-discovered by bin/design-os.mjs; no modification to bin/ required.
+// Auto-discovered by bin/complete-design.mjs; no modification to bin/ required.
 //
 // Usage:
-//   design-os apply --run-id <id> --design-dir <path> [--no-overwrite]
+//   complete-design apply --run-id <id> --design-dir <path> [--no-overwrite]
 //
-// Copies staging artifacts from .design-os/preview/run-<id>/ to design/.
+// Copies staging artifacts from .complete-design/preview/run-<id>/ to design/.
 // Default: overwrite existing files with WARNING logged.
 // --no-overwrite: abort on conflict (exit 1, no files written).
 //
@@ -67,8 +67,8 @@ export async function applyStaging({ stagingPath, designDir, noOverwrite, logPat
       warnings.push(relPath);
 
       // Log to run-log.jsonl if a log path is provided.
-      // Ensure the parent directory exists first — `design-os init` only creates
-      // `.design-os/`, not `.design-os/private/`, so the appendFile would throw
+      // Ensure the parent directory exists first — `complete-design init` only creates
+      // `.complete-design/`, not `.complete-design/private/`, so the appendFile would throw
       // ENOENT in a freshly-initialized repo (Finding 3 fix).
       if (logPath) {
         await mkdir(dirname(logPath), { recursive: true });
@@ -88,15 +88,15 @@ export async function applyStaging({ stagingPath, designDir, noOverwrite, logPat
   return { applied, warnings };
 }
 
-/** CLI module descriptor for auto-discovery by bin/design-os.mjs */
+/** CLI module descriptor for auto-discovery by bin/complete-design.mjs */
 export const command = {
   name: 'apply',
-  describe: 'Apply staged artifacts from .design-os/preview/run-<id>/ to design/',
+  describe: 'Apply staged artifacts from .complete-design/preview/run-<id>/ to design/',
 
   /** @param {import("commander").Command} cmd */
   builder(cmd) {
     cmd
-      .option('--run-id <id>', 'Run ID to apply (from .design-os/preview/run-<id>/)')
+      .option('--run-id <id>', 'Run ID to apply (from .complete-design/preview/run-<id>/)')
       .option('--design-dir <path>', 'Target design directory', 'design/')
       .option('--no-overwrite', 'Abort on conflict instead of overwriting');
   },
@@ -109,10 +109,10 @@ export const command = {
     }
 
     const projectRoot = process.cwd();
-    const stagingPath = resolve(projectRoot, '.design-os', 'preview', `run-${runId}`);
+    const stagingPath = resolve(projectRoot, '.complete-design', 'preview', `run-${runId}`);
     const designDir = resolve(projectRoot, args.designDir ?? args['design-dir'] ?? 'design/');
     const noOverwrite = Boolean(args.noOverwrite ?? args['no-overwrite']);
-    const logPath = resolve(projectRoot, '.design-os', 'private', 'run-log.jsonl');
+    const logPath = resolve(projectRoot, '.complete-design', 'private', 'run-log.jsonl');
 
     if (!existsSync(stagingPath)) {
       console.error(`apply: staging path not found: ${stagingPath}`);

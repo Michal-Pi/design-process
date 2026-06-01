@@ -81,7 +81,7 @@ jobs:
             echo "To fix:"
             echo "  1. Create schemas/migrations/<artifact>-v<from>-to-v<to>.mjs"
             echo "  2. Follow the template in schemas/migrations/v0-to-v1.template.mjs"
-            echo "  3. Test the migration with: design-os migrate"
+            echo "  3. Test the migration with: complete-design migrate"
             echo ""
             echo "To bypass (use sparingly):"
             echo "  Add the 'schema-no-migrate' label to this PR and document the reason."

@@ -1,10 +1,10 @@
-# evals/coexistence/triggers/design-os.yaml
-# Aggregate trigger corpus for design-os (all 3 skills: design, audit, handoff).
+# evals/coexistence/triggers/complete-design.yaml
+# Aggregate trigger corpus for complete-design (all 3 skills: design, audit, handoff).
 # D-16: ≥30 shouldFire prompts aggregated across design + audit + handoff skills.
-# Used in aggregate coexistence eval to measure design-os recall with all 5 peer
+# Used in aggregate coexistence eval to measure complete-design recall with all 5 peer
 # packages installed.
 
-package: design-os
+package: complete-design
 description: >
   5-stage design process (research, IA, wireframes, interactions, hi-fi)
   with stage-gated workflows. Includes design audit and handoff bundling.

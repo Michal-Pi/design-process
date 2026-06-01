@@ -1,5 +1,5 @@
 ---
-name: "design-os/style"
+name: "complete-design/style"
 description: "Style-lite: emit provisional DTCG tokens (3 variants), run hi-fi preview with Playwright; gate returns not_runnable (v2.0b needed for full pass)"
 stage: "5a"
 gate: "gate/stage-5a-complete"
@@ -50,7 +50,7 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
 
 2. **Pre-check token budget.** Inform the user of the style stage budget before starting:
    ```
-   Bash: node bin/design-os.mjs budget-check --stage style --check pre
+   Bash: node bin/complete-design.mjs budget-check --stage style --check pre
    ```
 
 3. **Load references.** Read the following reference files to inform token decisions:
@@ -123,7 +123,7 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
 
    **7b. Spawn the dev server** (detect framework from registry.mjs):
    ```
-   Bash: node bin/design-os.mjs preview spawn \
+   Bash: node bin/complete-design.mjs preview spawn \
      --framework <vite|next|astro> \
      --repo-root <absolute path to user repo root>
    ```
@@ -133,13 +133,13 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
    **7c. Screenshot the running server** using Playwright (requires Playwright installed):
    ```
    Bash: npx playwright screenshot --browser chromium '<readyUrl>' \
-     .design-os/preview/run-<runId>/variant-<A|B|C>.png
+     .complete-design/preview/run-<runId>/variant-<A|B|C>.png
    ```
    If Playwright is unavailable, skip screenshots and log a WARNING (see Host fallback below).
 
    **7d. Release the port** when done with each variant:
    ```
-   Bash: node bin/design-os.mjs preview release-port --run-id <runId>
+   Bash: node bin/complete-design.mjs preview release-port --run-id <runId>
    ```
 
    After generating all 3 variants, run the 6-axis visual diversity check. Minimum
@@ -153,14 +153,14 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
 
 8. **Post-check token budget.** Check usage after tokens + preview:
    ```
-   Bash: node bin/design-os.mjs budget-check --stage style --check post
+   Bash: node bin/complete-design.mjs budget-check --stage style --check post
    ```
    If this exits 1 (hard-stop), inform the user: "Token usage exceeded 110k (2× p50).
    Re-run with --continue-anyway to proceed."
 
 9. **Gate invocation (D-43 — CRITICAL).** Run the Stage 5a gate:
    ```
-   Bash: node bin/design-os.mjs gate --stage 5a --design-dir design/
+   Bash: node bin/complete-design.mjs gate --stage 5a --design-dir design/
    ```
 
    **Expected result: `not_runnable`**. This is CORRECT and EXPECTED in v2.0a.
@@ -182,7 +182,7 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
     ```
     Then build the bundle:
     ```
-    Bash: node bin/design-os.mjs handoff-bundle \
+    Bash: node bin/complete-design.mjs handoff-bundle \
       --from 2 \
       --to 5a \
       --design-dir design/ \
@@ -194,14 +194,14 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
     with `{ tokenCount, tokens, truncationWarning, path }` — `path` is the written bundle.
 
 11. **Present staged artifacts and await --apply.**
-    Read the staged artifacts from `.design-os/preview/run-<id>/`:
+    Read the staged artifacts from `.complete-design/preview/run-<id>/`:
     - `tokens.json` (DTCG body)
     - Adapter projection file (CSS or tsx)
     - Preview screenshots (3 variants)
 
     Show a summary diff. If user approves with `--apply`:
     ```
-    Bash: node bin/design-os.mjs apply --design-dir design/
+    Bash: node bin/complete-design.mjs apply --design-dir design/
     ```
     This copies staged artifacts to `design/` and writes `design/.handoff/stage-5a-bundle.md`.
 
@@ -211,7 +211,7 @@ ratios — it never CLAIMS WCAG conformance. All design decisions remain the use
 
 For **Codex CLI** and **Cursor** (no subagent dispatch — sequential path):
 
-Run each step above as a direct Bash command. The `node bin/design-os.mjs` dispatcher
+Run each step above as a direct Bash command. The `node bin/complete-design.mjs` dispatcher
 handles all subcommands. The preview harness (`step 7`) uses the sequential adapter path
 from `assets/scripts/run-subagent.mjs` — this means preview runs one variant at a time.
 

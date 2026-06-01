@@ -1,9 +1,9 @@
 // assets/scripts/cli/recover.mjs
-// CLI subcommand: design-os recover
-// Inspects .design-os/manifest.lock and reports the resume point.
+// CLI subcommand: complete-design recover
+// Inspects .complete-design/manifest.lock and reports the resume point.
 //
-// Registered automatically by bin/design-os.mjs (Plan 01 auto-discovery dispatcher).
-// Plan 03 does NOT modify bin/design-os.mjs.
+// Registered automatically by bin/complete-design.mjs (Plan 01 auto-discovery dispatcher).
+// Plan 03 does NOT modify bin/complete-design.mjs.
 //
 // Implements: RECOV-01..03 (machinery); interactive UX in Plan 04.
 // Source: PLAN.md Task 3
@@ -13,13 +13,13 @@ import { recover } from "../recover.mjs";
 export const command = {
   name: "recover",
   describe:
-    "Inspect .design-os/manifest.lock and report the resume point or confirm-before-regenerate gate",
+    "Inspect .complete-design/manifest.lock and report the resume point or confirm-before-regenerate gate",
 
   builder(cmd) {
     cmd
       .requiredOption(
         "--design-dir <path>",
-        "Path to the design directory containing .design-os/manifest.lock"
+        "Path to the design directory containing .complete-design/manifest.lock"
       )
       .option(
         "--resume",

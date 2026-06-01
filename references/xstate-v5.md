@@ -51,7 +51,7 @@ export const machine = setup({
 
 ## D-57: When XState is Emitted
 
-design-os emits XState ONLY when:
+complete-design emits XState ONLY when:
 - `asyncOperations: true` — screen performs async operations
 - `stateCount >= 3` — at least 3 distinct states
 - `hasConditionalTransitions: true` — transitions depend on conditions (DONE vs ERROR)

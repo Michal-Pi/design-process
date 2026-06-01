@@ -54,7 +54,7 @@ describe("recover.mjs — structural checks", () => {
 
 describe("recovery fixtures — structural checks", () => {
   it("after-stage-1 fixture has manifest.lock", () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.complete-design/manifest.lock");
     expect(existsSync(lock)).toBe(true);
   });
 
@@ -64,14 +64,14 @@ describe("recovery fixtures — structural checks", () => {
   });
 
   it("after-stage-1 manifest.lock has exactly 1 entry", async () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.complete-design/manifest.lock");
     const content = await readFile(lock, "utf8");
     const lines = content.trim().split("\n").filter((l) => l.trim().length > 0);
     expect(lines).toHaveLength(1);
   });
 
   it("after-stage-1 manifest entry has stage='1' and result.kind='pass'", async () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-1/.complete-design/manifest.lock");
     const content = await readFile(lock, "utf8");
     const lines = content.trim().split("\n");
     // noUncheckedIndexedAccess: assert the lock file has at least one line before
@@ -83,7 +83,7 @@ describe("recovery fixtures — structural checks", () => {
   });
 
   it("after-stage-2 fixture has manifest.lock with 2 entries", async () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-2/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-2/.complete-design/manifest.lock");
     expect(existsSync(lock)).toBe(true);
     const content = await readFile(lock, "utf8");
     const lines = content.trim().split("\n").filter((l) => l.trim().length > 0);
@@ -91,7 +91,7 @@ describe("recovery fixtures — structural checks", () => {
   });
 
   it("after-stage-4 fixture has manifest.lock with 4 entries", async () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-4/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-4/.complete-design/manifest.lock");
     expect(existsSync(lock)).toBe(true);
     const content = await readFile(lock, "utf8");
     const lines = content.trim().split("\n").filter((l) => l.trim().length > 0);
@@ -220,7 +220,7 @@ describe("recover() — equivalent end-state (RECOV-02)", () => {
       );
 
       // Truncate manifest.lock to just the first line (stage-1 entry)
-      const lockPath = join(tempDir, ".design-os/manifest.lock");
+      const lockPath = join(tempDir, ".complete-design/manifest.lock");
       const content = await readFile(lockPath, "utf8");
       const firstLine = content.trim().split("\n")[0];
       await writeFile(lockPath, firstLine + "\n");
@@ -235,7 +235,7 @@ describe("recover() — equivalent end-state (RECOV-02)", () => {
   });
 
   it("stage sequence from manifest.lock stage-4 fixture is {1,2,3,4} in order", async () => {
-    const lock = join(FIXTURES_DIR, "design-dir-after-stage-4/.design-os/manifest.lock");
+    const lock = join(FIXTURES_DIR, "design-dir-after-stage-4/.complete-design/manifest.lock");
     const content = await readFile(lock, "utf8");
     const entries = content
       .trim()

@@ -1,5 +1,5 @@
 # evals/triggers/sketch/triggers.yaml
-# Trigger evaluation prompts for design-os/sketch skill.
+# Trigger evaluation prompts for complete-design/sketch skill.
 #
 # shouldFire: prompts that should activate the sketch workflow
 # shouldNotFire: prompts that should NOT activate the sketch workflow
@@ -10,7 +10,7 @@
 # Source: PLAN.md 03-01 Task C, 03-05 Task C; CONTEXT.md OQ-4, D-32
 # Implements: WF-04 trigger corpus
 
-skill: design-os/sketch
+skill: complete-design/sketch
 
 shouldFire:
   - "create wireframes for the dashboard screen"

@@ -9,9 +9,9 @@
 // finds nothing, and returns a false-positive frost-recurrence-not-met BLOCKER.
 //
 // Called by the systematize workflow (step 9.5) BEFORE the gate invocation (step 10):
-//   node bin/design-os.mjs stage-recurrence-evidence \
+//   node bin/complete-design.mjs stage-recurrence-evidence \
 //     --source-design-dir design/ \
-//     --staged-dir .design-os/preview/run-<timestamp>/
+//     --staged-dir .complete-design/preview/run-<timestamp>/
 //
 // This preserves INVARIANT-01 (gate against staged path — no direct design/ reads by gate).
 //
@@ -38,7 +38,7 @@ import { globby } from "globby";
  *
  * @param {object} opts
  * @param {string} opts.sourceDesignDir - Source design directory (e.g., 'design/')
- * @param {string} opts.stagedDir - Staged preview directory (e.g., '.design-os/preview/run-<id>/')
+ * @param {string} opts.stagedDir - Staged preview directory (e.g., '.complete-design/preview/run-<id>/')
  * @returns {Promise<{ copiedFiles: string[], skippedDirs: string[] }>}
  */
 export async function stageRecurrenceEvidence({ sourceDesignDir, stagedDir }) {
@@ -97,7 +97,7 @@ export async function stageRecurrenceEvidence({ sourceDesignDir, stagedDir }) {
 }
 
 /**
- * CLI module descriptor for auto-discovery by bin/design-os.mjs.
+ * CLI module descriptor for auto-discovery by bin/complete-design.mjs.
  *
  * Exports: { name, describe, builder, handler } per Lesson 2.
  */
@@ -115,7 +115,7 @@ export const command = {
       )
       .option(
         "--staged-dir <path>",
-        "Staged preview directory to copy into (e.g., .design-os/preview/run-<id>/)"
+        "Staged preview directory to copy into (e.g., .complete-design/preview/run-<id>/)"
       );
   },
 

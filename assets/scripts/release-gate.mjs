@@ -21,7 +21,7 @@
 // INVARIANTS compliance:
 //   - Lesson 1: GateResult accessed only via .kind, .findings, .warnings
 //   - Lesson 2: CLI export shape in assets/scripts/cli/release-gate.mjs
-//   - Lesson 3: gates run against stagingDir (.design-os/preview/<runId>/), never design/
+//   - Lesson 3: gates run against stagingDir (.complete-design/preview/<runId>/), never design/
 //   - Lesson 4: ajv validates result BEFORE writeFile
 //   - Lesson 5: passingFixtureIds + failingFixtureIds logged by identity
 //   - Lesson 7: path-traversal containment on opts.fixturesDir
@@ -402,9 +402,9 @@ export async function runReleaseGate(opts = {}) {
     const { fixtureId, route, budgetCeiling } = fixture;
     console.log(`[release-gate] Running fixture: ${fixtureId} (route=${route})`);
 
-    // Create staging dir: .design-os/preview/<runId>/
+    // Create staging dir: .complete-design/preview/<runId>/
     const runId = `${fixtureId}-${Date.now()}`;
-    const stagingDir = join(PROJECT_ROOT, '.design-os', 'preview', runId);
+    const stagingDir = join(PROJECT_ROOT, '.complete-design', 'preview', runId);
     await mkdir(stagingDir, { recursive: true });
 
     let tokensUsed = 0;

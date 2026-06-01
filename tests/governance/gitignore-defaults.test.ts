@@ -1,5 +1,5 @@
 // tests/governance/gitignore-defaults.test.ts
-// Tests for gitignore/gitattributes templates and design-os init.
+// Tests for gitignore/gitattributes templates and complete-design init.
 // RED phase — these tests fail until Task 1 implementation exists.
 // Implements: D-29, ART-04, SPINE-01..04, DIST-01
 
@@ -13,19 +13,19 @@ import os from "node:os";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
 
-const GITIGNORE_TEMPLATE = join(ROOT, "assets/templates/gitignore-design-os.txt");
-const GITATTRIBUTES_TEMPLATE = join(ROOT, "assets/templates/gitattributes-design-os.txt");
+const GITIGNORE_TEMPLATE = join(ROOT, "assets/templates/gitignore-complete-design.txt");
+const GITATTRIBUTES_TEMPLATE = join(ROOT, "assets/templates/gitattributes-complete-design.txt");
 
 // ── Template existence + required lines ───────────────────────────────────────
 
 describe("gitignore template", () => {
-  it("exists at assets/templates/gitignore-design-os.txt", () => {
+  it("exists at assets/templates/gitignore-complete-design.txt", () => {
     expect(existsSync(GITIGNORE_TEMPLATE)).toBe(true);
   });
 
-  it("contains .design-os/private/ line", () => {
+  it("contains .complete-design/private/ line", () => {
     const content = readFileSync(GITIGNORE_TEMPLATE, "utf8");
-    expect(content).toContain(".design-os/private/");
+    expect(content).toContain(".complete-design/private/");
   });
 
   it("contains design/sketch/rejected/ line", () => {
@@ -45,13 +45,13 @@ describe("gitignore template", () => {
 
   it("contains guarded block markers", () => {
     const content = readFileSync(GITIGNORE_TEMPLATE, "utf8");
-    expect(content).toContain("# >>> design-os defaults");
-    expect(content).toContain("# <<< design-os defaults");
+    expect(content).toContain("# >>> complete-design defaults");
+    expect(content).toContain("# <<< complete-design defaults");
   });
 });
 
 describe("gitattributes template", () => {
-  it("exists at assets/templates/gitattributes-design-os.txt", () => {
+  it("exists at assets/templates/gitattributes-complete-design.txt", () => {
     expect(existsSync(GITATTRIBUTES_TEMPLATE)).toBe(true);
   });
 
@@ -72,7 +72,7 @@ describe("gitattributes template", () => {
 
   it("contains guarded block markers", () => {
     const content = readFileSync(GITATTRIBUTES_TEMPLATE, "utf8");
-    expect(content).toContain("# >>> design-os defaults");
-    expect(content).toContain("# <<< design-os defaults");
+    expect(content).toContain("# >>> complete-design defaults");
+    expect(content).toContain("# <<< complete-design defaults");
   });
 });

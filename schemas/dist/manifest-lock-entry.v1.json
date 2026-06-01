@@ -1,8 +1,8 @@
 {
-  "$id": "https://design-os.dev/schemas/manifest-lock-entry.v1.json",
+  "$id": "https://complete-design.dev/schemas/manifest-lock-entry.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "One hash-chain entry in the .design-os/manifest.lock append-only audit log",
+  "description": "One hash-chain entry in the .complete-design/manifest.lock append-only audit log",
   "properties": {
     "entryHash": {
       "pattern": "^sha256:[0-9a-f]{64}$",

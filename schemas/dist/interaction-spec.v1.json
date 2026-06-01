@@ -1,5 +1,5 @@
 {
-  "$id": "https://design-os.dev/schemas/interaction-spec.v1.json",
+  "$id": "https://complete-design.dev/schemas/interaction-spec.v1.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "IxD specification with Mermaid stateDiagram-v2 (canonical) + optional XState v5 machine",

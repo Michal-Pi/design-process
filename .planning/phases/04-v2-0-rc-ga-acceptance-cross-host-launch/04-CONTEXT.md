@@ -14,7 +14,7 @@ prior_phases:
 
 ## Domain
 
-Phase 4 validates the full design-os package against the §11 / R22 acceptance criteria across Claude Code + Codex CLI + Cursor, enforces the aggregate coexistence eval ≥0.80 release gate, completes designer + PM blind reviews, ships the launch artifact + cross-post to 8 marketplaces + named outreach + PR to anthropics/skills#1008, and reaches GA — so design-os is the OSS canonical 5-stage design-process facilitator with measurable trust posture.
+Phase 4 validates the full complete-design package against the §11 / R22 acceptance criteria across Claude Code + Codex CLI + Cursor, enforces the aggregate coexistence eval ≥0.80 release gate, completes designer + PM blind reviews, ships the launch artifact + cross-post to 8 marketplaces + named outreach + PR to anthropics/skills#1008, and reaches GA — so complete-design is the OSS canonical 5-stage design-process facilitator with measurable trust posture.
 
 Phases 1-3 shipped the 5-stage pipeline + lite/full gate promotions + reverse-engineer + migration. Phase 4 is the **release engineering + launch** phase — no new pipeline capability, only validation, hardening, and GTM.
 
@@ -46,18 +46,18 @@ Phases 1-3 shipped the 5-stage pipeline + lite/full gate promotions + reverse-en
 
 **D-80 [LOCKED] — npm `@beta` is the Phase 4 testing distribution channel; ship FIRST, optimize against it**
 
-Rather than running the 15-fixture acceptance suite, adversarial CI, and cross-host parity tests against the dev-machine clone, Phase 4 ships a published `design-os@2.0.0-beta.0` on npm as its **first** deliverable. All subsequent Phase 4 work (15-fixture suite, blind-review packet, cross-host parity, etc.) uses the npm install path (`npm i -g design-os@beta && design-os install`) — same path real users will take.
+Rather than running the 15-fixture acceptance suite, adversarial CI, and cross-host parity tests against the dev-machine clone, Phase 4 ships a published `@pm-musketeers/complete-design@2.0.0-beta.0` on npm as its **first** deliverable. All subsequent Phase 4 work (15-fixture suite, blind-review packet, cross-host parity, etc.) uses the npm install path (`npm i -g @pm-musketeers/complete-design@beta && complete-design install`) — same path real users will take.
 
 Rationale:
-- **Multi-device testing becomes trivial.** Owner can `npm i -g design-os@beta` on any laptop/VM/host (Claude Code on macOS, Codex CLI on WSL2, Cursor on Linux) in 30 seconds versus 5-10 minutes of `git clone` + `npm ci` + `cp -R skills/`. Cross-host parity work (DIST-05/06) becomes far cheaper.
-- **The beta IS the SC-1 install path.** SC-1 (live LLM run on clean laptop) now exercises the exact install users will hit. Catches packaging bugs (wrong files in tarball, missing postinstall, broken `design-os install`) BEFORE they ship at `@latest`.
+- **Multi-device testing becomes trivial.** Owner can `npm i -g @pm-musketeers/complete-design@beta` on any laptop/VM/host (Claude Code on macOS, Codex CLI on WSL2, Cursor on Linux) in 30 seconds versus 5-10 minutes of `git clone` + `npm ci` + `cp -R skills/`. Cross-host parity work (DIST-05/06) becomes far cheaper.
+- **The beta IS the SC-1 install path.** SC-1 (live LLM run on clean laptop) now exercises the exact install users will hit. Catches packaging bugs (wrong files in tarball, missing postinstall, broken `complete-design install`) BEFORE they ship at `@latest`.
 - **Brad Frost / Cagan / private reviewers can install and try it in seconds.** Wave A "stealth-then-Frost" outreach packet (D-75) can include a one-line install instead of clone-and-build guidance.
-- **GA flip is a single command (`npm dist-tag add design-os@2.0.0 latest`).** Wave B (D-72) becomes a marketing event, not an engineering event — the binary that ships at GA is the same binary that's been tested for 1-2 weeks.
+- **GA flip is a single command (`npm dist-tag add @pm-musketeers/complete-design@2.0.0 latest`).** Wave B (D-72) becomes a marketing event, not an engineering event — the binary that ships at GA is the same binary that's been tested for 1-2 weeks.
 
 Tradeoff acknowledged: npm beta exposes the work earlier than the original "stealth on GitHub" plan. Mitigation: `@beta` tag (not `@latest`) signals "do not depend on this yet"; the public-facing GTM-01 post is still Wave B and references the `@latest` install.
 
 - **Why:** Owner explicitly requested this ordering to simplify cross-device testing. Reordering puts the binary-that-users-will-install at the center of Phase 4 validation, rather than as a Wave-B afterthought.
-- **How to apply:** New Plan **04-00** lands first (npm beta dist + `design-os install` subcommand + smoke-test + owner-driven publish). All other Phase 4 plans gain `depends_on: ["04-00"]` where the npm install path is referenced. SC-1 verification plan is rewritten to use `npm i -g design-os@beta`. GA dist-tag flip (`npm dist-tag add design-os@2.0.0 latest`) moves into Plan 04-05 alongside the public-launch wave.
+- **How to apply:** New Plan **04-00** lands first (npm beta dist + `complete-design install` subcommand + smoke-test + owner-driven publish). All other Phase 4 plans gain `depends_on: ["04-00"]` where the npm install path is referenced. SC-1 verification plan is rewritten to use `npm i -g @pm-musketeers/complete-design@beta`. GA dist-tag flip (`npm dist-tag add @pm-musketeers/complete-design@2.0.0 latest`) moves into Plan 04-05 alongside the public-launch wave.
 
 ### Engineering / acceptance validation
 
@@ -152,11 +152,11 @@ Per DIST-05/06: pass-rate on Codex CLI + Cursor must be within 0.10 of host-firs
 ACCEPT-09 requires 100% pass WCAG 2.2 AA contrast on the package's "own examples". Scope:
 - **In scope:** The DESIGN.md + tokens output for each of the 15 acceptance fixtures (since these ARE the package's own examples that the GTM-01 post will reference).
 - **In scope:** The 2026 demo site (if shipped — TBD with planner).
-- **Out of scope:** User-generated outputs (those are user responsibility — design-os MEASURES, never CLAIMS).
+- **Out of scope:** User-generated outputs (those are user responsibility — complete-design MEASURES, never CLAIMS).
 
 axe-runner emits measured contrast values per fixture; release gate fails if ANY of the 15 fixtures' generated UI fails AA contrast (contrast < 4.5:1 for normal text, < 3:1 for large text).
 
-- **Why:** "Own examples" is the trust-posture boundary — design-os never claims WCAG compliance for user outputs, only for its own demonstration artifacts. Scoping the gate narrowly preserves P8.
+- **Why:** "Own examples" is the trust-posture boundary — complete-design never claims WCAG compliance for user outputs, only for its own demonstration artifacts. Scoping the gate narrowly preserves P8.
 - **How to apply:** Planner ships `axe-runner.mjs` (CI tool) + integrates into the release-gate script from D-74. Failure mode: hard block on the 15-fixture set, no soft-tolerance.
 
 ### GTM-07 rapid-response pivot triggers
@@ -164,14 +164,14 @@ axe-runner emits measured contrast values per fixture; release gate fails if ANY
 **D-79 — Anthropic-Labs watcher trigger conditions explicit**
 
 `GTM-07 rapid-response pivot plan` is documented during Wave A. Pivot triggers are explicit:
-- **Severity 1 (interop pivot):** Anthropic Labs ships a tool with ≥3 of (Stage 2 sitemap generation, Stage 3 wireframe generation, Stage 4 state machine generation, Stage 5b DTCG token emission) AND ≥1 of (open-source under Apache-2.0 / MIT, DESIGN.md spec consumer, runs in Claude Code). Pivot: design-os repositions as "the bridge between Claude Design and DESIGN.md spec consumers" — interop-first messaging.
+- **Severity 1 (interop pivot):** Anthropic Labs ships a tool with ≥3 of (Stage 2 sitemap generation, Stage 3 wireframe generation, Stage 4 state machine generation, Stage 5b DTCG token emission) AND ≥1 of (open-source under Apache-2.0 / MIT, DESIGN.md spec consumer, runs in Claude Code). Pivot: complete-design repositions as "the bridge between Claude Design and DESIGN.md spec consumers" — interop-first messaging.
 - **Severity 2 (no pivot needed):** Anthropic Labs ships a tool with only Stage 5b token emission (overlaps with GTM-03 marketplaces but not the spine). Continue as planned.
 - **Severity 3 (out of scope):** Anthropic ships hi-fi-only generator (Claude Design current state). No change needed.
 
 Watcher heartbeat already in place (GTM-06 ✓). Pivot trigger check runs weekly during Phase 4; bi-daily during Wave B launch window.
 
 - **Why:** A vague "rapid-response plan" is operationally useless. Owner needs trigger conditions explicit so the pivot can be invoked without re-litigating "is this severe enough".
-- **How to apply:** Planner ships `RAPID-RESPONSE.md` (extends the Phase 1 stub from 01-04) with these exact trigger conditions. Triggers reference the existing watcher signals (`.design-os/watcher/anthropic-labs-*.json`).
+- **How to apply:** Planner ships `RAPID-RESPONSE.md` (extends the Phase 1 stub from 01-04) with these exact trigger conditions. Triggers reference the existing watcher signals (`.complete-design/watcher/anthropic-labs-*.json`).
 
 ## Open Questions (for planner to resolve during plan-phase)
 
@@ -183,7 +183,7 @@ Watcher heartbeat already in place (GTM-06 ✓). Pivot trigger check runs weekly
 
 ## Deferred Ideas (post-GA / v2.1 / Phase 5)
 
-- **Junie + Copilot host parity** — DIST-07 lists "Junie + Copilot" but those are scoped to v2.1 per CLAUDE.md tech stack ("design-os-bridges" companion). Phase 4 ships Claude Code + Codex + Cursor only.
+- **Junie + Copilot host parity** — DIST-07 lists "Junie + Copilot" but those are scoped to v2.1 per CLAUDE.md tech stack ("complete-design-bridges" companion). Phase 4 ships Claude Code + Codex + Cursor only.
 - **15-fixture suite expansion to 30+** — only if v2.0 acceptance reveals coverage gaps. Not for v2.0 GA.
 - **Live-LLM trigger eval in CI** — currently the trigger eval uses fixture prompts; live LLM trigger eval is more expensive and lands post-GA.
 - **Bridges for Material Web / Vue / Svelte** — explicitly v2.1+ per MRD §3.15.
@@ -235,7 +235,7 @@ Watcher heartbeat already in place (GTM-06 ✓). Pivot trigger check runs weekly
 - `evals/coexistence/run.mjs` (Phase 1) — release-gate eval driver
 - `evals/triggers/*/triggers.yaml` (Phase 2 + 3) — coexistence eval inputs
 - `assets/scripts/cli/audit.mjs` (Phase 2 + 3 extensions) — Phase 4 release-gate may call this
-- `bin/design-os.mjs` — dispatcher; Phase 4 may add `node bin/design-os.mjs release-gate <subcmd>` or similar
+- `bin/complete-design.mjs` — dispatcher; Phase 4 may add `node bin/complete-design.mjs release-gate <subcmd>` or similar
 - `evals/fixtures/budget/*.fixture.json` — extend with the 15 acceptance fixtures
 - `.github/workflows/*.yml` — existing CI matrix; Phase 4 adds cross-host + release-gate workflows
 
@@ -252,8 +252,8 @@ Watcher heartbeat already in place (GTM-06 ✓). Pivot trigger check runs weekly
 
 **INVARIANTS.md compliance reminders (cumulative from Phases 2-3 codex catches):**
 - Lesson 1: any new gate findings use `{checkId, status, evidence: string}`
-- Lesson 2: any new CLI exports `{name, describe, builder, handler}` (verify via `node bin/design-os.mjs <cmd> --help`)
-- Lesson 3: any new gate stages to `.design-os/preview/<run-id>/` and gates the staged path — no `--staged` flag
+- Lesson 2: any new CLI exports `{name, describe, builder, handler}` (verify via `node bin/complete-design.mjs <cmd> --help`)
+- Lesson 3: any new gate stages to `.complete-design/preview/<run-id>/` and gates the staged path — no `--staged` flag
 - Lesson 4: ajv-validate any parsed artifact
 - Lesson 5: coverage by count AND identity, not globby ≥1
 - Lesson 6: real CLI flag surfaces; verify before writing in docs

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 // evals/coexistence/aggregate-eval.mjs
-// Aggregate coexistence eval harness for design-os + 5 peer packages.
+// Aggregate coexistence eval harness for complete-design + 5 peer packages.
 //
 // Algorithm (D-15, D-16):
 //   1. Install 6-package corpus into .test-skills/ (description-only stubs in Phase 1).
-//   2. For each prompt in design-os' shouldFire corpus:
-//      dispatch to host → record if design-os skill fired (RECALL).
+//   2. For each prompt in complete-design' shouldFire corpus:
+//      dispatch to host → record if complete-design skill fired (RECALL).
 //   3. For each prompt in the 5 peer packages' shouldFire corpora:
-//      dispatch to host → record if design-os skill fired (FALSE-FIRE).
-//   4. recall = design-os hits / total design-os shouldFire prompts.
-//   5. falseFireRate = design-os fires on peer prompts / total peer prompts.
+//      dispatch to host → record if complete-design skill fired (FALSE-FIRE).
+//   4. recall = complete-design hits / total complete-design shouldFire prompts.
+//   5. falseFireRate = complete-design fires on peer prompts / total peer prompts.
 //   6. pass = recall >= 0.80 && falseFireRate <= 0.15.
 //   7. Emit evals/coexistence/last-run.json (sorted keys for determinism).
 //
@@ -35,7 +35,7 @@ const ROOT = resolve(__dirname, "../..");
 /** Recall threshold for aggregate coexistence eval (D-16). */
 const RECALL_THRESHOLD = 0.80;
 
-/** False-fire threshold (design-os should not fire on peer prompts). */
+/** False-fire threshold (complete-design should not fire on peer prompts). */
 const FALSE_FIRE_THRESHOLD = 0.15;
 
 /** Coexistence triggers directory. */
@@ -44,7 +44,7 @@ const TRIGGERS_DIR = join(ROOT, "evals/coexistence/triggers");
 /** Output path for last-run.json. */
 const LAST_RUN_PATH = join(ROOT, "evals/coexistence/last-run.json");
 
-/** Peer package names (all except design-os). */
+/** Peer package names (all except complete-design). */
 const PEER_PACKAGES = ["gsd", "superpowers", "frontend-design", "shadcn", "notion-mcp"];
 
 /**
@@ -66,7 +66,7 @@ function canonicalize(value) {
 
 /**
  * Load shouldFire prompts from a triggers YAML file.
- * @param {string} pkg - Package name (e.g., 'design-os').
+ * @param {string} pkg - Package name (e.g., 'complete-design').
  * @returns {Promise<string[]>}
  */
 async function loadShouldFirePrompts(pkg) {
@@ -98,10 +98,10 @@ export async function runAggregateCoexistenceEval() {
   await prepareCorpus(corpusDir);
 
   try {
-    // Load design-os shouldFire prompts
-    const designOsPrompts = await loadShouldFirePrompts("design-os");
+    // Load complete-design shouldFire prompts
+    const designOsPrompts = await loadShouldFirePrompts("complete-design");
 
-    // Measure RECALL: how often does design-os fire on its own shouldFire prompts?
+    // Measure RECALL: how often does complete-design fire on its own shouldFire prompts?
     // Track per-skill recall (Lesson 5 identity — both count AND identity required).
     let designOsHits = 0;
 
@@ -110,7 +110,7 @@ export async function runAggregateCoexistenceEval() {
         prompt,
         ephemeralSkillsDir: corpusDir,
       });
-      if (firedSkill === "design-os") {
+      if (firedSkill === "complete-design") {
         designOsHits++;
       }
     }
@@ -118,17 +118,17 @@ export async function runAggregateCoexistenceEval() {
     const recall =
       designOsPrompts.length > 0 ? designOsHits / designOsPrompts.length : 0;
 
-    // Measure FALSE-FIRE RATE: how often does design-os fire on peer package prompts?
+    // Measure FALSE-FIRE RATE: how often does complete-design fire on peer package prompts?
     // Also measure per-skill false-fire rate for Lesson 5 identity tracking.
     let peerTotal = 0;
     let designOsFalseFires = 0;
 
-    // perSkillRecall: for each peer package, track how often design-os fires on
+    // perSkillRecall: for each peer package, track how often complete-design fires on
     // its prompts (this is the per-skill false-fire identity per Lesson 5).
-    // Also track design-os's own recall as 'design-os' key.
+    // Also track complete-design's own recall as 'complete-design' key.
     /** @type {Record<string, number>} */
     const perSkillRecall = {
-      "design-os": recall,
+      "complete-design": recall,
     };
 
     for (const pkg of PEER_PACKAGES) {
@@ -141,14 +141,14 @@ export async function runAggregateCoexistenceEval() {
           prompt,
           ephemeralSkillsDir: corpusDir,
         });
-        if (firedSkill === "design-os") {
+        if (firedSkill === "complete-design") {
           designOsFalseFires++;
           pkgFalseFires++;
         }
       }
 
       // Per-skill false-fire rate: what fraction of this peer's prompts
-      // incorrectly fire design-os? (Lower is better; ≤0.15 globally.)
+      // incorrectly fire complete-design? (Lower is better; ≤0.15 globally.)
       perSkillRecall[pkg] = peerPrompts.length > 0
         ? pkgFalseFires / peerPrompts.length
         : 0;
@@ -200,8 +200,8 @@ if (isMain) {
   const result = await runAggregateCoexistenceEval();
 
   console.log("\nAggregate Coexistence Eval Results:");
-  console.log(`  design-os recall: ${result.recall.toFixed(3)} (${result.designOsHits}/${result.designOsTotal})`);
-  console.log(`  design-os false-fire rate: ${result.falseFireRate.toFixed(3)} (${result.designOsFalseFires}/${result.peerTotal})`);
+  console.log(`  complete-design recall: ${result.recall.toFixed(3)} (${result.designOsHits}/${result.designOsTotal})`);
+  console.log(`  complete-design false-fire rate: ${result.falseFireRate.toFixed(3)} (${result.designOsFalseFires}/${result.peerTotal})`);
   console.log(`  pass: ${result.pass}`);
 
   if (result.calibrationNote) {

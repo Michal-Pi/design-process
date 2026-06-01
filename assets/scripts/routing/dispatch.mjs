@@ -264,6 +264,6 @@ export function formatRoute08Prompt(suggestResult) {
   const all = [suggestion, ...alternatives].join(', ');
   return (
     `Which route? Suggestions: ${all}.\n` +
-    `Run \`design-os design --route <name>\` to choose. (Default is NOT all 5 stages.)`
+    `Run \`complete-design design --route <name>\` to choose. (Default is NOT all 5 stages.)`
   );
 }

@@ -4,7 +4,7 @@ schemaVersion: "2.0a"
 generated: "2026-05-26T00:00:00.000Z"
 lastReviewedAt: "2026-05-26T00:00:00.000Z"
 provenance: generated
-owner: design-os/manifest
+owner: complete-design/manifest
 artifactCount: 5
 phaseCompleted: "2"
 sourceHash: "sha256:0000000000000000000000000000000000000000000000000000000000000000"

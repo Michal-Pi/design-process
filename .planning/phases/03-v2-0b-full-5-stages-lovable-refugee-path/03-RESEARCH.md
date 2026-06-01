@@ -21,8 +21,8 @@
 - **D-61:** `gate-stage-5b.mjs` upgraded to hard-blocking `not_runnable` when any promoted component appears < 3× across `design/wireframes/` + `design/interactions/` combined.
 - **D-62:** `audit --reverse-engineer-stages` accepts (a) local filesystem path or (b) live URL (`--source` flag). URL mode fetches and normalizes to temp dir. Output in `design/inferred/`.
 - **D-63:** Stage inference runs Stage 4 → Stage 3 → Stage 2 → Stage 1 (reverse-topological).
-- **D-64:** Every inferred artifact carries YAML frontmatter `provenance: "inferred"` + first-paragraph Markdown banner. `frontmatter-validate.mjs` enforces both in `design/inferred/`. `design-os promote-inferred` CLI gates promotion to `design/`.
-- **D-65:** `design-os migrate --from 2.0a --to 2.0b` is idempotent and dry-run by default. Adds `wireframeRefs: []` to sitemap routes, `interactionNeeds: []` to personas, new artifact sections to MANIFEST.md.
+- **D-64:** Every inferred artifact carries YAML frontmatter `provenance: "inferred"` + first-paragraph Markdown banner. `frontmatter-validate.mjs` enforces both in `design/inferred/`. `complete-design promote-inferred` CLI gates promotion to `design/`.
+- **D-65:** `complete-design migrate --from 2.0a --to 2.0b` is idempotent and dry-run by default. Adds `wireframeRefs: []` to sitemap routes, `interactionNeeds: []` to personas, new artifact sections to MANIFEST.md.
 - **D-66:** `new-product` route budget allocation: ingest ≤5k, discover ≤30k, structure ≤25k, sketch ≤25k, interact ≤30k, style ≤25k, systematize ≤10k = 150k total. Per-stage ceilings are independent (no headroom donation).
 - **D-67:** `mature-app-refactor` route = Stage 2 audit + Stage 4 audit + Stage 5b systematize. Skips Stages 1, 3, 5a. Budget ≤45k.
 - **D-68:** `audit --all-stages` findings sorted by `(severity_rank DESC, stage_num ASC)`. BLOCKER=4, ERROR=3, WARNING=2, INFO=1.
@@ -44,7 +44,7 @@
 - GA launch artifact, 8 marketplaces cross-post (Phase 4, GTM-01..05)
 - `axe-runner.mjs` WCAG run as Phase 4 release blocker (COST-10)
 - Aggregate coexistence ≥0.80 release gate (Phase 4, TRIG-03)
-- `design-os-bridges` companion (v2.1+)
+- `complete-design-bridges` companion (v2.1+)
 - Notion / Linear / Google Doc PRD ingestion (v2.1+)
 - `--depth lightweight` global flag (NOT Phase 3)
 - `lowfi/from-mermaid` atom (v2.1+)
@@ -91,7 +91,7 @@ Phase 3 closes the full Garrett spine by delivering Stage 3 (Sketch/Crazy-8s) an
 
 The primary execution risk is Stage 3 structural diversity: the `wireframe-diversity.mjs` 3-factor metric (D-55) is novel and untested. It must be calibrated against a golden adversarial fixture of two near-identical wireframes before any other Stage 3 work is considered complete. The second risk is the Stage 5a gate modification — the existing `stage-5a-not-runnable-regression.test.ts` asserts `not_runnable` for ALL cases including when `interactions/` has content (see Phase 2 code review). Narrowing this test to "not_runnable when interactions/ empty" (D-60) is the single highest regression risk in the phase.
 
-The reverse-engineer pipeline is fundamentally lossy and must propagate `INFERRED` provenance through every artifact. The "loud disclaimer" is the non-negotiable trust posture — both frontmatter and Markdown banner are required (D-64). The `design-os promote-inferred` CLI is the controlled upgrade path from `design/inferred/` to `design/`.
+The reverse-engineer pipeline is fundamentally lossy and must propagate `INFERRED` provenance through every artifact. The "loud disclaimer" is the non-negotiable trust posture — both frontmatter and Markdown banner are required (D-64). The `complete-design promote-inferred` CLI is the controlled upgrade path from `design/inferred/` to `design/`.
 
 **Primary recommendation:** Execute Phase 3 in 5 plans following the Stage 3 → Stage 4 → Gate promotions → Reverse-engineer + Migration → Route completion wave structure. Wire Stage 3 structural diversity tests first and leave `stage-5a` gate modification for a dedicated plan with regression coverage.
 
@@ -111,8 +111,8 @@ The reverse-engineer pipeline is fundamentally lossy and must propagate `INFERRE
 | Stage 5a full gate | `assets/scripts/gates/stage-5a.mjs` (extended) | — | D-60 conditional on interactions/ |
 | Stage 5b Frost count | `assets/scripts/gates/stage-5b.mjs` (upgraded) | — | D-61/D-70 hard BLOCKER |
 | Reverse-engineer inference | LLM sub-agents (per-stage) | `audit/reverse-engineer.mjs` (orchestrates) | Inference is LLM; orchestration is script |
-| INFERRED disclaimer enforcement | `frontmatter-validate.mjs` (extended) | `design-os promote-inferred` CLI | D-64 two-layer enforcement |
-| Schema migration | `schemas/migrations/` (new scripts) | `design-os migrate` CLI | D-65 idempotent migration chain |
+| INFERRED disclaimer enforcement | `frontmatter-validate.mjs` (extended) | `complete-design promote-inferred` CLI | D-64 two-layer enforcement |
+| Schema migration | `schemas/migrations/` (new scripts) | `complete-design migrate` CLI | D-65 idempotent migration chain |
 | Route dispatch | `assets/scripts/routing/dispatch.mjs` (extended) | `budget-check.mjs` | Promotes 3 stubs to real dispatch |
 | `audit --all-stages` | `assets/scripts/cli/audit.mjs` (extended) | per-stage detectors | D-68 sort key added to existing orchestrator |
 
@@ -182,9 +182,9 @@ audit --reverse-engineer-stages:
           ↓
     frontmatter-validate.mjs (enforces both layers in design/inferred/)
           ↓
-    design-os promote-inferred (controlled path to design/)
+    complete-design promote-inferred (controlled path to design/)
 
-design-os migrate --from 2.0a --to 2.0b:
+complete-design migrate --from 2.0a --to 2.0b:
     reads schemaVersion from each artifact
           ↓
     skips v2.0b artifacts (idempotent)
@@ -213,8 +213,8 @@ assets/scripts/
 │   ├── stage-4-pr.mjs          # NEW: PR detector for Stage 4
 │   └── reverse-engineer.mjs    # NEW: Lovable refugee inference orchestrator
 └── cli/
-    ├── reverse-engineer.mjs    # NEW: `design-os audit --reverse-engineer-stages`
-    └── promote-inferred.mjs    # NEW: `design-os promote-inferred`
+    ├── reverse-engineer.mjs    # NEW: `complete-design audit --reverse-engineer-stages`
+    └── promote-inferred.mjs    # NEW: `complete-design promote-inferred`
 
 schemas/migrations/
 ├── sitemap-v2.0a-to-v2.0b.mjs  # NEW: adds wireframeRefs:[]
@@ -593,7 +593,7 @@ evidence: "INFERRED"
 
 **`frontmatter-validate.mjs` extension:** Phase 3 adds a rule: any file under `design/inferred/` with `provenance: "inferred"` must have both the frontmatter field AND the Markdown banner. Missing either → validation failure.
 
-**`design-os promote-inferred` CLI:** New subcommand `assets/scripts/cli/promote-inferred.mjs`. Validates user has removed the `provenance: "inferred"` field and the INFERRED banner before copying from `design/inferred/<X>` to `design/<X>`. Blocks promotion if either is still present.
+**`complete-design promote-inferred` CLI:** New subcommand `assets/scripts/cli/promote-inferred.mjs`. Validates user has removed the `provenance: "inferred"` field and the INFERRED banner before copying from `design/inferred/<X>` to `design/<X>`. Blocks promotion if either is still present.
 
 **Adversarial fixture:** `evals/adversarial/inferred-disclaimer/` — `design/inferred/` file without the banner. `run.test.ts` asserts `frontmatter-validate.mjs` rejects it.
 
@@ -607,7 +607,7 @@ The `audit --reverse-engineer-stages` command should be testable with the existi
 
 ### 7.1 Migration Script Architecture
 
-`design-os migrate --from 2.0a --to 2.0b` orchestrates two migration scripts in sequence:
+`complete-design migrate --from 2.0a --to 2.0b` orchestrates two migration scripts in sequence:
 
 1. **`schemas/migrations/sitemap-v2.0a-to-v2.0b.mjs`:** Reads `design/ia/sitemap.json`. Checks `schemaVersion`. If already v2.0b, skip. Otherwise, for each route node, add `wireframeRefs: []`.
 
@@ -734,7 +734,7 @@ Fixture: `design/inferred/research/personas/test.persona.json` with `provenance:
 |---------|----------------------|------------|
 | **Pitfall 3: Fidelity-cap leakage** | Stage 3: LLM adds color to wireframes. Stage 5b: component promoted on <3×. | FID-03 deterministic gate (D-56). D-70 hard BLOCKER for Frost <3×. Adversarial CI in §9. |
 | **Pitfall 7: Cost runaway** | Stage 3/4 highest-risk: Crazy-8s × 8 variants × N screens; XState repair loops. | D-66 independent per-stage ceilings. Max-2-retry repair loop (Phase 1 pattern). `budget-check.mjs` already in-tree. |
-| **Pitfall 12: Lovable refugee fidelity** | `audit --reverse-engineer-stages` artifacts treated as authoritative. | D-64 two-layer disclaimer. `design-os promote-inferred` CLI. Adversarial disclaimer test. |
+| **Pitfall 12: Lovable refugee fidelity** | `audit --reverse-engineer-stages` artifacts treated as authoritative. | D-64 two-layer disclaimer. `complete-design promote-inferred` CLI. Adversarial disclaimer test. |
 
 ### Phase 3-specific new pitfalls
 
@@ -866,7 +866,7 @@ Gate: All 5 criteria from ROADMAP Phase 3 success criteria verifiable. 4 Phase 2
 | SC-1 | `new-product --full` runs all 5 stages; Stage 5a gate returns PASS | Plans 03-01, 03-02, 03-03, 03-05 |
 | SC-2 | Lovable refugee runs `DS-extraction` / `audit --reverse-engineer-stages`; all artifacts carry `provenance: inferred` + INFERRED banner | Plan 03-04 |
 | SC-3 | Stage 3 gate rejects 100% styled wireframes; Stage 4 gate rejects without state-maps; Stage 5b promotes only at ≥3× | Plans 03-01, 03-02, 03-03 |
-| SC-4 | `design-os migrate --from 2.0a --to 2.0b` upgrades sitemap/persona/MANIFEST; v2.0a artifacts continue validating | Plan 03-04 |
+| SC-4 | `complete-design migrate --from 2.0a --to 2.0b` upgrades sitemap/persona/MANIFEST; v2.0a artifacts continue validating | Plan 03-04 |
 | SC-5 | `audit --all-stages` identifies Stage 2+4 gaps as ranked list; `audit --new-feature` validates feature; route budgets hold | Plan 03-05 |
 
 ---
@@ -905,12 +905,12 @@ Gate: All 5 criteria from ROADMAP Phase 3 success criteria verifiable. 4 Phase 2
 
 | Directive | Applies To Phase 3 |
 |-----------|--------------------|
-| No React/Next/Vue inside design-os itself | All Phase 3 scripts are Node ESM `.mjs`. No frontend framework. |
+| No React/Next/Vue inside complete-design itself | All Phase 3 scripts are Node ESM `.mjs`. No frontend framework. |
 | Zod strict mode, no `any` | `state-machine-emit.mjs`, `wireframe-diversity.mjs` must use strict TS. |
 | No LLM client imports in `assets/scripts/` | INVARIANT-05 enforced by `lint-determinism.mjs` — already CI-gated. |
 | No `js-yaml` for round-trip writes | Use `yaml` (eemeli/yaml) for any YAML writes in migration scripts. |
 | Never modify `components/ui/` files (shadcn) | Not applicable to Phase 3 deliverables. |
-| Diff-by-default, `--apply` required | INVARIANT-02: all Phase 3 writes go to `.design-os/preview/` or `design/inferred/`; never directly to `design/`. |
+| Diff-by-default, `--apply` required | INVARIANT-02: all Phase 3 writes go to `.complete-design/preview/` or `design/inferred/`; never directly to `design/`. |
 | Gate against staged path (INVARIANT-01) | Stage 3 and Stage 4 gates must accept `--staged` path, not read from `design/` directly. |
 | SKILL.md descriptions ≤200 chars (INVARIANT-04) | New `sketch.md` and `interact.md` workflow descriptions must be ≤200 chars. |
 | findingId pattern `^[A-Za-z0-9][A-Za-z0-9-]*-\d+$` (INVARIANT-06) | Stage 3: `3-fidelity-001`, `3-diversity-001`; Stage 4: `4-coverage-001`, `4-states-001`. |
@@ -1047,7 +1047,7 @@ The Playwright URL crawler (D-62 mode b) fetches root HTML + linked assets. Dept
 - `.planning/research/STACK.md` — Excalidraw 0.18+; Mermaid 11.15; XState 5.20; Node 22 LTS [VERIFIED: in-tree]
 - `.planning/research/ARCHITECTURE.md` — Pattern 1 (LLM picks / scripts emit); Anti-Pattern 2 (no raw-dir ingestion); Risk 6 (Stage 3 near-clones); Risk 12 (Lovable refugee fidelity) [VERIFIED: in-tree]
 - `.planning/research/PITFALLS.md` — Pitfall 3 (fidelity-cap leakage); Pitfall 7 (cost runaway); Pitfall 12 (refugee fidelity) [VERIFIED: in-tree]
-- `design-os-mrd-v2.md` §3.22, §3.23, §6, §9.2, §9.3, §16 [ASSUMED from training; cross-verified against locked decisions in CONTEXT.md]
+- `complete-design-mrd-v2.md` §3.22, §3.23, §6, §9.2, §9.3, §16 [ASSUMED from training; cross-verified against locked decisions in CONTEXT.md]
 
 ### Secondary (MEDIUM confidence)
 

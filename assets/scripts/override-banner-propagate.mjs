@@ -16,7 +16,7 @@ import { parse, stringify } from "yaml";
 /**
  * Propagate override banners from manifest.lock into matching-stage artifact frontmatter.
  *
- * Reads .design-os/manifest.lock, finds user_overridden entries, and for each
+ * Reads .complete-design/manifest.lock, finds user_overridden entries, and for each
  * artifact whose stage: matches, adds overrideBanner: if not already present.
  *
  * Uses JSON for .json artifacts, yaml round-trip for .md artifacts.
@@ -26,7 +26,7 @@ import { parse, stringify } from "yaml";
  */
 export async function propagateOverrideBanners({ designDir }) {
   const absDir = resolve(designDir);
-  const lockPath = join(absDir, ".design-os", "manifest.lock");
+  const lockPath = join(absDir, ".complete-design", "manifest.lock");
 
   if (!existsSync(lockPath)) {
     return { modified: [], skipped: [] };
@@ -62,7 +62,7 @@ export async function propagateOverrideBanners({ designDir }) {
   const files = await globby(["**/*.{md,json}"], {
     cwd: absDir,
     absolute: true,
-    ignore: [".design-os/**", ".handoff/**", "node_modules/**", "MANIFEST.md"],
+    ignore: [".complete-design/**", ".handoff/**", "node_modules/**", "MANIFEST.md"],
   });
 
   const modified = [];

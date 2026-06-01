@@ -33,7 +33,7 @@ export async function interactiveResume({ designDir, autoConfirm = false }) {
 
   if (autoConfirm) {
     // CI / batch mode: auto-confirm and log
-    console.log(`[design-os resume] auto-confirming: ${reason}`);
+    console.log(`[complete-design resume] auto-confirming: ${reason}`);
     return result;
   }
 

@@ -1,9 +1,9 @@
 # evals/triggers/ingest/triggers.yaml
-# Per-skill trigger eval corpus for the 'design-os/ingest' skill.
+# Per-skill trigger eval corpus for the 'complete-design/ingest' skill.
 # TRIG-01: ≥10 shouldFire + ≥10 shouldNotFire prompts.
 # D-17: 3 trials per prompt; recall ≥0.85; false-fire ≤0.15.
 
-skill: design-os/ingest
+skill: complete-design/ingest
 description: >
   Ingest PRD or launch Lenny 1-pager interview; emit design/PRD.md
   with frontmatter and stage-0 handoff bundle.
@@ -20,7 +20,7 @@ shouldFire:
   - prompt: "Create a design/PRD.md from my requirements"
   - prompt: "Ingest and validate my product spec before designing"
   - prompt: "I have a PRD I'd like to use for the design workflow"
-  - prompt: "Start design-os ingest on this project"
+  - prompt: "Start complete-design ingest on this project"
 
 shouldNotFire:
   - prompt: "Generate user personas for my app"

@@ -1,12 +1,12 @@
 // schemas/src/frontmatter-common.ts
-// Shared frontmatter contract for all canonical design-os artifacts.
+// Shared frontmatter contract for all canonical complete-design artifacts.
 // Source: CONTEXT.md D-01, D-02; PLAN.md interfaces block; §3.6 per-artifact YAML frontmatter contract.
 // Implements: ART-03 (per-artifact YAML frontmatter), FORMAT-01..06
 
 import { z } from "zod";
 
 /**
- * YAML frontmatter shared by every canonical design-os artifact.
+ * YAML frontmatter shared by every canonical complete-design artifact.
  * Every artifact-specific schema extends this via `.extend()`.
  */
 export const FrontmatterCommon = z.object({

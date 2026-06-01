@@ -192,14 +192,14 @@ Two findings from the post-ship Codex review were accepted and resolved with ato
 
 **Root cause:** `countComponentRecurrences(designDir, ...)` globs `wireframes/**/*.excalidraw`
 and `interactions/*.spec.md` under `designDir`. When the gate runs against the staged preview
-path (`.design-os/preview/<run-id>/`), only `tokens.json` + `DESIGN.md` are present — the
+path (`.complete-design/preview/<run-id>/`), only `tokens.json` + `DESIGN.md` are present — the
 systematize workflow never copied the upstream evidence directories. Result: every component
 scores 0 recurrences → false-positive `frost-recurrence-not-met` BLOCKER even when the source
 `design/` has ample Frost evidence.
 
 **Fix:** New staging-side CLI helper:
 - **`assets/scripts/cli/stage-recurrence-evidence.mjs`** — exports `stageRecurrenceEvidence({ sourceDesignDir, stagedDir })` which copies only `wireframes/**/*.excalidraw` and `interactions/*.spec.md` from the source design dir into the staged preview dir. Also exports `command: { name, describe, builder, handler }` (Lesson 2 compliance). No LLM client imports (INVARIANT-05, lint-determinism clean).
-- **`skills/workflows/systematize.md`** — step 9.5 added: `node bin/design-os.mjs stage-recurrence-evidence --source-design-dir design/ --staged-dir .design-os/preview/run-<timestamp>/` before the gate invocation (step 10). Preserves INVARIANT-01 (gate against staged path).
+- **`skills/workflows/systematize.md`** — step 9.5 added: `node bin/complete-design.mjs stage-recurrence-evidence --source-design-dir design/ --staged-dir .complete-design/preview/run-<timestamp>/` before the gate invocation (step 10). Preserves INVARIANT-01 (gate against staged path).
 
 **Tests added:** `tests/cli/stage-recurrence-evidence.test.ts` (9 new tests):
 - End-to-end: 3 refs in source → staged → gate → no `5b-frost-002`

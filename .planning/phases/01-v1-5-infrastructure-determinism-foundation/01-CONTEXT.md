@@ -10,16 +10,16 @@
 Land the deterministic infrastructure that every v2.0a and v2.0b workflow depends on — **before any user-facing workflow authoring begins**. Concretely:
 
 1. **Versioned JSON Schemas** (R24) for `persona.json`, `sitemap.json`, `manifest.json`, `interaction-spec.json`, `audit-report.json`, **`handoff-bundle.json`** (gap surfaced during research) — authored in Zod, emitted via `zod-to-json-schema`, validated at runtime by `ajv`.
-2. **Gate-runner machinery** — base class returning `(terminal-state, evidence-grade)` tuples, supporting the four terminal states (PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN) plus `not-runnable` (codex §16 BLOCKER prerequisite), persisting results to `.design-os/manifest.lock`.
+2. **Gate-runner machinery** — base class returning `(terminal-state, evidence-grade)` tuples, supporting the four terminal states (PASS / PASS_WITH_WARNINGS / FAILED_AFTER_REPAIR / USER_OVERRIDDEN) plus `not-runnable` (codex §16 BLOCKER prerequisite), persisting results to `.complete-design/manifest.lock`.
 3. **Handoff-bundle script + schema** — `handoff-bundle-build.mjs` produces `design/.handoff/stage-N-bundle.md` (5-15k tokens) that downstream workflows consume in lieu of raw upstream directories. The context-window survival mechanism.
-4. **Determinism golden CI** — `design-os verify --golden` proves 5× byte-identical output from every `assets/scripts/*.mjs` emit script; lint rule rejects LLM-client imports inside `assets/scripts/`.
+4. **Determinism golden CI** — `complete-design verify --golden` proves 5× byte-identical output from every `assets/scripts/*.mjs` emit script; lint rule rejects LLM-client imports inside `assets/scripts/`.
 5. **Aggregate coexistence eval harness** + per-skill `skillgrade`-style trigger eval — recall ≥0.85, false-fire ≤0.15 per skill, aggregate ≥0.80 with 5 popular packages installed.
-6. **PII scanner** (`design-os scan --pii`) — pre-commit hook + standalone CLI.
+6. **PII scanner** (`complete-design scan --pii`) — pre-commit hook + standalone CLI.
 7. **Routing-matrix scaffolding** — all 7 routes wired (4 implemented in v2.0a, 3 stubbed as `ROUTE_NOT_YET_IMPLEMENTED`).
 8. **Host-compatibility matrix CI scaffold** — Claude Code passes fully; Codex CLI + Cursor sequential-fallback stubs in place.
 9. **Reference corpus for Stages 0+1+2+5** — the 12 mandatory MVP references plus the 6 stage-gate operational checklists.
 10. **Preview harness preserved from v1.0.1** — port manager, security sandbox, Playwright readiness probe, Vite 6 / Next 15 / Astro 5 adapter scaffolds.
-11. **Schema migration tooling** (`design-os migrate`) — must accompany every schema bump.
+11. **Schema migration tooling** (`complete-design migrate`) — must accompany every schema bump.
 12. **Anthropic-Labs watcher process** — weekly monitoring of `anthropics/skills`, Anthropic blog, Claude Design release notes from week 1.
 13. **Frontmatter validator + `.gitignore`/`.gitattributes` defaults + manifest reconciler + recovery prompts.**
 
@@ -61,21 +61,21 @@ Land the deterministic infrastructure that every v2.0a and v2.0b workflow depend
 
 ### Determinism CI gate (D-12 to D-14)
 
-- **D-12:** **Scope.** `design-os verify --golden` runs every script in `assets/scripts/` whose path matches `(emit|lint|validate|build|gate)` AND that has a sibling `*.golden.json` fixture. Each script runs 5× on the same input and asserts byte-identical output. LLM-touched paths are explicitly excluded.
+- **D-12:** **Scope.** `complete-design verify --golden` runs every script in `assets/scripts/` whose path matches `(emit|lint|validate|build|gate)` AND that has a sibling `*.golden.json` fixture. Each script runs 5× on the same input and asserts byte-identical output. LLM-touched paths are explicitly excluded.
 - **D-13:** **Architecture lint.** A separate lint script (`assets/scripts/lint-determinism.mjs`) walks `assets/scripts/` and rejects any import path matching `(anthropic|openai|langchain|llamaindex|@anthropic-ai|@openai)`. Runs in CI as a hard gate.
 - **D-14:** **Golden fixture management.** Fixtures live in `evals/fixtures/golden/<script>/`. Regenerating a fixture requires an explicit `npm run regen-golden -- --script <name> --reason "<text>"`; the reason is committed alongside the fixture diff (audit trail).
 
 ### Aggregate coexistence eval (D-15 to D-17)
 
-- **D-15:** **5-package corpus.** The aggregate eval installs design-os alongside: GSD (`get-shit-done`), Superpowers (`superpowers`), `frontend-design` (Anthropic, 277k+ installs), `shadcn` MCP, Notion MCP. Rationale: these are the most-installed Claude Code skill packages in mid-2026 per skills.sh telemetry.
-- **D-16:** **Eval methodology.** A `triggers.yaml` corpus holds ≥30 should-fire prompts for design-os' own skills and ≥30 should-fire prompts for the 5 coexisting packages. The harness measures recall on design-os' skills with all 5 packages installed (no isolation). Threshold: ≥0.80. Methodology refinement is the second research flag.
+- **D-15:** **5-package corpus.** The aggregate eval installs complete-design alongside: GSD (`get-shit-done`), Superpowers (`superpowers`), `frontend-design` (Anthropic, 277k+ installs), `shadcn` MCP, Notion MCP. Rationale: these are the most-installed Claude Code skill packages in mid-2026 per skills.sh telemetry.
+- **D-16:** **Eval methodology.** A `triggers.yaml` corpus holds ≥30 should-fire prompts for complete-design' own skills and ≥30 should-fire prompts for the 5 coexisting packages. The harness measures recall on complete-design' skills with all 5 packages installed (no isolation). Threshold: ≥0.80. Methodology refinement is the second research flag.
 - **D-17:** **Per-skill `skillgrade`-style harness.** In-tree, plug-compatible with Anthropic's skill-creator pattern. Each skill ships `triggers.yaml` with ≥10 should-fire + ≥10 should-not-fire prompts × 3 trials. CI gates: recall ≥0.85, false-fire ≤0.15.
 
 ### PII scanner (D-18 to D-20)
 
 - **D-18:** **Regex-based, not ML.** Pattern set covers: email addresses (RFC 5322 subset), US/E.164 phone numbers, SSN, credit-card numbers (Luhn-validated), IPv4 addresses, common name patterns inside transcript-style headers (`Interviewer:`, `Participant:`, `User:`). Rationale: deterministic; no model dependency; zero-infra principle.
-- **D-19:** **Pre-commit hook + CLI.** Hook installed via `npm run install-hooks` (opt-in for users; design-os' own CI uses it). Standalone CLI `design-os scan --pii [path]` runs anytime. Default scans `design/research/interviews/` and any `transcript*.md` matched by glob.
-- **D-20:** **Allowlist.** Users can mark a file safe via `.design-os/pii-allowlist.json` (file-path + content-hash). Hook re-scans and rejects if hash drifts.
+- **D-19:** **Pre-commit hook + CLI.** Hook installed via `npm run install-hooks` (opt-in for users; complete-design' own CI uses it). Standalone CLI `complete-design scan --pii [path]` runs anytime. Default scans `design/research/interviews/` and any `transcript*.md` matched by glob.
+- **D-20:** **Allowlist.** Users can mark a file safe via `.complete-design/pii-allowlist.json` (file-path + content-hash). Hook re-scans and rejects if hash drifts.
 
 ### Routing-matrix scaffolding (D-21)
 
@@ -84,7 +84,7 @@ Land the deterministic infrastructure that every v2.0a and v2.0b workflow depend
 ### Host-compatibility matrix CI (D-22 to D-23)
 
 - **D-22:** **In-repo `vitest` workspaces, three host profiles.** `evals/hosts/claude-code/` (full subagent dispatch — passes fully), `evals/hosts/codex-cli/` (sequential-fallback stub), `evals/hosts/cursor/` (sequential-fallback stub). Each profile re-runs the same fixture suite; targets within 0.10 of host-first pass rate (formal target for v2.0 GA, scaffolded in v1.5).
-- **D-23:** **Sub-agent dispatch shim.** The `design-os run-subagent <prompt>` helper detects host at runtime — uses native Task dispatch on Claude Code, falls back to sequential script execution on Codex/Cursor. v1.5 ships the helper + Claude Code path; sequential fallback gets minimum-viable implementation (just enough to satisfy fixture suite).
+- **D-23:** **Sub-agent dispatch shim.** The `complete-design run-subagent <prompt>` helper detects host at runtime — uses native Task dispatch on Claude Code, falls back to sequential script execution on Codex/Cursor. v1.5 ships the helper + Claude Code path; sequential fallback gets minimum-viable implementation (just enough to satisfy fixture suite).
 
 ### Reference corpus (D-24 to D-26)
 
@@ -94,9 +94,9 @@ Land the deterministic infrastructure that every v2.0a and v2.0b workflow depend
 
 ### Schema migration & frontmatter validation (D-27 to D-29)
 
-- **D-27:** **Per-script migrations.** `schemas/migrations/v0-to-v1.mjs` style; one script per major version transition per artifact type. `design-os migrate --from <v> --to <v> [--path <design-dir>]` invokes the appropriate chain.
-- **D-28:** **Frontmatter validator strictness.** Strict for canonical artifacts in `design/` (reject if any required field missing or unknown field present); lenient for `.design-os/private/` (warn only). Strict mode is the default; opt-out via `--lenient` flag for legacy migrations.
-- **D-29:** **`.gitignore` / `.gitattributes` defaults.** Shipped as a `assets/templates/gitignore-design-os.txt` + `gitattributes-design-os.txt` pair. `design-os init` writes them into the user's repo (or appends to existing files); CI ensures the design-os' own repo uses them.
+- **D-27:** **Per-script migrations.** `schemas/migrations/v0-to-v1.mjs` style; one script per major version transition per artifact type. `complete-design migrate --from <v> --to <v> [--path <design-dir>]` invokes the appropriate chain.
+- **D-28:** **Frontmatter validator strictness.** Strict for canonical artifacts in `design/` (reject if any required field missing or unknown field present); lenient for `.complete-design/private/` (warn only). Strict mode is the default; opt-out via `--lenient` flag for legacy migrations.
+- **D-29:** **`.gitignore` / `.gitattributes` defaults.** Shipped as a `assets/templates/gitignore-complete-design.txt` + `gitattributes-complete-design.txt` pair. `complete-design init` writes them into the user's repo (or appends to existing files); CI ensures the complete-design' own repo uses them.
 
 ### Anthropic-Labs watcher (D-30 to D-31)
 
@@ -133,7 +133,7 @@ Land the deterministic infrastructure that every v2.0a and v2.0b workflow depend
 - `.planning/research/PITFALLS.md` — 13 critical pitfalls with phase mapping; 7 of 13 land on v1.5
 
 ### Source-of-truth MRD
-- `design-os-mrd-v2.md` §3.5 (Garrett 5-plane spine), §3.6 (`design/` directory + governance), §3.9 (composition contract), §3.10 (knowledge architecture / references), §3.16 (recovery/versioning), §3.18 (security/permissions), §3.19 (determinism verification), §3.22 (stage-validation gates), §3.23 (fidelity caps), §9.1 (v2.0a MVP scope incl. the `style-lite` BLOCKER fix), §10 (roadmap), §11 (success metrics — for CI eval thresholds), §16 (codex acceptance record — 21 v2.0 findings, all accepted)
+- `complete-design-mrd-v2.md` §3.5 (Garrett 5-plane spine), §3.6 (`design/` directory + governance), §3.9 (composition contract), §3.10 (knowledge architecture / references), §3.16 (recovery/versioning), §3.18 (security/permissions), §3.19 (determinism verification), §3.22 (stage-validation gates), §3.23 (fidelity caps), §9.1 (v2.0a MVP scope incl. the `style-lite` BLOCKER fix), §10 (roadmap), §11 (success metrics — for CI eval thresholds), §16 (codex acceptance record — 21 v2.0 findings, all accepted)
 
 ### External specifications (cited at canon granularity per P4)
 - agentskills.io v1 SKILL.md spec — https://agentskills.io/specification — distribution unit
@@ -166,7 +166,7 @@ Land the deterministic infrastructure that every v2.0a and v2.0b workflow depend
 ### Integration Points
 
 - The package boundary with the user's repo is **read** only in Phase 1 (preview harness reads adapter targets; PII scanner reads `design/research/`). **Write** to the user's repo first happens in Phase 2's `style` and `systematize` workflows (and even then, diff-by-default + `--apply` required per TRUST-02).
-- Phase 1 deliverables live in two trees: (a) **package source** under `assets/scripts/`, `schemas/`, `references/`, `skills/`, `evals/`; (b) **user-repo artifacts** the package *expects to write/read* in Phase 2+: `design/<stage>/`, `design/.handoff/`, `.design-os/`. Phase 1 ships only (a); (b) is exercised by tests/fixtures.
+- Phase 1 deliverables live in two trees: (a) **package source** under `assets/scripts/`, `schemas/`, `references/`, `skills/`, `evals/`; (b) **user-repo artifacts** the package *expects to write/read* in Phase 2+: `design/<stage>/`, `design/.handoff/`, `.complete-design/`. Phase 1 ships only (a); (b) is exercised by tests/fixtures.
 
 </code_context>
 
@@ -191,7 +191,7 @@ These came up as relevant but belong in later phases or v2.1+:
 - **Dovetail / Notably interview-transcript ingestion** — v2.2.
 - **Notion / Linear / Google Doc PRD ingestion** — v2.1; CLAUDE.md restricts Notion to Gaia Logic projects.
 - **Voice → PRD interview mode** (Whisper) — v2.2.
-- **`design-os-bridges` (Material Web / Vue / Svelte adapters)** — sibling package; v2.1.
+- **`complete-design-bridges` (Material Web / Vue / Svelte adapters)** — sibling package; v2.1.
 - **Storybook MCP via Chromatic integration** — v2.1.
 - **Enterprise design-process-compliance SKU** — separate sibling product; year-2+.
 - **VS Code Copilot host parity** — depends on VS Code Agent Skills GA; v2.1+.

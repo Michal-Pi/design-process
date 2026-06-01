@@ -43,7 +43,7 @@ const ROOT = resolve(__dirname, "../..");
  */
 const CORPUS_PACKAGES = [
   {
-    name: "design-os",
+    name: "complete-design",
     description:
       "Scaffold the 5-stage design process: research, IA, wireframes, interactions, hi-fi. Creates design/ artifacts with stage-gated workflows.",
     source: "local", // Use our own SKILL.md if it exists
@@ -120,7 +120,7 @@ function buildStubBody(name, description) {
     "> No real skill behavior is simulated.",
     ">",
     "> Source references:",
-    "> - design-os: D-15 (5-package coexistence corpus)",
+    "> - complete-design: D-15 (5-package coexistence corpus)",
     "> - GSD: github.com/anthropics/skills/gsd (pending public release)",
     "> - Superpowers: github.com/anthropics/skills/superpowers",
     "> - frontend-design: Anthropic frontend-design skill (277k+ installs)",
@@ -151,7 +151,7 @@ export async function prepareCorpus(targetDir) {
     await mkdir(pkgDir, { recursive: true });
 
     if (pkg.source === "local") {
-      // Try to use the real design-os SKILL.md if it exists
+      // Try to use the real complete-design SKILL.md if it exists
       // (Phase 1 stubs ship in Plan 05 — graceful fallback to stub body)
       const realSkillPath = join(ROOT, "SKILL.md");
       if (existsSync(realSkillPath)) {

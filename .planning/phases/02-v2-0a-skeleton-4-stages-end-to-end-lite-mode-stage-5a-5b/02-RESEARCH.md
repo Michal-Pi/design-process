@@ -30,7 +30,7 @@ D-48: Adapter detection uses Phase 1 `registry.mjs` heuristics; Next 15 + Tailwi
 D-49: Soft warn at p50 target; hard-stop with `--continue-anyway` prompt at 2× p50; post-hoc measurement in run-log.
 D-50: Three adversarial CI suites: RED-05 (100 synthetic-persona prompts), RED-06 (≥10 injection canary), `worstProvenance` propagation.
 D-51: `evidence: INFERRED` is the only schema-valid value for v2.0a Stage 5a/5b artifacts; `frontmatter-validate.mjs` enforces.
-D-52: All writes stage into `.design-os/preview/run-<id>/` first; `--apply` flag required to copy to `design/` via `apply.mjs`.
+D-52: All writes stage into `.complete-design/preview/run-<id>/` first; `--apply` flag required to copy to `design/` via `apply.mjs`.
 D-53: Phase 2 ships Claude Code host-first; Codex CLI + Cursor exercise-tested via Phase 1 host-profile workspaces; each workflow SKILL.md includes `## Host fallback` section.
 
 ### Claude's Discretion
@@ -44,7 +44,7 @@ D-53: Phase 2 ships Claude Code host-first; Codex CLI + Cursor exercise-tested v
 ### Deferred Ideas (OUT OF SCOPE)
 Phase 3: Stage 3 sketch, Stage 4 interact, full gate/stage-5a-complete, audit --reverse-engineer-stages, Frost ≥3× gate, new-product full route, mature-app-refactor, DS-extraction, schema migration v2.0a → v2.0b, Stage 3+4 reference corpus.
 Phase 4: 15-fixture acceptance suite, Codex/Cursor formal parity gate, designer/PM blind reviews.
-v2.1+: Notion ingestion, tree-test CSV, design-os-bridges, Tokens Studio, Dovetail, voice PRD, i18n/RTL.
+v2.1+: Notion ingestion, tree-test CSV, complete-design-bridges, Tokens Studio, Dovetail, voice PRD, i18n/RTL.
 </user_constraints>
 
 <phase_requirements>
@@ -164,7 +164,7 @@ Each plan delivers exactly one thing a human reviewer can verify end-to-end:
 
 - **02-01**: Run `gate --stage 1` on a fixture with synthetic-only personas → asserts `pass_with_warnings` + `evidence: proto`; adversarial corpus of 100 prompts all return the same.
 - **02-02**: Run `design --route new-feature` on the eval fixture through Stage 2 only → `design/ia/sitemap.json` + `design/ia/flows/*.flow.mmd` exist and are schema-valid.
-- **02-03**: Run `design --route brand-refresh` → `design/tokens.json` (DTCG) + `.design-os/preview/run-<id>/` screenshots exist; `gate/stage-5a-complete` returns `not_runnable`.
+- **02-03**: Run `design --route brand-refresh` → `design/tokens.json` (DTCG) + `.complete-design/preview/run-<id>/` screenshots exist; `gate/stage-5a-complete` returns `not_runnable`.
 - **02-04**: Run `design --route brand-refresh` end-to-end → `design/DESIGN.md` emitted, validates against `design-md.2026.04.json`; `gate/stage-5b-complete` returns `pass_with_warnings`.
 - **02-05**: Run `design --route new-feature` on the Next 15 + Tailwind v4 + shadcn fixture from PRD to `design/` → all artifacts exist; `audit --pr` returns severity-ranked `AUDIT-REPORT.md`; cross-host smoke on Codex/Cursor sequential paths passes within 0.10.
 
@@ -182,7 +182,7 @@ Each plan delivers exactly one thing a human reviewer can verify end-to-end:
 **Workflow SKILL.md structure** (D-32):
 ```yaml
 ---
-name: "design-os/<stage>"
+name: "complete-design/<stage>"
 description: "<≤200 chars, trigger-phrase-front-loaded>"
 stage: <N>
 gate: gate/stage-N-complete
@@ -214,7 +214,7 @@ allows-tools: [Read, Write, Bash]
 **Atom SKILL.md structure** (D-33):
 ```yaml
 ---
-name: "design-os/<stage>/<atom>"
+name: "complete-design/<stage>/<atom>"
 description: "<≤200 chars>"
 stage: <N>
 mvp: true
@@ -284,7 +284,7 @@ Between each stage, `handoff-bundle-build.mjs` synthesizes `design/.handoff/stag
 
 **Atoms:** `prd/parse-or-interview` (ATOM-01)
 
-**Key detail:** `design-os init` call from Phase 1 `init.mjs` is invoked first to create `.gitignore`/`.gitattributes` defaults if absent (D-52 prerequisite — staging area needs `.design-os/preview/` to exist).
+**Key detail:** `complete-design init` call from Phase 1 `init.mjs` is invoked first to create `.gitignore`/`.gitattributes` defaults if absent (D-52 prerequisite — staging area needs `.complete-design/preview/` to exist).
 
 ### Stage 1 — `discover` (W1, ATOM-02..04)
 
@@ -303,7 +303,7 @@ Between each stage, `handoff-bundle-build.mjs` synthesizes `design/.handoff/stag
 - Script: `frontmatter-validate.mjs` — validates `worstProvenance` propagation in `findings.md`
 - Script: `handoff-bundle-build.mjs` — emits bundle within 15k token ceiling
 
-**Gate invocation:** `design-os gate --stage 1 --design-dir <path>`
+**Gate invocation:** `complete-design gate --stage 1 --design-dir <path>`
 
 Gate business logic (Phase 2 fills in `stage-1.mjs` skeleton):
 ```javascript
@@ -344,7 +344,7 @@ return { kind: 'pass', evidence: worstProvenance === 'validated' ? 'validated' :
 
 **FID-02 enforcement:** Gate-2 checklist includes a structural check: if any `sitemap.json` node has `color` or `font` fields, gate returns `failed`. This must be added to the Stage 2 checklist in `references/gates/stage-2.md` and enforced by `gate-stage-2.mjs`.
 
-**Gate invocation:** `design-os gate --stage 2 --design-dir <path>`
+**Gate invocation:** `complete-design gate --stage 2 --design-dir <path>`
 
 **Token budget:** p50 ≤25k (COST-02). Hard-stop at 50k.
 
@@ -355,7 +355,7 @@ return { kind: 'pass', evidence: worstProvenance === 'validated' ? 'validated' :
 **Inputs:** `design/.handoff/stage-2-bundle.md` + user's `tailwind.config.css` / CSS `@theme` block (detected by `registry.mjs`) + `references/shadcn-tailwind-v4.md` + `references/dtcg-v2025-10.md` + `references/wcag-2-2.md`
 
 **Outputs:**
-- `.design-os/preview/run-<id>/` — 3 hi-fi preview variants (screenshots via Playwright)
+- `.complete-design/preview/run-<id>/` — 3 hi-fi preview variants (screenshots via Playwright)
 - `design/tokens.json` (DTCG v2025.10, 3 tiers; `stage: 5a-lite, evidence: INFERRED`)
 - `design/.handoff/stage-5a-bundle.md`
 
@@ -384,7 +384,7 @@ return { kind: 'pass', evidence: worstProvenance === 'validated' ? 'validated' :
 **Inputs:** `design/.handoff/stage-5a-bundle.md` + `design/tokens.json`
 
 **Outputs:**
-- `design/DESIGN.md` (Google DESIGN.md spec, April 2026; `$extensions.design-os`; `evidence: INFERRED`)
+- `design/DESIGN.md` (Google DESIGN.md spec, April 2026; `$extensions.complete-design`; `evidence: INFERRED`)
 - `design/tokens.json` updated with component-tier tokens (DTCG component tier)
 - `design/.handoff/stage-5b-bundle.md`
 
@@ -598,11 +598,11 @@ Checks `design/tokens.json` diff for:
 
 ### Severity Ranking
 
-Finding severity follows AUDIT-08 schema: `BLOCKER` > `ERROR` > `WARNING` > `INFO`. The `AUDIT-REPORT.md` output lists findings sorted by severity descending, then by finding ID. CI mode reads `.design-os/ci.yaml`'s `blockOnSeverity` field (default: `BLOCKER` only).
+Finding severity follows AUDIT-08 schema: `BLOCKER` > `ERROR` > `WARNING` > `INFO`. The `AUDIT-REPORT.md` output lists findings sorted by severity descending, then by finding ID. CI mode reads `.complete-design/ci.yaml`'s `blockOnSeverity` field (default: `BLOCKER` only).
 
 ### Suppression File
 
-`.design-os/audit-suppressions.json` (D-47):
+`.complete-design/audit-suppressions.json` (D-47):
 ```json
 {
   "suppressions": [
@@ -628,7 +628,7 @@ Seven of the thirteen pitfalls land in Phase 2:
 Phase 2 fills in the gate-1 business logic and creates the adversarial CI corpus. The gate is now tested for real, not skeletal. Risk: gate business logic has an edge case (e.g., fails to detect a `provenance: generated` field nested inside a JSON object rather than in YAML frontmatter). Prevention: RED-05 corpus of 100 prompts exercises the gate against diverse persona JSON structures, not just the happy path.
 
 **Pitfall 3 — Fidelity-cap leakage** (BLOCKER for `style-lite`)
-`stage-5a.mjs` already hard-codes `not_runnable`. Phase 2 must ensure the `style-lite` SKILL.md procedure body never calls `design-os gate --stage 5a --assert-pass` or any variant that expects a `PASS` return. The CI test `evals/adversarial/` should include an assertion: "invoke brand-refresh route end-to-end; assert gate-stage-5a returns not_runnable." [VERIFIED: D-43 and Phase 1 `stage-5a.mjs` already ship the hard-coded behavior]
+`stage-5a.mjs` already hard-codes `not_runnable`. Phase 2 must ensure the `style-lite` SKILL.md procedure body never calls `complete-design gate --stage 5a --assert-pass` or any variant that expects a `PASS` return. The CI test `evals/adversarial/` should include an assertion: "invoke brand-refresh route end-to-end; assert gate-stage-5a returns not_runnable." [VERIFIED: D-43 and Phase 1 `stage-5a.mjs` already ship the hard-coded behavior]
 
 **Pitfall 5 — Context-window blowout** (Phase 2 new transition: Stage 1→2, Stage 2→5a)
 The bundle sufficiency eval for these two transitions must pass before Phase 2 declares complete. Phase 1 ships placeholder fixtures (`stage-1-to-2/upstream/personas.json`); Phase 2 must replace placeholders with real representative content and verify sufficiency.
@@ -651,7 +651,7 @@ Already hard-coded in Phase 1. Phase 2 adds the CI assertion test and ensures al
 Stage 2 emits Mermaid flowcharts per JTBD. The LLM can produce syntactically invalid Mermaid (e.g., using characters that Mermaid's lexer rejects, or missing `graph TD` declarations). `mermaid-render.mjs` already handles deterministic rendering, but Phase 2 needs a repair loop: on invalid syntax, feed the error back to the LLM for correction (max 2 repair cycles per the v1.0.1 pattern). If still invalid after 2 cycles → `gate-stage-2` returns `failed_after_repair`. This behavior must be specified in the `structure` workflow SKILL.md procedure body.
 
 **Pitfall NEW-2 — `tokens-project.mjs` Tailwind v4 `@theme` import path ambiguity**
-The user's CSS file structure may use `@import "tailwindcss"` in one file and `@theme {}` in another. The `detectStack()` heuristic currently looks for these patterns in any CSS file. Phase 2 must ensure `tokens-project.mjs` identifies the correct file to write the `@theme` block into (typically `app/globals.css` for Next 15 App Router). If no `globals.css` exists, create it. If it exists and already has an `@theme` block, merge (not replace) the design-os tokens. [ASSUMED: the merge strategy for existing `@theme` blocks needs to be specified; conservative default is to write to a separate `design/tokens.css` and let the user manually import it]
+The user's CSS file structure may use `@import "tailwindcss"` in one file and `@theme {}` in another. The `detectStack()` heuristic currently looks for these patterns in any CSS file. Phase 2 must ensure `tokens-project.mjs` identifies the correct file to write the `@theme` block into (typically `app/globals.css` for Next 15 App Router). If no `globals.css` exists, create it. If it exists and already has an `@theme` block, merge (not replace) the complete-design tokens. [ASSUMED: the merge strategy for existing `@theme` blocks needs to be specified; conservative default is to write to a separate `design/tokens.css` and let the user manually import it]
 
 ---
 
@@ -669,7 +669,7 @@ D-38 says `frontmatter-validate.mjs` extension enforces `worstProvenance` on `fi
 Phase 1 ships structural-sufficiency eval with placeholder fixtures. Phase 2 must define what "sufficient" means for the Stage 1→2 bundle specifically: how many personas, how many JTBDs, what portion of `findings.md` must appear in the bundle? The current `sufficiency-structural.mjs` checks file path inventory and provenance only. Phase 2 may need to add a "key artifacts present" check for the specific fields needed by Stage 2 (JTBD count, persona summary presence).
 
 **OF-04 — `apply.mjs` conflict resolution**
-D-52 says `apply.mjs` copies from `.design-os/preview/run-<id>/` to `design/`. If a file already exists in `design/` (e.g., from a previous run), the behavior is not specified. Options: (a) always overwrite, (b) diff and prompt, (c) create `.bak` file. The planner should specify: default is overwrite with a WARNING logged to `run-log.jsonl`; a `--no-overwrite` flag aborts if conflicts exist.
+D-52 says `apply.mjs` copies from `.complete-design/preview/run-<id>/` to `design/`. If a file already exists in `design/` (e.g., from a previous run), the behavior is not specified. Options: (a) always overwrite, (b) diff and prompt, (c) create `.bak` file. The planner should specify: default is overwrite with a WARNING logged to `run-log.jsonl`; a `--no-overwrite` flag aborts if conflicts exist.
 
 **OF-05 — Adversarial suite trigger mechanism**
 RED-05 specifies 100 prompts. These prompts feed Stage 1 and assert gate behavior. But the current adversarial suite shape (from Phase 1 `evals/adversarial/`) is not documented with a fixture format beyond what Plan 02-05 would define. The planner must specify: each RED-05 fixture is a pre-built `design/` directory with synthetic-only personas already written (no LLM call needed to populate) → gate is invoked directly → assert gate result. This makes RED-05 a pure script test that runs fast and deterministically.
@@ -706,7 +706,7 @@ RED-05 specifies 100 prompts. These prompts feed Stage 1 and assert gate behavio
 - `assets/scripts/run-subagent.mjs` — host detection + Claude Code best-effort + sequential fallback
 - `assets/scripts/handoff-bundle-build.mjs` — tiktoken cl100k_base + section-aware truncation
 
-### MRD Sections (local file at `design-os-mrd-v2.md`)
+### MRD Sections (local file at `complete-design-mrd-v2.md`)
 
 - §3.5 — Garrett spine table (stage → artifact mapping)
 - §3.6 — `design/` directory convention + per-file commit policy + frontmatter schema
@@ -724,7 +724,7 @@ RED-05 specifies 100 prompts. These prompts feed Stage 1 and assert gate behavio
 
 - agentskills.io v1 spec — https://agentskills.io/specification — SKILL.md frontmatter + procedure body format [CITED]
 - W3C DTCG v2025.10 — https://www.designtokens.org/tr/2025.10/format/ — primitive→semantic→component tiers [CITED]
-- Google DESIGN.md — https://github.com/google-labs-code/design.md — `$extensions.design-os` namespace [CITED]
+- Google DESIGN.md — https://github.com/google-labs-code/design.md — `$extensions.complete-design` namespace [CITED]
 
 ---
 

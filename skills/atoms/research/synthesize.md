@@ -1,5 +1,5 @@
 ---
-name: "design-os/research/synthesize"
+name: "complete-design/research/synthesize"
 description: "Synthesize JTBDs from persona thinking-styles; write synthesis.md with worstProvenance from cited personas (D-38)"
 stage: 1
 mvp: true
@@ -95,7 +95,7 @@ Write `design/research/synthesis.md` with YAML frontmatter:
 artifact: findings
 stage: 1
 generated: <ISO datetime>
-owner: <project owner or 'design-os/discover'>
+owner: <project owner or 'complete-design/discover'>
 lastReviewedAt: <ISO datetime>
 sourceHash: sha256:<hash>
 worstProvenance: <computed worst provenance across all cited personas>

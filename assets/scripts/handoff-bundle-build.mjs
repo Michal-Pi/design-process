@@ -62,7 +62,7 @@ function canonicalize(value) {
 
 /**
  * Recursively collect all files in a directory in sorted order.
- * Skips .design-os, .handoff, and hidden files.
+ * Skips .complete-design, .handoff, and hidden files.
  *
  * @param {string} dir
  * @param {string} [base]
@@ -75,7 +75,7 @@ async function collectFiles(dir, base = dir) {
   const files = [];
 
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
-    if (entry.name === ".design-os") continue;
+    if (entry.name === ".complete-design") continue;
     if (entry.name === ".handoff") continue;
     if (entry.name.startsWith(".")) continue;
 
@@ -337,7 +337,7 @@ export async function buildHandoffBundle({ stageFrom, stageTo, designDir, llmSum
         .trim() ? [] : undefined,
       // Required by FrontmatterCommon
       provenance: "generated",
-      owner: "design-os",
+      owner: "complete-design",
       lastReviewedAt: generatedAt ?? new Date().toISOString(),
     };
 

@@ -1,5 +1,5 @@
 ---
-name: "design-os/hifi/variants-preview"
+name: "complete-design/hifi/variants-preview"
 description: "Spawn 3 hi-fi preview variants via Playwright + stage adapter; capture screenshots; check 6-axis visual diversity ≥0.15"
 stage: "5a"
 mvp: true
@@ -18,7 +18,7 @@ allows-tools:
 Spawns 3 hi-fi preview variants using the Phase 1 preview harness (Playwright + Vite/Next/Astro adapters),
 captures screenshots, and checks 6-axis visual diversity between variants.
 
-**Output:** 3 screenshots at `.design-os/preview/run-<id>/screenshots/variant-{A,B,C}.png`
+**Output:** 3 screenshots at `.complete-design/preview/run-<id>/screenshots/variant-{A,B,C}.png`
 
 **Diversity check:** Any variant pair with < 0.15 diversity score logs a WARNING.
 This is informational — variants are exploratory, not a production gate.
@@ -43,7 +43,7 @@ Then proceed to the workflow procedure below.
 
 ## Workflow procedure
 
-1. **Read tokens from staging area.** Read `design/tokens.json` (or from `.design-os/preview/run-<id>/tokens.json`
+1. **Read tokens from staging area.** Read `design/tokens.json` (or from `.complete-design/preview/run-<id>/tokens.json`
    if the parent workflow staged it there). Extract the `semantic.color.primary.$value` for
    palette variation.
 
@@ -53,7 +53,7 @@ Then proceed to the workflow procedure below.
    - **Variant C:** colorPrimary lightness -10% (e.g., `oklch(50% 0.2 270)`)
 
    For each variant, call `emitTokens()` from `tokens-project.mjs` with the variant palette
-   to generate a separate staging area under `.design-os/preview/run-<id>/variant-{A,B,C}/`.
+   to generate a separate staging area under `.complete-design/preview/run-<id>/variant-{A,B,C}/`.
 
 3. **Spawn dev server and capture screenshots.** For each of the 3 variants:
 
@@ -76,7 +76,7 @@ Then proceed to the workflow procedure below.
    const { spawnAndProbe } = await import('assets/scripts/playwright-runner.mjs');
    const { screenshots } = await spawnAndProbe(serverCmd, port, {
      signal: AbortSignal.timeout(30000),
-     screenshotPath: '.design-os/preview/run-<id>/screenshots/variant-A.png',
+     screenshotPath: '.complete-design/preview/run-<id>/screenshots/variant-A.png',
    });
    ```
 
@@ -113,7 +113,7 @@ Then proceed to the workflow procedure below.
    {
      "screenshots": ["path/to/variant-A.png", "path/to/variant-B.png", "path/to/variant-C.png"],
      "diversityScores": { "A-B": 0.22, "A-C": 0.31, "B-C": 0.18 },
-     "stagingDir": ".design-os/preview/run-<id>/"
+     "stagingDir": ".complete-design/preview/run-<id>/"
    }
    ```
 

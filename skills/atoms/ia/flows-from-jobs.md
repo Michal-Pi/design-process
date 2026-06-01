@@ -1,5 +1,5 @@
 ---
-name: "design-os/ia/flows-from-jobs"
+name: "complete-design/ia/flows-from-jobs"
 description: "Emit one Mermaid flowchart per JTBD from Stage 1 job stories; no colors or typography (FID-02)"
 stage: 2
 mvp: true
@@ -94,7 +94,7 @@ Example: `checkout.jtbd.md` → `ia/flows/checkout.flow.mmd`
 For each generated flow file, attempt render:
 
 ```bash
-node bin/design-os.mjs mermaid-render --input <path>.flow.mmd --output /dev/null
+node bin/complete-design.mjs mermaid-render --input <path>.flow.mmd --output /dev/null
 ```
 
 If the command exits non-zero, the Mermaid syntax is invalid. Note the error.

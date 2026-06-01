@@ -13,19 +13,19 @@
 
 A reviewer noted that the v1.0 "extract → enforce → audit" framing assumes the user already knows what they want — wrong for both greenfield (no system to extract from) and brownfield refresh (system exists but is being reconsidered). The framing also wrongly ceded "see UI proposed visually" to live-preview tools (v0/Lovable). It does not need to: `frontend-design` already spawns a local Node server to render options, and the modern agent harness exposes Playwright, Chrome DevTools, and claude-in-chrome MCPs — visualization inside the agent loop is technically achievable today.
 
-**A second correction lands at the same time:** v1.0 wrote off greenfield as "structurally lost" to v0/Lovable/Bolt on the grounds that those tools offer live preview design-os couldn't match. Both halves of that claim are wrong:
+**A second correction lands at the same time:** v1.0 wrote off greenfield as "structurally lost" to v0/Lovable/Bolt on the grounds that those tools offer live preview complete-design couldn't match. Both halves of that claim are wrong:
 
 1. The preview gap is closable (see above — Playwright + Chrome DevTools + claude-in-chrome MCPs).
 2. **The "v0/Lovable own greenfield" framing ignores why most coding-agent users *don't* use v0/Lovable.** They are already paying for Claude Code / Cursor / Codex / Junie. v0 ($20-50/mo + Vercel token usage), Lovable ($25+/mo + their LLM calls), Bolt ($20+/mo) all mean: a second subscription, a second runtime, a second login, and — critically — *paying for LLM tokens twice* (once for the coding agent, once for v0/Lovable). For solo devs, indie SaaS builders, and most professional devs working in their own repo, that's a hard no. The 17M users of v0+Lovable+Bolt are real, but the >50M users of Claude Code / Cursor / Codex / Copilot are a different (and larger) market — many of whom explicitly *rejected* the live-preview tools for the cost-and-fragmentation reason.
 
-That's the actual primary market for design-os: **devs who already pay for a coding agent and want it to be capable of design exploration, without adding a second tool that double-bills tokens.** Greenfield is not ceded; it's a first-class use case alongside brownfield.
+That's the actual primary market for complete-design: **devs who already pay for a coding agent and want it to be capable of design exploration, without adding a second tool that double-bills tokens.** Greenfield is not ceded; it's a first-class use case alongside brownfield.
 
 **The corrected mental model: design (with visual variants in YOUR stack on the agent you're already paying for) → pick → contract → enforce → audit.** The contract is the *output* of a converged design choice, not the prerequisite. v1.0.1 adds:
 
 - A new headline workflow `design` (§3.6) — generates 3 visual variants, renders them in a local dev server, screenshots via Playwright / Chrome DevTools / claude-in-chrome, presents side-by-side, supports accept/iterate/reject. Works greenfield (5-question intake) and brownfield (extract baseline first).
 - A `preview/` skill family (4 atoms): `preview/render-variants`, `preview/serve`, `preview/screenshot`, `preview/iterate`.
 - Total triggerable skills up from 10 to **14** (still well under Codex 2% cap; descriptions re-engineered to fit).
-- Repositioning: §1 and §2.6 no longer cede the entire "visualize my options" surface. design-os offers visual exploration *in the user's own stack with their own components and their own DS* — which v0/Lovable structurally cannot, because they render in their own runtime with their own components. This is a stronger differentiation than the brownfield-only stance of v1.0.
+- Repositioning: §1 and §2.6 no longer cede the entire "visualize my options" surface. complete-design offers visual exploration *in the user's own stack with their own components and their own DS* — which v0/Lovable structurally cannot, because they render in their own runtime with their own components. This is a stronger differentiation than the brownfield-only stance of v1.0.
 - The launch hook (§7.2) leads with a preview-demo recording, not just the slop-tells list.
 - The trust posture (§2.4) gains a new tenet: *show, don't tell* — every contract decision is rendered visually before being committed, never asserted blind. This is the same lever that won Subframe its designer trust.
 - `direction/bootstrap` becomes an *internal* atom invoked by `design`, no longer a user-facing entry skill.
@@ -48,7 +48,7 @@ The v0.2 MRD passed a codex review but failed a second-order adversarial review.
 4. **De-emphasized "AI" in positioning.** Designer discourse through 2025–2026 turned actively hostile to AI-branded design tools (Tobias van Schneider, Brad Frost, Vitaly Friedman, the Claude Design backlash). "AI slop" was 2025 Word of the Year. The package frames as a *design-contract bundler*, not an "AI design tool." This is positioning, not denial — the package is LLM-driven, but the headline value is *persistence, fidelity, and enforcement*, not generation.
 5. **Made GTM a first-class requirement.** v0.2 punted GTM to a §11 paragraph. The data shows cold launches don't reach top 20; every top-10 skill rode a platform launch as zero-day content and had a quotable memetic hook. We design the launch into the package, not after it.
 
-The remaining v0.2 architecture (persistence under `.design-os/`, host compatibility contract, stack adapter interface, canonical manifest, critique terminal states, knowledge architecture, multi-axis direction model, trigger discipline) survives, refactored to fit the narrower scope.
+The remaining v0.2 architecture (persistence under `.complete-design/`, host compatibility contract, stack adapter interface, canonical manifest, critique terminal states, knowledge architecture, multi-axis direction model, trigger discipline) survives, refactored to fit the narrower scope.
 
 ---
 
@@ -56,7 +56,7 @@ The remaining v0.2 architecture (persistence under `.design-os/`, host compatibi
 
 **The opportunity, restated.** Coding agents (Claude Code, Codex, Cursor, Junie, Copilot) now generate the majority of new UI code in production codebases. They generate it badly when they have no design system to anchor to — defaulting to indigo gradients, Inter typography, glass cards, shadcn defaults — what the discourse now calls "AI slop." The popular workaround — switching to v0 / Lovable / Bolt — solves the visual-exploration problem but creates two new ones: **(a) a second subscription billed on top of the user's existing coding-agent cost, and (b) tokens paid twice**, once on the coding agent and once on the live-preview tool's LLM. For most devs already paying for Claude Code or Cursor, that double-billing makes the live-preview tools a non-starter — explaining why v0+Lovable+Bolt's combined ~17M users are a *fraction* of the >50M total coding-agent userbase. Anthropic's `frontend-design` skill (277k installs) is the dominant in-agent response, but it's prose-only: it tells the model to *be bold* without giving it a contract and without showing the user what "bold" looks like before committing. Subframe and Miro Aura bundle a real design system as agent-readable contract + MCP server + skill, but Subframe locks you into their canvas and Miro Aura is private. Google's April 2026 DESIGN.md spec finally gave the ecosystem an open contract format. **What's missing is a host-portable, framework-agnostic skill package that — inside the agent the user is already paying for — explores 3 visual design variants in the user's own repo, lets them pick, then commits the result as a DESIGN.md contract every agent respects.**
 
-**What we are building.** `design-os` ships 14 narrow inner-loop skills that compose into **four** flows:
+**What we are building.** `complete-design` ships 14 narrow inner-loop skills that compose into **four** flows:
 
 - **design** *(headline)* — generates 3 visual variants of the same scope (hero / page / component), renders each in a local dev server using the user's own stack (Vite / Next / plain HTML), screenshots them via Playwright / Chrome DevTools / claude-in-chrome MCP, shows side-by-side, lets the user accept / iterate / reject. Works greenfield (5-question intake) and brownfield (extract baseline first). On accept, the chosen variant is committed as DESIGN.md.
 - **extract** — for users who already have a system and just want it captured as-is, no exploration. The brownfield path of `design`, invocable standalone.
@@ -67,13 +67,13 @@ Output is always DESIGN.md (the Google spec) plus DTCG-v2025.10 tokens plus stac
 
 **The defensible moat.** Five advantages, in order of durability:
 
-1. **Visualization in the user's own stack, with their own components.** Live-preview tools (v0, Lovable, Bolt) preview in *their own runtime* with *their own components* — that's why outputs feel templated and v0-ish. design-os spawns a dev server in the user's stack (Vite / Next / plain) and renders variants using whatever components the repo already has. The preview *is* what the production result will look like, because it runs in the production stack. No live-preview vendor will build this — it would cannibalize their runtime.
+1. **Visualization in the user's own stack, with their own components.** Live-preview tools (v0, Lovable, Bolt) preview in *their own runtime* with *their own components* — that's why outputs feel templated and v0-ish. complete-design spawns a dev server in the user's stack (Vite / Next / plain) and renders variants using whatever components the repo already has. The preview *is* what the production result will look like, because it runs in the production stack. No live-preview vendor will build this — it would cannibalize their runtime.
 2. **Runs in the repo against the actual code.** Same advantage as v1.0 — live-preview tools cannot read your existing tokens, components, brand assets.
 3. **Host-portable.** SKILL.md works across 18+ agent harnesses. v0/Lovable/Subframe are runtime-locked.
 4. **Consumes/produces the open standard.** DESIGN.md is becoming the design-system interchange the way DTCG became the token interchange. Being polyglot — read shadcn `globals.css`, Tailwind config, Tokens Studio export, Style Dictionary source, Radix theme, Subframe MCP, Storybook MCP via Chromatic, Builder MCP, Material 3 tokens — is the moat live-preview vendors won't build because it doesn't drive their runtime.
 5. **Critique gate as a first-class verb.** `audit` is differentiated from any live-preview tool. This is the trust posture Subframe demonstrated wins designers.
 
-**The MVP wedge.** A working **`design`** workflow that takes a brief (or an existing repo), generates 3 visual variants, renders them in a Vite dev server in the user's repo, screenshots via Playwright, and lets the user pick — committing the chosen variant as `.design-os/DESIGN.md`. Plus `audit` standalone. Two workflows, demonstrably useful on day one. Total install footprint 14 skills (within Codex's 2% cap budget even with 5+ other packages installed).
+**The MVP wedge.** A working **`design`** workflow that takes a brief (or an existing repo), generates 3 visual variants, renders them in a Vite dev server in the user's repo, screenshots via Playwright, and lets the user pick — committing the chosen variant as `.complete-design/DESIGN.md`. Plus `audit` standalone. Two workflows, demonstrably useful on day one. Total install footprint 14 skills (within Codex's 2% cap budget even with 5+ other packages installed).
 
 **The hook (memetic compression).** Working title: **"Three designs in your own repo, before you commit to one."** A 90-second demo recording — open repo, run `design`, watch 3 variants render in the local browser, pick one, commit. The launch artifact pairs this demo with the "Ten design-system tells" critique list (kept from v1.0 — it doubles as `audit --slop-tells`).
 
@@ -86,7 +86,7 @@ Output is always DESIGN.md (the Google spec) plus DTCG-v2025.10 tokens plus stac
 Three contemporary shifts make this MRD timely. None were as crisp in v0.2.
 
 1. **The contract layer just got an open standard.** Google open-sourced DESIGN.md (`google-labs-code/design.md`) in April 2026 as the agent-readable design-system format. Stitch (formerly Galileo AI, Google-acquired) is the reference implementation. `awesome-claude-design` has 68+ DESIGN.md examples and a generator at design.dev. Anthropic's `frontend-design` skill has open issue #1008 requesting DESIGN.md consume/produce support. The format is six months old and already entrenched. This is the DTCG moment for design contracts — the spec stabilized just before the ecosystem needs it.
-2. **Coding agents are absorbing a meaningful share of "make me a UI" work — Vercel's own data is suggestive.** v0 + Lovable account for only ~6% of agent-initiated deployments on Vercel's own platform; the other ~94% come from Claude Code, Codex, and Cursor. The popular framing ("v0 won greenfield, agents won brownfield") is too simple. **A meaningful segment of coding-agent users avoids separate live-preview tools because of cost, context switching, and repo-handoff friction.** design-os targets that segment first. The Anthropic `frontend-design` skill's 277k installs is consistent with this hypothesis (though it doesn't prove it — those installs could also reflect users who use both or who installed many skills speculatively). The market for "preview-capable design in the agent loop" is at minimum the size of `frontend-design`'s installed base, and plausibly several multiples of it.
+2. **Coding agents are absorbing a meaningful share of "make me a UI" work — Vercel's own data is suggestive.** v0 + Lovable account for only ~6% of agent-initiated deployments on Vercel's own platform; the other ~94% come from Claude Code, Codex, and Cursor. The popular framing ("v0 won greenfield, agents won brownfield") is too simple. **A meaningful segment of coding-agent users avoids separate live-preview tools because of cost, context switching, and repo-handoff friction.** complete-design targets that segment first. The Anthropic `frontend-design` skill's 277k installs is consistent with this hypothesis (though it doesn't prove it — those installs could also reflect users who use both or who installed many skills speculatively). The market for "preview-capable design in the agent loop" is at minimum the size of `frontend-design`'s installed base, and plausibly several multiples of it.
 3. **Designer discourse turned on AI design tools.** Through 2025–2026 named designers (Brad Frost, Vitaly Friedman, Tobias van Schneider, Pablo Stanley, Mike Monteiro) and the broader "AI slop" discourse made AI-branded design tools a trust liability. van Schneider literally removed "AI" mentions from his own marketing. Brad Frost's framing — *"design systems are the antidote to AI slop, not a competitor to AI"* — is the playbook. A skill package that positions as a *design-system enforcement layer* rather than an *AI design generator* survives the discourse.
 
 Against that backdrop:
@@ -121,7 +121,7 @@ Earlier than this and the spec stack wasn't ready. Later than this and Anthropic
 | **Frontend engineer on a team with an existing design system** *(primary)* | Make my agent (Claude Code / Cursor / Codex) respect our tokens, components, and patterns | Agent generates slop on top of our system; new components don't match | First PR that drifts noticeably from the system | Skepticism toward another tool; trust gap | One skill install + `extract` → next agent generation respects existing tokens |
 | **Design-system maintainer at a Series-B/enterprise** *(secondary)* | Govern AI-generated UI inside my company | Devs use shadcn/v0/Lovable defaults; drift compounds; my system gets bypassed | First AI-coding-tool rollout in a team using our DS | Existing investment in Style Dictionary/Knapsack/Supernova | Plugs into existing pipeline; produces audit reports that name violators |
 | **Designer working with a coding agent** *(secondary)* | Translate Figma intent into faithful code without an LLM redesigning it | Agent ignores tokens; round-trip is lossy | Working on a project with no design-eng pair | Trust gap toward generation-claiming tools | Reads Figma DTCG export, emits matching code, audits drift |
-| **AI-builder embedding `design-os`** *(secondary)* | Constrain my own generator's output to known-good patterns | Their LLM produces slop without scaffolding | Quality complaints from end-users | Concern about over-constraining brand voice | Programmatic invocation of `extract` + `enforce` with structured I/O |
+| **AI-builder embedding `complete-design`** *(secondary)* | Constrain my own generator's output to known-good patterns | Their LLM produces slop without scaffolding | Quality complaints from end-users | Concern about over-constraining brand voice | Programmatic invocation of `extract` + `enforce` with structured I/O |
 | **PM authoring a launch page** *(tertiary)* | Author a credible landing page without a designer | Doesn't know vocabulary; agent output looks templated | Founder-led launch | Cannot/will not write SKILL.md or YAML | Invoked transparently via their existing Cursor/Claude session, no setup |
 
 The PM and solo-builder segments are real (Lenny's Dec 2025 data: 19.8% of PMs use AI for mockups; 83.6% named at least one AI tool they'd miss) but they reach the package only through their existing coding agent surface, never by writing skills directly. The package's UX must work for them through Cursor's chat / Claude Code's CLI without exposing internals.
@@ -132,15 +132,15 @@ The package will be evaluated socially before it's evaluated technically. The Fi
 
 Design choices that buy designer trust (drawn from Subframe, Builder.io Visual Copilot, Figma "Check Designs" — the AI design tools that genuinely won designer endorsement):
 
-| Design choice | Rationale | Implementation in design-os |
+| Design choice | Rationale | Implementation in complete-design |
 |---|---|---|
-| **Don't lead with "AI" in positioning** | van Schneider's signal: AI branding is now a negative trust marker | Package name: `design-os`. Tagline: *"the design-contract layer for agent-driven frontend work."* No "AI" in tagline, README headline, or top-level skill names. |
+| **Don't lead with "AI" in positioning** | van Schneider's signal: AI branding is now a negative trust marker | Package name: `complete-design`. Tagline: *"the design-contract layer for agent-driven frontend work."* No "AI" in tagline, README headline, or top-level skill names. |
 | **Make the final output deterministic** | Subframe's trust lever: once choices are made, code emission is a pure function of the contract, not an LLM call | Token emit, component scaffold projection, and contract → CSS-var mapping are deterministic scripts in `assets/scripts/`. LLM picks; code emits. |
 | **Refuse to claim WCAG conformance; report measured contrast** | Frontend Masters' critique: LLMs cannot certify accessibility | Output is always `WCAG 2.2 AA contrast: 4.7 (pass)`, never `WCAG-compliant`. |
 | **Surface citation for every style choice** | Designers' #1 complaint about Claude Design was *"no shared understanding of tradeoffs"* | Every contract decision in DESIGN.md carries a `source:` field — `Radix step 11`, `Bringhurst §4.2`, or `house heuristic` |
 | **Ask clarifying questions before generating** | Subframe was praised for exactly this pattern | `extract` and `enforce` prompt for brand adjectives, references, and an explicit anti-pattern list before producing anything |
 | **Never auto-publish to git tree** | Addresses the gatekeeper-bypass fear directly | Diff-by-default per §5.5; `--apply` required for write; PR-first always |
-| **Ship anti-slop detection as a first-class verb** | Pre-empt the social pile-on by being the package's own most honest critic | `design-os audit` outputs the designer's likely objections: gradient overuse, type stack matches shadcn default, indigo dominance, etc. |
+| **Ship anti-slop detection as a first-class verb** | Pre-empt the social pile-on by being the package's own most honest critic | `complete-design audit` outputs the designer's likely objections: gradient overuse, type stack matches shadcn default, indigo dominance, etc. |
 | **Show, don't tell — every contract decision is rendered visually before commit** | Designers' #1 complaint about Claude Design was *"the tool read the ingredients but could not cook the meal."* Asserting "we chose Geist Mono + Slate scale" is meaningless without showing what that looks like. | `design` workflow renders 3 variants in a local dev server with the user's actual components, screenshots them, presents side-by-side. No contract is committed without the user seeing it rendered. |
 | **Target toil, not taste** | Figma 2025 report: designers welcome AI on contrast/tokens/docs; reject it on aesthetic judgment | The package automates token math, contrast checks, dark-mode mapping, Figma↔code translation; never claims to make creative decisions |
 | **Hand-curated primitives, not generated ones** | Subframe's 47-component model | Style codifiers ship hand-vetted recipes; the LLM parameterizes and selects, doesn't invent |
@@ -150,7 +150,7 @@ This is *not* the same as "be conservative about scope." The package can do ambi
 
 ### 2.5 Competitive landscape — refreshed
 
-| Player | Position | Adoption | Direct collision with design-os? |
+| Player | Position | Adoption | Direct collision with complete-design? |
 |---|---|---|---|
 | **Anthropic `frontend-design`** | Single-file prose skill, "be bold" direction | ~212k weekly, ~422k cumulative installs; #3 overall | **High.** They have the install base. Open issue #1008 asks for DESIGN.md support — when (not if) they ship it, that's our window closing. We must launch before they add contract persistence. |
 | **Vercel `web-design-guidelines`** | Audit-only, remote-fetch rule set | ~206k weekly | Medium — we audit too, but they don't extract or enforce contracts. Possible complementary positioning. |
@@ -165,7 +165,7 @@ This is *not* the same as "be conservative about scope." The package can do ambi
 | **Storybook MCP via Chromatic** | Auto-published MCP from any Storybook | Any Storybook user gets it free | **High on the components surface.** Massive distribution. We must read it (be a polyglot adapter), not compete with it. |
 | **Tokens Studio + Style Dictionary** | Figma-side authoring + transform pipeline | Industry standard | Low — adjacent infrastructure. We project to Style Dictionary; we read Tokens Studio exports. |
 | **Knapsack / Supernova / zeroheight** | Enterprise design-system platforms | Enterprise | Low — they are platforms, we are a skill. Possible enterprise complementary play later. |
-| **v0 / Lovable / Bolt** | Live-preview UI generation | 17M+ users combined | **Low on our positioning** — we explicitly cede this surface. They are upstream users: a `design-os`-produced DESIGN.md can be loaded into v0's prompt to constrain its output. We pitch as "the layer underneath v0." |
+| **v0 / Lovable / Bolt** | Live-preview UI generation | 17M+ users combined | **Low on our positioning** — we explicitly cede this surface. They are upstream users: a `complete-design`-produced DESIGN.md can be loaded into v0's prompt to constrain its output. We pitch as "the layer underneath v0." |
 
 ### 2.6 Where we win and where we lose (honest)
 
@@ -209,26 +209,26 @@ Ten principles. The first five are inherited from v0.2 and survived the adversar
 | # | Principle | Implication |
 |---|---|---|
 | P1 | **Extract before generate.** | The package's primary verb is `extract`, not `create`. We never generate a contract from a prompt before checking whether one can be inferred from the repo. |
-| P2 | **Direction precedes generation, with a standalone fallback.** | Atomic skills, when invoked standalone, read `.design-os/DESIGN.md` first. If absent: infer from repo, or emit `direction: unset` draft and ask one blocking question. Never silently picks defaults. |
+| P2 | **Direction precedes generation, with a standalone fallback.** | Atomic skills, when invoked standalone, read `.complete-design/DESIGN.md` first. If absent: infer from repo, or emit `direction: unset` draft and ask one blocking question. Never silently picks defaults. |
 | P3 | **DESIGN.md is the contract, DTCG is the tokens.** | Anchor on Google's open spec for design contracts. Emit DTCG v2025.10 JSON for tokens. Every other output (Tailwind, shadcn, CSS) is a projection. Never invent our own format. |
 | P4 | **Sourced opinions, cited at rule granularity.** | Every rule cites a canonical source (Radix step roles, Bringhurst measure, WCAG SC) or is labeled `house heuristic`. References ship as summary-not-excerpt with source-class metadata per §3.11. |
 | P5 | **Project context is non-optional.** | Before generating, scan the user's repo for existing tokens, components, brand assets, stack. Reconcile, don't override. |
 | P6 | **The final code emit is deterministic.** | Subframe's trust lever, encoded as a rule: LLM picks and parameterizes; the contract → CSS-var, contract → JSX, contract → Tailwind `@theme` mappings are pure functions in `assets/scripts/`, runnable offline. |
-| P7 | **Critique is a verb, not a feature.** | `design-os audit` is a first-class workflow with terminal states (`PASS` / `PASS_WITH_WARNINGS` / `FAILED_AFTER_REPAIR` / `USER_OVERRIDDEN`). Workflows never report success when audit fails. |
+| P7 | **Critique is a verb, not a feature.** | `complete-design audit` is a first-class workflow with terminal states (`PASS` / `PASS_WITH_WARNINGS` / `FAILED_AFTER_REPAIR` / `USER_OVERRIDDEN`). Workflows never report success when audit fails. |
 | P8 | **Never claim WCAG conformance; report measured contrast.** | Output `WCAG 2.2 AA contrast 4.7 (pass)`, never `WCAG-compliant`. APCA is an informational signal only; WCAG 2.x is conformance. |
 | P9 | **Don't lead with AI.** | Package name, taglines, top-level skill names, and the launch artifact avoid "AI" framing. The package is LLM-driven; the value is enforcement, fidelity, and persistence. |
 | P10 | **Trigger discipline for Codex's 2% cap.** | Every skill description is engineered for aggressive truncation: directive pattern, 5+ quoted trigger phrases front-loaded in the first 200 chars, ≥20-prompt should-fire/should-not-fire eval per skill, CI-gated. Total triggerable skill count is **14** (4 workflows + 10 atoms) — chosen to fit within Codex's ~8k metadata budget even with 5+ other packages installed. (Underlying implementation — scripts, reference data, adapters, style assets — is intentionally larger; "14 skills" means 14 triggerable units, not 14 source files.) |
-| P11 | **Channel segmentation: AI in the architecture, not the README.** | Designer-facing surfaces (README headline, launch artifact, marketing site, package tagline) frame design-os as a *design-contract layer* and *audit tool* — never "AI design generator." Developer-facing surfaces (technical docs, MRD, eval reports, debug output) discuss LLM behavior honestly because developers need that detail to debug. Same product, two audiences, deliberate language. |
+| P11 | **Channel segmentation: AI in the architecture, not the README.** | Designer-facing surfaces (README headline, launch artifact, marketing site, package tagline) frame complete-design as a *design-contract layer* and *audit tool* — never "AI design generator." Developer-facing surfaces (technical docs, MRD, eval reports, debug output) discuss LLM behavior honestly because developers need that detail to debug. Same product, two audiences, deliberate language. |
 
 ### 3.3 Target personas (operationalized)
 
 | Persona | Surface | First-touch flow |
 |---|---|---|
-| **Priya — Frontend lead with an existing DS** | Cursor or Claude Code in repo | `extract` → reviews `.design-os/DESIGN.md` diff → commits → next agent gen respects it |
+| **Priya — Frontend lead with an existing DS** | Cursor or Claude Code in repo | `extract` → reviews `.complete-design/DESIGN.md` diff → commits → next agent gen respects it |
 | **Maya — Indie dev shipping a SaaS** | CLI agent in repo | `extract --bootstrap` (allows missing system) → reviews proposal → commits → enforce |
 | **Sam — DS maintainer at Series-B** | CI + local agent | CI runs `audit` on every PR; surfaces findings as PR comments |
 | **Ren — Designer paired with an agent** | Claude Code, Figma open | `extract --source figma-export.dtcg.json` → contract reflects Figma intent → audit drift |
-| **Jordan — AI-builder embedding design-os** | Their runtime | `design-os enforce --constrain` constrains their generator to a loaded contract |
+| **Jordan — AI-builder embedding complete-design** | Their runtime | `complete-design enforce --constrain` constrains their generator to a loaded contract |
 | **Lin — PM authoring a landing page** | Cursor / Claude.ai chat | Never sees the package directly; agent invokes `extract` + `enforce` transparently when the user asks for help with UI |
 
 ### 3.4 Jobs-To-Be-Done
@@ -248,16 +248,16 @@ Two secondary JTBDs handled via atomic skills:
 
 This is the load-bearing format decision. Everything else flows from it — but with one explicit caveat:
 
-> **DESIGN.md is the preferred v1.0 interchange anchor, not an assumed permanent winner.** Google's own announcement labels it a "draft specification" and the Anthropic issue (#1008) tracks it as alpha. design-os keeps DTCG tokens, `sourceRefs`, and extractor evidence portable enough to project into another contract envelope if DESIGN.md adoption stalls. `$extensions.design-os` is the spec's documented mechanism for namespaced metadata — vanilla DESIGN.md consumers safely ignore it. We are *using* the spec's extension mechanism, not extending the spec.
+> **DESIGN.md is the preferred v1.0 interchange anchor, not an assumed permanent winner.** Google's own announcement labels it a "draft specification" and the Anthropic issue (#1008) tracks it as alpha. complete-design keeps DTCG tokens, `sourceRefs`, and extractor evidence portable enough to project into another contract envelope if DESIGN.md adoption stalls. `$extensions.complete-design` is the spec's documented mechanism for namespaced metadata — vanilla DESIGN.md consumers safely ignore it. We are *using* the spec's extension mechanism, not extending the spec.
 
-**Format:** Google's DESIGN.md spec (`google-labs-code/design.md`, April 2026), with our `$extensions.design-os` namespace carrying the structured token + composition data DESIGN.md leaves unspecified.
+**Format:** Google's DESIGN.md spec (`google-labs-code/design.md`, April 2026), with our `$extensions.complete-design` namespace carrying the structured token + composition data DESIGN.md leaves unspecified.
 
-**Structure of a design-os-produced DESIGN.md:**
+**Structure of a complete-design-produced DESIGN.md:**
 
 ```markdown
 # Design Contract: Acme Inc
 
-> Generated by design-os@1.0.0  ·  Last reviewed by ren@acme  ·  2026-05-24
+> Generated by @pm-musketeers/complete-design@1.0.0  ·  Last reviewed by ren@acme  ·  2026-05-24
 > Sources: tailwind.config.ts, src/app/globals.css, src/components/ui/*,
 >          brand-assets/, figma-export.dtcg.json
 > Confidence: 0.92 (high; 3 attributes inferred at <0.7)
@@ -302,7 +302,7 @@ Custom components: 7 (see $extensions.components).
 - Glassmorphism (conflicts with declared geist-precision style)
 
 ## $extensions
-  design-os:
+  complete-design:
     schemaVersion: 1
     tokens: { ... DTCG v2025.10 ... }
     components: [ ... structured manifest ... ]
@@ -310,7 +310,7 @@ Custom components: 7 (see $extensions.components).
     sources: [ ... per-attribute confidence and source ... ]
 ```
 
-This is the file that `extract` writes, `enforce` reads on every generation, and `audit` evaluates PRs against. It's the user-readable contract the package optimizes for. The full `$extensions.design-os` block is the machine-readable contract every other emit projects from.
+This is the file that `extract` writes, `enforce` reads on every generation, and `audit` evaluates PRs against. It's the user-readable contract the package optimizes for. The full `$extensions.complete-design` block is the machine-readable contract every other emit projects from.
 
 ### 3.6 Architecture — narrower, deeper
 
@@ -365,7 +365,7 @@ The full first-200-char description suite for all 14 skills consumes ~3.8k chars
 
 ### 3.7 Workflow inventory
 
-Four workflows. Each is a SKILL.md whose body is a numbered procedure with explicit `Read`/`Write` of `.design-os/` artifacts and stitched-context invocations of atoms.
+Four workflows. Each is a SKILL.md whose body is a numbered procedure with explicit `Read`/`Write` of `.complete-design/` artifacts and stitched-context invocations of atoms.
 
 #### W0 — `design` *(the headline workflow)*
 
@@ -377,7 +377,7 @@ This is what closes the v1.0 gap. Designers and developers don't commit to a des
 Step  Action
 ─────────────────────────────────────────────────────────────────────────
  1    Mode detection:
-        a) .design-os/DESIGN.md exists →
+        a) .complete-design/DESIGN.md exists →
              - if user asks for "explore alternatives" or "refresh":
                proceed with current contract as baseline, generate variants
                that propose refinements
@@ -418,15 +418,15 @@ Step  Action
           SCAFFOLD — component family installed (e.g. shadcn) but this
                      one isn't generated yet → run shadcn add (or equivalent)
           FALLBACK — none of the above → emit a minimal templated
-                     component into .design-os/preview/_components/
-        Strategy decisions are logged in .design-os/preview/run-<id>/
+                     component into .complete-design/preview/_components/
+        Strategy decisions are logged in .complete-design/preview/run-<id>/
         components-manifest.json for reproducibility and audit.
  3    For each variant: invoke preview/render-variants with stitched context
         - Scaffold the variant's tokens (deterministic from chosen scale)
         - Generate a preview surface: hero + button + card + form sample
         - Use the user's existing components when they exist (brownfield);
           generate via shadcn/Tailwind v4 templates when greenfield
-        - Output: .design-os/preview/{v1,v2,v3}/index.html (or .tsx)
+        - Output: .complete-design/preview/{v1,v2,v3}/index.html (or .tsx)
  4    Invoke preview/serve:
         - Detect stack: Vite, Next, Astro, plain HTML
         - Spawn local dev server (background process) on a free port
@@ -439,7 +439,7 @@ Step  Action
           + lighthouse + performance)
         - Fall back to claude-in-chrome MCP (when user has it installed)
         - Capture: desktop (1280×800) + mobile (375×667) per variant
-        - Save: .design-os/preview/screenshots/{v1,v2,v3}-{desktop,mobile}.png
+        - Save: .complete-design/preview/screenshots/{v1,v2,v3}-{desktop,mobile}.png
         - Optionally run axe-core + lighthouse per variant (logged in critique)
  6    Present to user (inline):
         - Embed/link the 6 screenshots
@@ -456,7 +456,7 @@ Step  Action
  8    On accept:
         - Compose final DESIGN.md from chosen variant
         - Invoke tokens/emit for declared stacks
-        - Archive non-chosen variants under .design-os/preview/_archive/
+        - Archive non-chosen variants under .complete-design/preview/_archive/
         - Critique gate on final artifact (see W1 step 6)
         - Write CRITIQUE-REPORT.md with terminal state
         - PR-ready diff per merge policy
@@ -481,7 +481,7 @@ d(A, B) = 0.25 · visual_style_delta       // 0 if same style label, 1 otherwise
 
 | Phase | Warm (p50) | Cold (p50) | Notes |
 |---|---|---|---|
-| Direction intake or repo extraction | ≤20s | ≤45s | "Warm" = `.design-os/DESIGN.md` exists or extract cache hit |
+| Direction intake or repo extraction | ≤20s | ≤45s | "Warm" = `.complete-design/DESIGN.md` exists or extract cache hit |
 | Variant parameter generation (LLM call) | ≤25s | ≤25s | Host-default model; 3 variants in parallel where supported |
 | Preview scaffold emit | ≤15s | ≤15s | Deterministic template; no LLM |
 | Dev-server ready (Vite/Next bind + first compile) | ≤15s | ≤35s | "Cold" = node_modules install needed |
@@ -510,7 +510,7 @@ A release cannot claim ≤90s unless the per-phase spans are met across fixtures
 
 The signal-detection happens in `repo-detect.mjs` (deterministic, no LLM). Users can override with `--preview-scope marketing|dashboard|ai|commerce|media|default`.
 
-**Iteration cost cap:** `preview/iterate` has a default cap of **5 iterations per variant per `design` run** (configurable up to 10 via `--max-iterations N`). On cap-hit: the workflow surfaces "you've iterated 5 times; consider committing this variant or starting fresh with a new direction" and requires explicit `--continue-iterating` to proceed. Iteration history is preserved: each iteration writes to `.design-os/preview/v{N}/iter-{i}/` so a user who iterates v1 five times and then accepts v2 doesn't lose the v1 exploration — it's archived under `.design-os/preview/_archive/v1-iterations/`.
+**Iteration cost cap:** `preview/iterate` has a default cap of **5 iterations per variant per `design` run** (configurable up to 10 via `--max-iterations N`). On cap-hit: the workflow surfaces "you've iterated 5 times; consider committing this variant or starting fresh with a new direction" and requires explicit `--continue-iterating` to proceed. Iteration history is preserved: each iteration writes to `.complete-design/preview/v{N}/iter-{i}/` so a user who iterates v1 five times and then accepts v2 doesn't lose the v1 exploration — it's archived under `.complete-design/preview/_archive/v1-iterations/`.
 
 **Mobile viewport policy:** screenshots capture **two** mobile widths by default — **390×844 (mainstream, iPhone 14/15)** and **375×667 (stress-small, iPhone SE)** — plus 1280×800 desktop and 1440×900 wide. Configurable via `--viewports`.
 
@@ -526,7 +526,7 @@ The headline workflow. Takes a repo (or Figma export, or image) and produces a D
 Step  Action
 ─────────────────────────────────────────────────────────────────────────
  1    Detect inputs in priority order:
-        a) .design-os/DESIGN.md exists → exit with "already extracted, use audit"
+        a) .complete-design/DESIGN.md exists → exit with "already extracted, use audit"
         b) Repo with tokens (tailwind config, globals.css, /tokens/) → invoke
            contract/extract-from-repo                           [v1.0]
         c) Figma DTCG export present → invoke
@@ -546,7 +546,7 @@ Step  Action
         - slop-scan (purple-gradient, Inter-default, glass-stack tells)
         - APG conformance on detected component anatomies
         - DTCG schema lint on token block
- 4    Compose DESIGN.md (Google spec) with $extensions.design-os
+ 4    Compose DESIGN.md (Google spec) with $extensions.complete-design
  5    Run tokens/emit for declared stack(s):
         - Tailwind v4 @theme (CSS-first)
         - shadcn :root + .dark (OKLCH)
@@ -556,7 +556,7 @@ Step  Action
         - PASS, PASS_WITH_WARNINGS, FAILED_AFTER_REPAIR, USER_OVERRIDDEN
  7    Write CRITIQUE-REPORT.md + diff for review
  8    Output: a PR-ready diff (never auto-applies); summary points the user
-        at .design-os/DESIGN.md, tokens.json, the projections, and the report
+        at .complete-design/DESIGN.md, tokens.json, the projections, and the report
 ```
 
 Median target: ≤40k tokens. Single bounded extraction subagent (not the v0.2 3-way fan-out) because the work isn't actually parallel — color/type/spacing depend on each other for harmony.
@@ -568,7 +568,7 @@ Constrains the agent's next generation to the contract. Invoked transparently wh
 ```
 Step  Action
 ─────────────────────────────────────────────────────────────────────────
- 1    Read .design-os/DESIGN.md + $extensions.design-os
+ 1    Read .complete-design/DESIGN.md + $extensions.complete-design
  2    Read user's request
  3    Stitch context: "You are generating UI in a repo with this contract.
       Use only the tokens, components, and patterns it allows. Forbidden:
@@ -589,7 +589,7 @@ Takes generated UI (a PR diff, a file glob, a URL) and produces findings against
 Step  Action
 ─────────────────────────────────────────────────────────────────────────
  1    Discover scope (PR diff, glob, URL)
- 2    Read .design-os/DESIGN.md (or use --contract path)
+ 2    Read .complete-design/DESIGN.md (or use --contract path)
  3    Run audit subagents in parallel where independent:
         a) accessibility-auditor (axe-core via Node script + APG check)
         b) contrast-auditor (WCAG 2.2 1.4.3/1.4.11)
@@ -624,7 +624,7 @@ Ten atoms. Each is one job, ≤500 lines, ≤5k tokens, with `composition:`, `ar
 | `contract/extract-from-repo` | Scan a repo (tokens, components, brand assets, package.json) → propose DESIGN.md contract | Ceremony (per project) | ✓ |
 | `contract/extract-from-figma` | Read Figma DTCG export → propose DESIGN.md contract | Ceremony | v1.1 |
 | `contract/extract-from-image` | Vision-model inference from a reference image → propose DESIGN.md contract (with explicit low-confidence markers) | Ceremony | v1.2 |
-| `tokens/emit` | DESIGN.md `$extensions.design-os.tokens` → Tailwind v4 `@theme`, shadcn `:root`/`.dark`, plain CSS vars, Style Dictionary | Inner-loop | ✓ |
+| `tokens/emit` | DESIGN.md `$extensions.complete-design.tokens` → Tailwind v4 `@theme`, shadcn `:root`/`.dark`, plain CSS vars, Style Dictionary | Inner-loop | ✓ |
 | `components/audit-against-contract` | One component or file → findings list against the contract's allowed tokens/anatomies | Inner-loop | ✓ |
 | `critique/slop-detector` | Any UI artifact → findings list against the curated slop-tell corpus | Inner-loop | ✓ |
 | `direction/bootstrap` | When no contract exists: 5-question intake → proposed direction + tone-axis seed (internal; invoked by `design`) | Ceremony (rare) | ✓ |
@@ -654,8 +654,8 @@ composition:
   alternatives: [ ... ]
   conflicts:    [ ... ]
 artifacts:
-  reads:        [ .design-os/DESIGN.md, .design-os/manifest.lock ]
-  writes:       [ .design-os/design-tokens.json, src/app/globals.css ]
+  reads:        [ .complete-design/DESIGN.md, .complete-design/manifest.lock ]
+  writes:       [ .complete-design/design-tokens.json, src/app/globals.css ]
 stack:
   targets:      [ tailwind-v4, shadcn, plain-css ]
   emits:        DTCG | CSS | JSON | TSX
@@ -721,7 +721,7 @@ Trust comes from determinism. Once the LLM has chosen (which palette strategy, w
 | Seed hue → 12-step OKLCH scale | Deterministic: `oklch.mjs` | Pure function of seed |
 | Step role → semantic name (bg, bg-subtle, border, accent, …) | Deterministic: Radix table lookup | Pure function of scale |
 | WCAG contrast computation | Deterministic: `contrast.mjs` | Pure function of pair |
-| DESIGN.md `$extensions.design-os.tokens` block | Deterministic composer | Pure function of inputs |
+| DESIGN.md `$extensions.complete-design.tokens` block | Deterministic composer | Pure function of inputs |
 | Tailwind v4 `@theme` projection | Deterministic template | Pure function of tokens |
 | shadcn `:root`/`.dark` OKLCH | Deterministic template | Pure function of tokens |
 | Component scaffold (button, input, card) | LLM (only when no anatomy exists in repo) | — |
@@ -731,11 +731,11 @@ This contract is what `trust-posture.deterministic-emit: true` in frontmatter cl
 
 ### 3.13 Persisted project artifacts (preserved from v0.2, refactored around DESIGN.md)
 
-Files live under `.design-os/`:
+Files live under `.complete-design/`:
 
 ```
-.design-os/
-  DESIGN.md           # the contract (Google spec, with $extensions.design-os)
+.complete-design/
+  DESIGN.md           # the contract (Google spec, with $extensions.complete-design)
   design-tokens.json  # DTCG v2025.10 source of truth (also embedded in DESIGN.md)
   AUDIT-REPORT.md     # last audit findings (W3 output)
   CRITIQUE-REPORT.md  # last extract/enforce critique (W1/W2 output)
@@ -749,32 +749,32 @@ Every persisted artifact carries:
 schemaVersion:     1
 projectId:         <stable: git origin URL hash, or absolute path hash>
 appPath:           <relative path the workflow operates under>
-generatedBy:       design-os@<version>
+generatedBy:       @pm-musketeers/complete-design@<version>
 knowledgeVersion:  v2026.05
 lastReviewedBy:    <user | agent | unattended>
 lastReviewedAt:    <ISO8601>
 sourceRefs:        [ ... ]  # citations supporting each contract choice
 ```
 
-**Merge policy (unchanged from v0.2):** diff-before-write, manual-override detection via hash comparison, no destructive overwrite, PR-first default, monorepo-aware (multiple `.design-os/` paths supported, resolved upward from `cwd`).
+**Merge policy (unchanged from v0.2):** diff-before-write, manual-override detection via hash comparison, no destructive overwrite, PR-first default, monorepo-aware (multiple `.complete-design/` paths supported, resolved upward from `cwd`).
 
 **Commit policy by file:**
 
 | File | Committed by default? | Rationale |
 |---|---|---|
-| `.design-os/DESIGN.md` | **Yes** | The contract is project metadata; teams need shared state |
-| `.design-os/design-tokens.json` | **Yes** | DTCG source of truth; consumed by other tools |
-| `.design-os/manifest.lock` | **Yes** | Hash chain for determinism verification |
-| `.design-os/AUDIT-REPORT.md` (summary only) | **Yes** | Trail of system health over time |
-| `.design-os/CRITIQUE-REPORT.md` (summary only) | **Yes** | Trail of extraction decisions |
-| `.design-os/manual-overrides.json` (non-sensitive only) | Yes | Captures team decisions |
-| `.design-os/private/run-log.jsonl` | **No** | Local cost/latency metrics; never transmitted |
-| `.design-os/private/decision-log.jsonl` | **No** | Replayable LLM decisions; may contain hashes |
-| `.design-os/private/screenshots/*` | **No** | Visual regression artifacts; potentially sensitive |
-| `.design-os/private/extraction-evidence/*` | **No** | Raw evidence (cropped brand assets, source snippets) |
-| `.design-os/private/brand-derivatives/*` | **No** | Generated palettes from brand assets; potentially unreleased IP |
+| `.complete-design/DESIGN.md` | **Yes** | The contract is project metadata; teams need shared state |
+| `.complete-design/design-tokens.json` | **Yes** | DTCG source of truth; consumed by other tools |
+| `.complete-design/manifest.lock` | **Yes** | Hash chain for determinism verification |
+| `.complete-design/AUDIT-REPORT.md` (summary only) | **Yes** | Trail of system health over time |
+| `.complete-design/CRITIQUE-REPORT.md` (summary only) | **Yes** | Trail of extraction decisions |
+| `.complete-design/manual-overrides.json` (non-sensitive only) | Yes | Captures team decisions |
+| `.complete-design/private/run-log.jsonl` | **No** | Local cost/latency metrics; never transmitted |
+| `.complete-design/private/decision-log.jsonl` | **No** | Replayable LLM decisions; may contain hashes |
+| `.complete-design/private/screenshots/*` | **No** | Visual regression artifacts; potentially sensitive |
+| `.complete-design/private/extraction-evidence/*` | **No** | Raw evidence (cropped brand assets, source snippets) |
+| `.complete-design/private/brand-derivatives/*` | **No** | Generated palettes from brand assets; potentially unreleased IP |
 
-The package writes a `.gitignore` entry for `.design-os/private/` on first run and surfaces the commit-policy summary in the first audit report. Override via `--commit-private` (logged).
+The package writes a `.gitignore` entry for `.complete-design/private/` on first run and surfaces the commit-policy summary in the first audit report. Override via `--commit-private` (logged).
 
 ### 3.14 Host compatibility contract (preserved from v0.2)
 
@@ -814,7 +814,7 @@ adapter:
 ```
 
 **v1.0 adapters:** `tailwind-v4`, `shadcn`, `plain-css`.
-**v0.2 release (`design-os-bridges` companion):** `material-web`, `vue-3-sfc`, `svelte-5`.
+**v0.2 release (`complete-design-bridges` companion):** `material-web`, `vue-3-sfc`, `svelte-5`.
 **v0.3+:** `swiftui`, `kotlin-compose`, `lit`.
 
 ### 3.16 Polyglot input adapters (architecture vision)
@@ -836,7 +836,7 @@ Symmetrically to output adapters, the package reads from every common design-sys
 | Storybook MCP (Chromatic-published) | call MCP server | components + stories | v1.2 |
 | Builder MCP | call MCP server | tokens + components | v1.2 |
 
-Live-preview tools will not build this layer because it doesn't drive their runtime adoption. It's how `design-os` becomes useful in any existing repo regardless of how that repo's design system was authored — but only the v1.0 rows above are shipped in the first release. Unsupported sources produce a clear "this source will be supported in vX.Y; use [recommended workaround] today" message, not a silent failure.
+Live-preview tools will not build this layer because it doesn't drive their runtime adoption. It's how `complete-design` becomes useful in any existing repo regardless of how that repo's design system was authored — but only the v1.0 rows above are shipped in the first release. Unsupported sources produce a clear "this source will be supported in vX.Y; use [recommended workaround] today" message, not a silent failure.
 
 ### 3.17 Real-world repo failure modes (the highest technical kill risk)
 
@@ -845,7 +845,7 @@ Live-preview tools will not build this layer because it doesn't drive their runt
 | Failure mode | Frequency in real repos | v1.0 handling |
 |---|---|---|
 | CSS-in-JS (styled-components, Emotion, vanilla-extract) | Common in older React codebases | Reader detects, emits `partial-extract` with the CSS-in-JS portion flagged for manual mapping |
-| Multiple apps in one monorepo with different DS | Very common | `--app <path>` flag; per-app `.design-os/`; see §3.18 monorepo design |
+| Multiple apps in one monorepo with different DS | Very common | `--app <path>` flag; per-app `.complete-design/`; see §3.18 monorepo design |
 | Shared UI package consumed by multiple apps | Very common | Reader follows package symlinks; reports the upstream source path |
 | Themed runtime variables (theme switching via JS) | Common in B2B SaaS | Reader extracts the static fallback; flags dynamic surfaces with `runtime-themed` markers |
 | Generated CSS (from a build step that wasn't run) | Common | Reader detects missing build output; prompts user to run build first |
@@ -859,7 +859,7 @@ Every failure mode has a corresponding fixture in `evals/fixtures/repos/` and a 
 
 ### 3.18 Security & permissions (mandatory section)
 
-design-os is local-first and least-read by default.
+complete-design is local-first and least-read by default.
 
 | Surface | Default behavior | User-opt-in to expand |
 |---|---|---|
@@ -868,19 +868,19 @@ design-os is local-first and least-read by default.
 | **Playwright** | Visits **only** localhost (any port spawned by `preview/serve`) or a URL the user passed via `--url <url>`. Never crawls; never follows external links. Used as the default `preview/screenshot` backend. | None — strict |
 | **Chrome DevTools MCP** (`mcp__chrome-devtools__*`) | Same constraints as Playwright. Used as alt backend when available; gives a11y tree + lighthouse + performance trace as bonus. | Opt-in via `--preview-backend cdt` |
 | **claude-in-chrome MCP** (`mcp__claude-in-chrome__*`) | Same constraints. Used as alt backend when user has it installed. | Opt-in via `--preview-backend cic` |
-| **Local dev server (`preview/serve`)** | Binds to `127.0.0.1` on a port allocated via the port manager (see below); never `0.0.0.0`. Lifetime scoped to workflow run; killed on exit or after 60min idle. Serves a generated preview app under `.design-os/preview/run-<id>/` (the "preview sandbox"). | None — strict |
-| **Repo component imports into preview sandbox** | When `design` reuses repo components (REUSE/WRAP strategies, per §3.7 step 2), `repo-detect.mjs` produces an **explicit import allowlist** mapping each component to its source path. The preview sandbox imports only allowlisted files; the build is configured with `vite.resolve.alias` / Next `transpilePackages` restricted to the allowlist. Source files are **symlinked read-only** into `.design-os/preview/run-<id>/_imports/`, never copied or modified. Anything outside the allowlist (other repo code, `node_modules` not in adapters' declared deps, `.env*`, secrets) is unreachable from the sandbox by construction. | Allowlist override via explicit `--allow-import <glob>` (logged) |
-| **Network requests from preview code** | The preview server runs with **outbound network blocked** via the Playwright `route('**', r => r.abort())` for unmatched URLs during screenshot capture. Required URLs (font CDNs, image CDNs the user's own theme depends on) are declared in the contract's `$extensions.design-os.preview-allowlist` and explicitly whitelisted. Service workers are disabled in the Playwright context. | Allowlist additions per origin (logged) |
+| **Local dev server (`preview/serve`)** | Binds to `127.0.0.1` on a port allocated via the port manager (see below); never `0.0.0.0`. Lifetime scoped to workflow run; killed on exit or after 60min idle. Serves a generated preview app under `.complete-design/preview/run-<id>/` (the "preview sandbox"). | None — strict |
+| **Repo component imports into preview sandbox** | When `design` reuses repo components (REUSE/WRAP strategies, per §3.7 step 2), `repo-detect.mjs` produces an **explicit import allowlist** mapping each component to its source path. The preview sandbox imports only allowlisted files; the build is configured with `vite.resolve.alias` / Next `transpilePackages` restricted to the allowlist. Source files are **symlinked read-only** into `.complete-design/preview/run-<id>/_imports/`, never copied or modified. Anything outside the allowlist (other repo code, `node_modules` not in adapters' declared deps, `.env*`, secrets) is unreachable from the sandbox by construction. | Allowlist override via explicit `--allow-import <glob>` (logged) |
+| **Network requests from preview code** | The preview server runs with **outbound network blocked** via the Playwright `route('**', r => r.abort())` for unmatched URLs during screenshot capture. Required URLs (font CDNs, image CDNs the user's own theme depends on) are declared in the contract's `$extensions.complete-design.preview-allowlist` and explicitly whitelisted. Service workers are disabled in the Playwright context. | Allowlist additions per origin (logged) |
 | **Framework-defined env vars (`NEXT_PUBLIC_*`, `VITE_*`)** | The preview sandbox runs with a **scrubbed env**: only `NODE_ENV=development` and explicitly user-declared whitelist vars are passed. `.env*` files are never loaded by the preview sandbox even if the host stack would auto-load them. | `--preview-env KEY=VALUE` for explicit additions (logged) |
 | **Dependency scripts (Vite/Next plugins, postinstall hooks)** | The preview sandbox uses an isolated `node_modules` symlinked from `<repo>/node_modules` *only* for declared adapter-required packages — never the full repo dep tree. No `npm install` happens implicitly. `postinstall` scripts are never executed by `preview/serve`. | None — strict |
 
-**Port manager (`assets/scripts/port-manager.mjs`):** Allocates a free port in the `5800-5899` range (avoids common dev-server ports 3000/3001/5173/4173/8080), writes a `.design-os/preview/run-<id>/port.lock` with `{port, pid, started_at}`, performs a health check after spawn, and registers a cleanup hook (SIGINT/SIGTERM handlers + idle-timeout). Stale `run-*` directories (port-lock PID no longer alive) are reaped on next workflow start. Multiple concurrent `design` runs in the same repo each get isolated `run-<id>/` paths and distinct ports.
+**Port manager (`assets/scripts/port-manager.mjs`):** Allocates a free port in the `5800-5899` range (avoids common dev-server ports 3000/3001/5173/4173/8080), writes a `.complete-design/preview/run-<id>/port.lock` with `{port, pid, started_at}`, performs a health check after spawn, and registers a cleanup hook (SIGINT/SIGTERM handlers + idle-timeout). Stale `run-*` directories (port-lock PID no longer alive) are reaped on next workflow start. Multiple concurrent `design` runs in the same repo each get isolated `run-<id>/` paths and distinct ports.
 | **Bash execution** | Restricted to packaged Node scripts under `assets/scripts/` and the user's declared `verify.compile` / `verify.a11y` commands. No arbitrary shell. | The user's `verify.*` commands are declared in `stack.adapter.verify` per §3.15 and reviewed on first run |
 | **External MCP calls** (Subframe MCP, Storybook MCP, Builder MCP — v1.2+) | Disabled by default. Requires explicit `--source <mcp-id>` plus a one-time consent prompt that names the host being contacted. | Per-MCP `--allow-mcp <id>` |
-| **Telemetry** | **No collection by default.** Cost/latency metrics are stored locally in `.design-os/private/run-log.jsonl`. Never transmitted. | Future opt-in `--telemetry anonymous` flag if/when telemetry is built (post-v1.0); never default; never identifies user |
+| **Telemetry** | **No collection by default.** Cost/latency metrics are stored locally in `.complete-design/private/run-log.jsonl`. Never transmitted. | Future opt-in `--telemetry anonymous` flag if/when telemetry is built (post-v1.0); never default; never identifies user |
 | **Report redaction** | All written reports redact absolute paths to `<repo-root>/<rel-path>`; redact emails, tokens, customer-identifying strings via a default deny-list pattern. | `--no-redact` (logged) |
 
-The package ships with a permission audit command: `design-os permissions --explain` enumerates everything the package would read, execute, or transmit under the current invocation flags.
+The package ships with a permission audit command: `complete-design permissions --explain` enumerates everything the package would read, execute, or transmit under the current invocation flags.
 
 ### 3.19 Monorepo design (real, not asserted)
 
@@ -888,11 +888,11 @@ The v0.2 claim of "monorepo support" was a wave. The actual resolution rules:
 
 | Repo shape | Behavior |
 |---|---|
-| Single app, single design system | `.design-os/` at the repo root. Trivial. |
-| Monorepo with multiple apps, no shared DS | One `.design-os/` per app (e.g. `apps/web/.design-os/`, `apps/admin/.design-os/`). Workflows resolve scope from `cwd` upward, stopping at the first `.design-os/` found, then at the repo root if none. `--app <path>` overrides. |
-| Monorepo with one shared UI package, multiple consuming apps | `.design-os/` at the shared package root; consuming apps reference it via `.design-os/extends: ../../packages/ui/.design-os/DESIGN.md`. Audit on a consuming app respects the extended contract plus app-local overrides. |
-| Monorepo with per-app DS but a base brand | `.design-os/` at the repo root carries `base` brand tokens; per-app `.design-os/` carries app-specific tokens that override the base. Standard CSS-cascade-style merging in DTCG. |
-| Polyrepo with shared brand | `--extends <git-url-or-path>` references an external `.design-os/DESIGN.md`; manifest.lock pins the commit hash. |
+| Single app, single design system | `.complete-design/` at the repo root. Trivial. |
+| Monorepo with multiple apps, no shared DS | One `.complete-design/` per app (e.g. `apps/web/.complete-design/`, `apps/admin/.complete-design/`). Workflows resolve scope from `cwd` upward, stopping at the first `.complete-design/` found, then at the repo root if none. `--app <path>` overrides. |
+| Monorepo with one shared UI package, multiple consuming apps | `.complete-design/` at the shared package root; consuming apps reference it via `.complete-design/extends: ../../packages/ui/.complete-design/DESIGN.md`. Audit on a consuming app respects the extended contract plus app-local overrides. |
+| Monorepo with per-app DS but a base brand | `.complete-design/` at the repo root carries `base` brand tokens; per-app `.complete-design/` carries app-specific tokens that override the base. Standard CSS-cascade-style merging in DTCG. |
+| Polyrepo with shared brand | `--extends <git-url-or-path>` references an external `.complete-design/DESIGN.md`; manifest.lock pins the commit hash. |
 
 Package managers: `extract` reads `package.json`, `pnpm-workspace.yaml`, `lerna.json`, `nx.json`, `turbo.json`, `cargo.toml`, `Cargo.lock`, `requirements.txt`, `pyproject.toml`, `go.mod` for stack signals but does not consume their dependency graphs in v1.0.
 
@@ -900,12 +900,12 @@ Package managers: `extract` reads `package.json`, `pnpm-workspace.yaml`, `lerna.
 
 | Condition | Behavior |
 |---|---|
-| `.design-os/DESIGN.md` does not exist | Workflow proceeds with `direction/bootstrap` or `extract`. |
-| `.design-os/DESIGN.md` exists but is malformed (fails `design-md-validate.mjs`) | Workflow halts; emits diagnostic listing the violations; offers `--repair` (writes a corrected copy alongside the original as `.design-os/DESIGN.md.repaired`) or `--reset` (with confirmation). Never silently overwrites. |
-| `.design-os/DESIGN.md` exists but missing `$extensions.design-os` | Workflow proceeds in read-only mode; the package can audit against the DESIGN.md but cannot re-emit projections without the extension data. Surfaces the missing data and offers `--rebuild-extensions`. |
-| `.design-os/DESIGN.md` deleted between runs | Treated as user intent (deletion is a signal); next workflow asks before re-creating. Never silently re-creates. |
-| `.design-os/manifest.lock` hash mismatch with a tracked file | The file is treated as user-modified; merge policy from §3.13 applies (3-way merge, manual-override capture). |
-| `knowledge-version` in `.design-os/DESIGN.md` is older than the installed package's | Workflow surfaces the version skew; offers `--migrate` (which runs a documented migration script per release). Skipping migration is allowed but the package warns on every subsequent run. |
+| `.complete-design/DESIGN.md` does not exist | Workflow proceeds with `direction/bootstrap` or `extract`. |
+| `.complete-design/DESIGN.md` exists but is malformed (fails `design-md-validate.mjs`) | Workflow halts; emits diagnostic listing the violations; offers `--repair` (writes a corrected copy alongside the original as `.complete-design/DESIGN.md.repaired`) or `--reset` (with confirmation). Never silently overwrites. |
+| `.complete-design/DESIGN.md` exists but missing `$extensions.complete-design` | Workflow proceeds in read-only mode; the package can audit against the DESIGN.md but cannot re-emit projections without the extension data. Surfaces the missing data and offers `--rebuild-extensions`. |
+| `.complete-design/DESIGN.md` deleted between runs | Treated as user intent (deletion is a signal); next workflow asks before re-creating. Never silently re-creates. |
+| `.complete-design/manifest.lock` hash mismatch with a tracked file | The file is treated as user-modified; merge policy from §3.13 applies (3-way merge, manual-override capture). |
+| `knowledge-version` in `.complete-design/DESIGN.md` is older than the installed package's | Workflow surfaces the version skew; offers `--migrate` (which runs a documented migration script per release). Skipping migration is allowed but the package warns on every subsequent run. |
 | `schemaVersion` is newer than the installed package supports | Workflow halts and instructs the user to upgrade the package. No best-effort handling. |
 
 Migration scripts live in `migrations/v<old>-to-v<new>.mjs` and are tested against fixtures in `evals/migrations/`. Every `schemaVersion` bump ships a migration; deprecation window is two minor releases.
@@ -940,9 +940,9 @@ Default is host-default for everything to keep quality predictable. Users on cos
 §3.12 claims pure-function emit. The verification scaffolding:
 
 1. **Golden tests.** Every deterministic script (`oklch.mjs`, `contrast.mjs`, `dtcg-lint.mjs`, `design-md-validate.mjs`, the projection templates) has a `__golden__/` directory of input-output snapshots. CI runs the scripts against the inputs and asserts byte-equal output.
-2. **Decision log.** Every LLM-selected parameter is logged to `.design-os/private/decision-log.jsonl` with `(timestamp, skill, parameter, value, alternatives_considered, source_used)`. A reviewer can replay decisions.
+2. **Decision log.** Every LLM-selected parameter is logged to `.complete-design/private/decision-log.jsonl` with `(timestamp, skill, parameter, value, alternatives_considered, source_used)`. A reviewer can replay decisions.
 3. **Hash chain.** `manifest.lock` carries an input hash for each emitted artifact: `(source files hash, DESIGN.md hash, package version) → output file hash`. Re-running with unchanged inputs and unchanged package version produces identical output.
-4. **Reproducibility command:** `design-os verify --golden` runs the deterministic-emit scripts against a snapshot of inputs and asserts byte-equal output. Required CI gate.
+4. **Reproducibility command:** `complete-design verify --golden` runs the deterministic-emit scripts against a snapshot of inputs and asserts byte-equal output. Required CI gate.
 
 ### 3.17 Canonical inventory manifest (preserved from v0.2)
 
@@ -966,7 +966,7 @@ A "direction" is five orthogonal axes, picked independently and checked for conf
 
 **v1.0 style reference data** ships for ~10 visual styles: `geist-precision`, `swiss`, `editorial`, `neo-brutalism`, `cinematic-dark`, `liquid-glass-companion`, `material-3-expressive-companion`, `bauhaus`, `flat`, `digital-skeu-historical`. These live in `assets/styles/<name>/` and are *not* separate skills — they are reference data consulted by `direction/bootstrap` and `tokens/emit`.
 
-The remaining ~10 styles from v0.2 ship in v0.3 or as a companion package (`design-os-styles`). This keeps the core package small.
+The remaining ~10 styles from v0.2 ship in v0.3 or as a companion package (`complete-design-styles`). This keeps the core package small.
 
 ---
 
@@ -980,7 +980,7 @@ Every skill description follows this template, with the first 200 chars front-lo
 |---|---|
 | `design` *(headline)* | *"Use when user asks to 'design my UI', 'pick a visual style', 'show me design options', 'explore design directions', 'set up the look', 'redesign this' — generates 3 variants, renders them locally."* |
 | `extract` | *"Use when user asks to 'extract my design system', 'capture tokens from this repo as-is', 'just grab our existing tokens' — non-exploratory; for users who want capture without variants."* |
-| `enforce` | *"Use when generating UI in a repo with .design-os/DESIGN.md present — keywords: 'make a button', 'build this page', 'add a card', 'style this', 'create a hero', 'design this component'."* |
+| `enforce` | *"Use when generating UI in a repo with .complete-design/DESIGN.md present — keywords: 'make a button', 'build this page', 'add a card', 'style this', 'create a hero', 'design this component'."* |
 | `audit` | *"Use when user asks to 'audit this PR', 'check design drift', 'review this UI for slop', 'check tokens', 'design review', 'find AI slop', 'check contrast', 'WCAG check'."* |
 | `contract/extract-from-repo` | *"Use when user asks to 'read tokens from this repo', 'scan globals.css', 'extract Tailwind theme', 'find shadcn variables', 'detect our design system' — operates on existing code."* |
 | `tokens/emit` | *"Use when user asks to 'convert tokens to Tailwind v4', 'emit shadcn theme', 'project DESIGN.md to CSS variables', 'generate globals.css', 'emit Style Dictionary source'."* |
@@ -988,9 +988,9 @@ Every skill description follows this template, with the first 200 chars front-lo
 | `critique/slop-detector` | *"Use when user asks to 'check for AI slop', 'find generic patterns', 'review for design tells', 'check if this looks AI-generated', 'find purple gradients', 'find Inter defaults'."* |
 | `direction/bootstrap` | *"Use INTERNALLY when no DESIGN.md exists and `design` workflow needs initial direction — asks 5 questions about brand, audience, tone, stack, references. Not for direct user invocation."* |
 | `preview/render-variants` | *"Use INTERNALLY when `design` workflow needs N variant scaffolds — produces preview HTML/TSX for each variant. Not for direct user invocation; use `design` instead."* |
-| `preview/serve` | *"Use when user asks to 'restart the design-os preview server', 'relaunch the design-os preview', 'reopen the .design-os/preview comparison page' — narrowly scoped to design-os preview directories. NOT for general 'start a dev server' requests."* |
-| `preview/screenshot` | *"Use when user asks to 'recapture design-os preview screenshots', 'refresh the .design-os/preview variant images' — narrowly scoped to design-os preview captures. NOT for general 'take a screenshot' requests; use chrome-devtools or claude-in-chrome MCP directly for those."* |
-| `preview/iterate` | *"Use when user asks to 'tweak variant {N} from the last design run', 'change the palette on design-os v2', 'refine variant N of the current design exploration' — requires an active .design-os/preview/run-* directory. NOT for general 'redesign this' requests."* |
+| `preview/serve` | *"Use when user asks to 'restart the complete-design preview server', 'relaunch the complete-design preview', 'reopen the .complete-design/preview comparison page' — narrowly scoped to complete-design preview directories. NOT for general 'start a dev server' requests."* |
+| `preview/screenshot` | *"Use when user asks to 'recapture complete-design preview screenshots', 'refresh the .complete-design/preview variant images' — narrowly scoped to complete-design preview captures. NOT for general 'take a screenshot' requests; use chrome-devtools or claude-in-chrome MCP directly for those."* |
+| `preview/iterate` | *"Use when user asks to 'tweak variant {N} from the last design run', 'change the palette on complete-design v2', 'refine variant N of the current design exploration' — requires an active .complete-design/preview/run-* directory. NOT for general 'redesign this' requests."* |
 
 The package's CI runs `skillgrade` per-skill: ≥10 should-fire, ≥10 should-not-fire prompts, 3 trials each. Trigger recall ≥0.85, false-trigger rate ≤0.15. Per-skill regression blocks merge. The 200-char zone is treated as the canonical surface — full description bodies follow but are not relied on for trigger.
 
@@ -1009,10 +1009,10 @@ Run from the CLI inside a repo. Outputs an `AUDIT-REPORT.md` with severity-ranke
 Run from a GitHub Action. Outputs a PR comment with the top N findings inline, plus a summary line:
 
 ```
-design-os audit
+complete-design audit
 12 findings: 1 BLOCKER (contrast 3.2:1 fails WCAG 2.2 AA), 3 HIGH, 8 LOW
 4 slop-tells matched: rainbow-gradient-button (Hero.tsx:34), Inter-default-on-shadcn (globals.css), centered-everything (Pricing.tsx), three-column-feature-grid (FeatureGrid.tsx)
-Full report: .design-os/AUDIT-REPORT.md
+Full report: .complete-design/AUDIT-REPORT.md
 ```
 
 ### 6.3 `audit --slop-tells`
@@ -1034,7 +1034,7 @@ Every finding from any critique mode has a stable `findingId`, severity, evidenc
 **Rules:**
 - Suppressions **require a human rationale** in `manual-overrides.json` (`suppressed: { id, rationale, expires?: <date> }`). Empty rationales are rejected.
 - Suppressions can carry an optional `expires:` date, after which the finding re-surfaces.
-- CI's `audit --ci` mode blocks only on severities the project's `.design-os/ci.yaml` declares blocking. Default: only `BLOCKER`.
+- CI's `audit --ci` mode blocks only on severities the project's `.complete-design/ci.yaml` declares blocking. Default: only `BLOCKER`.
 - `USER_OVERRIDDEN` is never silent: the audit report explicitly names every override applied to a run, with rationale and date.
 - The slop-detector specifically allows project-level disagreement: if a team decides "three-column feature grid is on-brand for us," they convert it to a house heuristic and future audits respect the decision. This addresses the designer concern that slop detection is one-size-fits-all aesthetic policing.
 
@@ -1058,8 +1058,8 @@ The research is unambiguous: cold launches don't break top 20. Every winning ski
    - Anthropic / Vercel / OpenAI blog RSS for skill / DESIGN.md mentions
    Triggers a notification to the launch-coordinator when any tracked event fires.
 2. **Three pre-written launch artifact variants**, ready to publish on ≤24h notice:
-   - **V1 (Anthropic spec or #1008 ship):** *"design-os: the DESIGN.md producer for Anthropic's new design contract skill"*
-   - **V2 (Vercel skills.sh feature drop):** *"design-os on skills.sh: the brownfield design auditor for every coding agent"*
+   - **V1 (Anthropic spec or #1008 ship):** *"complete-design: the DESIGN.md producer for Anthropic's new design contract skill"*
+   - **V2 (Vercel skills.sh feature drop):** *"complete-design on skills.sh: the brownfield design auditor for every coding agent"*
    - **V3 (shadcn major or no platform event by W+4):** *"Ten design-system tells that prove your agent is writing slop — and the package that catches them"* (the self-launch fallback)
 3. **Named launch coordinator.** One person owns the watch service, the publish trigger, and the cross-post execution.
 4. **Hard fallback date.** If no platform event opens a window within 4 weeks of v1.0 acceptance, we self-launch V3 on a fixed date. Don't wait indefinitely.
@@ -1093,7 +1093,7 @@ The 10 tells (working list — to be validated against the curated corpus):
 9. `Lorem ipsum` residue in production
 10. Fake 5-star ratings with no actual review source
 
-Each tell is a detector in `assets/scripts/slop-scan.mjs`, runnable via `design-os audit --slop-tells`.
+Each tell is a detector in `assets/scripts/slop-scan.mjs`, runnable via `complete-design audit --slop-tells`.
 
 ### 7.3 Cross-post the manifest
 
@@ -1135,7 +1135,7 @@ Outreach is a funnel, not a wishlist. Realistic targets, with named warm paths w
 
 ### 7.5 Skill-as-funnel for nothing (the cold truth)
 
-Every top-10 skill is a vendor's funnel into their primary product (`vercel-react-best-practices` → Vercel hosting; `azure-ai` → Azure; `remotion-best-practices` → Remotion). `design-os` has no primary product to funnel into. This is a known weakness. The mitigations in §8.
+Every top-10 skill is a vendor's funnel into their primary product (`vercel-react-best-practices` → Vercel hosting; `azure-ai` → Azure; `remotion-best-practices` → Remotion). `complete-design` has no primary product to funnel into. This is a known weakness. The mitigations in §8.
 
 ---
 
@@ -1143,8 +1143,8 @@ Every top-10 skill is a vendor's funnel into their primary product (`vercel-reac
 
 §7.5 acknowledged: no upstream commercial product. Year-1 monetization is zero. Year-2+ paths, in order of plausibility:
 
-1. **Premium component / direction packs** sold through Agensi at $9–$19. Curated style libraries beyond the v1.0 set (e.g., `design-os-styles-premium` with 40+ visual styles, vetted recipes, anti-examples). Realistic year-2 revenue: <$10k/mo (per the lack of disclosed Agensi top-seller revenue — assume small).
-2. **Enterprise audit tool** as a separate, sibling product line — not a feature in `design-os` itself. The `audit --ci` mode hardened into a multi-repo dashboard with audit history, drift tracking, and SARIF export, licensed via Tessl at $X/seat/month. Explicitly framed as a **distinct product** that shares the OSS package's audit engine; not a betrayal of §14's "no hosted SaaS" promise (which applies only to the OSS package). Plausible enterprise-tier ARR if 50+ enterprise installs. Year-2+ only.
+1. **Premium component / direction packs** sold through Agensi at $9–$19. Curated style libraries beyond the v1.0 set (e.g., `complete-design-styles-premium` with 40+ visual styles, vetted recipes, anti-examples). Realistic year-2 revenue: <$10k/mo (per the lack of disclosed Agensi top-seller revenue — assume small).
+2. **Enterprise audit tool** as a separate, sibling product line — not a feature in `complete-design` itself. The `audit --ci` mode hardened into a multi-repo dashboard with audit history, drift tracking, and SARIF export, licensed via Tessl at $X/seat/month. Explicitly framed as a **distinct product** that shares the OSS package's audit engine; not a betrayal of §14's "no hosted SaaS" promise (which applies only to the OSS package). Plausible enterprise-tier ARR if 50+ enterprise installs. Year-2+ only.
 3. **Sponsorship from a UI vendor** — shadcn, Radix, Vercel, Subframe — where the package defaults users into their stack with curated reference data. Most likely sponsor: **Vercel**, given the v0 + skills.sh + brownfield-thesis alignment. Realistic ask: a co-marketing deal, not a check.
 4. **Consulting on design-system extraction** for teams that want it done with hand-curation rather than from the package's autopilot. Standard OSS-author playbook.
 5. **Course / book.** The package's launch artifact has obvious book potential (*"How agents kill your design system, and how to stop them"*). Long tail.
@@ -1182,8 +1182,8 @@ The MVP is *one release*, not the v0.2 split (which was indecision). Ship someth
 - `contract/extract-from-figma` (v1.1)
 - `contract/extract-from-image` (v1.2)
 - All other input adapters (Tokens Studio, Subframe MCP, Storybook MCP, Builder MCP, Material 3 input, Radix Themes input) — v1.1+
-- `material-web`, `vue-3-sfc`, `svelte-5`, `swiftui` adapters → `design-os-bridges` companion v1.1+
-- Remaining visual styles → v0.3 / `design-os-styles` companion
+- `material-web`, `vue-3-sfc`, `svelte-5`, `swiftui` adapters → `complete-design-bridges` companion v1.1+
+- Remaining visual styles → v0.3 / `complete-design-styles` companion
 - `audit --ci` GitHub Action wrapper (manual `gh` script for v1.0; full Action in v1.1)
 - Live design-system MCP server publication — v1.2
 - All AI-UX live skills — they remain reference-only in v1.0
@@ -1192,7 +1192,7 @@ The MVP is *one release*, not the v0.2 split (which was indecision). Ship someth
 
 Operationally measurable. Eval datasets, graders, trials, ceilings all in `evals/`.
 
-1. **Atomic invocation works on Claude Code.** Each MVP skill, invoked standalone with no prior `.design-os/`, produces useful output on ≥9 of 10 hand-curated prompts (3 trials each, semantic rubric ≥0.7).
+1. **Atomic invocation works on Claude Code.** Each MVP skill, invoked standalone with no prior `.complete-design/`, produces useful output on ≥9 of 10 hand-curated prompts (3 trials each, semantic rubric ≥0.7).
 2. **DESIGN.md validity.** 100% of emitted DESIGN.md validates against the Google spec via `design-md-validate.mjs`.
 3. **DTCG validity.** 100% of token emits validate against DTCG v2025.10 via Style Dictionary parse test.
 4. **Contrast accuracy.** 100% of generated palettes' contrast claims match what `contrast.mjs` computes; no false positive WCAG passes.
@@ -1205,14 +1205,14 @@ Operationally measurable. Eval datasets, graders, trials, ceilings all in `evals
    - (e) Two-reviewer forced-choice on a held-out test set says **≥ 2 of 3 variants are "a viable direction for this brief"** (not just "renders")
    
    Tested across 5 brief variants, 3 trials each (15 runs). ≥12 of 15 must satisfy all five conditions. ≤1 may fall back to 2 viable variants with the collapse-reason logged.
-6b. **End-to-end extract (the standalone path).** From a fixed brownfield test repo, `extract` produces `.design-os/DESIGN.md` + tokens + projections + audit report with terminal state ∈ {`PASS`, `PASS_WITH_WARNINGS`}. ≥12 of 15 PASS; ≤1 FAILED_AFTER_REPAIR allowed.
-7. **End-to-end enforce.** Given a `.design-os/DESIGN.md` and a UI prompt, `enforce` constrains the next generation. Audit on the generated output passes for ≥10 of 12 test prompts.
+6b. **End-to-end extract (the standalone path).** From a fixed brownfield test repo, `extract` produces `.complete-design/DESIGN.md` + tokens + projections + audit report with terminal state ∈ {`PASS`, `PASS_WITH_WARNINGS`}. ≥12 of 15 PASS; ≤1 FAILED_AFTER_REPAIR allowed.
+7. **End-to-end enforce.** Given a `.complete-design/DESIGN.md` and a UI prompt, `enforce` constrains the next generation. Audit on the generated output passes for ≥10 of 12 test prompts.
 8. **End-to-end audit.** Run on a known-slop sample set (30 hand-curated bad UIs + 30 hand-curated good UIs). Slop-detector recall ≥0.80 on the bad set, false-positive rate ≤0.10 on the good set.
 9. **Sequential-fallback works on secondary hosts.** Same 10 atomic prompts on Codex + Cursor: ≥0.75 pass.
 10. **Cost discipline.** `design` p50 ≤55k tokens (3 variants); `--variants 2` p50 ≤35k. `extract` p50 ≤40k tokens. `enforce` overhead ≤4k tokens per agent turn. Atomic p50 ≤8k tokens.
 10a. **Time-to-first-render.** From `design` invocation to first variant screenshot visible to user: p50 ≤90 seconds on the host-default model tier. (This is the "is it actually usable" metric — slower than 90s and the user gives up.)
 11. **Designer review.** Two designers (one B2B, one consumer) rate ≥4 of 5 extract outputs as "this looks like a real design system, not AI-generated."
-12. **Override preservation.** Edit `.design-os/DESIGN.md` between runs → next run preserves edits, records in `manual-overrides.json`. Scripted test.
+12. **Override preservation.** Edit `.complete-design/DESIGN.md` between runs → next run preserves edits, records in `manual-overrides.json`. Scripted test.
 13. **GTM artifact ready.** The "Ten design-system tells" post + slop-tell detectors all implemented and runnable. Demo video ready. Cross-post manifests prepared.
 
 A v1.0 release that misses criterion 8 (slop-detector recall) ships as v0.9 beta, not v1.0.
@@ -1230,8 +1230,8 @@ A v1.0 release that misses criterion 8 (slop-detector recall) ships as v0.9 beta
 | **v0.9 — beta** | 8 | Private beta to 20 designers + 30 frontend engineers; iterate on findings |
 | **v1.0 — public launch** | 9 | Aligned with platform launch window per §7.1; cross-posted; launch artifact published; PR submitted to anthropics/skills#1008 |
 | **v1.1** | +6 weeks | `extract-from-figma`, GitHub Action for `audit --ci`, additional input adapters (Tokens Studio, Style Dictionary source, Radix Themes) |
-| **v1.2** | +12 weeks | `extract-from-image`, Subframe MCP / Storybook MCP / Builder MCP input adapters, `design-os-bridges` companion (Material Web, Vue, Svelte) |
-| **v1.3** | +18 weeks | `design-os-styles` companion (premium style packs); enterprise audit dashboard prototype |
+| **v1.2** | +12 weeks | `extract-from-image`, Subframe MCP / Storybook MCP / Builder MCP input adapters, `complete-design-bridges` companion (Material Web, Vue, Svelte) |
+| **v1.3** | +18 weeks | `complete-design-styles` companion (premium style packs); enterprise audit dashboard prototype |
 
 ---
 
@@ -1266,10 +1266,10 @@ A v1.0 release that misses criterion 8 (slop-detector recall) ships as v0.9 beta
 | **Anthropic ships DESIGN.md support in `frontend-design` before we launch** | High | Existential — they have the install base | Track issue #1008 weekly; our launch must come *with* or *before* theirs. If they win the spec-consumer race, pivot to producer-only and polyglot adapter (still defensible). |
 | **Vercel ships a `web-design-guidelines`-equivalent for DESIGN.md** | Medium | High | Same playbook — be first or be polyglot. |
 | **Subframe/Miro/Builder embed DESIGN.md in their MCPs natively** | High | Medium | Good for us — we read their MCPs. Position as "the consumer-side companion to Subframe MCP." |
-| **DESIGN.md doesn't become the standard** | Medium | High | DESIGN.md is upstream-labeled "draft" by Google and "alpha" in the Anthropic issue. We use it because it's the best anchor available, not because it's settled. Mitigations: (a) DTCG tokens remain portable to any other contract envelope; (b) `$extensions.design-os` is namespaced so vanilla DESIGN.md consumers safely ignore our additions; (c) extraction evidence + sourceRefs are preserved so we can project to a successor format if needed; (d) we ship our own machine-readable contract format (`$extensions.design-os.tokens` JSON) that is independent of the DESIGN.md outer envelope. |
+| **DESIGN.md doesn't become the standard** | Medium | High | DESIGN.md is upstream-labeled "draft" by Google and "alpha" in the Anthropic issue. We use it because it's the best anchor available, not because it's settled. Mitigations: (a) DTCG tokens remain portable to any other contract envelope; (b) `$extensions.complete-design` is namespaced so vanilla DESIGN.md consumers safely ignore our additions; (c) extraction evidence + sourceRefs are preserved so we can project to a successor format if needed; (d) we ship our own machine-readable contract format (`$extensions.complete-design.tokens` JSON) that is independent of the DESIGN.md outer envelope. |
 | **Designer discourse turns on us specifically** | Medium | High | Trust-posture choices in §2.4; pre-launch outreach in §7.4; the launch artifact is a designer-friendly critique, not a generation pitch. |
 | **Codex 2% cap tightens further** | Low | Medium | Already designed for it (14 skills, ~3.8k chars total); descriptions auditable; release v1.1 could split into core + companion to reduce footprint further. |
-| **The 10 styles aren't enough; users want more** | Medium | Low | `design-os-styles` companion v1.3 covers the long tail; v1.0's 5 styles are the most clearly differentiated. |
+| **The 10 styles aren't enough; users want more** | Medium | Low | `complete-design-styles` companion v1.3 covers the long tail; v1.0's 5 styles are the most clearly differentiated. |
 | **Critique loop converges on its own biases (slop rejecting slop)** | Medium | High | Slop corpus is hand-curated by 2+ designers, not LLM-generated; quarterly re-curation; user-overrides feed back as corpus additions. |
 | **`extract` fails on real-world repo messiness** | High | Medium | Confidence markers + "low-confidence flags" surfaced explicitly; manual-override workflow always available; v1.1 adds more input adapters to widen coverage. |
 | **CI cost balloons (the eval suite is expensive)** | Medium | Medium | Use Haiku-class models for most eval runs; full Opus runs only for designer-rated criteria; total monthly CI budget capped + alerted. |
@@ -1286,7 +1286,7 @@ A v1.0 release that misses criterion 8 (slop-detector recall) ships as v0.9 beta
 | # | Question | Default lean |
 |---|---|---|
 | Q1 | Do we ship a Storybook integration (read Storybook MCP) in v1.0 or v1.1? | v1.1 — too much to validate in v1.0 |
-| Q2 | Do we publish a DESIGN.md generator as a standalone tool (CLI without skill bundle)? | Yes — `npx design-os extract` for non-agent users; same code |
+| Q2 | Do we publish a DESIGN.md generator as a standalone tool (CLI without skill bundle)? | Yes — `npx complete-design extract` for non-agent users; same code |
 | Q3 | Should the slop corpus be opt-in telemetry (collect user-flagged false positives)? | Opt-in only, anonymous, never default |
 | Q4 | Do we contribute the slop-tell corpus to `awesome-claude-design`? | Yes — extends our reach; corpus is small enough to share |
 | Q5 | Should we pursue an Anthropic / Vercel co-marketing partnership pre-launch? | Soft outreach yes; don't gate launch on it |
@@ -1330,7 +1330,7 @@ We do not compete on these surfaces. Each is a deliberate cede.
 | Workflow layer | Implicit | 6 workflows | **3 workflows (extract, enforce, audit)** |
 | Subagent fan-out | None | 5 types | **2 types (extraction sequential, critique parallel-where-supported)** |
 | Style codifiers | 20 as skills | 20 as skills | **5–10 as reference data, not skills** |
-| Persistence | mentioned | `.design-os/` with merge policy | **same, anchored to DESIGN.md as primary file** |
+| Persistence | mentioned | `.complete-design/` with merge policy | **same, anchored to DESIGN.md as primary file** |
 | Live-preview competitive frame | Implicit | "Skills win on portability" (insufficient) | **v1.0 ceded greenfield; v1.0.1 reclaimed it via preview-first design — same agent, same tokens, no second subscription** |
 | Visual preview in-agent | Out of scope | Out of scope | **First-class: `design` workflow + `preview/*` atoms; Playwright + CDT + CiC backends** |
 | Headline workflow | n/a | `bootstrap-design-system` | `design` (explore → preview → pick → commit) |
@@ -1356,21 +1356,21 @@ This MRD was reviewed by a second independent Codex pass after the v1.0 rewrite.
 | GTM platform-launch ride not executable as plan | HIGH | ACCEPT | §7.1 rewritten with release-monitoring infrastructure, 3 pre-written launch variants, named coordinator, hard fallback date |
 | Designer outreach unrealistic ("if Pablo tweets it, traction follows") | HIGH | ACCEPT | §7.4 rewritten with warm paths, expected conversion %, explicit fallback per target; aggregate-expected-outcome stated honestly |
 | Repo extraction kill risks under-mitigated | HIGH | ACCEPT | New §3.17 "Real-world repo failure modes" — 10 named failure modes with v1.0 handling and fixture-corpus requirement |
-| `.design-os/` committed by default leaks sensitive material | HIGH | ACCEPT | §3.13 expanded to per-file commit policy; `.design-os/private/` carved out for sensitive content; `.gitignore` snippet auto-written |
+| `.complete-design/` committed by default leaks sensitive material | HIGH | ACCEPT | §3.13 expanded to per-file commit policy; `.complete-design/private/` carved out for sensitive content; `.gitignore` snippet auto-written |
 | Critique has no appeal path | MEDIUM | ACCEPT | New §6.4 "Critique appeal and suppression policy" — 5 user response options, required rationale, expires-date, house-heuristic conversion |
 | Cost ceilings asserted not derived | MEDIUM | ACCEPT | New §3.21 "LLM model selection and cost discipline" — fixture-based measurement, declared model matrix, degraded-extraction policy |
 | Year-2 monetization includes "enterprise audit" that contradicts §14 "no hosted SaaS" | LOW | ACCEPT | §8 monetization #2 reframed as a "separate sibling product line," not a feature of OSS package; clarified §14 applies to the OSS package only |
-| No dedicated security/permissions section | BLOCKER (missing) | ACCEPT | New §3.18 "Security & permissions" — file reads, brand assets, Playwright, Bash, MCP, telemetry, report-redaction policy, `design-os permissions --explain` |
+| No dedicated security/permissions section | BLOCKER (missing) | ACCEPT | New §3.18 "Security & permissions" — file reads, brand assets, Playwright, Bash, MCP, telemetry, report-redaction policy, `complete-design permissions --explain` |
 | No telemetry policy | BLOCKER (missing) | ACCEPT | §3.18 telemetry row: no collection default; local-only run-log in `private/`; never transmitted; future opt-in only |
 | i18n/RTL/CJK under-scoped | MEDIUM | ACCEPT | §13 Q9 rewritten with explicit `unsupported-fully` / `partial` labels per concern; v1.1/v1.2 commitments stated |
 | Monorepo support asserted not designed | HIGH | ACCEPT | New §3.19 "Monorepo design" — 5 named repo shapes with resolution rules; `extends:` mechanism; package-manager scope |
 | Brand-asset handling unsafe | HIGH | ACCEPT | §3.18 brand-assets row: processed locally by default via deterministic OKLab k-means; `--vision <provider>` opt-in with explicit IP warning |
 | Slop corpus licensing undefined | MEDIUM | ACCEPT | §7.2 + slop-tell library policy: detectors are technical rules (not screenshots); fair-use commentary only; no brand-licensed material in corpus |
-| `$extensions.design-os` framed as extending DESIGN.md, contradicting §14 "never extend" | LOW | ACCEPT | §3.5 reworded: "we use the spec's documented extension mechanism, not extend the spec"; §14 cession updated for clarity |
+| `$extensions.complete-design` framed as extending DESIGN.md, contradicting §14 "never extend" | LOW | ACCEPT | §3.5 reworded: "we use the spec's documented extension mechanism, not extend the spec"; §14 cession updated for clarity |
 | Versioning / back-compat / migration policy missing | HIGH | ACCEPT | New §3.20 "Recovery, versioning, and invalid states" — 7 specific conditions with explicit behavior; `migrations/v<old>-to-v<new>.mjs`; 2-minor-release deprecation window |
 | Invalid DESIGN.md recovery undefined | HIGH | ACCEPT | §3.20 row 2 — fails validator → halts, offers `--repair` or `--reset`; never silently overwrites |
 | Deleted DESIGN.md behavior undefined | HIGH | ACCEPT | §3.20 row 4 — treats deletion as intent; asks before re-creating |
-| Determinism under-verified | MEDIUM | ACCEPT | New §3.22 "Determinism verification" — golden tests, decision log, hash chain, `design-os verify --golden` CI gate |
+| Determinism under-verified | MEDIUM | ACCEPT | New §3.22 "Determinism verification" — golden tests, decision log, hash chain, `complete-design verify --golden` CI gate |
 | Model selection absent | HIGH | ACCEPT | §3.21 model matrix (host-default / budget / high-quality); no v1.0 claim requires Opus-class |
 | §3.2 P4 references "§9.4" which doesn't exist | LOW (typo) | ACCEPT | Fixed reference to §3.11 |
 | §5 trigger-description claim shown for only one example | MEDIUM | ACCEPT | §5 now shows real first-200-char zones for all 8 MVP skills as a table |
@@ -1405,7 +1405,7 @@ A third codex review specifically stress-tested the v1.0.1 *delta*. The verdict:
 | Variant distance metric undefined ("decorative criterion") | HIGH | §3.7 W0 now defines **deterministic 6-axis weighted distance** with normalized formula; repair-loop spec (regenerate once with locked axes, then surface 2 viable + collapse explanation) |
 | Component sourcing under-modeled (partial systems are the common case) | HIGH | §3.7 W0 step 2 now includes the **4-strategy component availability matrix** (REUSE / WRAP / SCAFFOLD / FALLBACK) per-variant; written to `components-manifest.json` for audit |
 | Stack support internally inconsistent (Vite/Next/Astro vs Vite/Next/static vs Vue/Pinia/RN claims) | HIGH | §3.7 W0 stack-aware preview surface table reconciled with §9.1; non-web stacks now **refuse preview** rather than fake it; explicit `--preview-stack` override |
-| Dev-server isolation conflicts with repo component reuse (security claim false as written) | HIGH | §3.18 dev-server row rewritten: preview sandbox under `.design-os/preview/run-<id>/`, **explicit import allowlist via `repo-detect.mjs`**, symlinked read-only `_imports/`, no env loading, no postinstall, no full repo dep tree |
+| Dev-server isolation conflicts with repo component reuse (security claim false as written) | HIGH | §3.18 dev-server row rewritten: preview sandbox under `.complete-design/preview/run-<id>/`, **explicit import allowlist via `repo-detect.mjs`**, symlinked read-only `_imports/`, no env loading, no postinstall, no full repo dep tree |
 | Port handling too thin ("spawn on a free port" is insufficient) | HIGH | New `port-manager.mjs` spec in §3.18: 5800-5899 range, port.lock with PID, health check, SIGINT cleanup, stale reaping |
 | Preview fidelity too narrow (hero/button/card/form ≠ dashboard or commerce) | MEDIUM | §3.7 W0 now has **stack-aware preview surface scope table** (marketing / dashboard / AI workspace / commerce / media / motion / default) with auto-detection signals |
 | Iteration cost unbounded; v1/v2 history unspecified | MEDIUM | §3.7 W0 now has 5-iteration default cap (configurable to 10 via `--max-iterations`); preserved iteration history at `_archive/v{N}-iterations/` so iterating v1 then accepting v2 doesn't lose work |
@@ -1415,7 +1415,7 @@ A third codex review specifically stress-tested the v1.0.1 *delta*. The verdict:
 | Launch hook "Stop paying for design twice" risks antagonizing Vercel (skills.sh distributor) | HIGH | §7.2 primary hook changed to **"Three design directions inside the agent and repo you already use"**; cost angle demoted to tertiary supporting copy in developer-targeted channels; durable claim foregrounded |
 | Primary persona too broad | MEDIUM | §2.3 expanded into **3 sub-segments**: indie dev never-adopted-v0, dev migrating off v0/Lovable, brownfield founder refreshing existing app |
 | Pricing arbitrage may decay | MEDIUM | §7.2 explicit: durable differentiator is *repo-native contract persistence with in-place visual exploration*, not the temporary pricing gap |
-| Preview atom triggers risk false-fire ("take a screenshot" colliding with general browser MCP work) | MEDIUM | §5 preview/* descriptions tightened: each is **narrowly scoped to design-os preview directories**, explicitly says "NOT for general X" with redirect to the right tool |
+| Preview atom triggers risk false-fire ("take a screenshot" colliding with general browser MCP work) | MEDIUM | §5 preview/* descriptions tightened: each is **narrowly scoped to complete-design preview directories**, explicitly says "NOT for general X" with redirect to the right tool |
 | Acceptance criterion #6 measures rendering not quality | HIGH | §9.3 criterion 6 expanded to **5 sub-conditions**: render success + variant distance + layout diversity + contrast validity + two-reviewer viability ≥ 2/3 |
 | Security doesn't cover full preview attack surface (env vars, postinstall, malicious imports, network) | HIGH | §3.18 now has 5 additional rows: import allowlist, network blocking, env scrubbing, postinstall blocking, port manager |
 | Model selection ignores preview generation cost | MEDIUM | §3.21 now has dedicated subsection: **per-sub-step tier table** for `design` workflow; explicit `--variant-model budget` opt-in with quality trade-off documented |
@@ -1445,11 +1445,11 @@ No findings rejected across the three codex passes (5 + 24 + 19 = 48 findings, a
 - **Trust posture (frontmatter)** — Per-skill declaration: `deterministic-emit`, `asserts-wcag`, `requires-confirmation`.
 - **Terminal state** — A critique workflow's exit state: `PASS` / `PASS_WITH_WARNINGS` / `FAILED_AFTER_REPAIR` / `USER_OVERRIDDEN`.
 - **Variant** — One of N (default 3) proposed design directions, rendered as a preview surface, presented for user selection by the `design` workflow.
-- **Preview surface** — The minimum renderable HTML/JSX for visual comparison: hero + button + card + form sample. Lives in `.design-os/preview/{v1,v2,v3}/`.
+- **Preview surface** — The minimum renderable HTML/JSX for visual comparison: hero + button + card + form sample. Lives in `.complete-design/preview/{v1,v2,v3}/`.
 - **Preview backend** — The screenshot mechanism: `playwright` (default), `cdt` (Chrome DevTools MCP), `cic` (claude-in-chrome MCP), or `none` (skip rendering).
 - **Variant axis** — The dimension along which variants differ: `visual_style × palette_strategy × type_pair`, sampled to maintain pairwise diversity ≥ 0.5.
 - **Show-don't-tell** — The v1.0.1 trust tenet: every contract decision is rendered visually before being committed; no asserted-blind choices.
-- **Double-billed tokens** — The cost pattern users avoid by using design-os in-agent: paying for LLM tokens both on their coding agent (Claude Code / Cursor / Codex) AND on a separate live-preview tool (v0 / Lovable / Bolt). The package's primary economic argument.
+- **Double-billed tokens** — The cost pattern users avoid by using complete-design in-agent: paying for LLM tokens both on their coding agent (Claude Code / Cursor / Codex) AND on a separate live-preview tool (v0 / Lovable / Bolt). The package's primary economic argument.
 
 ---
 
@@ -1462,11 +1462,11 @@ No findings rejected across the three codex passes (5 + 24 + 19 = 48 findings, a
 5. **Hosts:** Claude Code host-first; Codex CLI + Cursor sequential-fallback; broader hosts in v1.1+.
 6. **Trust posture:** don't lead with AI; deterministic emit; never claim WCAG conformance; ask before generating; never auto-publish to git tree; cite every rule.
 7. **Polyglot input adapters:** read shadcn, Tailwind v4 `@theme`, Style Dictionary, Tokens Studio, Radix Themes, Material 3, Subframe MCP, Storybook MCP, Builder MCP, Figma DTCG, brand assets.
-8. **Polyglot output adapters:** Tailwind v4, shadcn, plain CSS first. Material Web, Vue, Svelte in `design-os-bridges` companion v1.1+. SwiftUI later.
+8. **Polyglot output adapters:** Tailwind v4, shadcn, plain CSS first. Material Web, Vue, Svelte in `complete-design-bridges` companion v1.1+. SwiftUI later.
 9. **Trigger discipline:** 200-char directive front-load for Codex 2% cap; ≥20-prompt eval per skill, CI-gated.
 10. **Knowledge architecture:** hybrid file-based (no vector DB, no graph in v1); DESIGN.md anchored.
 11. **Critique loop:** terminal states; max 2 repair cycles; visual regression where supported; PR-first diff; user-override capture.
-12. **Persistence:** `.design-os/` under repo root; committed to git by default; manual-override preservation via hash diff.
+12. **Persistence:** `.complete-design/` under repo root; committed to git by default; manual-override preservation via hash diff.
 13. **GTM:** ride a platform launch; quotable hook ("Ten design-system tells"); cross-post 8 marketplaces; pre-launch vendor outreach (Anthropic, Vercel, shadcn, Tessl, named designers).
 14. **Monetization:** zero in v1.0; year-2 paths sketched (premium packs, enterprise audit, vendor sponsorship). Distribution dominates.
 15. **MVP:** single v1.0 release with 4 workflows + 10 atoms (all triggerable) + 3 stack adapters + 5 input readers + 11 references + 5 styles + 3 preview backends (Playwright default; CDT, CiC opt-in) + 3 preview stacks (Vite, Next, static) + the GTM artifact. Operationally measurable acceptance criteria.

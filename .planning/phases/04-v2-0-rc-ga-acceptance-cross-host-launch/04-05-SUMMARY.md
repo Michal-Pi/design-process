@@ -22,7 +22,7 @@ dependency_graph:
     - "Outreach packet sample bundles (format reference)"
   affects:
     - "package.json version"
-    - "bin/design-os.mjs CLI version"
+    - "bin/complete-design.mjs CLI version"
     - "skills/design/SKILL.md version field"
     - "docs/MARKETPLACE-MANIFEST.md (new)"
     - "CHANGELOG.md (new)"
@@ -41,12 +41,12 @@ key_files:
     - .planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-05-SUMMARY.md
   modified:
     - package.json
-    - bin/design-os.mjs
+    - bin/complete-design.mjs
     - skills/design/SKILL.md
     - .planning/phases/04-v2-0-rc-ga-acceptance-cross-host-launch/04-OUTREACH-PACKET.md
     - .planning/STATE.md
 decisions:
-  - "package.json + bin/design-os.mjs version bumps not in plan files_modified YAML but required per Task 2 Step 0 — included and flagged"
+  - "package.json + bin/complete-design.mjs version bumps not in plan files_modified YAML but required per Task 2 Step 0 — included and flagged"
   - "Sample bundles approach (a): synthetic-realistic format reference with explicit label; real bundles deferred to Wave B Step 0+"
   - "TRIG-03 reported as PENDING (recall 0.71 vs 0.80 threshold) — honest gate reporting per P8"
   - "SKILL.md frontmatter version field was 0.1.0-v1.5 (not v2.0b as expected) — bumped to v2.0 per instruction"
@@ -75,8 +75,8 @@ metrics:
 
 **package.json** — `2.0.0-beta.0` → `2.0.0`
 
-**bin/design-os.mjs** — `.version("2.0.0-beta.0")` → `.version("2.0.0")`
-- Verified: `node bin/design-os.mjs --version` outputs `2.0.0`
+**bin/complete-design.mjs** — `.version("2.0.0-beta.0")` → `.version("2.0.0")`
+- Verified: `node bin/complete-design.mjs --version` outputs `2.0.0`
 
 **skills/design/SKILL.md**
 - Frontmatter `version: 0.1.0-v1.5` → `version: v2.0`
@@ -88,8 +88,8 @@ metrics:
 
 **docs/MARKETPLACE-MANIFEST.md** (new file, 328 lines)
 - All 8 DIST-07 marketplaces: skills.sh, claudemarketplaces.com, mcpmarket.com, smithery.ai, lobehub, fastmcp.me, playbooks.com, Tessl Registry
-- mcpmarket.com + fastmcp.me: explicit "design-os is a SKILL.md package, not an MCP server" disclaimer
-- Install command everywhere: `npm install -g design-os` (no `@beta` — post-GA @latest)
+- mcpmarket.com + fastmcp.me: explicit "complete-design is a SKILL.md package, not an MCP server" disclaimer
+- Install command everywhere: `npm install -g @pm-musketeers/complete-design` (no `@beta` — post-GA @latest)
 - TRUST-04 enforced: 0 WCAG conformance claims (grep -iE returns 0 hits)
 - 18 marketplace-name hits (grep -c returns 18; ≥8 required)
 - Submission checklist for owner Wave B (~90 min manual effort per OQ-10)
@@ -120,7 +120,7 @@ metrics:
 
 Owner must execute these 7 Wave B steps in order:
 
-0. **npm @latest dist-tag flip** — `npm publish --tag latest` (or `npm publish`); verify `npm view design-os version` → `2.0.0`
+0. **npm @latest dist-tag flip** — `npm publish --tag latest` (or `npm publish`); verify `npm view @pm-musketeers/complete-design version` → `2.0.0`
 1. **anthropics/skills#1008 PR** (first — establishes DESIGN.md provenance before marketplace posts)
 2. **8 marketplace cross-posts** using `docs/MARKETPLACE-MANIFEST.md`
 3. **GTM-01 launch post publication** (revise `docs/LAUNCH-POST-DRAFT.md` with Brad Frost feedback if any)
@@ -136,7 +136,7 @@ Resume signal: "Wave B complete"
 
 | Commit | Hash | Description |
 |--------|------|-------------|
-| feat(04-05) | 0ac3cbd | Version bumps: package.json 2.0.0-beta.0→2.0.0, bin/design-os.mjs, SKILL.md v2.0 GA |
+| feat(04-05) | 0ac3cbd | Version bumps: package.json 2.0.0-beta.0→2.0.0, bin/complete-design.mjs, SKILL.md v2.0 GA |
 | docs(04-05) | a851340 | Create MARKETPLACE-MANIFEST.md with 8 marketplace submission data |
 | docs(04-05) | c125766 | Create CHANGELOG.md v2.0 GA entry with release gate results + reviews scaffold |
 | docs(04-05) | 884aefe | Fill 04-OUTREACH-PACKET.md sample bundle placeholders (approach a: format reference) |
@@ -147,7 +147,7 @@ Resume signal: "Wave B complete"
 
 | Check | Result |
 |-------|--------|
-| `node bin/design-os.mjs --version` | `2.0.0` PASS |
+| `node bin/complete-design.mjs --version` | `2.0.0` PASS |
 | `grep "version: v2.0$" skills/design/SKILL.md` | 1 hit PASS |
 | `grep "v2.0b" skills/design/SKILL.md` | 0 hits CLEAN |
 | INVARIANT-04: description ≤200 chars | 191 chars PASS |
@@ -173,9 +173,9 @@ None.
 **1. [Rule 2 - Missing required files] package.json not in plan's files_modified YAML**
 
 - **Found during:** Task 1 pre-execution review
-- **Issue:** The plan's `files_modified` YAML list does not include `package.json` or `bin/design-os.mjs`. However, the plan's own Task 2 Step 0 explicitly says "After Task 1 has updated package.json version to '2.0.0'". Runtime version consistency requires all three version surfaces to be synchronized.
-- **Fix:** Included `package.json` (2.0.0-beta.0 → 2.0.0) and `bin/design-os.mjs` (.version bump) in Task 1 alongside SKILL.md. Flagged as plan inconsistency.
-- **Files modified:** `package.json`, `bin/design-os.mjs`
+- **Issue:** The plan's `files_modified` YAML list does not include `package.json` or `bin/complete-design.mjs`. However, the plan's own Task 2 Step 0 explicitly says "After Task 1 has updated package.json version to '2.0.0'". Runtime version consistency requires all three version surfaces to be synchronized.
+- **Fix:** Included `package.json` (2.0.0-beta.0 → 2.0.0) and `bin/complete-design.mjs` (.version bump) in Task 1 alongside SKILL.md. Flagged as plan inconsistency.
+- **Files modified:** `package.json`, `bin/complete-design.mjs`
 - **Commit:** 0ac3cbd
 
 **2. SKILL.md frontmatter version field was 0.1.0-v1.5 (not v2.0b as stated in prompt)**
@@ -214,7 +214,7 @@ None found beyond plan's threat model. MARKETPLACE-MANIFEST.md was reviewed for 
 
 Files exist:
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/package.json` — version 2.0.0 FOUND
-- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/bin/design-os.mjs` — version 2.0.0 FOUND
+- `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/bin/complete-design.mjs` — version 2.0.0 FOUND
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/skills/design/SKILL.md` — version: v2.0 FOUND
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/docs/MARKETPLACE-MANIFEST.md` — FOUND
 - `/Users/pilawski/My_projects/skillsos/Design Docs Frontend/CHANGELOG.md` — FOUND

@@ -1,5 +1,5 @@
 ---
-name: "design-os/systematize"
+name: "complete-design/systematize"
 description: "Systematize-lite: scan Stage 5a tokens for component candidates, emit provisional DESIGN.md (evidence:INFERRED); Frost ≥3× deferred to v2.0b"
 stage: "5b"
 gate: "gate/stage-5b-complete"
@@ -37,7 +37,7 @@ required or referenced. The DESIGN.md is derived from tokens alone.
 - DESIGN.md is labeled `evidence: INFERRED` — it is provisional, not validated.
 - Frost ≥3× recurrence enforcement is deferred to Phase 3 (v2.0b). In v2.0a, the gate
   records the component count and notes the deferral without blocking on recurrence.
-- All writes stage to `.design-os/preview/` first. `--apply` required to write to `design/`.
+- All writes stage to `.complete-design/preview/` first. `--apply` required to write to `design/`.
 
 **v2.0a expected gate result:** `pass_with_warnings, evidence: proto` — this is correct.
 Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
@@ -52,7 +52,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
 2. **Pre-check token budget.** Report the systematize budget before proceeding:
    ```
-   Bash: node bin/design-os.mjs budget-check --stage systematize --check pre
+   Bash: node bin/complete-design.mjs budget-check --stage systematize --check pre
    ```
    The systematize budget is p50 ≤40k tokens (D-49). This is an informational check only;
    it exits 0 and does not block at the pre-check step.
@@ -93,7 +93,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    user-supplied names; flag any mismatch for the user to resolve).
 
 6. **Emit `design/DESIGN.md`.** Write the DESIGN.md to the staging area:
-   `.design-os/preview/run-<timestamp>/DESIGN.md`
+   `.complete-design/preview/run-<timestamp>/DESIGN.md`
 
    The DESIGN.md must conform to the Google DESIGN.md spec (April 2026). Required structure:
 
@@ -104,10 +104,10 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
    tokens: <token count estimate — use 5000 as default>
    version: "2026.04"
    $extensions:
-     design-os:
+     complete-design:
        evidence: "INFERRED"
        stage: "5b-lite"
-       generatedBy: "design-os/systematize"
+       generatedBy: "complete-design/systematize"
        componentCount: <N>
        frostNote: "Frost ≥3× recurrence not yet verified — Phase 3 (v2.0b)"
    ---
@@ -147,7 +147,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
 7. **Validate DESIGN.md.** Confirm the emitted DESIGN.md passes the schema validator:
    ```
-   Bash: node bin/design-os.mjs design-md-validate --file .design-os/preview/run-<timestamp>/DESIGN.md
+   Bash: node bin/complete-design.mjs design-md-validate --file .complete-design/preview/run-<timestamp>/DESIGN.md
    ```
    If validation fails:
    - Attempt one LLM repair cycle: re-read the error, fix the specific failing field(s), re-emit.
@@ -169,7 +169,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
 9. **Post-check token budget.** Check usage after DESIGN.md emit:
    ```
-   Bash: node bin/design-os.mjs budget-check --stage systematize --check post
+   Bash: node bin/complete-design.mjs budget-check --stage systematize --check post
    ```
    If this exits 1 (exceeded 2× p50 = 80k tokens hard-stop), inform user:
    > "Token usage exceeded 80k (2× p50). Re-run with --continue-anyway to proceed."
@@ -178,9 +178,9 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
     and interaction evidence files from `design/` into the staged preview directory so that
     the Frost recurrence scan (`gate-stage-5b.mjs`) can find them:
     ```
-    Bash: node bin/design-os.mjs stage-recurrence-evidence \
+    Bash: node bin/complete-design.mjs stage-recurrence-evidence \
       --source-design-dir design/ \
-      --staged-dir .design-os/preview/run-<timestamp>/
+      --staged-dir .complete-design/preview/run-<timestamp>/
     ```
     where `<timestamp>` is the run-id from step 6.
 
@@ -202,7 +202,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 10. **Gate invocation.** Run the Stage 5b gate against the **staged preview path** (not `design/`).
     Use the run-id captured in step 6:
     ```
-    Bash: node bin/design-os.mjs gate --stage 5b --design-dir .design-os/preview/run-<timestamp>/
+    Bash: node bin/complete-design.mjs gate --stage 5b --design-dir .complete-design/preview/run-<timestamp>/
     ```
     where `<timestamp>` is the run-id captured when the staged output was written in step 6.
 
@@ -226,7 +226,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
     ```
     Then:
     ```
-    Bash: node bin/design-os.mjs handoff-bundle \
+    Bash: node bin/complete-design.mjs handoff-bundle \
       --from 5a \
       --to 5b \
       --design-dir design/ \
@@ -235,11 +235,11 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
 12. **Update MANIFEST.md.** Reconcile the design directory manifest after writing DESIGN.md:
     ```
-    Bash: node bin/design-os.mjs manifest-md --design-dir design/
+    Bash: node bin/complete-design.mjs manifest-md --design-dir design/
     ```
 
 13. **Present staged artifacts and await --apply.** Show the staged artifacts in
-    `.design-os/preview/run-<timestamp>/`:
+    `.complete-design/preview/run-<timestamp>/`:
     - `DESIGN.md` (Google DESIGN.md spec, evidence:INFERRED)
     - Updated `tokens.json` (if component tier was updated in step 8)
 
@@ -250,7 +250,7 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
     If user approves with `--apply`:
     ```
-    Bash: node bin/design-os.mjs apply --design-dir design/
+    Bash: node bin/complete-design.mjs apply --design-dir design/
     ```
 
     **Completion message** (required per D-51 trust posture):
@@ -265,16 +265,16 @@ Full `pass` requires Phase 3 Stage 4 artifacts (Frost ≥3× verification).
 
 For **Codex CLI** and **Cursor** (no subagent dispatch — sequential path, D-53):
 
-Run each step above as direct Bash commands. The `node bin/design-os.mjs` dispatcher
+Run each step above as direct Bash commands. The `node bin/complete-design.mjs` dispatcher
 handles all subcommands. No parallel subagent dispatch is used — steps execute one at a time.
 
-**Step 7 (validation):** If `node bin/design-os.mjs design-md-validate --file ...` is not
+**Step 7 (validation):** If `node bin/complete-design.mjs design-md-validate --file ...` is not
 available, validate manually: open the emitted DESIGN.md and confirm `name`, `tokens`, and
 `version: "2026.04"` are present in the frontmatter, and `evidence: "INFERRED"` is set under
-`$extensions.design-os`.
+`$extensions.complete-design`.
 
 **Step 10 (gate):** Run the gate against the staged preview path (not `design/`):
-`node bin/design-os.mjs gate --stage 5b --design-dir .design-os/preview/run-<timestamp>/`
+`node bin/complete-design.mjs gate --stage 5b --design-dir .complete-design/preview/run-<timestamp>/`
 using the run-id captured in step 6. Expected output: `{ kind: 'pass_with_warnings', evidence: 'proto' }`.
 
 **Codex CLI note:** Use `--depth lightweight` to skip TRUST-05 intake (steps 4a/4b) when
@@ -282,5 +282,5 @@ context is limited. Token budget stays within the systematize p50 ≤40k limit w
 omitted; the DESIGN.md will use sensible defaults for tone and component naming.
 
 **Cursor note:** The `manifest-md` step (step 12) requires Bash access; if Cursor's Bash
-tool is unavailable, skip it — the manifest will be reconciled on the next `design-os init`
+tool is unavailable, skip it — the manifest will be reconciled on the next `complete-design init`
 or next workflow run.

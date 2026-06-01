@@ -15,7 +15,7 @@ import { spawnSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "../..");
-const BIN = join(ROOT, "bin", "design-os.mjs");
+const BIN = join(ROOT, "bin", "complete-design.mjs");
 
 /** Minimal valid skeleton IR for a single screen */
 const MINIMAL_IR = JSON.stringify([

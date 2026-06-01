@@ -1,7 +1,7 @@
 // assets/scripts/cli/install-hooks.mjs
-// design-os install-hooks subcommand — auto-discovered by bin/design-os.mjs.
+// complete-design install-hooks subcommand — auto-discovered by bin/complete-design.mjs.
 //
-// Installs the design-os pre-commit hook that scans staged files for PII.
+// Installs the complete-design pre-commit hook that scans staged files for PII.
 // Creates tools/install-hooks.sh and symlinks .git/hooks/pre-commit.
 //
 // Source: Plan 01 auto-discovery contract; CONTEXT.md D-19; PLAN.md Task 2

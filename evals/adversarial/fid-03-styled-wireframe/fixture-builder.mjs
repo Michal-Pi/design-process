@@ -104,7 +104,7 @@ function buildCleanDoc(seed) {
     appState: {},
     elements,
     files: {},
-    source: "design-os",
+    source: "complete-design",
     type: "excalidraw",
     version: 2,
   };
@@ -129,7 +129,7 @@ function buildStyledDoc(seed) {
     appState: {},
     elements,
     files: {},
-    source: "design-os-test-fixture",
+    source: "complete-design-test-fixture",
     type: "excalidraw",
     version: 2,
   };

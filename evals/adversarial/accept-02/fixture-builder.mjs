@@ -132,7 +132,7 @@ schemaVersion: 1
 provenance: generated
 worstProvenance: generated
 generated: "2026-05-31T00:00:00.000Z"
-owner: design-os/accept-02-adversarial
+owner: complete-design/accept-02-adversarial
 lastReviewedAt: "2026-05-31T00:00:00.000Z"
 sourceHash: "sha256:${"a".repeat(64 - seed.toString().length)}${seed.toString().padStart(seed.toString().length, "0")}"
 ---
@@ -165,7 +165,7 @@ schemaVersion: 1
 provenance: generated
 worstProvenance: generated
 generated: "2026-05-31T00:00:00.000Z"
-owner: design-os/accept-02-adversarial
+owner: complete-design/accept-02-adversarial
 lastReviewedAt: "2026-05-31T00:00:00.000Z"
 sourceHash: "sha256:${"b".repeat(64 - seed.toString().length)}${seed.toString().padStart(seed.toString().length, "0")}"
 ---
